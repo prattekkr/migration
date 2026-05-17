@@ -5,6 +5,8 @@
     "/content/migration/metadata:/metadata.json"
   ],
   "includes": [
-    "/content/migration/"
+    "/content/migration/",
+    "/content/dam/migration/"
   ]
 }
+
