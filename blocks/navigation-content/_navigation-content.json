@@ -1,0 +1,397 @@
+{
+  "definitions": [
+    {
+      "title": "Navigation Content",
+      "id": "navigation-content",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Navigation Content",
+              "model": "navigation-content",
+              "language": "none",
+              "blockId": ""
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "navigation-content",
+      "fields": [
+        {
+          "component": "tab",
+          "label": "Overview",
+          "name": "overview"
+        },
+        {
+          "component": "select",
+          "name": "classes",
+          "value": "",
+          "label": "Navigation Content Type",
+          "valueType": "string",
+          "options": [
+            {
+              "name": "Logo",
+              "value": "logo"
+            },
+            {
+              "name": "Navigation Item",
+              "value": ""
+            },
+            {
+              "name": "Language/Links",
+              "value": "language-links"
+            },
+            {
+              "name": "Search",
+              "value": "search"
+            }
+          ]
+        },
+        {
+          "component": "richtext",
+          "name": "content_title",
+          "label": "Navigation Title",
+          "valueType": "string",
+          "condition": {
+            "in": [
+              {
+                "var": "classes"
+              },
+              [
+                "",
+                "language-links"
+              ]
+            ]
+          }
+        },
+        {
+          "component": "aem-content",
+          "name": "content_titleLink",
+          "label": "Navigation Link",
+          "condition": {
+            "in": [
+              {
+                "var": "classes"
+              },
+              [
+                ""
+              ]
+            ]
+          }
+        },
+        {
+          "component": "custom-asset-namespace:custom-asset",
+          "name": "content_img",
+          "label": "Logo Image",
+          "valueType": "string",
+          "configUrl": "/content/dam/config/image/asset-selector.json",
+          "condition": {
+            "in": [
+              {
+                "var": "classes"
+              },
+              [
+                "logo"
+              ]
+            ]
+          }
+        },
+        {
+          "component": "custom-asset-namespace:custom-asset-mimetype",
+          "valueType": "string",
+          "name": "content_imgMimeType",
+          "condition": {
+            "in": [
+              {
+                "var": "classes"
+              },
+              [
+                "logo"
+              ]
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "content_imgTitle",
+          "label": "Alt Text",
+          "value": "Home",
+          "condition": {
+            "in": [
+              {
+                "var": "classes"
+              },
+              [
+                "logo"
+              ]
+            ]
+          }
+        },
+        {
+          "component": "richtext",
+          "name": "content_languageLinksItems",
+          "label": "Language/Links Item",
+          "condition": {
+            "in": [
+              {
+                "var": "classes"
+              },
+              [
+                "language-links"
+              ]
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "content_searchIcon",
+          "label": "Search Icon",
+          "condition": {
+            "in": [
+              {
+                "var": "classes"
+              },
+              [
+                "search"
+              ]
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "content_searchLabel",
+          "label": "Search Label",
+          "condition": {
+            "in": [
+              {
+                "var": "classes"
+              },
+              [
+                "search"
+              ]
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "searchButtonPlaceholderMobile",
+          "label": "Search Button Placeholder Text (Mobile View)",
+          "description": "Placeholder text for the search action/button optimized for mobile view. Optional; used when mobile-specific label differs from desktop.",
+          "condition": {
+            "in": [
+              {
+                "var": "classes"
+              },
+              [
+                "search"
+              ]
+            ]
+          }
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "content_searchResultsPagePath",
+          "label": "Search Results Page Path",
+          "description": "Enter the path for the search results page.",
+          "condition": {
+            "in": [
+              {
+                "var": "classes"
+              },
+              [
+                "search"
+              ]
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "megamenutitle",
+          "label": "Mega Menu Title",
+          "condition": {
+            "in": [
+              {
+                "var": "classes"
+              },
+              [
+                ""
+              ]
+            ]
+          }
+        },
+        {
+          "component": "richtext",
+          "name": "megamenudescription",
+          "label": "Mega Menu Description",
+          "condition": {
+            "in": [
+              {
+                "var": "classes"
+              },
+              [
+                ""
+              ]
+            ]
+          }
+        },
+        {
+          "component": "aem-content",
+          "name": "megamenu_link",
+          "label": "CTA Link",
+          "condition": {
+            "in": [
+              {
+                "var": "classes"
+              },
+              [
+                ""
+              ]
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "megamenu_linkText",
+          "label": "CTA Text",
+          "condition": {
+            "in": [
+              {
+                "var": "classes"
+              },
+              [
+                ""
+              ]
+            ]
+          }
+        },
+        {
+          "component": "richtext",
+          "name": "megamenudashboardlinks",
+          "label": "Mega Menu Deshboard Links",
+          "condition": {
+            "in": [
+              {
+                "var": "classes"
+              },
+              [
+                ""
+              ]
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "megamenucardtitle",
+          "label": "Information Card Title",
+          "condition": {
+            "in": [
+              {
+                "var": "classes"
+              },
+              [
+                ""
+              ]
+            ]
+          }
+        },
+        {
+          "component": "richtext",
+          "name": "megamenucardcontent",
+          "label": "Information Card Content",
+          "condition": {
+            "in": [
+              {
+                "var": "classes"
+              },
+              [
+                ""
+              ]
+            ]
+          }
+        },
+        {
+          "component": "aem-content",
+          "name": "megamenucard_link",
+          "label": "Information Card CTA Link",
+          "condition": {
+            "in": [
+              {
+                "var": "classes"
+              },
+              [
+                ""
+              ]
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "name": "megamenucard_linkText",
+          "label": "Information Card CTA Text",
+          "condition": {
+            "in": [
+              {
+                "var": "classes"
+              },
+              [
+                ""
+              ]
+            ]
+          }
+        },
+        {
+          "component": "aem-content",
+          "name": "megamenudashboardcard",
+          "label": "Dashboard Card",
+          "condition": {
+            "in": [
+              {
+                "var": "classes"
+              },
+              [
+                ""
+              ]
+            ]
+          }
+        },
+        {
+          "component": "select",
+          "name": "dashboardCardType",
+          "label": "Dashboard Card Type",
+          "value": "light",
+          "condition": {
+            "in": [
+              {
+                "var": "classes"
+              },
+              [
+                ""
+              ]
+            ]
+          },
+          "options": [
+            {
+              "name": "Dark",
+              "value": "dark"
+            },
+            {
+              "name": "Light",
+              "value": "light"
+            }
+          ]
+        },
+        {
+           "...": "../../models/_common-properties.json#/common-prop"
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

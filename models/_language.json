@@ -1,0 +1,120 @@
+{
+  "language-field": [
+    {
+      "component": "select",
+      "name": "language",
+      "label": "Language",
+      "value": "none",
+      "options": [
+        {
+          "name": "None",
+          "value": "none"
+        },
+        {
+          "name": "Bulgarian",
+          "value": "bg"
+        },
+        {
+          "name": "Chinese",
+          "value": "zh"
+        },
+        {
+          "name": "Chinese (Taiwan)",
+          "value": "zh-TW"
+        },
+        {
+          "name": "Czech",
+          "value": "cs"
+        },
+        {
+          "name": "Danish",
+          "value": "da"
+        },
+        {
+          "name": "Dutch",
+          "value": "nl"
+        },
+        {
+          "name": "English",
+          "value": "en"
+        },
+        {
+          "name": "Finnish",
+          "value": "fi"
+        },
+        {
+          "name": "French",
+          "value": "fr"
+        },
+        {
+          "name": "German",
+          "value": "de"
+        },
+        {
+          "name": "Greek",
+          "value": "el"
+        },
+        {
+          "name": "Hebrew",
+          "value": "he"
+        },
+        {
+          "name": "Hungarian",
+          "value": "hu"
+        },
+        {
+          "name": "Italian",
+          "value": "it"
+        },
+        {
+          "name": "Japanese",
+          "value": "ja"
+        },
+        {
+          "name": "Korean",
+          "value": "ko"
+        },
+        {
+          "name": "Norwegian",
+          "value": "no"
+        },
+        {
+          "name": "Polish",
+          "value": "pl"
+        },
+        {
+          "name": "Portuguese",
+          "value": "pt"
+        },
+        {
+          "name": "Russian",
+          "value": "ru"
+        },
+        {
+          "name": "Slovak",
+          "value": "sk"
+        },
+        {
+          "name": "Slovenian",
+          "value": "sl"
+        },
+        {
+          "name": "Spanish",
+          "value": "es"
+        },
+        {
+          "name": "Swedish",
+          "value": "sv"
+        },
+        {
+          "name": "Turkish",
+          "value": "tr"
+        },
+        {
+          "name": "Ukrainian",
+          "value": "uk"
+        }
+      ]
+    }
+  ]
+}

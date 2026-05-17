@@ -1,0 +1,221 @@
+/* Breadcrumb Block — standalone section-level block */
+
+
+
+.breadcrumb {
+  --breadcrumb-icon-size: var(--corp-icon-size-md);
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: var(--corp-spacing-24);
+}
+
+
+
+.breadcrumb-wrapper {
+    padding: 0;
+}
+
+
+
+/* =====================================================
+   Mobile dropdown toggle button (< 744px)
+   Shows current page title with chevron, taps to expand
+   ===================================================== */
+
+
+
+.breadcrumb .breadcrumb-drop-title {
+  display: flex;
+  align-items: center;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-family: var(--roboto-bold-font-family);
+  font-size: var(--corp-font-size-12);
+  font-weight: var(--corp-font-weight-bold);
+  color: var(--color-black);
+  text-transform: uppercase;
+  letter-spacing: var(--corp-typography-letterspacing-wide-sm);
+  cursor: pointer;
+  line-height: var(--corp-typography-lineheight-body-sm);
+}
+
+
+
+/* Chevron icon after button text (icon font) */
+
+
+
+.breadcrumb .breadcrumb-drop-title::after {
+  content: "";
+  font-family: var(--corp-icon-font-family);
+  font-size: var(--corp-font-size-12);
+  margin-left: var(--corp-spacing-6);
+  width: var(--breadcrumb-icon-size);
+  height: var(--breadcrumb-icon-size);
+  transform: rotate(90deg);
+  transition: transform 0.3s ease-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+/* Expanded state — chevron flips up, button turns blue */
+
+
+
+.breadcrumb.open-breadcrumb .breadcrumb-drop-title {
+  color: var(--corp-color-link-default);
+}
+
+
+
+.open-breadcrumb .breadcrumb-drop-title::after {
+  transform: rotate(-90deg);
+}
+
+
+
+/* =====================================================
+   Nav trail — collapsed on mobile, visible on tablet+
+   ===================================================== */
+
+
+
+.breadcrumb .breadcrumb-nav {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
+}
+
+
+
+/* Expanded mobile nav */
+
+
+
+.breadcrumb.open-breadcrumb .breadcrumb-nav {
+  max-height: 100vh;
+  opacity: var(--opacity-full);
+}
+
+
+
+.breadcrumb .breadcrumb-nav ol {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  padding: 0;
+  margin: var(--corp-spacing-28) 0 0;
+  gap: var(--corp-spacing-16);
+}
+
+
+
+.breadcrumb .breadcrumb-nav ol li {
+  font-family: var(--roboto-bold-font-family);
+  font-size: var(--corp-font-size-12);
+  font-weight: var(--corp-font-weight-bold);
+  letter-spacing: var(--corp-typography-letterspacing-wide-sm);
+  line-height: var(--corp-typography-lineheight-body-sm);
+  text-transform: uppercase;
+  color: var(--corp-color-text-default);
+  display: flex;
+  align-items: center;
+}
+
+
+
+/* Hide chevron separators on mobile */
+
+
+
+.breadcrumb-nav ol li:not(:last-child)::after {
+  display: none;
+}
+
+
+
+.breadcrumb-nav li a {
+  color: var(--corp-color-text-default);
+  font-weight: var(--corp-font-weight-bold);
+  font-size: inherit;
+  text-decoration: none;
+  display: flex;
+}
+
+
+
+.breadcrumb-nav li :where(a):hover span {
+  text-decoration: none;
+  color: var(--corp-color-link-hover);
+}
+
+
+
+/* Current page — muted gray, no link */
+
+
+
+.breadcrumb-nav ol li[aria-current] {
+  color: var(--color-gray-dark);
+  font-weight: var(--corp-font-weight-bold);
+}
+
+
+
+/* =====================================================
+   Tablet+ (>= 744px) — horizontal breadcrumb trail
+   ===================================================== */
+
+
+
+@media (min-width: 744px) {
+  .breadcrumb {
+    flex-direction: row;
+    margin-bottom: var(--corp-spacing-32);
+  }
+
+  /* Hide mobile dropdown button */
+  .breadcrumb .breadcrumb-drop-title {
+    display: none;
+  }
+
+  /* Show nav trail inline */
+  .breadcrumb .breadcrumb-nav {
+    max-height: none;
+    opacity: var(--opacity-full);
+    overflow: visible;
+    display: inline;
+  }
+
+  .breadcrumb .breadcrumb-nav ol {
+    flex-flow: row wrap;
+    margin: 0;
+    gap: var(--corp-spacing-8);
+    align-items: baseline;
+  }
+
+  .breadcrumb .breadcrumb-nav ol li {
+    font-size: var(--corp-font-size-14);
+    display: flex;
+    align-items: flex-end;
+  }
+
+  /* Chevron separator between items */
+  .breadcrumb-nav ol :where(li):not(:last-child) a::after {
+    display: flex;
+    content: "";
+    font-family: var(--corp-icon-font-family);
+    padding-left: var(--corp-spacing-8);
+    height: var(--corp-icon-size-md);
+    margin: 0 var(--corp-spacing-5);
+    width: var(--corp-icon-size-md);
+  }
+}

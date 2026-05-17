@@ -1,0 +1,142 @@
+{
+  "definitions": [
+    {
+      "title": "Columns",
+      "id": "columns",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/columns/v1/columns",
+            "template": {
+              "columns": "2",
+              "rows": "1"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "columns",
+      "fields": [
+        {
+          "component": "tab",
+          "label": "Overview",
+          "name": "overview"
+        },
+        {
+          "component": "text",
+          "valueType": "number",
+          "name": "columns",
+          "value": "",
+          "label": "Columns"
+        },
+        {
+          "component": "text",
+          "valueType": "number",
+          "name": "rows",
+          "value": "",
+          "label": "Rows"
+        },
+        {
+          "component": "tab",
+          "label": "Styles",
+          "name": "styles"
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "classes_marginBottom",
+          "value": "",
+          "label": "Bottom Spacing",
+          "options": [
+            {
+              "name": "Default",
+              "value": ""
+            },
+            {
+              "name": "None",
+              "value": "mb-none"
+            },
+            {
+              "name": "Tight",
+              "value": "mb-tight"
+            },
+            {
+              "name": "Compact",
+              "value": "mb-compact"
+            },
+            {
+              "name": "Spacious",
+              "value": "mb-spacious"
+            },
+            {
+              "name": "Extra Wide",
+              "value": "mb-wide"
+            },
+            {
+              "name": "custom-mb-col",
+              "value": "custom-mb-col"
+            }
+          ]
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "classes_order",
+          "value": "",
+          "label": "Content Order (Mobile)",
+          "options": [
+            {
+              "name": "Default",
+              "value": ""
+            },
+            {
+              "name": "Content then Image",
+              "value": "order-content-first-mobile"
+            }
+          ]
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "classes_text",
+          "value": "",
+          "label": "Text Styles",
+          "options": [
+            {
+              "name": "None",
+              "value": ""
+            },
+            {
+              "name": "List Style Type Square",
+              "value": "square-list"
+            },
+            {
+              "name": "List Style Type bullet",
+              "value": "bullet-list"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "columns",
+      "components": [
+        "column"
+      ]
+    },
+    {
+      "id": "column",
+      "components": [
+        "text",
+        "image",
+        "button",
+        "title"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,341 @@
+.cta {
+    --cta-custom-icon-image-size: 1em;
+}
+
+/* -------------------------------------------------------
+   .button and base button
+   ------------------------------------------------------- */
+
+.cta .button {
+    background: none;
+    border: none;
+    outline: none;
+    white-space: break-spaces;
+    text-align: left;
+}
+
+.cta a.button {
+    text-align: unset;
+    white-space: normal;
+}
+
+.cta .button-container {
+   margin-bottom: var(--corp-spacing-16);
+}
+
+@media (min-width: 744px) {
+    .cta .button-container {
+        margin-bottom: var(--corp-spacing-24);
+    }
+}
+
+/* -------------------------------------------------------
+   Default CTA
+   ------------------------------------------------------- */
+
+.default-cta a.button,
+   :where(.light-theme).default-cta .button {
+        align-items: center;
+        color: var(--color-accent-blue);
+        cursor: pointer;
+        display: flex;
+        font-family: var(--roboto-bold-font-family);
+        font-size: var(--corp-font-size-16);
+        font-weight: var(--corp-font-weight-bold);
+        line-height: var(--corp-typography-lineheight-body-sm);
+        letter-spacing: var(--corp-typography-letterspacing-wide-em);
+        padding: var(--corp-spacing-12) var(--corp-spacing-32);
+        margin: 0;
+        border: var(--border-width-thin) solid var(--color-accent-blue);
+        border-radius: 0;
+        background-color: unset;
+        text-decoration: none;
+        text-align: unset;
+        white-space: normal;
+        width: fit-content;
+        text-transform: var(--text-transform-uppercase);
+    }
+
+.cta .button:focus {
+        outline: var(--corp-spacing-1) solid var(--color-navy-dark);
+    }
+
+@media (min-width: 744px) {
+        .default-cta a.button {
+            font-size: var(--corp-font-size-14);
+        }
+    }
+
+.default-cta .button:hover,
+    :where(.light-theme).default-cta .button:hover,
+    :where(.light-theme).default-cta .button:focus-visible {
+        color: var(--color-surface-default);
+        background-color: var(--color-accent-blue);
+    }
+
+:where(.dark-theme).default-cta a.button {
+        color: var(--color-surface-default);
+        border: var(--border-width-thin) solid var(--color-surface-default);
+        background-color: unset;
+    }
+
+:where(.dark-theme).default-cta .button:hover,
+     :where(.dark-theme).default-cta .button:focus-visible {
+        background-color: var(--color-surface-default);
+        color: var(--corp-color-text-default);
+    }
+
+@media (min-width: 1024px)  {
+        .default-cta a.button {
+            padding: var(--corp-spacing-16) var(--corp-spacing-40);
+        }
+    }
+
+/* -------------------------------------------------------
+   External CTA (light)
+   ------------------------------------------------------- */
+
+.external-cta a.button,
+:where(.light-theme).external-cta a.button {
+    align-items: center;
+    color: var(--color-accent-blue);
+    cursor: pointer;
+    display: flex;
+    font-family: var(--roboto-bold-font-family);
+    font-size: var(--corp-font-size-16);
+    font-weight: var(--corp-font-weight-extrabold);
+    line-height: var(--corp-spacing-20);
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    background-color: unset;
+    text-decoration: unset;
+    width: fit-content;
+}
+
+.external-cta .button:hover,
+:where(.light-theme).external-cta .button:hover,
+ :where(.light-theme).external-cta .button:focus-visible {
+    color: var(--corp-color-text-default);
+    background-color: unset;
+}
+
+:where(.dark-theme).external-cta a.button {
+    color: var(--color-accent-blue-light);
+}
+
+:where(.dark-theme).external-cta .button:hover,
+:where(.dark-theme).external-cta .button:focus-visible {
+    color: var(--color-blue-light);
+    background-color: unset;
+}
+
+.external-cta a.button::after {
+    color: inherit;
+    content: '\e900';
+    font-family: var(--corp-icon-font-family);
+    font-size: var(--corp-font-size-12);
+    margin-left: var(--corp-spacing-12);
+    margin-right: var(--corp-spacing-3);
+    transform: scale(.8);
+    transition: color .1s ease;
+}
+
+/* -------------------------------------------------------
+   Internal CTA (light)
+   ------------------------------------------------------- */
+
+.internal-cta a.button,
+:where(.light-theme).internal-cta a.button {
+    align-items: center;
+    color: var(--color-accent-blue);
+    cursor: pointer;
+    display: flex;
+    font-family: var(--roboto-bold-font-family);
+    font-size: var(--corp-font-size-16);
+    font-weight: var(--corp-font-weight-bold);
+    letter-spacing: var(--corp-typography-letterspacing-wide-em);
+    line-height: var(--corp-typography-lineheight-body-sm);
+    padding: 0;
+    margin: 0;
+    text-decoration: none;
+    text-transform: var(--text-transform-uppercase);
+    border: none;
+    border-radius: 0;
+    background-color: unset;
+    width: fit-content;
+}
+
+:where(.dark-theme).internal-cta a.button {
+    color: var(--color-accent-blue-light);
+}
+
+.internal-cta .button:hover,
+:where(.light-theme).internal-cta .button:hover,
+:where(.light-theme).internal-cta .button:focus-visible {
+    color: var(--color-navy-dark);
+    background-color: unset;
+}
+
+:where(.dark-theme).internal-cta .button:hover,
+:where(.dark-theme).internal-cta .button:focus-visible {
+    color: var(--color-blue-light);
+}
+
+@media (min-width: 744px) {
+    .internal-cta a.button,
+    :where(.light-theme).internal-cta a.button {
+        font-size: var(--corp-font-size-14);
+    }
+}
+
+.internal-cta a.button::after {
+    color: inherit;
+    content: '\e901';
+    display: flex;
+    font-family: var(--corp-icon-font-family);
+    font-size: var(--corp-font-size-12);
+    margin-left: var(--corp-spacing-12);
+    margin-right: var(--corp-spacing-30);
+    transition: color .1s ease;
+    vertical-align: middle;
+}
+
+[dir="rtl"] :where(.internal-cta .button-container) .button::after {
+        transform: rotate(180deg);
+    }
+
+/* -------------------------------------------------------
+   Back CTA (light)
+   ------------------------------------------------------- */
+
+.back-cta a.button,
+:where(.light-theme).back-cta a.button {
+    align-items: center;
+    background: none;
+    border: none;
+    border-radius: 0;
+    color: var(--color-accent-blue);
+    cursor: pointer;
+    display: flex;
+    font-family: var(--roboto-bold-font-family);
+    font-size: var(--corp-font-size-16);
+    font-weight: var(--corp-font-weight-bold);
+    letter-spacing: var(--corp-typography-letterspacing-wide-em);
+    line-height: var(--corp-typography-lineheight-body-sm);
+    padding: 0;
+    text-decoration: none;
+    text-transform: var(--text-transform-uppercase);
+    width: fit-content;
+}
+
+:where(.dark-theme).back-cta a.button {
+    color: var(--color-accent-blue-light);
+}
+
+.back-cta .button:hover,
+:where(.light-theme).back-cta .button:hover,
+:where(.light-theme).back-cta .button:focus-visible {
+    color: var(--corp-color-text-default);
+    background-color: unset;
+}
+
+:where(.dark-theme).back-cta .button:hover,
+:where(.dark-theme).back-cta .button:focus-visible {
+    color: var(--color-blue-light);
+}
+
+@media (min-width: 744px) {
+    .back-cta a.button,
+    :where(.light-theme).back-cta a.button {
+        font-size: var(--corp-font-size-14);
+    }
+}
+
+.back-cta a.button::before {
+    color: inherit;
+    content: '\e903';
+    display: flex;
+    font-family: var(--corp-icon-font-family);
+    font-size: var(--corp-font-size-12);
+    margin-left: var(--corp-spacing-3);
+    margin-right: var(--corp-spacing-12);
+    transform: scale(.8);
+    transition: color .1s ease;
+}
+
+[dir="rtl"] :where(.back-cta .button-container) .button::before {
+    transform: rotate(180deg);
+}
+
+/* -------------------------------------------------------
+   Config-driven icon overrides
+   ------------------------------------------------------- */
+
+.external-cta a.cta-icon-font::after,
+.external-cta a.cta-icon-image::after,
+.internal-cta a.cta-icon-font::after,
+.internal-cta a.cta-icon-image::after,
+.back-cta a.cta-icon-font::before,
+.back-cta a.cta-icon-image::before {
+    content: none;
+    display: none;
+}
+
+.cta .cta-custom-icon {
+    align-items: center;
+    display: inline-flex;
+    flex: 0 0 auto;
+    justify-content: center;
+    line-height: inherit;
+}
+
+.cta .cta-icon-left > .cta-custom-icon {
+    margin-left: var(--corp-spacing-3);
+    margin-right: var(--corp-spacing-12);
+}
+
+.cta .cta-icon-right > .cta-custom-icon {
+    margin-left: var(--corp-spacing-12);
+    margin-right: var(--corp-spacing-3);
+}
+
+.cta .cta-custom-icon-font {
+    font-family: var(--corp-icon-font-family);
+    font-size: var(--corp-font-size-12);
+    transform: scale(.8);
+}
+
+.cta .cta-custom-icon-image img {
+    display: block;
+    height: var(--cta-custom-icon-image-size);
+    object-fit: contain;
+    width: var(--cta-custom-icon-image-size);
+}
+
+/* -------------------------------------------------------
+   OneTrust cookie settings button
+   ------------------------------------------------------- */
+
+.ot-sdk-show-settings {
+    color: var(--corp-color-text-default);
+    cursor: pointer;
+    font-family: "Roboto Regular", Helvetica, Arial, sans-serif;
+    font-size: var(--corp-font-size-12);
+    font-weight: var(--corp-font-weight-regular);
+    letter-spacing: var(--corp-typography-letterspacing-wide-em-xs);
+    line-height: var(--corp-spacing-16);
+    text-transform: uppercase;
+}
+
+.ot-sdk-show-settings:focus,
+.ot-sdk-show-settings:hover {
+    font-family: var(--roboto-bold-font-family);
+    font-weight: var(--corp-font-weight-bold);
+}
+
+.linklist .list__item .ot-sdk-show-settings {
+    text-transform: unset;
+}
+

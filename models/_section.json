@@ -1,0 +1,301 @@
+{
+  "definitions": [
+    {
+      "title": "Section",
+      "id": "section",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/section/v1/section",
+            "template": {
+              "model": "section"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Grid Section",
+      "id": "grid-section",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/section/v1/section",
+            "template": {
+              "model": "grid-section",
+              "filter": "grid-section",
+              "name": "Grid Section",
+              "identifier": "Grid Section"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Grid Container",
+      "id": "grid-container",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/section/v1/section",
+            "template": {
+              "model": "grid-container",
+              "filter": "grid-container",
+              "name": "Grid Container",
+              "identifier": "Grid Container"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "section",
+      "fields": [
+        {
+          "component": "tab",
+          "label": "Properties",
+          "name": "properties"
+        },
+        {
+          "component": "text",
+          "name": "name",
+          "label": "Section Name",
+          "description": "The label shown for this section in the Content Tree"
+        },
+        {
+          "component": "custom-asset-namespace:custom-asset",
+          "valueType": "string",
+          "name": "background",
+          "label": "Background Image",
+          "description": "Background image for this section.",
+          "configUrl": "/content/dam/config/image/asset-selector.json",
+          "multi": false
+        },
+        {
+          "component": "custom-asset-namespace:custom-asset-mimetype",
+          "valueType": "string",
+          "name": "backgroundMimeType"
+        },
+        {
+          "component": "tab",
+          "label": "Styles",
+          "name": "styles"
+        },
+        {
+          "component": "ngaem:dynamic-picklist",
+          "name": "classes_customDynamicClass",
+          "value": "",
+          "label": "Select Block Styles",
+          "valueType": "string",
+          "sourceAEMNodeName": "section-picklist-config",
+          "valueSeperator": ","
+        },
+        {
+          "...": "./_common-properties.json#/common-prop"
+        }
+      ]
+    },
+    {
+      "id": "grid-section",
+      "title": "Grid Section",
+      "fields": [
+        {
+          "component": "text",
+          "name": "name",
+          "label": "Section Name",
+          "id": "grid-section",
+          "description": "The label shown for this section in the Content Tree",
+          "value": "",
+          "valueType": "string"
+        },
+        {
+          "component": "tab",
+          "label": "Properties",
+          "name": "properties"
+        },
+        {
+          "component": "text",
+          "name": "classes_container",
+          "label": "Generic Class",
+          "value": "grid-section",
+          "hidden": true
+        },
+        {
+          "component": "tab",
+          "label": "Styles",
+          "name": "styles"
+        },
+        {
+          "component": "ngaem:dynamic-picklist",
+          "name": "classes_customDynamicClass",
+          "value": "",
+          "label": "Select Block Styles",
+          "valueType": "string",
+          "sourceAEMNodeName": "grid-section-picklist-config",
+          "valueSeperator": ","
+        },
+        {
+          "...": "./_common-properties.json#/common-prop"
+        }
+      ]
+    },
+    {
+      "id": "grid-container",
+      "title": "Grid Container",
+      "fields": [
+        {
+          "component": "tab",
+          "label": "Properties",
+          "name": "properties"
+        },
+        {
+          "component": "text",
+          "name": "name",
+          "label": "Grid Container Name",
+          "description": "The label shown for this grid container in the Content Tree",
+          "value": "",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "classes_container",
+          "label": "Generic Class",
+          "value": "grid-container",
+          "hidden": true
+        },
+        {
+          "component": "custom-asset-namespace:custom-asset",
+          "valueType": "string",
+          "name": "background",
+          "label": "Background Image",
+          "description": "Background image for this section.",
+          "configUrl": "/content/dam/config/image/asset-selector.json",
+          "multi": false
+        },
+        {
+          "component": "custom-asset-namespace:custom-asset-mimetype",
+          "valueType": "string",
+          "name": "backgroundMimeType"
+        },
+        {
+          "component": "tab",
+          "label": "Styles",
+          "name": "styles"
+        },
+        {
+          "component": "ngaem:dynamic-picklist",
+          "name": "classes_customDynamicClass",
+          "value": "",
+          "label": "Select Block Styles",
+          "valueType": "string",
+          "sourceAEMNodeName": "grid-container-picklist-config",
+          "valueSeperator": ","
+        },
+        {
+          "...": "./_common-properties.json#/common-prop"
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "section",
+      "components": [
+        "accordion",
+        "breadcrumb",
+        "button",
+        "story-cards",
+        "cards",
+        "carousel",
+        "social-media",
+        "columns",
+        "embed",
+        "fragment",
+        "press-releases",
+        "separator",
+        "story-card",
+        "form",
+        "hero",
+        "navigation-content",
+        "stock-ticker",
+        "eds-form",
+        "embed-form",
+        "image",
+        "quote",
+        "search",
+        "search-input",
+        "tabs",
+        "table",
+        "text",
+        "title",
+        "video",
+        "custom-title",
+        "text-container",
+        "cta",
+        "linklist",
+        "brightcove-video",
+        "tag-utility-nav",
+        "fact-card",
+        "brightcove-podcast-player",
+        "custom-image",
+        "editorial-feed",
+        "news-feed",
+        "pipeline-utility-nav",
+        "hero-container",
+        "teaser"
+      ]
+    },
+    {
+      "id": "grid-section",
+      "components": [
+        "accordion",
+        "breadcrumb",
+        "button",
+        "story-cards",
+        "cards",
+        "carousel",
+        "social-media",
+        "columns",
+        "embed",
+        "fragment",
+        "press-releases",
+        "separator",
+        "story-card",
+        "form",
+        "hero",
+        "navigation-content",
+        "stock-ticker",
+        "eds-form",
+        "embed-form",
+        "image",
+        "quote",
+        "search",
+        "search-input",
+        "tabs",
+        "table",
+        "text",
+        "title",
+        "video",
+        "custom-title",
+        "text-container",
+        "cta",
+        "linklist",
+        "brightcove-video",
+        "tag-utility-nav",
+        "fact-card",
+        "brightcove-podcast-player",
+        "custom-image",
+        "news-feed",
+        "pipeline-utility-nav",
+        "teaser",
+        "editorial-feed"
+      ]
+    },
+    {
+      "id": "grid-container",
+      "components": []
+    }
+  ]
+}

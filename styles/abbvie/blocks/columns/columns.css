@@ -1,0 +1,190 @@
+.columns > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--corp-gap-xl);
+}
+
+.columns img {
+  width: 100%;
+}
+
+.columns > div > div {
+  order: var(--order-default);
+}
+
+.columns > div > .columns-img-col {
+  order: 0;
+  align-self: flex-start;
+}
+
+/* Mobile-first override: when requested, show content before image */
+
+.columns.order-content-first-mobile > * > :not(.columns-img-col) {
+  order: 0;
+}
+
+.columns.order-content-first-mobile > * > .columns-img-col {
+  order: var(--order-default);
+}
+
+.columns > div > .columns-img-col img {
+  display: block;
+}
+
+.columns p {
+  font-size: var(--corp-font-size-16);
+  line-height: var(--corp-typography-lineheight-body-sm);
+}
+
+/* Inline body links (non-button) — dark navy with blue gradient underline */
+
+.columns p a:not(.button) {
+  color: var(--corp-color-text-default);
+  background: linear-gradient(180deg, var(--color-surface-highlight-inverse) 50%, var(--color-surface-highlight-inverse) 0);
+  background-position: 0 100%;
+  background-repeat: repeat-x;
+  background-size: var(--corp-spacing-2) var(--corp-spacing-2);
+  padding: 0 var(--corp-spacing-2) var(--corp-spacing-3);
+  text-decoration: none;
+  transition: background-size 0.1s ease, color 0.1s ease;
+  cursor: pointer;
+}
+
+.columns :where(a):not(.button):hover {
+    background-size: 100% 100%;
+    color: var(--color-surface-default);
+  }
+
+/* CTA-style links — text link with arrow, not bordered button */
+
+.columns a.button {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: var(--roboto-bold-font-family);
+  font-size: var(--corp-font-size-16);
+  font-weight: var(--corp-font-weight-bold);
+  color: var(--color-surface-highlight-inverse);
+  text-decoration: none;
+  letter-spacing: normal;
+  display: flex;
+  align-items: center;
+  margin-top: var(--corp-spacing-16);
+}
+
+/* Text CTA link style for columns — matches original AbbVie internal CTA pattern */
+
+.columns :where(.button-container) .external-link::after {
+  color: inherit;
+  content: "\e900";
+  font-family: var(--corp-icon-font-family);
+  font-size: var(--corp-font-size-12);
+  margin-left: 1.2rem;
+  margin-right: .3rem;
+  transform: scale(.8);
+  transition: color .1s ease;
+}
+
+.columns :where(.button-container) .external-link:hover {
+  color: var(--corp-color-text-default);
+}
+
+/* Semantic bottom spacing — mobile */
+
+.columns.mb-none { margin-bottom: 0; }
+
+.columns.mb-tight { margin-bottom: var(--corp-spacing-16); }
+
+.columns.mb-compact { margin-bottom: var(--corp-spacing-32); }
+
+.columns.mb-spacious { margin-bottom: var(--corp-spacing-48); }
+
+.columns.mb-wide { margin-bottom: var(--corp-spacing-66); }
+
+/* --- Dashboard-style link list --- */
+
+.columns ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.columns.square-list ul,
+.columns.bullet-list ul {
+  padding-left: var(--corp-spacing-18);
+  margin-bottom: var(--corp-spacing-30);
+  margin-top: 0;
+}
+
+.columns ul li {
+  margin: 0;
+}
+
+.columns.square-list li,
+.columns.bullet-list li {
+  margin-bottom: var(--corp-spacing-12);
+}
+
+.columns.square-list :where(li):last-child,
+.columns.bullet-list :where(li):last-child {
+  margin-bottom: 0;
+}
+
+.columns.square-list ul {
+  list-style-type: square;
+}
+
+.columns.bullet-list ul {
+  list-style-type: disc;
+}
+
+@media (min-width: 744px) {
+  .columns > div {
+    align-items: center;
+    flex-direction: unset;
+    gap: var(--corp-gap-xl);
+  }
+
+  .columns > div > div {
+    flex: 1;
+    order: unset;
+  }
+
+  .columns.order-content-first-mobile > * > :not(.columns-img-col),
+  .columns.order-content-first-mobile > * > .columns-img-col {
+    order: unset;
+  }
+
+  .columns p {
+    font-size: var(--corp-font-size-16);
+    line-height: var(--corp-typography-lineheight-body-md);
+  }
+
+  .columns a.external-link {
+    font-size: var(--corp-font-size-16);
+    line-height: var(--corp-typography-lineheight-body-sm);
+  }
+
+  /* Semantic bottom spacing — tablet */
+  .columns.mb-tight { margin-bottom: var(--corp-spacing-16); }
+  .columns.mb-compact { margin-bottom: var(--corp-spacing-32); }
+  .columns.mb-spacious { margin-bottom: var(--corp-spacing-48); }
+  .columns.mb-wide { margin-bottom: var(--corp-spacing-66); }
+}
+
+@media (min-width: 744px) {
+  .columns p {
+    font-size: var(--corp-font-size-18);
+    line-height: var(--corp-typography-lineheight-body-lg);
+  }
+
+  /* Semantic bottom spacing — desktop */
+  .columns.mb-tight { margin-bottom: var(--corp-spacing-20); }
+  .columns.mb-compact { margin-bottom: var(--corp-spacing-40); }
+  .columns.mb-spacious { margin-bottom: var(--corp-spacing-60); }
+  .columns.mb-wide { margin-bottom: var(--corp-spacing-100); }
+
+  .columns ul {
+    margin-top: var(--corp-spacing-60)
+  }
+}

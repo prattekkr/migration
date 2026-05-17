@@ -1,0 +1,760 @@
+.hero-container {
+  --hero-profile-container-height: var(--corp-spacing-120);
+  --hero-overlay-gradient: linear-gradient(to top, rgb(0 0 0 / 90%) 42.91%, transparent);
+  --hero-button-hover-color: var(--color-border-container);
+  --hero-space-neg-md: calc(-15 * var(--px-to-rem));   /* -1.5rem */
+  --hero-space-neg-lg: calc(-20 * var(--px-to-rem));   /* -2rem */
+  --hero-space-neg-2xl: calc(-40 * var(--px-to-rem));   /* -4rem */
+  --hero-space-neg-5xl: calc(-64 * var(--px-to-rem)); /** -6.4rem */
+  --hero-space-neg-3xl: calc(-48 * var(--px-to-rem));   /* -4.8rem */
+  --hero-space-neg-3xxl: calc(-55 * var(--px-to-rem));   /* -5.5rem */
+  --hero-space-neg-4xl: calc(-56 * var(--px-to-rem));   /* -5.6rem */
+  --hero-space-neg-6xl: calc(-70 * var(--px-to-rem));   /* -7rem */
+  --hero-space-neg-7xl: calc(-112 * var(--px-to-rem)); /* -11.2rem */
+  --hero-space-neg-2lg: calc(-35 * var(--px-to-rem));   /* -3.5rem */
+  --hero-spacing-448: 44.8rem;
+  --hero-space-neg-6xxl: calc(-80 * var(--px-to-rem));   /* -8rem */
+}
+
+/* Hero container witdht */
+
+.section.abbvie-container.hero-container {
+  max-width: var(--corp-layout-container-max-width-lg);
+  background: transparent;
+}
+
+/* AbbVie Hero — White overlap panel on hero image */
+
+.hero-container .hero-wrapper {
+  max-width: unset;
+  padding: 0;
+}
+
+/* Navy-overlap hero: pull wrapper into section padding so bg image shows */
+
+.hero-navy {
+  padding-bottom: 0;
+  margin-bottom: var(--corp-spacing-32);
+  background-color: var(--color-white);
+}
+
+.hero-navy .hero-wrapper {
+  margin: var(--hero-space-neg-2xl) var(--hero-space-neg-2lg) 0;
+  max-width: none;
+  overflow: hidden;
+}
+
+@media (min-width: 744px) {
+  .hero-navy .hero-wrapper {
+    margin: var(--hero-space-neg-4xl) var(--hero-space-neg-6xl) 0;
+  }
+
+  .hero-navy {
+    border-top-left-radius: var(--corp-spacing-64);
+    margin-bottom: var(--corp-spacing-80);
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-navy .hero-wrapper {
+    margin: var(--hero-space-neg-6xxl) var(--hero-space-neg-3xxl) 0;
+  }
+
+  .hero-navy {
+   border-top-left-radius: var(--corp-spacing-80);
+  }
+}
+
+/* Height-tall variant — taller hero image area matching live site .height-tall */
+
+.height-tall .hero > :where(div):first-child {
+  min-height: var(--hero-tall-image-container-height);
+  padding: 0;
+}
+
+.height-tall .hero > :where(div):first-child :where(img) {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  max-height: none;
+  object-fit: cover;
+}
+
+/* Breadcrumbs inside hero text panel */
+
+.hero .hero-breadcrumbs {
+  margin-bottom: var(--corp-spacing-32);
+}
+
+.hero-breadcrumbs :where(ol) {
+  display: flex;
+  flex-flow: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: var(--corp-spacing-8);
+  align-items: baseline;
+}
+
+.hero-breadcrumbs :where(ol li) {
+  font-family: var(--roboto-bold-font-family);
+  font-size: var(--corp-font-size-14);
+  font-weight: var(--corp-font-weight-bold);
+  letter-spacing: var(--corp-typography-letterspacing-wide-sm);
+  line-height: var(--corp-typography-lineheight-body-sm);
+  text-transform: uppercase;
+  color: var(--corp-color-text-default);
+  display: flex;
+  align-items: flex-end;
+}
+
+/* Chevron separator — scaled to match text cap height and vertically centred */
+
+.hero-breadcrumbs :where(ol li):not(:last-child)::after {
+  content: '\203A';
+  padding-left: var(--corp-spacing-8);
+  font-size: var(--corp-font-size-30);
+  font-weight: var(--corp-font-weight-bold);
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.hero-breadcrumbs :where(li a) {
+  color: var(--corp-color-text-default);
+  font-weight: var(--corp-font-weight-bold);
+  font-size: inherit;
+  text-decoration: none;
+}
+
+/* Current page — muted gray, no link */
+
+.hero-breadcrumbs :where(ol li)[aria-current] {
+  color: var(--color-gray-dark);
+  font-weight: var(--corp-font-weight-bold);
+}
+
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Remove gradient overlay — AbbVie uses white panel instead */
+
+.hero::after {
+  display: none;
+}
+
+/* Image container — natural flow, not absolute */
+
+.hero > div:first-child {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  min-height: var(--hero-image-container-height);
+  margin: 0 var(--hero-space-neg-lg);
+  padding-left: var(--corp-spacing-55);
+  padding-right: var(--corp-spacing-55);
+}
+
+.section-wide .hero > :where(div):first-child {
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.hero.no-padding > :where(div):first-child{
+  padding: 0;
+}
+
+.hero picture {
+  display: block;
+}
+
+.hero img {
+  object-fit: cover;
+  width: 100%;
+  height: auto;
+  display: block;
+  border-top-left-radius: var(--border-radius-xl);
+  max-height: var(--hero-image-container-height);
+}
+
+/* Text container — white overlap panel */
+
+.hero > div:nth-child(2) {
+ /*  display: flex;
+  flex-direction: column; */
+  background-color: var(--color-surface-default);
+  border-top-left-radius: var(--border-radius-subtle);
+  margin: var(--hero-space-neg-3xl) var(--corp-spacing-20) 0;
+  position: relative;
+  padding: var(--corp-spacing-32) var(--corp-spacing-20) var(--corp-spacing-40);
+  padding-bottom: 0;
+  max-width: calc(100vw - var(--corp-spacing-40));
+}
+
+/* font-weight: inherit prevents browser UA bold, defers to F37 Lineca Medium's own weight */
+
+.hero h1 {
+  margin: 0 0 var(--corp-spacing-8);
+  font-size: var(--corp-font-size-30);
+  line-height: var(--corp-typography-lineheight-relaxed-xl);
+  color: var(--corp-color-text-default);
+  font-family: var(--heading-font-family-bold);
+}
+
+/* Roboto Small (300 light) for all hero paragraphs */
+
+.hero p {
+  margin: 0;
+  padding-bottom: var(--corp-spacing-16);
+}
+
+.navy-overlap .hero:where(:not(.body-unica-32-reg)) :where(p) {
+    font-size: var(--corp-font-size-16);
+    line-height: var(--corp-typography-lineheight-body-md);
+}
+
+/* Height-tall hero paragraph — larger font matching body-unica-32-reg scale
+   Uses higher specificity to override navy-overlap when both are present */
+
+.navy-overlap.height-tall .hero :where(p),
+.height-tall .hero p {
+  font-size: var(--corp-font-size-20);
+  line-height: var(--corp-typography-lineheight-body-xl);
+  margin-top: var(--corp-spacing-8);
+}
+
+.hero.light-font p {
+  font-family: var(--roboto-light-font-family);
+  font-weight: var(--corp-font-weight-light);
+}
+
+.hero a.button {
+  background: none;
+  font-family: var(--roboto-bold-font-family);
+  font-size: var(--corp-font-size-14);
+  font-style: normal;
+  font-weight: var(--corp-font-weight-bold);
+  letter-spacing: var(--corp-typography-letterspacing-wide-sm);
+  padding: var(--corp-spacing-5) 0;
+  color: var(--color-surface-highlight-inverse);
+  line-height: var(--corp-typography-lineheight-body-sm);
+  text-decoration: none;
+  text-transform: uppercase;
+  margin: var(--corp-spacing-16) 0 0;
+  border: 0;
+}
+
+.hero :where(a).button:hover {
+  color: var(--corp-color-link-hover);
+  cursor: pointer;
+  background: none;
+}
+
+@media (min-width: 744px) {
+  .hero > div:first-child {
+    min-height: var(--hero-image-container-height);
+    width: 100%;
+    margin: 0 auto;
+    padding-left: var(--corp-spacing-70);
+    padding-right: var(--corp-spacing-70);
+  }
+
+  .hero > div:nth-child(2) {
+    border-top-left-radius: var(--corp-spacing-40);
+    margin: var(--hero-space-neg-5xl) var(--corp-spacing-70) 0;
+    padding: var(--corp-spacing-56) var(--corp-spacing-70) 0;
+    max-width: calc(100vw - var(--corp-spacing-140));
+  }
+
+  .hero > div:first-child:has(picture) {
+      padding-left: var(--corp-spacing-70);
+      padding-right: var(--corp-spacing-70);
+    }
+
+    .hero.no-padding > :where(div):first-child{
+      padding: 0;
+    }
+
+  .hero img {
+    border-top-left-radius: var(--corp-spacing-64);
+    max-height: var(--hero-image-container-height);
+  }
+
+
+  .hero h1 {
+    font-size: var(--corp-font-size-40);
+    line-height: var(--corp-typography-lineheight-heading-md);
+    margin-bottom: var(--corp-spacing-16);
+  }
+
+  .navy-overlap .hero:where(:not(.body-unica-32-reg)) :where(p) {
+    font-size: var(--corp-font-size-18);
+    line-height: var(--corp-typography-lineheight-body-lg);
+  }
+
+  .navy-overlap.height-tall .hero :where(p),
+  .height-tall .hero p {
+    font-size: var(--corp-font-size-32);
+    line-height: var(--corp-typography-lineheight-heading-sm);
+  }
+}
+
+@media (min-width: 1024px) {
+    .hero > div:first-child {
+      min-height: var(--hero-image-container-height);
+      margin: 0 auto;
+      width: 100%;
+      padding-left: var(--corp-spacing-55);
+      padding-right: var(--corp-spacing-55);
+    }
+
+  .hero > div:nth-child(2) {
+    border-top-left-radius: var(--corp-spacing-40);
+    margin: var(--hero-space-neg-7xl) auto 0;
+    padding: var(--corp-spacing-80) var(--corp-spacing-55) 0;
+    max-width: 78%;
+  }
+
+    .hero > div:first-child:has(picture) {
+      padding-left: var(--corp-spacing-55);
+      padding-right: var(--corp-spacing-55);
+    }
+
+    .hero.no-padding > :where(div):first-child{
+      padding: 0;
+    }
+
+  .hero img {
+    border-top-left-radius: var(--corp-spacing-80);
+    max-height: var(--hero-image-container-height);
+  }
+
+  .hero h1 {
+    font-size: var(--corp-font-size-64);
+    letter-spacing: var(--corp-typography-letterspacing-tight-sm);
+    line-height: var(--corp-typography-lineheight-display-xl);
+  }
+
+  .height-tall .hero p {
+    font-size: var(--corp-font-size-32);
+    line-height: 4rem;
+  }
+}
+
+/* =====================================================
+   Hero Profile Variant — no hero image, navy band
+   Authoring: use block name "Hero (profile)"
+   ===================================================== */
+
+/* Section override — full-width so navy band spans edge-to-edge */
+
+.hero-container,
+.hero-profile-section {
+  max-width: var(--corp-layout-container-max-width-lg);
+  margin-bottom: var(--corp-spacing-32);
+}
+
+/* Profile breadcrumbs — uppercase, 14px to match live site */
+
+.hero.profile .hero-breadcrumbs :where(ol li) {
+  font-size: var(--corp-font-size-14);
+  letter-spacing: var(--corp-typography-letterspacing-wide-sm);
+  text-transform: uppercase;
+  font-weight: var(--corp-font-weight-bold);
+}
+
+.profile .hero-breadcrumbs :where(ol li)[aria-current] {
+  font-weight: var(--corp-font-weight-bold);
+}
+
+/* Profile breadcrumb separator — inherits base styling */
+
+/* Navy background band replaces hero image */
+
+.hero.profile > :where(div):first-child {
+  background-color: var(--color-navy-dark);
+  height: var(--hero-section-height);
+  border-top-left-radius: var(--border-radius-subtle);
+   min-height: var(--hero-profile-container-height);
+   margin: 0;
+}
+
+.profile.purple-overlap > :where(div):first-child {
+ background-color: var(--color-purple-primary);
+}
+
+.large-radius .hero > :where(div):first-child {
+ border-top-left-radius: var(--border-radius-xl);
+}
+
+.medium-radius .hero > :where(div):first-child {
+  border-top-left-radius: var(--border-radius-subtle);
+}
+
+.hero.profile > :where(div):first-child :where(picture),
+.hero.profile > :where(div):first-child :where(img) {
+  display: none;
+}
+
+/* White overlap card — profile spacing */
+
+.hero.profile > :where(div):nth-child(2) {
+  margin-top: var(--hero-space-neg-3xl);
+  padding: var(--corp-spacing-32) var(--corp-spacing-20) 0;
+}
+
+/* Subtitle — Roboto Small, weight 300 (matches --roboto-small-font-family) */
+
+.hero.profile.light-font :where(p) {
+  font-family: var(--roboto-small-font-family);
+  font-weight: var(--corp-font-weight-light);
+}
+
+@media (min-width: 744px) {
+.hero.profile > :where(div):nth-child(2) {
+  margin-top: var(--hero-space-neg-5xl);
+  padding: var(--corp-spacing-56) var(--corp-spacing-70) 0;
+}
+
+.hero-profile-section {
+margin-bottom: var(--corp-spacing-80);
+}
+}
+
+@media (min-width: 1024px) {
+  .hero-profile-section {
+    margin-bottom: 0;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero.profile > :where(div):first-child {
+    height: var(--corp-spacing-288);
+  }
+
+  .hero.profile > :where(div):nth-child(2) {
+    margin: var(--hero-space-neg-7xl) auto -1px;
+    padding: var(--corp-spacing-80) var(--corp-spacing-55) 0;
+    width: 85%;
+    min-height: var(--hero-spacing-448);
+    border-top-left-radius: var(--corp-spacing-40);
+    max-width: 85%;
+  }
+}
+
+/* hero grid */
+
+.hero .hero-text-container {
+  width: 100%;
+  display: grid;
+  column-gap: var(--corp-gap-lg);
+  grid-template-columns: repeat(6, 1fr);
+  align-self: center;
+}
+
+.hero .cmp-container-x-large {
+  grid-column: 1 / span 6;
+}
+
+@media (min-width: 744px) {
+.hero .hero-text-container {
+    grid-template-columns: repeat(8, 1fr);
+    min-height: var(--corp-spacing-368);
+    }
+
+.hero .cmp-container-x-large {
+  grid-column: 1 / span 8;
+}
+}
+
+@media (min-width: 1024px) {
+.hero .hero-text-container {
+    grid-template-columns: repeat(12, 1fr);
+    }
+
+.hero .cmp-container-x-large {
+  grid-column: 2 / span 10;
+}
+}
+
+/* =====================================================
+   Hero Landing Variant — full-bleed image with gradient overlay
+   Authoring: use block name "Hero (landing)"
+   Matches abbvie.com homepage hero 1:1 across breakpoints
+   ===================================================== */
+
+/* Section override — edge-to-edge, no bottom margin */
+
+.hero-landing-section {
+  max-width: var(--corp-layout-container-max-width-lg);
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 0;
+  padding: 0;
+}
+
+.hero-landing-section:where(:has(.fragment-wrapper)) {
+  margin-bottom: var(--corp-spacing-32);
+}
+
+.fragment-wrapper .hero-landing-section {
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.hero-landing-section .hero-wrapper {
+  margin: 0;
+  max-width: none;
+  overflow: hidden;
+}
+
+/* Block root — min-height for hero image area; grows with press-releases content */
+
+.hero.landing {
+  position: relative;
+  z-index: 0;
+  display: block;
+  overflow: visible;
+  min-height: var(--hero-landing-container-height);
+  border-top-left-radius: var(--border-radius-xl);
+}
+
+/* Re-enable gradient overlay via ::after — fixed height covers image area only */
+
+.hero.landing::after {
+  display: block;
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--hero-landing-container-height);
+  background: var(--hero-overlay-gradient);
+  z-index: var(--corp-z-index-base);
+  pointer-events: none;
+  border-top-left-radius: var(--border-radius-xl);
+}
+
+/* Image container — fixed height covers image area only */
+
+.hero.landing > :where(div):first-child {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--hero-landing-container-height);
+  overflow: hidden;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  z-index: 0;
+  border-top-left-radius: var(--border-radius-xl);
+}
+
+.hero.landing picture {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hero.landing img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  display: block;
+  border-top-left-radius: 0;
+  max-height: none;
+}
+
+/* Disable grid for landing — use direct padding for text offset */
+
+.hero.landing .hero-text-container {
+  display: block;
+  align-self: stretch;
+}
+
+/* Text container — positioned over image, text starts at padding-top */
+
+.hero.landing > :where(div):nth-child(2) {
+  position: relative;
+  z-index: var(--corp-z-index-raised);
+  background: none;
+  border-top-left-radius: 0;
+  margin: 0;
+  padding: var(--corp-spacing-88) var(--corp-spacing-35) var(--corp-spacing-40);
+  max-width: none;
+  display: block;
+  box-sizing: border-box;
+}
+
+/* Text colours — white on dark overlay */
+
+.hero.landing h1 {
+  color: var(--color-white);
+  font-size: var(--corp-font-size-30);
+  line-height: var(--corp-typography-lineheight-relaxed-xl);
+  margin-bottom: var(--corp-spacing-16);
+}
+
+.hero.landing p {
+  color: var(--color-white);
+  margin-bottom: var(--corp-spacing-16);
+}
+
+/* CTA link — blue, uppercase, no background */
+
+.hero.landing .button-container {
+padding: 0;
+}
+
+.hero.landing :where(a).button {
+  color: var(--color-accent-blue-light);
+  background: none;
+  border: 0;
+  font-family: var(--roboto-bold-font-family);
+  font-size: var(--corp-font-size-16);
+  font-weight: var(--corp-font-weight-bold);
+  letter-spacing: var(--corp-typography-letterspacing-wide-sm);
+  line-height: var(--corp-typography-lineheight-body-sm);
+  text-transform: var(--text-transform-uppercase);
+  text-decoration: none;
+  padding: 0 var(--corp-spacing-2) var(--corp-spacing-3);
+  margin: 0;
+}
+
+.hero.landing :where(a.button):hover {
+  color: var(--hero-button-hover-color);
+  background: none;
+}
+
+/* Landing breadcrumbs — white text on dark overlay */
+
+.hero.landing .hero-breadcrumbs :where(ol li) {
+  color: var(--color-white);
+}
+
+.hero.landing .hero-breadcrumbs :where(li a) {
+  color: var(--color-white);
+}
+
+.landing .hero-breadcrumbs :where(ol li)[aria-current] {
+  color: rgb(255 255 255 / 60%);
+}
+
+/* ---- Tablet (>=744px) ---- */
+
+@media (min-width: 744px) {
+.hero-landing-section:where(:has(.fragment-wrapper)) {
+  margin-bottom: var(--corp-spacing-80);
+}
+
+  .hero.landing {
+    border-top-left-radius: var(--border-radius-xl);
+  }
+
+  .hero.landing::after,
+  .hero.landing > :where(div):first-child {
+    border-top-left-radius: var(--border-radius-xl);
+  }
+
+  .hero.landing > :where(div):nth-child(2) {
+    padding: var(--corp-spacing-192) var(--corp-spacing-70) var(--corp-spacing-40);
+  }
+
+  .hero.landing h1 {
+    font-size: var(--corp-font-size-40);
+    line-height: var(--corp-typography-lineheight-heading-md);
+    margin-bottom: var(--corp-spacing-24);
+  }
+
+  .hero.landing p {
+  margin-bottom: var(--corp-spacing-24);
+  line-height: var(--corp-typography-lineheight-body-md);
+  }
+
+  .hero.landing :where(a).button {
+  font-size: var(--corp-font-size-14)
+  }
+}
+
+/* ---- Desktop (>=1024px) ---- */
+
+@media (min-width: 1024px) {
+  .hero-landing-section {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero.landing {
+    border-top-left-radius: var(--border-radius-xl);
+  }
+
+  .hero.landing::after,
+  .hero.landing > :where(div):first-child {
+    border-top-left-radius: var(--border-radius-xl);
+  }
+
+  .hero.landing > :where(div):nth-child(2) {
+    padding: var(--corp-spacing-312) var(--corp-spacing-108) var(--corp-spacing-40);
+  }
+
+  .hero.landing h1 {
+    font-size: var(--corp-font-size-64);
+    line-height: var(--corp-typography-lineheight-display-xl);
+    letter-spacing: var(--corp-typography-letterspacing-tight-sm);
+  }
+
+    .hero.landing p {
+    line-height: var(--corp-typography-lineheight-body-lg);
+    }
+}
+
+/* =====================================================
+   Landing hero — Press-releases wrapper (white overlap box)
+   Matches abbvie.com .homepage-overlap > .cmp-container
+   Uses same margin/width pattern as profile variant text panel
+   ===================================================== */
+
+/* ---- Mobile (base) ---- */
+
+.hero.landing .hero-press-releases-container {
+  background-color: var(--color-white);
+  border-top-left-radius: var(--border-radius-subtle);
+  margin: var(--corp-spacing-88) var(--hero-space-neg-md) var(--hero-space-neg-2xl);
+  padding: var(--corp-spacing-32) var(--corp-spacing-35) 0;
+  position: relative;
+  color: var(--corp-color-text-default);
+}
+
+.hero.landing .hero-press-releases-container :where(p) {
+color: inherit;
+}
+
+/* ---- Tablet (>=744px) ---- */
+
+@media (min-width: 744px) {
+  .hero.landing .hero-press-releases-container {
+    border-top-left-radius: var(--border-radius-md);
+    margin: var(--corp-spacing-118) 0 var(--hero-space-neg-2xl);
+    padding: var(--corp-spacing-56) var(--corp-spacing-70) 0;
+  }
+}
+
+/* ---- Desktop (>=1024px) — profile-like auto centering ---- */
+
+@media (min-width: 1024px) {
+  .hero.landing .hero-press-releases-container {
+    border-top-left-radius: var(--border-radius-md);
+    margin: var(--corp-spacing-41) auto var(--hero-space-neg-2xl);
+    padding: var(--corp-spacing-80) var(--corp-spacing-55) 0;
+  }
+}

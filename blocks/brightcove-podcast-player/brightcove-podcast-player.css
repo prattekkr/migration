@@ -1,0 +1,359 @@
+/* =====================================================
+   Brightcove Podcast Player Block
+   ===================================================== */
+
+.brightcove-podcast-player {
+  --brightcove-podcast-surface-color: var(--color-surface-default);
+  --brightcove-podcast-accent-color: var(--color-accent-blue);
+  --brightcove-podcast-text-color: var(--corp-color-text-default);
+  --brightcove-podcast-card-border-color: rgb(232 232 232);
+  --brightcove-podcast-card-border-radius: var(--corp-spacing-10);
+  --brightcove-podcast-thumbnail-width: calc(74 * var(--px-to-rem));
+  --brightcove-podcast-thumbnail-height: calc(76 * var(--px-to-rem));
+  --brightcove-podcast-thumbnail-padding: var(--corp-spacing-4);
+  --brightcove-podcast-thumbnail-image-width: calc(66 * var(--px-to-rem));
+  --brightcove-podcast-thumbnail-image-height: calc(68 * var(--px-to-rem));
+  --brightcove-podcast-thumbnail-image-radius: var(--corp-spacing-5);
+  --brightcove-podcast-info-padding: var(--corp-spacing-6);
+  --brightcove-podcast-title-line-height: var(--corp-typography-lineheight-tight-sm);
+  --brightcove-podcast-title-margin-bottom: var(--corp-spacing-8);
+  --brightcove-podcast-player-height: var(--corp-spacing-40);
+  --brightcove-podcast-control-bar-gap: var(--corp-spacing-2);
+  --brightcove-podcast-control-bar-height: var(--corp-spacing-32);
+  --brightcove-podcast-play-button-size: var(--corp-spacing-24);
+  --brightcove-podcast-play-icon-size: var(--corp-font-size-12);
+  --brightcove-podcast-time-row-height: var(--corp-spacing-32);
+  --brightcove-podcast-current-time-offset: 0;
+  --brightcove-podcast-volume-track-height: calc(3.6 * var(--px-to-rem));
+  --brightcove-podcast-progress-gap: var(--corp-spacing-4);
+  --brightcove-podcast-progress-font-size: var(--corp-font-size-10);
+  --brightcove-podcast-progress-track-height: calc(3 * var(--px-to-rem));
+  --brightcove-podcast-progress-track-color: rgb(186 181 181 / 80%);
+  --brightcove-podcast-scrubber-offset-inline-end: calc(-1 * var(--corp-spacing-6));
+  --brightcove-podcast-scrubber-offset-top: calc(-1 * var(--corp-spacing-5));
+  --brightcove-podcast-scrubber-size: var(--corp-spacing-12);
+  --brightcove-podcast-space-neg-md: -1.5rem;
+  --brightcove-podcast-volume-panel-gap: var(--corp-spacing-8);
+
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* =====================================================
+   Podcast wrapper - card with border
+   ===================================================== */
+
+.brightcove-podcast-player .bcpodcast-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  overflow: hidden;
+  border: var(--border-width-thick) solid var(--brightcove-podcast-card-border-color);
+  border-radius: var(--brightcove-podcast-card-border-radius);
+}
+
+/* =====================================================
+   Thumbnail
+   ===================================================== */
+
+.brightcove-podcast-player .bcpodcast-thumbnail {
+  flex-shrink: 0;
+  width: var(--brightcove-podcast-thumbnail-width);
+  height: var(--brightcove-podcast-thumbnail-height);
+  padding: var(--brightcove-podcast-thumbnail-padding);
+  overflow: visible;
+  box-sizing: border-box;
+}
+
+.brightcove-podcast-player .bcpodcast-thumbnail picture,
+.brightcove-podcast-player .bcpodcast-thumbnail img {
+  width: var(--brightcove-podcast-thumbnail-image-width);
+  height: var(--brightcove-podcast-thumbnail-image-height);
+  border-radius: var(--brightcove-podcast-thumbnail-image-radius);
+  object-fit: fill;
+  display: block;
+}
+
+/* =====================================================
+   Info area (title + player)
+   ===================================================== */
+
+.brightcove-podcast-player .bcpodcast-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: var(--brightcove-podcast-info-padding);
+  box-sizing: border-box;
+}
+
+/* =====================================================
+   Title
+   ===================================================== */
+
+.brightcove-podcast-player .bcpodcast-title {
+  color: var(--brightcove-podcast-text-color);
+  font-size: var(--corp-font-size-12);
+  line-height: var(--brightcove-podcast-title-line-height);
+  font-weight: var(--corp-font-weight-bold);
+  margin: 0 0 var(--brightcove-podcast-title-margin-bottom);
+}
+
+/* =====================================================
+   Player container - Brightcove audio-only player
+   ===================================================== */
+
+.brightcove-podcast-player .bcpodcast-player-container {
+  width: 100%;
+  min-height: var(--brightcove-podcast-player-height);
+  background-color: var(--brightcove-podcast-surface-color);
+}
+
+.brightcove-podcast-player .video-js {
+  width: 100%;
+  height: var(--brightcove-podcast-player-height);
+  background-color: var(--brightcove-podcast-surface-color);
+}
+
+/* stylelint-disable declaration-no-important */
+
+/* Control bar - vertically centered children */
+.brightcove-podcast-player .vjs-control-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--brightcove-podcast-control-bar-gap);
+  height: var(--brightcove-podcast-control-bar-height);
+
+  /* Reset VJS layout-class font scaling */
+  font-size: var(--brightcove-podcast-progress-font-size) !important;
+  background-color: var(--brightcove-podcast-surface-color);
+}
+
+/* Spacer handled by flex order layout */
+.brightcove-podcast-player .vjs-custom-control-spacer {
+  display: none !important;
+}
+
+/* Play button - circular blue, centered triangle icon */
+.brightcove-podcast-player .vjs-play-control {
+  width: var(--brightcove-podcast-play-button-size);
+  height: var(--brightcove-podcast-play-button-size);
+  min-width: var(--brightcove-podcast-play-button-size);
+  border-radius: 50%;
+  background-color: var(--brightcove-podcast-accent-color);
+  color: var(--brightcove-podcast-surface-color);
+  text-align: center;
+  line-height: var(--brightcove-podcast-play-button-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.brightcove-podcast-player :where(.vjs-play-control) .vjs-icon-placeholder::before {
+  font-size: var(--brightcove-podcast-play-icon-size);
+  line-height: var(--brightcove-podcast-play-button-size);
+  display: block;
+  text-align: center;
+}
+
+/* Time displays - force visible; VJS hides them at narrow player widths */
+.brightcove-podcast-player .vjs-current-time,
+.brightcove-podcast-player .vjs-duration,
+.brightcove-podcast-player .vjs-time-divider {
+  display: flex !important;
+  visibility: visible !important;
+  flex-shrink: 0 !important;
+  color: var(--brightcove-podcast-text-color);
+  font-family: var(--body-font-family, "Roboto Regular", Helvetica, Arial, sans-serif);
+  font-size: var(--corp-font-size-10) !important;
+  line-height: var(--brightcove-podcast-time-row-height);
+  height: var(--brightcove-podcast-time-row-height);
+}
+
+.brightcove-podcast-player .vjs-current-time span,
+.brightcove-podcast-player .vjs-duration span,
+.brightcove-podcast-player .vjs-time-divider {
+  font-size: var(--corp-font-size-6) !important;
+}
+
+.brightcove-podcast-player .vjs-current-time {
+  margin-left: var(--brightcove-podcast-current-time-offset) !important;
+  padding: 0;
+}
+
+.brightcove-podcast-player .vjs-duration {
+  padding-left: 0;
+}
+
+/* Volume/mute - pushed to end, vertically centered icon */
+.brightcove-podcast-player .vjs-volume-panel {
+  order: var(--order-default);
+  display: flex !important;
+  visibility: visible !important;
+  flex-shrink: 0 !important;
+  align-items: center;
+  margin-left: var(--brightcove-podcast-volume-panel-gap);
+}
+
+.brightcove-podcast-player .vjs-mute-control,
+.brightcove-podcast-player .vjs-mute-control:hover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--corp-spacing-24);
+  min-width: var(--corp-spacing-24);
+  padding: 0 !important;
+  background-color: transparent;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.brightcove-podcast-player :where(.vjs-mute-control) .vjs-icon-placeholder::before {
+  font-size: var(--corp-font-size-18) !important;
+}
+
+/* Volume slider - blue fill, tokenized height matching original */
+.brightcove-podcast-player .vjs-volume-bar {
+  height: var(--brightcove-podcast-volume-track-height);
+}
+
+.brightcove-podcast-player .vjs-volume-level {
+  background-color: var(--brightcove-podcast-accent-color);
+  height: var(--brightcove-podcast-volume-track-height);
+}
+
+/* Hide time tooltips on progress bar - !important to beat SDK inline styles */
+.brightcove-podcast-player .vjs-progress-control .vjs-time-tooltip,
+.brightcove-podcast-player .vjs-progress-control .vjs-mouse-display {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Hide volume tooltip only (keep volume slider interactive) */
+.brightcove-podcast-player .vjs-volume-tooltip {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Progress bar - fixed size, no hover scaling or transitions */
+.brightcove-podcast-player .video-js .vjs-progress-control,
+.brightcove-podcast-player .video-js :where(.vjs-progress-control):hover {
+  position: relative;
+  top: auto !important;
+  height: auto !important;
+  display: flex !important;
+  visibility: visible !important;
+  flex: 1 1 auto;
+  width: 0 !important;
+  min-width: 0 !important;
+  margin-left: var(--brightcove-podcast-progress-gap);
+  font-size: var(--brightcove-podcast-progress-font-size) !important;
+  transition: none !important;
+}
+
+/* Kill all transitions inside progress area */
+.brightcove-podcast-player .video-js .vjs-progress-control * {
+  transition: none !important;
+}
+
+.brightcove-podcast-player .video-js .vjs-progress-holder {
+  height: var(--brightcove-podcast-progress-track-height) !important;
+  background-color: var(--brightcove-podcast-progress-track-color);
+}
+
+/* Lock font-size on hover to prevent em-based scaling */
+.brightcove-podcast-player :where(.video-js .vjs-progress-control):hover .vjs-progress-holder {
+  font-size: var(--brightcove-podcast-progress-font-size) !important;
+}
+
+.brightcove-podcast-player .video-js .vjs-play-progress {
+  height: var(--brightcove-podcast-progress-track-height) !important;
+  background-color: var(--brightcove-podcast-accent-color);
+}
+
+/* Scrub circle handle - tokenized blue dot */
+.brightcove-podcast-player .video-js :where(.vjs-play-progress)::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute;
+  right: var(--brightcove-podcast-scrubber-offset-inline-end);
+  top: var(--brightcove-podcast-scrubber-offset-top);
+  width: var(--brightcove-podcast-scrubber-size);
+  height: var(--brightcove-podcast-scrubber-size);
+  border-radius: 50%;
+  background-color: var(--brightcove-podcast-accent-color);
+  z-index: var(--corp-z-index-base);
+}
+
+.brightcove-podcast-player .video-js .vjs-load-progress {
+  height: var(--brightcove-podcast-progress-track-height) !important;
+  background-color: var(--brightcove-podcast-surface-color);
+}
+
+.brightcove-podcast-player .video-js :where(.vjs-volume-panel) .vjs-volume-control {
+  display: flex;
+  align-items: center;
+  margin-top: 0;
+}
+
+/* =====================================================
+   Tablet and up (--bp-tablet, min-width 744px)
+   ===================================================== */
+
+@media (--bp-tablet) {
+  .brightcove-podcast-player {
+    --brightcove-podcast-thumbnail-width: calc(95 * var(--px-to-rem));
+    --brightcove-podcast-thumbnail-height: calc(97 * var(--px-to-rem));
+    --brightcove-podcast-thumbnail-padding: var(--corp-spacing-6);
+    --brightcove-podcast-thumbnail-image-width: calc(83 * var(--px-to-rem));
+    --brightcove-podcast-thumbnail-image-height: var(--corp-spacing-85);
+    --brightcove-podcast-info-padding: var(--corp-spacing-10);
+    --brightcove-podcast-title-margin-bottom: var(--corp-spacing-20);
+    --brightcove-podcast-player-height: var(--corp-spacing-41);
+    --brightcove-podcast-control-bar-height: var(--corp-spacing-38);
+    --brightcove-podcast-time-row-height: var(--corp-spacing-38);
+    --brightcove-podcast-play-button-size: var(--corp-spacing-34);
+    --brightcove-podcast-play-icon-size: var(--corp-font-size-16);
+  }
+
+  .brightcove-podcast-player .vjs-play-control {
+    width: var(--corp-spacing-34);
+    height: var(--corp-spacing-34);
+    min-width: var(--corp-spacing-34);
+    line-height: var(--corp-spacing-34);
+  }
+
+  .brightcove-podcast-player :where(.vjs-play-control) .vjs-icon-placeholder::before {
+    font-size: var(--corp-font-size-16);
+    line-height: var(--corp-spacing-34);
+  }
+
+  .brightcove-podcast-player :where(.vjs-mute-control) .vjs-icon-placeholder::before {
+    font-size: var(--corp-font-size-22) !important;
+  }
+
+  .brightcove-podcast-player .bcpodcast-title {
+    font-size: var(--corp-font-size-14);
+    line-height: var(--corp-typography-lineheight-tight-md);
+  }
+
+  .brightcove-podcast-player .vjs-current-time span,
+  .brightcove-podcast-player .vjs-duration span,
+  .brightcove-podcast-player .vjs-time-divider {
+    font-size: var(--corp-font-size-10) !important;
+  }
+
+  .brightcove-podcast-player .vjs-current-time {
+    margin-left: 5px !important;
+    padding: 0;
+  }
+}
+
+@media (--bp-desktop) {
+  .brightcove-podcast-player .bcpodcast-title {
+    font-size: var(--corp-font-size-16);
+    line-height: var(--corp-typography-lineheight-tight-s);
+  }
+}

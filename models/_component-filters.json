@@ -1,0 +1,16 @@
+[
+  {
+    "id": "main",
+    "components": [
+      "section",
+      "grid-section",
+      "grid-container"
+    ]
+  },
+  {
+    "...": "./_section.json#/filters"
+  },
+  {
+    "...": "../blocks/*/_*.json#/filters"
+  }
+]

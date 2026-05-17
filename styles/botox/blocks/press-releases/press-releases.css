@@ -1,0 +1,164 @@
+:root {
+  /* ─────────────────────────────────────────────
+     LINE HEIGHT TOKENS
+     ───────────────────────────────────────────── */
+    --corp-typography-lineheight-body-sm: 2rem;
+    --corp-typography-lineheight-body-lg: 2.4rem;
+    
+
+  /* ─────────────────────────────────────────────
+     ARROW / CONTROL TOKENS
+     ───────────────────────────────────────────── */
+  --press-arrow-size: 40px;
+  --press-track-gap: 32px;
+
+  /* ─────────────────────────────────────────────
+     MOTION / ANIMATION
+     ───────────────────────────────────────────── */
+  --press-slide-speed: 0.36s;
+  --press-slide-easing: cubic-bezier(.2, .9, .2, 1);
+}
+
+/* ─────────────────────────────────────────────
+   CAROUSEL WRAPPER
+   ───────────────────────────────────────────── */
+
+.press-carousel {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 5.6rem;
+  padding-bottom: 5.3rem;
+}
+
+/* ─────────────────────────────────────────────
+   TRACK
+   ───────────────────────────────────────────── */
+
+.press-carousel-track {
+  display: flex;
+  gap: var(--press-track-gap);
+  transition: transform var(--press-slide-speed) var(--press-slide-easing);
+  align-items: flex-start;
+  min-height: 152px;
+}
+
+/* ─────────────────────────────────────────────
+   CARD WRAPPER
+   ───────────────────────────────────────────── */
+
+.press-card {
+  flex: 0 0 100%;
+  box-sizing: border-box;
+  border-radius: 12px;
+  border: none;
+  box-shadow: none;
+}
+
+.press-card a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+/* ─────────────────────────────────────────────
+   DATE STYLE
+   ───────────────────────────────────────────── */
+
+.press-date {
+  font-size: var(--corp-font-size-14);
+  font-weight: var(--corp-font-weight-bold);
+  color: var(--color-gray-600);
+  letter-spacing: var(--corp-typography-letterspacing-wide-em);
+  margin-bottom: var(--corp-spacing-12);
+  text-transform: uppercase;
+  line-height: var(--corp-typography-lineheight-body-sm);
+  font-family: var(--roboto-bold-font-family);
+}
+
+/* ─────────────────────────────────────────────
+   TITLE STYLE
+   ───────────────────────────────────────────── */
+
+.press-title {
+  color: var(--corp-color-text-default);
+  font-family: var(--roboto-regular-font-family);
+  font-size: var(--corp-font-size-14);
+  font-weight: var(--corp-font-weight-regular);
+  line-height: var(--corp-typography-lineheight-body-sm);
+}
+
+/* ─────────────────────────────────────────────
+   CONTROLS / ARROWS
+   ───────────────────────────────────────────── */
+
+.press-carousel-controls {
+  display: flex;
+  gap: var(--corp-spacing-18);
+  align-items: center;
+  justify-content: flex-end;
+  z-index: var(--corp-z-index-overlay);
+}
+
+.press-arrow {
+  width: var(--press-arrow-size);
+  border-radius: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--corp-color-text-default);
+  transition: transform .12s ease, color .12s ease;
+  display: flex;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.splide__arrow--prev::after, 
+.splide__arrow--next::after {
+    color: inherit;
+    content: "";
+    font-family: var(--corp-icon-font-family);
+    font-size: var(--corp-font-size-20);
+    transition: color .1s ease;
+}
+
+.splide__arrow--next::after {
+    transform: rotate(180deg);
+}
+
+.press-arrow:hover, 
+.press-arrow:focus {
+  color: var(--corp-color-text-accent);
+  background: transparent;
+}
+
+.press-arrow:active {
+  transform: translateY(1px);
+}
+
+.main > .abbvie-container-small p {
+  font-size: var(--corp-font-size-14);
+  font-weight: var(--corp-font-weight-bold);
+  letter-spacing: var(--corp-typography-letterspacing-wide-em-xs);
+  line-height: var(--corp-typography-lineheight-tight-sm);
+  text-transform: var(--text-transform-uppercase);
+}
+
+@media (width >= 744px) {
+    .press-title {
+      font-size: var(--corp-font-size-18);
+      line-height: var(--corp-typography-lineheight-body-lg);
+    }
+}
+
+@media (width >= 1024px) {
+    .press-carousel {
+      margin-bottom: var(--corp-spacing-80);
+      padding-bottom: var(--corp-spacing-60);
+    }
+
+    .press-title {
+      font-size: var(--corp-font-size-20);
+      line-height: var(--corp-typography-lineheight-body-lg);
+    }
+}

@@ -1,0 +1,244 @@
+[
+  {
+    "id": "main",
+    "components": [
+      "section",
+      "grid-section",
+      "grid-container"
+    ]
+  },
+  {
+    "id": "section",
+    "components": [
+      "accordion",
+      "breadcrumb",
+      "button",
+      "story-cards",
+      "cards",
+      "carousel",
+      "social-media",
+      "columns",
+      "embed",
+      "fragment",
+      "press-releases",
+      "separator",
+      "story-card",
+      "form",
+      "hero",
+      "navigation-content",
+      "stock-ticker",
+      "eds-form",
+      "embed-form",
+      "image",
+      "quote",
+      "search",
+      "search-input",
+      "tabs",
+      "table",
+      "text",
+      "title",
+      "video",
+      "custom-title",
+      "text-container",
+      "cta",
+      "linklist",
+      "brightcove-video",
+      "tag-utility-nav",
+      "fact-card",
+      "brightcove-podcast-player",
+      "custom-image",
+      "editorial-feed",
+      "news-feed",
+      "pipeline-utility-nav",
+      "hero-container",
+      "teaser"
+    ]
+  },
+  {
+    "id": "grid-section",
+    "components": [
+      "accordion",
+      "breadcrumb",
+      "button",
+      "story-cards",
+      "cards",
+      "carousel",
+      "social-media",
+      "columns",
+      "embed",
+      "fragment",
+      "press-releases",
+      "separator",
+      "story-card",
+      "form",
+      "hero",
+      "navigation-content",
+      "stock-ticker",
+      "eds-form",
+      "embed-form",
+      "image",
+      "quote",
+      "search",
+      "search-input",
+      "tabs",
+      "table",
+      "text",
+      "title",
+      "video",
+      "custom-title",
+      "text-container",
+      "cta",
+      "linklist",
+      "brightcove-video",
+      "tag-utility-nav",
+      "fact-card",
+      "brightcove-podcast-player",
+      "custom-image",
+      "news-feed",
+      "pipeline-utility-nav",
+      "teaser",
+      "editorial-feed"
+    ]
+  },
+  {
+    "id": "grid-container",
+    "components": []
+  },
+  {
+    "id": "accordion",
+    "components": [
+      "accordion-item"
+    ]
+  },
+  {
+    "id": "brightcove-podcast-player",
+    "components": []
+  },
+  {
+    "id": "brightcove-video",
+    "components": []
+  },
+  {
+    "id": "cards",
+    "components": [
+      "card"
+    ]
+  },
+  {
+    "id": "columns",
+    "components": [
+      "column"
+    ]
+  },
+  {
+    "id": "column",
+    "components": [
+      "text",
+      "image",
+      "button",
+      "title"
+    ]
+  },
+  {
+    "id": "custom-title",
+    "components": []
+  },
+  {
+    "id": "editorial-feed",
+    "components": [
+      "category-item"
+    ]
+  },
+  {},
+  {
+    "id": "hero-container",
+    "components": [
+      "hero-container-item"
+    ]
+  },
+  {
+    "id": "linklist",
+    "components": [
+      "linklist-item"
+    ]
+  },
+  {
+    "id": "linklist-child-pages",
+    "components": []
+  },
+  {
+    "id": "press-releases",
+    "components": [
+      "press-release"
+    ]
+  },
+  {
+    "id": "press-release",
+    "components": [
+      "number"
+    ]
+  },
+  {
+    "id": "search-input",
+    "components": []
+  },
+  {
+    "id": "social-media",
+    "components": [
+      "social-link"
+    ]
+  },
+  {
+    "id": "story-cards",
+    "components": [
+      "story-card-item"
+    ]
+  },
+  {
+    "id": "table",
+    "components": [
+      "table-row"
+    ]
+  },
+  {
+    "id": "table-2-columns",
+    "components": [
+      "table-col-2"
+    ]
+  },
+  {
+    "id": "table-3-columns",
+    "components": [
+      "table-col-3"
+    ]
+  },
+  {
+    "id": "table-4-columns",
+    "components": [
+      "table-col-4"
+    ]
+  },
+  {
+    "id": "tabs",
+    "components": [
+      "tabs-item"
+    ]
+  },
+  {
+    "id": "tag-utility-nav",
+    "components": [
+      "tag-utility-nav-category"
+    ]
+  },
+  {
+    "id": "text-container",
+    "components": [
+      "text-container-image",
+      "text-container-text"
+    ]
+  },
+  {
+    "id": "video",
+    "components": []
+  }
+]

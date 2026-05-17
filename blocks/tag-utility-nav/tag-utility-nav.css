@@ -1,0 +1,390 @@
+/* =========================================================
+   Tag Utility Nav – search + category filter block
+   AEM source: TagsUtilityNav component
+   ========================================================= */
+
+/* Block wrapper */
+
+.tag-utility-nav {
+  --tag-utility-space-neg-md: calc(var(--corp-spacing-15) * -1);
+  --tag-utility-typography-lineclamp-description: 3;
+
+  width: 100%;
+  margin-top: var(--corp-spacing-24);
+  padding: var(--corp-spacing-10) 0;
+  margin-bottom: var(--corp-spacing-40);
+}
+
+/* ── Eyebrow toolbar ──────────────────────────────────────── */
+
+.tag-utility-nav-eyebrow {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: var(--corp-spacing-8);
+  border-bottom: var(--border-width-thin) solid var(--color-gray-dark);
+}
+
+/* ── Search container (icon + field) ──────────────────────── */
+
+.tag-utility-nav-search-container {
+  display: flex;
+  align-items: center;
+  gap: var(--corp-spacing-12);
+  flex: 1;
+  transition: border-color 0.2s;
+}
+
+/* Search icon */
+
+.tag-utility-nav-search-icon {
+  width: var(--corp-icon-size-md);
+  max-width: var(--corp-icon-size-md);
+  height: var(--corp-icon-size-md);
+  flex-shrink: 0;
+  margin-bottom: 0;
+}
+
+.tag-utility-nav-search-icon picture,
+.tag-utility-nav-search-icon img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Search field wrapper */
+
+.tag-utility-nav-search-field {
+  position: relative;
+  flex: 1;
+  overflow: visible;
+}
+
+/* Search input */
+
+.tag-utility-nav-search-input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: var(--corp-font-size-16);
+  font-family: inherit;
+  color: var(--color-gray-dark);
+  padding: var(--corp-spacing-3) 0 0;
+  width: 100%;
+  line-height: var(--corp-typography-lineheight-tight-sm);
+  height: max-content;
+}
+
+.tag-utility-nav-search-input::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+/* Search clear button */
+.hide-close-icon {
+  display: none;
+}
+
+.tag-utility-nav-search-clear {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;  
+  color: var(--color-gray-dark);  
+  line-height: 1;
+  padding: 0;
+  margin: 0;
+}
+
+.tag-utility-nav-search-clear::after {
+  content:'\e908';
+  display: block;
+  color: inherit;
+  font-family: var(--corp-icon-font-family);
+  font-size: var(--corp-font-size-14);
+}
+
+.tag-utility-nav-search-clear:hover{
+  background-color: transparent;
+  color: var(--color-gray-dark);  
+}
+
+/* Floating label – overlaps input, moves up when focused / has value */
+
+.tag-utility-nav-search-label {
+  position: absolute;
+  top: var(--corp-spacing-3);
+  left: 0;
+  width: 100%;
+  font-size: var(--corp-font-size-16);
+  font-weight: var(--corp-font-weight-regular);
+  color: var(--color-gray-dark);
+  pointer-events: none;
+  white-space: nowrap;
+  line-height: var(--corp-typography-lineheight-body-sm);
+  transition: all 0.2s ease;
+}
+
+/* Label moves up + shrinks when input is focused or has a value */
+
+.tag-utility-nav-search-input:focus ~ .tag-utility-nav-search-label,
+.tag-utility-nav-search-field.has-value .tag-utility-nav-search-label {
+ opacity: 0;
+ top: 0;
+}
+
+/* ── Category dropdown ────────────────────────────────────── */
+
+.tag-utility-nav-dropdown-container {
+  display: flex;
+  align-items: center;
+  gap: var(--corp-spacing-8);
+  flex-shrink: 0;
+  margin-bottom: var(--corp-spacing-24);
+}
+
+.tag-utility-nav-title {
+  font-size: var(--corp-font-size-14);
+  font-weight: var(--corp-font-weight-regular);
+  color: inherit;
+  margin: 0;
+  white-space: nowrap;
+  line-height: var(--corp-typography-lineheight-tight-sm);
+}
+
+.tag-utility-nav-dropdown {
+  position: relative;
+}
+
+.tag-utility-nav-dropdown-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--corp-spacing-8);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: var(--corp-font-size-14);
+  font-weight: var(--corp-font-weight-bold);
+  color: var(--corp-color-text-default);
+  padding: var(--corp-spacing-4) 0;
+  margin: 0;
+  text-transform: var(--text-transform-uppercase);
+}
+
+.tag-utility-nav-dropdown-btn::after {
+  content: "";
+  font-family: var(--corp-icon-font-family);
+  font-size: var(--corp-spacing-6);
+  transition: transform 0.2s;
+}
+
+.tag-utility-nav-dropdown-btn[aria-expanded="true"]::after {
+  transform: rotate(180deg);
+}
+
+.tag-utility-nav-dropdown-modal {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: var(--corp-z-index-sticky);
+  min-width: var(--corp-spacing-180);
+  background: var(--color-surface-default);
+  border: var(--border-width-thin) solid rgb(0 0 0 / 15%);
+  border-radius: var(--border-radius-base);
+  list-style: none;
+  padding:0;
+  margin: var(--corp-spacing-4) 0 0;
+  max-height: var(--corp-spacing-250);
+  overflow: hidden auto;
+}
+
+.tag-utility-nav-dropdown-modal li:hover {
+ background-color: var(--color-gray-medium);
+}
+
+.tag-utility-nav-dropdown-modal button,
+.tag-utility-nav-dropdown-modal a {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: var(--corp-spacing-10) var(--corp-spacing-20);
+  text-align: left;
+  cursor: pointer;
+  font-size: var(--corp-font-size-14);
+  color: var(--corp-color-text-default);
+  border-radius: 0;
+  margin: 0;
+}
+
+.tag-utility-nav-dropdown button:hover, .tag-utility-nav-dropdown button:focus {
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.tag-utility-nav-dropdown-modal button:hover {
+  background: var(--bg-b9b4b4);
+}
+
+.tag-utility-nav-dropdown-modal button.option-selected {
+  font-weight: var(--corp-font-weight-bold);
+}
+
+/* ── Clear / Reset button ─────────────────────────────────── */
+
+.tag-utility-nav-clear-container {
+  text-align: right;
+  margin-top: var(--corp-spacing-12);
+}
+
+.tag-utility-nav-clear-container .tag-utility-nav-reset-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-gray-dark);
+  font-size: var(--corp-font-size-14);
+  font-weight: var(--corp-font-weight-bold);
+  text-transform: var(--text-transform-uppercase);
+  letter-spacing: var(--corp-typography-letterspacing-wide-sm);
+  padding: 0;
+}
+
+/* ── Empty results message ───────────────────────────────── */
+
+.tag-utility-nav-empty-results {
+  width: 100%;
+  margin-top: var(--corp-spacing-16);
+}
+
+.tag-utility-nav-empty-results-title {
+  color: var(--color-error);
+  font-family: var(--heading-font-family);
+  font-size: var(--corp-font-size-20);
+  font-weight: var(--corp-font-weight-semibold-alt);
+  line-height: var(--corp-typography-lineheight-body-lg);
+}
+
+.tag-utility-nav-empty-results-quote {
+  color: var(--color-error);
+  font-family: var(--body-font-family);
+  font-size: var(--corp-font-size-13);
+  font-weight: var(--corp-font-weight-regular);
+  line-height: var(--corp-typography-lineheight-body-sm);
+}
+
+/* =========================================================
+   Flex-section context — default content surrounding the
+   tag-utility-nav block inside .tag-utility-nav-container
+   Mobile-first, matches spacing & typography from live site
+   ========================================================= */
+
+/* ── Mobile (default) ────────────────────────────────────── */
+
+ .tag-utility-nav-container .default-content-wrapper h2 {
+  font-family: var(--heading-font-family-bold);
+  font-size: var(--corp-font-size-26);
+  font-weight: var(--corp-font-weight-extrabold);
+  line-height: var(--corp-typography-lineheight-relaxed-md);
+  margin: 0 0 var(--corp-spacing-16);
+}
+
+ .tag-utility-nav-container .default-content-wrapper p {
+  line-height: var(--corp-typography-lineheight-body-sm);
+  margin: 0 0 var(--corp-spacing-16);
+}
+
+
+
+/* Separator: invisible 48px spacer matching .separator-height-48 */
+ .tag-utility-nav-container .default-content-wrapper hr {
+  border: none;
+  height: var(--corp-section-gap-xs);
+  margin: 0;
+  padding: 0;
+}
+
+ .tag-utility-nav-container .default-content-wrapper h4 {
+  font-family: var(--heading-font-family);
+  font-size: var(--corp-font-size-24);
+  font-weight: var(--corp-font-weight-semibold-alt);
+  line-height: var(--corp-typography-lineheight-relaxed-sm);
+  margin: 0 0 var(--corp-spacing-16);
+  padding-top: var(--corp-spacing-48);
+}
+
+ .tag-utility-nav-container .default-content-wrapper ul {
+  margin-top: var(--corp-spacing-30);
+  margin-bottom: var(--corp-spacing-50);
+}
+
+/* tag-utility-nav block: reset margins inside flex context
+   (spacing is handled by surrounding elements) */
+ .tag-utility-nav-container .tag-utility-nav {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* ── Tablet (>= 768px) ──────────────────────────────────── */
+
+@media (--bp-tablet) {
+  .tag-utility-nav-eyebrow {
+   flex-direction: row;
+   justify-content: space-between;   
+   margin-bottom: var(--corp-spacing-10);
+  }
+
+  .tag-utility-nav-dropdown-container {
+    margin-bottom: 0;
+  }
+
+  .tag-utility-nav-search-container {
+    max-width: var(--corp-spacing-380);
+  }
+
+  .tag-utility-nav-container .default-content-wrapper h2 {
+    font-size: var(--corp-font-size-32);
+    line-height: var(--corp-typography-lineheight-relaxed-3xl);
+  }
+
+  .tag-utility-nav-container .default-content-wrapper h4 {
+    font-size: var(--corp-font-size-30);
+    line-height: var(--corp-typography-lineheight-relaxed-xl);
+  }
+
+  .tag-utility-nav-empty-results-title {
+  font-size: var(--corp-font-size-28);
+  line-height: var(--corp-typography-lineheight-relaxed-lg);
+  }
+}
+
+/* ── Desktop (>= 1024px) ────────────────────────────────── */
+
+@media (--bp-desktop) {
+  .tag-utility-nav-search-input {
+    font-size: var(--corp-font-size-18);
+    line-height: var(--corp-typography-lineheight-body-lg);
+  }
+
+  .tag-utility-nav-container .default-content-wrapper h2 {
+    font-size: var(--corp-font-size-48);
+    line-height: var(--corp-typography-lineheight-display-sm);
+    margin-bottom: var(--corp-spacing-24);
+  }
+
+  .tag-utility-nav-container .default-content-wrapper p {
+    font-size: var(--corp-font-size-18);
+    line-height: var(--corp-typography-lineheight-body-lg);
+    margin-bottom: var(--corp-spacing-24);
+  }
+
+  .tag-utility-nav-container .default-content-wrapper h4 {
+    font-size: var(--corp-font-size-40);
+    line-height: var(--corp-typography-lineheight-heading-md);
+    margin-bottom: var(--corp-spacing-24);
+  }
+
+  .tag-utility-nav-empty-results-title {  
+  font-size: var(--corp-font-size-32);
+  line-height: var(--corp-typography-lineheight-relaxed-3xl);
+  }
+}

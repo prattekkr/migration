@@ -1,0 +1,165 @@
+{
+  "definitions": [
+    {
+      "title": "Story Card",
+      "id": "story-card",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Story Card",
+              "model": "story-card",
+              "storyCardVariant": "cardInfo",
+              "hidePublicationDate": false,
+              "hideReadTime": false,
+              "hideRole": false,
+              "hideDescription": false,
+              "hideImage": false,
+              "page": "",
+              "openInNewTab": false,
+              "analyticsInteractionId": "",
+              "language": "lang:none",
+              "blockId": "id:"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "story-card",
+      "fields": [
+        {
+          "component": "tab",
+          "label": "Overview",
+          "name": "overview"
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "storyCardVariant",
+          "label": "Story Card Type",
+          "value": "cardInfo",
+          "description": "Select the card variant to apply different layouts and information display.",
+          "options": [
+            {
+              "name": "Card Info",
+              "value": "cardInfo"
+            },
+            {
+              "name": "Story Card Info",
+              "value": "storyCardInfo"
+            },
+            {
+              "name": "Leader Info",
+              "value": "leaderInfo"
+            },
+            {
+              "name": "Side Panel",
+              "value": "sidePanel"
+            },
+            {
+              "name": "Related Content",
+              "value": "relatedContent"
+            }
+          ]
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "hidePublicationDate",
+          "label": "Hide Publication Date",
+          "value": false,
+          "description": "If checked, suppresses the display of the publication date in the card layout."
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "hideReadTime",
+          "label": "Hide Read/Watch Time",
+          "value": false,
+          "description": "If checked, suppresses the display of the read/watch time in the card layout."
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "hideRole",
+          "label": "Hide Title",
+          "value": false,
+          "description": "If checked, suppresses the display of title in the card layout."
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "hideDescription",
+          "label": "Hide Description",
+          "value": false,
+          "description": "If checked, suppresses the display of description in the card layout."
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "hideImage",
+          "label": "Hide Image",
+          "value": false,
+          "description": "If checked, suppresses the display of the image in the card layout."
+        },
+        {
+          "component": "tab",
+          "label": "Properties",
+          "name": "properties"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "id",
+          "label": "Id",
+          "value": "",
+          "description": "Optional anchor ID for deep linking to this Story Card."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "customClass",
+          "label": "Custom Class",
+          "value": "",
+          "description": "Optional CSS class names for styling overrides."
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "page",
+          "label": "Page",
+          "required": true
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "openInNewTab",
+          "label": "Open in New Tab",
+          "value": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "ctaLabel",
+          "label": "CTA Text",
+          "value": "",
+          "description": "Custom call-to-action label (e.g. \"Meet Roopal\"). Overrides the default from the story page."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "analyticsInteractionId",
+          "label": "Analytics Interaction ID",
+          "value": "",
+          "readOnly": true,
+          "description": "Generated automatically from the block resource path at render time."
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

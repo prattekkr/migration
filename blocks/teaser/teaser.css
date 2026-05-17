@@ -1,0 +1,240 @@
+/* Teaser Block - mobile-first two-column layout */
+
+.teaser {
+  max-width: var(--corp-layout-container-max-width-md);
+  margin: 0 auto var(--corp-spacing-56);
+  padding: 0;
+}
+
+.teaser .teaser-eyebrow {
+  margin-bottom: var(--corp-spacing-16);
+  color: var(--corp-color-text-default);
+  font-family: var(--roboto-bold-font-family);
+  font-size: var(--corp-font-size-16);
+  font-weight: var(--corp-font-weight-bold);
+  letter-spacing: var(--corp-typography-letterspacing-wide-xl);
+  line-height: var(--corp-spacing-20);
+  text-transform: uppercase;
+}
+
+.teaser .teaser-content {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  margin-right: var(--corp-spacing-35);
+  row-gap: var(--corp-spacing-16);
+}
+
+.teaser .teaser-left,
+.teaser .teaser-right {
+  min-width: 0;
+}
+
+.teaser .teaser-title {
+  margin: 0;
+  color: var(--corp-color-text-default);
+  font-family: var(--heading-font-family-bold);
+  font-weight: var(--corp-font-weight-extrabold);
+  line-height: var(--corp-spacing-32);
+}
+
+/* H2: mobile → tablet → desktop */
+.teaser.teaser-h2 .teaser-title {
+  font-size: var(--corp-font-size-28);
+  line-height: var(--corp-typography-lineheight-relaxed-lg);
+}
+
+/* H3 / headline-48-med: mobile → tablet → desktop */
+.teaser.teaser-h3 .teaser-title {
+  font-size: var(--corp-font-size-26);
+  line-height: var(--corp-typography-lineheight-relaxed-md);
+}
+
+/* H4: mobile → tablet → desktop */
+.teaser.teaser-h4 .teaser-title {
+  font-size: var(--corp-font-size-24);
+  line-height: var(--corp-typography-lineheight-relaxed-sm);
+}
+
+/* H5: mobile; tablet + desktop share larger size (mobile-first) */
+.teaser.teaser-h5 .teaser-title {
+  font-size: var(--corp-font-size-28);
+  line-height: var(--corp-typography-lineheight-relaxed-lg);
+}
+
+.teaser .teaser-description {
+  margin: 0;
+  color: var(--corp-color-text-default);
+  font-family: var(--body-font-family);
+  font-size: var(--corp-font-size-18);
+  font-weight: var(--corp-font-weight-regular);
+  line-height: var(--corp-spacing-22);
+}
+
+.teaser .teaser-right .button-container {
+  margin: var(--corp-spacing-24) 0 0;
+}
+
+/* Button styles — link icon from block classes (config / picklist):
+ *   teaser-external-link | teaser-internal-link
+ */
+.teaser .teaser-right a {
+  letter-spacing: var(--corp-typography-letterspacing-wide-em);
+  align-items: center;
+  color: var(--color-accent-blue);
+  cursor: pointer;
+  display: flex;
+  font-family: var(--roboto-bold-font-family);
+  font-size: var(--corp-font-size-16);
+  font-weight: var(--corp-font-weight-bold);
+  line-height: var(--corp-spacing-20);
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  background-color: unset;
+  text-decoration: none;
+  width: fit-content;
+  text-transform: uppercase;
+}
+
+.teaser :any-link:hover {
+  color: var(--corp-color-text-default);
+}
+
+/* Shared ::after properties */
+.teaser .teaser-right a::after {
+  color: inherit;
+  font-family: var(--corp-icon-font-family);
+  font-size: var(--corp-font-size-14);
+  margin-left: var(--corp-spacing-12);
+  margin-right: var(--corp-spacing-3);
+  transform: scale(0.8);
+  transition: color 0.1s ease;
+}
+
+/* Internal link icon */
+.teaser:where(.teaser-internal-link) a.button::after {
+  content: '\e901';
+  display: flex;
+}
+
+/* External link icon */
+.teaser:where(.teaser-external-link) a.button::after {
+  content: '\e900';
+}
+
+/* Tablet styles */
+@media (--bp-tablet) {
+  .teaser {
+    margin: 0 auto var(--corp-spacing-80);
+  }
+
+  .teaser .teaser-eyebrow {
+    margin-bottom: var(--corp-spacing-24);
+    font-size: var(--corp-font-size-12);
+    line-height: var(--corp-spacing-16);
+  }
+
+  .teaser .teaser-content {
+    column-gap: var(--corp-spacing-24);
+  }
+
+  .teaser .teaser-title {
+    line-height: var(--corp-spacing-40);
+  }
+
+  .teaser.teaser-h2 .teaser-title {
+    font-size: var(--corp-font-size-36);
+    line-height: var(--corp-typography-lineheight-heading-sm);
+  }
+
+  .teaser.teaser-h3 .teaser-title {
+    font-size: var(--corp-font-size-32);
+    line-height: var(--corp-typography-lineheight-relaxed-3xl);
+  }
+
+  .teaser.teaser-h4 .teaser-title {
+    font-size: var(--corp-font-size-30);
+    line-height: var(--corp-typography-lineheight-relaxed-xl);
+  }
+
+  .teaser.teaser-h5 .teaser-title {
+    font-size: var(--corp-font-size-32);
+    line-height: var(--corp-typography-lineheight-relaxed-3xl);
+  }
+
+  .teaser .teaser-description {
+    font-size: var(--corp-font-size-20);
+    line-height: var(--corp-spacing-26);
+  }
+
+  .teaser .teaser-right a {
+    font-size: var(--corp-font-size-14);
+  }
+}
+
+/* Desktop styles */
+@media (--bp-desktop) {
+  .teaser {
+    padding-inline: 0;
+  }
+
+  .teaser .teaser-content {
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--corp-spacing-24);
+    align-items: baseline;
+  }
+
+  .teaser .teaser-left {
+    grid-column: 1 / span 6;
+  }
+
+  .teaser .teaser-right {
+    grid-column: 8 / span 5;
+    align-self: end;
+  }
+
+  .teaser .teaser-title {
+    line-height: var(--corp-spacing-64);
+  }
+
+  .teaser.teaser-h2 .teaser-title {
+    font-size: var(--corp-font-size-56);
+    line-height: var(--corp-typography-lineheight-display-lg);
+  }
+
+  .teaser.teaser-h3 .teaser-title {
+    font-size: var(--corp-font-size-48);
+    line-height: var(--corp-typography-lineheight-display-sm);
+  }
+
+  .teaser.teaser-h4 .teaser-title {
+    font-size: var(--corp-font-size-40);
+    line-height: var(--corp-typography-lineheight-heading-md);
+  }
+
+  .teaser .teaser-description {
+    font-size: var(--corp-font-size-24);
+    line-height: var(--corp-spacing-32);
+  }
+}
+
+/* Dark theme overrides */
+.teaser.dark-theme .teaser-eyebrow,
+.teaser.dark-theme .teaser-description,
+.teaser.dark-theme .teaser-title {
+  color: var(--color-white);
+}
+
+.teaser.dark-theme :where(.teaser-right .button):any-link {
+  color: var(--color-accent-blue-light);
+  background-color: unset;
+}
+
+.teaser.dark-theme :where(.teaser-right .button:any-link):is(:hover, :focus) {
+  color: var(--color-blue-light);
+}
+
+.teaser.dark-theme :where(.teaser-right .button:any-link:active) {
+  opacity: .5;
+}

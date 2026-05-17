@@ -1,0 +1,43 @@
+/* ----------buttons---------- */
+a.button:any-link,
+button {
+  box-sizing: border-box;
+  display: inline-block;
+  max-width: 100%;
+  margin: var(--corp-spacing-12) 0;
+  border: var(--corp-spacing-2) solid transparent;
+  border-radius: var(--corp-spacing-24);
+  padding: var(--corp-spacing-5) var(--corp-spacing-12);
+  font-style: normal;
+  font-weight: var(--corp-font-weight-medium);
+  line-height: var(--corp-typography-lineheight-tight);
+  text-align: center;
+  text-decoration: none;
+  background-color: var(--corp-color-link-default);
+  color: var(--color-surface-default);
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+a.button:hover,
+a.button:focus,
+button:hover,
+button:focus {
+  background-color: var(--corp-color-link-hover);
+  cursor: pointer;
+}
+
+button:disabled,
+button:disabled:hover {
+  background-color: var(--corp-color-surface-subtle);
+  cursor: unset;
+}
+
+a.button.secondary,
+button.secondary {
+  background-color: transparent;
+  border: var(--corp-spacing-2) solid currentcolor;
+  color: var(--color-surface-highlight);
+}
