@@ -305,3 +305,249 @@ Before running any reimport, verify:
 - [ ] Image alt text is always extracted (never empty unless decorative)
 - [ ] Background images/colors are mapped to Section Metadata
 - [ ] AEM cmp-* classes are used as selectors in page-templates.json
+- [ ] All blocks use AbbVie custom block names (Rule 7a) — never generic EDS names
+- [ ] Grid layouts use Grid Container + Grid Section pattern (Rule 7c)
+- [ ] Section styles match AEM container class mapping (Rule 7d)
+- [ ] JCR content package generated for AEM Package Manager installation (Rule 8)
+- [ ] JCR XML uses `component-models.json` (built) for modelFields — NOT raw `_block.json`
+- [ ] All JCR nodes have `modelFields`, `aueComponentId`, `model`, `sling:resourceType`
+- [ ] Richtext content HTML-encoded in `text` attribute
+- [ ] Boolean values use `{Boolean}true` format, numbers use `{Long}N` format
+
+## 7. AEM → EDS Block Mapping: Technical Implementation
+
+> **Canonical mapping data:** `tools/importer/block-mapping.md`
+> This section provides code-level implementation. For the lookup tables themselves
+> (block names, variants, grid columns, section styles), always consult `block-mapping.md`.
+>
+> Verified by comparing live AEM source pages with manually migrated EDS pages on
+> `develop--dev-abbvie-com--abbvie.aem.page`. See CLAUDE.md Rule 7 for enforcement rules.
+
+### 7.1 Block Resolution Logic
+
+When encountering an AEM component, resolve it to the correct EDS block using this priority:
+
+```javascript
+// Block name resolution: AEM class → EDS block name
+function resolveBlock(element) {
+  const classes = element.className;
+
+  // Hero containers (full-width with height + background)
+  if (classes.includes('cmp-container-full-width') && hasHeightClass(classes)) {
+    return 'hero-container';
+  }
+
+  // Titles — check for cmp-title wrapper
+  if (classes.includes('cmp-title') || element.closest('.title[class*="cmp-title"]')) {
+    return 'custom-title';
+  }
+
+  // Text — check for cmp-text wrapper
+  if (classes.includes('cmp-text') || element.closest('.text[class*="cmp-text"]')) {
+    return 'text-container';
+  }
+
+  // Images
+  if (classes.includes('cmp-image')) return 'custom-image';
+
+  // Buttons / CTAs
+  if (classes.includes('cmp-button')) return 'cta';
+
+  // Video
+  if (classes.includes('brightcove-video') || element.querySelector('[data-video-id]')) {
+    return 'brightcove-video';
+  }
+  if (element.querySelector('iframe[src*="youtube"]')) return 'brightcove-video';
+
+  // Navigation
+  if (classes.includes('cmp-breadcrumb')) return 'breadcrumb';
+
+  // Interactive
+  if (classes.includes('cmp-accordion')) return 'accordion';
+  if (classes.includes('cmp-carousel')) return 'carousel';
+
+  // Content
+  if (classes.includes('cmp-quote') || element.tagName === 'BLOCKQUOTE') return 'quote';
+  if (classes.includes('cardpagestory') || classes.includes('dashboardcards')) return 'story-card';
+  if (classes.includes('cmp-separator')) return 'separator';
+
+  return null; // Unknown component — investigate before mapping
+}
+```
+
+### 7.2 Variant Resolution Logic
+
+```javascript
+// Resolve EDS variant classes from AEM source classes
+function resolveVariants(blockName, element) {
+  const classes = element.className;
+  const variants = [];
+
+  switch (blockName) {
+    case 'hero-container':
+      // Height: extract from container
+      if (classes.includes('height-short')) variants.push('height-short');
+      else if (classes.includes('height-default')) variants.push('height-default');
+      else if (classes.includes('height-tall')) variants.push('height-tall');
+      // Overlay
+      if (classes.includes('semi-transparent-layer')) variants.push('navy');
+      break;
+
+    case 'custom-title':
+      // Size: cmp-title-xx-large → h1-size, cmp-title-x-large → h3-size
+      if (classes.includes('cmp-title-xx-large')) variants.push('h1-size');
+      else if (classes.includes('cmp-title-x-large')) variants.push('h3-size');
+      else variants.push('h5-size');
+      // Weight
+      if (classes.includes('medium-weight')) variants.push('medium-weight');
+      if (classes.includes('book-weight')) variants.push('book-weight');
+      // Theme
+      if (classes.includes('theme-light') || !isDarkSection(element)) {
+        variants.push('theme-light');
+      }
+      break;
+
+    case 'text-container':
+      // Font size
+      if (classes.includes('cmp-text-xx-large')) variants.push('body-unica-32-reg');
+      // Width
+      if (isNarrowContext(element)) variants.push('width-large');
+      // Spacing
+      if (needsBottomSpacing(element)) variants.push('spacing-bottom');
+      break;
+
+    case 'separator':
+      // Height determined by context
+      // Large section break → 80 or 96
+      // Inline content break → 8 or 24
+      variants.push('separator-height-24'); // Default; adjust per context
+      break;
+
+    case 'cta':
+      variants.push('default-cta');
+      if (isDarkSection(element)) variants.push('dark-theme');
+      else variants.push('light-theme');
+      break;
+
+    case 'brightcove-video':
+      variants.push('bcvideo-player-single');
+      if (hasCaption(element)) variants.push('bcvideo-content-bottom');
+      else variants.push('bcvideo-content-none');
+      break;
+  }
+
+  return variants;
+}
+```
+
+### 7.3 Grid Mapping Implementation
+
+```javascript
+// Map AEM grid structure → EDS Grid Container + Grid Sections
+function mapGrid(gridRowElement) {
+  const columns = gridRowElement.querySelectorAll('.grid-cell[class*="grid-row__col-with-"]');
+  const edsSections = [];
+
+  columns.forEach(col => {
+    // Extract column width: "grid-row__col-with-5" → 5
+    const widthMatch = col.className.match(/grid-row__col-with-(\d+)/);
+    const width = widthMatch ? parseInt(widthMatch[1]) : 12;
+
+    // Skip full-width columns (use regular Section instead)
+    if (width === 12) return;
+
+    edsSections.push({
+      type: 'grid-section',
+      gridCols: width,           // → class "grid-cols-5"
+      blocks: mapChildBlocks(col), // Recursively map child AEM components
+      isEmpty: col.children.length === 0 || width === 1
+    });
+  });
+
+  return {
+    type: 'grid-container',
+    sections: edsSections
+  };
+}
+```
+
+### 7.4 Section Container Mapping Implementation
+
+```javascript
+// Map AEM container → EDS section classes
+function mapSectionClasses(containerElement) {
+  const classes = containerElement.className;
+  const edsClasses = ['abbvie-container'];
+
+  // Container width
+  if (classes.includes('cmp-container-full-width')) edsClasses.push('content-wide');
+  else if (classes.includes('cmp-container-xx-large')) edsClasses.push('content-regular');
+  else if (classes.includes('cmp-container-x-large')) edsClasses.push('container-x-large');
+  else if (classes.includes('cmp-container-small')) edsClasses.push('container-small');
+
+  // Grid detection
+  if (containerElement.querySelector('.grid-row')) edsClasses.push('grid-container');
+
+  // Border radius
+  if (classes.includes('medium-radius')) edsClasses.push('medium-radius');
+  if (classes.includes('large-radius')) edsClasses.push('large-radius');
+
+  // Spacing
+  if (classes.includes('no-bottom-margin')) edsClasses.push('no-bottom-margin');
+  if (classes.includes('no-padding')) edsClasses.push('no-padding');
+
+  // Background color — extract from inline style or data attribute
+  const bgColor = extractBackgroundColor(containerElement);
+  if (bgColor) edsClasses.push(`bg-${bgColor.replace('#', '')}`);
+
+  return edsClasses.join(' ');
+}
+```
+
+### 7.5 Hero Section Composite Pattern
+
+The AEM hero is a single container; in EDS it becomes a section with multiple blocks:
+
+```
+AEM Source:
+  div.container.cmp-container-full-width.height-short.no-bottom-margin
+    ├── nav.cmp-breadcrumb           (if present)
+    ├── div.title.cmp-title-xx-large (page title)
+    └── div.text.cmp-text-xx-large   (subtitle, if present)
+
+EDS Output:
+  Section (abbvie-container content-wide medium-radius hero-container-container
+           breadcrumb-container custom-title-container text-container-container)
+    ├── hero-container block (height-short navy)
+    ├── breadcrumb block     (if source has cmp-breadcrumb)
+    ├── custom-title block   (h1-size medium-weight)
+    └── text-container block (body-unica-32-reg, if subtitle exists)
+```
+
+### 7.6 Separator Height Decision Table
+
+| Context | AEM Indicator | EDS Height Variant |
+|---|---|---|
+| Section-level break (between major sections) | Container with `height-short` or standalone separator container | `separator-height-80` or `separator-height-96` |
+| Content sub-section break | Separator between text blocks within a section | `separator-height-24` |
+| Tight inline divider | Separator between related elements (e.g., title and content) | `separator-height-8` |
+| Story article section break | Between story body sections | `separator-height-24` |
+| Colored section bottom | Separator at bottom of bg-colored section | `separator-height-48` |
+
+### 7.7 Complete AEM Class → EDS Section Type Decision Tree
+
+```
+Is the AEM container a cmp-container-full-width with height + background?
+  ├── YES → Create Section with hero-container block inside
+  │         Add breadcrumb, custom-title, text-container as child blocks
+  └── NO
+      Does the container have a .grid-row child?
+        ├── YES → Create Grid Container section
+        │         For each grid-row__col-with-N → create Grid Section (grid-cols-N)
+        │         Map child components inside each Grid Section
+        └── NO
+            Is it a separator-only container?
+              ├── YES → Create Section with separator-container class
+              └── NO → Create regular Section
+                        Map child components as blocks
+```

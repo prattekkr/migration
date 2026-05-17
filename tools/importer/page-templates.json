@@ -1,0 +1,86 @@
+{
+  "metadata": {
+    "projectType": "xwalk"
+  },
+  "templates": [
+    {
+      "name": "story-article",
+      "urls": [
+        "https://www.abbvie.com/who-we-are/our-stories/can-unlocking-one-million-genomes.html"
+      ],
+      "description": "Story/feature article page with hero, content body sections, image carousels, and related content card. Part of T04 template group covering 116 pages on abbvie.com.",
+      "blocks": [
+        {
+          "name": "hero-container",
+          "instances": [".container.cmp-container-full-width.height-default.no-bottom-margin"]
+        },
+        {
+          "name": "cta",
+          "instances": [".button.back-cta.light-theme"]
+        },
+        {
+          "name": "story-card",
+          "instances": [".storyinfo", ".cardpagestory.card-dashboard"]
+        },
+        {
+          "name": "custom-title",
+          "instances": [".title.cmp-title-xx-large.light-theme", ".title.cmp-title-xx-large.h5-size"]
+        },
+        {
+          "name": "text-container",
+          "instances": [".text.cmp-text-xx-large.light-theme", ".text.cmp-text-xx-large", ".text.cmp-text-x-large.light-theme.single-column.standard"]
+        },
+        {
+          "name": "separator",
+          "instances": [".separator.separator-height-24"]
+        },
+        {
+          "name": "carousel",
+          "instances": [".carousel.panelcontainer.carousel-minimal"]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1-hero",
+          "name": "Hero Section",
+          "selector": ".container.cmp-container-full-width.height-default.no-bottom-margin",
+          "style": null,
+          "blocks": ["hero-container", "cta", "story-card", "custom-title", "text-container"],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2-grid-container",
+          "name": "Grid Container (article body wrapper)",
+          "selector": ".container.overlap-predecessor.cmp-container-xx-large",
+          "style": null,
+          "blocks": [],
+          "defaultContent": []
+        },
+        {
+          "id": "section-3-left-spacer",
+          "name": "Left Spacer Column",
+          "selector": ".grid-row__col-with-2.grid-cell:first-child",
+          "style": null,
+          "blocks": [],
+          "defaultContent": []
+        },
+        {
+          "id": "section-4-main-content",
+          "name": "Article Body - Main Content Column",
+          "selector": ".grid-row__col-with-8.grid-cell",
+          "style": null,
+          "blocks": ["custom-title", "text-container", "separator", "carousel"],
+          "defaultContent": []
+        },
+        {
+          "id": "section-5-sidebar",
+          "name": "Right Sidebar Column (Related Content)",
+          "selector": ".grid-row__col-with-2.grid-cell:last-child",
+          "style": null,
+          "blocks": ["story-card"],
+          "defaultContent": []
+        }
+      ]
+    }
+  ]
+}
