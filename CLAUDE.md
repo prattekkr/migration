@@ -252,7 +252,9 @@ Source page (abbvie.com)
 
 1. `.plain.html` → for local preview and visual verification
 2. `.content.xml` → JCR XML matching the reference structure (see `block-mapping.md` Section 6)
-3. Content package `.zip` → installable via AEM Package Manager
+3. **DAM assets** → all images downloaded under `/content/dam/migration/[page-path]/` with proper `dam:Asset` nodes
+4. Content package `.zip` → installable via AEM Package Manager (includes page + DAM assets)
+5. `filter.xml` must include BOTH `/content/migration/...` AND `/content/dam/migration/...` paths
 
 ### Key JCR Rules
 

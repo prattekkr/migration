@@ -376,17 +376,54 @@ root (nt:unstructured, core/franklin/components/root/v1/root)
 | `classes_customDynamicClass` | Dynamic picklist variants (comma-separated) | `spacing-bottom,width-large` |
 | `text` | HTML-encoded richtext content | `&lt;p&gt;content&lt;/p&gt;` |
 
-### Package Structure
+### Package Structure (with DAM assets)
 
 ```
 package.zip
 ├── META-INF/vault/
-│   ├── filter.xml        (content paths to install)
+│   ├── filter.xml        (page path + DAM path)
 │   ├── properties.xml    (package name, version, group)
 │   └── config.xml        (vault config)
-└── jcr_root/content/migration/
+├── jcr_root/content/migration/
+│   └── page-path/
+│       └── .content.xml  (JCR XML for the page — image refs point to DAM paths)
+└── jcr_root/content/dam/migration/
     └── page-path/
-        └── .content.xml  (JCR XML for the page)
+        ├── .content.xml  (sling:Folder)
+        ├── hero-image.jpeg/
+        │   ├── .content.xml        (dam:Asset with metadata)
+        │   └── _jcr_content/
+        │       └── renditions/
+        │           └── original    (actual image binary)
+        ├── carousel-01.jpeg/
+        │   ├── .content.xml
+        │   └── _jcr_content/renditions/original
+        └── ...
+```
+
+### DAM Asset Node Structure
+
+```xml
+<!-- Folder: sling:Folder -->
+<jcr:root jcr:primaryType="sling:Folder"/>
+
+<!-- Asset: dam:Asset with metadata -->
+<jcr:root jcr:primaryType="dam:Asset">
+  <jcr:content jcr:primaryType="dam:AssetContent">
+    <metadata jcr:primaryType="nt:unstructured" dc:format="image/jpeg"/>
+  </jcr:content>
+</jcr:root>
+
+<!-- Binary: _jcr_content/renditions/original (the actual file) -->
+```
+
+### filter.xml (must include BOTH paths)
+
+```xml
+<workspaceFilter version="1.0">
+    <filter root="/content/migration/page-path"/>
+    <filter root="/content/dam/migration/page-path"/>
+</workspaceFilter>
 ```
 
 ### md2jcr Bug Details
