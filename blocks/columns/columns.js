@@ -1,3 +1,6 @@
+import { resolveImageReference } from '../../scripts/scripts.js';
+import decorateExternalLinksUtility from '../../scripts/utils.js';
+
 export default function decorate(block) {
   const cols = [...block.firstElementChild.children];
   block.classList.add(`columns-${cols.length}-cols`);
@@ -5,6 +8,7 @@ export default function decorate(block) {
   // setup image columns
   [...block.children].forEach((row) => {
     [...row.children].forEach((col) => {
+      resolveImageReference(col);
       const pic = col.querySelector('picture');
       if (pic) {
         const picWrapper = pic.closest('div');
@@ -15,4 +19,7 @@ export default function decorate(block) {
       }
     });
   });
+
+  // Decorate external links across the entire block
+  decorateExternalLinksUtility(block);
 }

@@ -1,34 +1,209 @@
 import {
-  buildBlock,
-  loadHeader,
-  loadFooter,
+  decorateBlocks,
+  decorateButtons,
   decorateIcons,
   decorateSections,
-  decorateBlocks,
   decorateTemplateAndTheme,
-  waitForFirstImage,
+  getMetadata,
+  loadCSS,
+  loadFooter,
+  loadHeader,
   loadSection,
   loadSections,
-  loadCSS,
+  waitForFirstImage,
 } from './aem.js';
 
+import {
+  initFooterReturnScrollOnHistoryRestore,
+  shouldRunOutsideAuthorEdit,
+} from './utils.js';
 /**
- * Builds hero block and prepends to main in a new section.
- * @param {Element} main The container element
+ * Moves all the attributes from a given elmenet to another given element.
+ * @param {Element} from the element to copy attributes from
+ * @param {Element} to the element to copy attributes to
  */
-function buildHeroBlock(main) {
-  const h1 = main.querySelector('h1');
-  const picture = main.querySelector('picture');
-  // eslint-disable-next-line no-bitwise
-  if (h1 && picture && (h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
-    // Check if h1 or picture is already inside a hero block
-    if (h1.closest('.hero') || picture.closest('.hero')) {
-      return; // Don't create a duplicate hero block
-    }
-    const section = document.createElement('div');
-    section.append(buildBlock('hero', { elems: [picture, h1] }));
-    main.prepend(section);
+export function moveAttributes(from, to, attributes) {
+  if (!attributes) {
+    // eslint-disable-next-line no-param-reassign
+    attributes = [...from.attributes].map(({ nodeName }) => nodeName);
   }
+  attributes.forEach((attr) => {
+    const value = from.getAttribute(attr);
+    if (value) {
+      to?.setAttribute(attr, value);
+      from.removeAttribute(attr);
+    }
+  });
+}
+
+/**
+ * Move instrumentation attributes from a given element to another given element.
+ * @param {Element} from the element to copy attributes from
+ * @param {Element} to the element to copy attributes to
+ */
+export function moveInstrumentation(from, to) {
+  moveAttributes(
+    from,
+    to,
+    [...from.attributes]
+      .map(({ nodeName }) => nodeName)
+      .filter(
+        (attr) => attr.startsWith('data-aue-') || attr.startsWith('data-richtext-'),
+      ),
+  );
+}
+
+/**
+ * True when an anchor href should be treated as an image asset (DAM, DM, Franklin media, etc.).
+ * Excludes obvious video destinations so mixed cells resolve the correct target.
+ * @param {string} href
+ * @returns {boolean}
+ */
+function isResolvableImageReferenceHref(href) {
+  if (!href) return false;
+  if (/youtube\.com|youtu\.be|vimeo\.com/i.test(href)) return false;
+  return /\.(jpg|jpeg|png|gif|webp|svg|avif)(\?|$)/i.test(href)
+    || href.includes('scene7.com')
+    || href.includes('/is/image/')
+    || href.includes('/content/dam/')
+    || href.includes('media_');
+}
+
+/**
+ * Resolve AEM reference links to proper <img> elements.
+ * On AEM Author, component "reference" fields render as <a> links instead of
+ * <img> tags. This utility detects image-like links and replaces them with
+ * <img> elements so that downstream block code can find images normally.
+ * @param {Element} container - The container element to scan
+ */
+export function resolveImageReference(container) {
+  if (!container || container.querySelector('picture, img')) return;
+  const link = [...container.querySelectorAll('a[href]')].find((a) => isResolvableImageReferenceHref(a.href));
+  if (!link?.href) return;
+  const { href } = link;
+  const img = document.createElement('img');
+  img.src = href;
+  img.alt = link.title || link.textContent || '';
+  img.loading = 'lazy';
+  const wrapper = link.closest('.button-container') || link.closest('p') || link;
+  wrapper.replaceWith(img);
+}
+
+function isUsableImageUrl(value) {
+  const normalized = `${value || ''}`.trim();
+  if (!normalized) return false;
+
+  return normalized.startsWith('/')
+    || normalized.startsWith('http')
+    || /\.(jpg|jpeg|png|gif|webp|svg)(\?|$)/i.test(normalized)
+    || normalized.includes('scene7.com')
+    || normalized.includes('/is/image/');
+}
+
+function resolveSectionBackgroundUrl(section) {
+  const datasetBackground = `${section.dataset.background || ''}`.trim();
+  if (isUsableImageUrl(datasetBackground)) {
+    return datasetBackground;
+  }
+
+  const backgroundField = section.querySelector('[data-aue-prop="background"]');
+  if (backgroundField) {
+    resolveImageReference(backgroundField);
+    const fieldImage = backgroundField.querySelector('img');
+    if (isUsableImageUrl(fieldImage?.src)) {
+      return fieldImage.src;
+    }
+
+    const fieldLink = backgroundField.querySelector('a[href]');
+    if (isUsableImageUrl(fieldLink?.href)) {
+      return fieldLink.href;
+    }
+  }
+
+  const backgroundImage = section.querySelector('img[data-background]');
+  if (isUsableImageUrl(backgroundImage?.src)) {
+    return backgroundImage.src;
+  }
+
+  const backgroundLink = section.querySelector('a[data-background], [data-background] a[href]');
+  if (isUsableImageUrl(backgroundLink?.href)) {
+    return backgroundLink.href;
+  }
+
+  return '';
+}
+
+function extractSectionBackgroundMedia(section) {
+  const backgroundField = section.querySelector('[data-aue-prop="background"]');
+  if (backgroundField) {
+    resolveImageReference(backgroundField);
+    const media = backgroundField.querySelector('picture, img');
+    if (media) return media.cloneNode(true);
+  }
+
+  const existingMedia = section.querySelector('img[data-background], picture[data-background]');
+  if (existingMedia) return existingMedia.cloneNode(true);
+
+  return null;
+}
+
+function renderSectionBackgroundMedia(section) {
+  const existing = section.querySelector(':scope > .section-background-media');
+  const media = extractSectionBackgroundMedia(section);
+
+  if (!media) {
+    existing?.remove();
+    return;
+  }
+
+  const wrapper = existing || document.createElement('div');
+  wrapper.className = 'section-background-media';
+  wrapper.setAttribute('aria-hidden', 'true');
+
+  const image = media.tagName === 'IMG' ? media : media.querySelector('img');
+  if (image) {
+    image.alt = '';
+    image.loading = 'eager';
+    image.fetchPriority = 'high';
+  }
+
+  wrapper.replaceChildren(media);
+  if (!existing) section.prepend(wrapper);
+}
+
+function applySectionBackground(section, idx, allSections) {
+  const bg = resolveSectionBackgroundUrl(section);
+  const isAuthorEdit = !shouldRunOutsideAuthorEdit();
+  if (!bg) {
+    section.style.removeProperty('background-image');
+    delete section.dataset.background;
+    if (isAuthorEdit) {
+      renderSectionBackgroundMedia(section);
+    } else {
+      section.querySelector(':scope > .section-background-media')?.remove();
+    }
+    return '';
+  }
+
+  const id = `section-bg-${idx}`;
+  section.id = section.id || id;
+  section.dataset.background = bg;
+  section.style.backgroundImage = `url('${bg}')`;
+
+  const sectionIndex = allSections.indexOf(section);
+  const isAboveFold = sectionIndex < 2;
+  const bgImg = section.querySelector('img[data-background], [data-aue-prop="background"] img');
+  if (bgImg) {
+    bgImg.loading = isAboveFold ? 'eager' : 'lazy';
+    bgImg.fetchPriority = isAboveFold ? 'high' : 'auto';
+  }
+
+  if (isAuthorEdit) {
+    renderSectionBackgroundMedia(section);
+  } else {
+    section.querySelector(':scope > .section-background-media')?.remove();
+  }
+  return `#${section.id} { background-image: url('${bg}'); }`;
 }
 
 /**
@@ -43,74 +218,186 @@ async function loadFonts() {
   }
 }
 
+function autolinkModals(doc) {
+  doc.addEventListener('click', async (e) => {
+    const origin = e.target.closest('a');
+    if (origin && origin.href && origin.href.includes('/modals/')) {
+      e.preventDefault();
+      const { openModal } = await import(
+        `${window.hlx.codeBasePath}/blocks/modal/modal.js`
+      );
+      openModal(origin.href);
+    }
+  });
+}
+
+/**
+ * Build breadcrumb navigation from the current URL path.
+ * Used for pages that don't have a hero block (hero.js builds its own).
+ */
+// function buildBreadcrumbs() {
+//   const path = window.location.pathname.replace(/^\/content/, '').replace(/\.html$/, '');
+//   const segments = path.split('/').filter(Boolean);
+//   if (segments.length <= 1) return null;
+
+//   const nav = document.createElement('nav');
+//   nav.className = 'section-breadcrumbs';
+//   nav.setAttribute('aria-label', 'Breadcrumb');
+
+//   const ol = document.createElement('ol');
+//   let currentPath = '';
+
+//   segments.forEach((segment, i) => {
+//     currentPath += `/${segment}`;
+//     const li = document.createElement('li');
+//     const title = segment
+//       .split('-')
+//       .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+//       .join(' ');
+
+//     if (i < segments.length - 1) {
+//       const a = document.createElement('a');
+//       a.href = currentPath;
+//       a.textContent = title;
+//       li.append(a);
+//     } else {
+//       // Use the page's h1 text for the current page label when available
+//       const h1 = document.querySelector('h1');
+//       li.textContent = h1 ? h1.textContent.trim() : title;
+//       li.setAttribute('aria-current', 'page');
+//     }
+//     ol.append(li);
+//   });
+
+//   nav.append(ol);
+//   return nav;
+// }
+
 /**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
  */
-function buildAutoBlocks(main) {
+function buildAutoBlocks() {
   try {
-    // auto load `*/fragments/*` references
-    const fragments = [...main.querySelectorAll('a[href*="/fragments/"]')].filter((f) => !f.closest('.fragment'));
-    if (fragments.length > 0) {
-      // eslint-disable-next-line import/no-cycle
-      import('../blocks/fragment/fragment.js').then(({ loadFragment }) => {
-        fragments.forEach(async (fragment) => {
-          try {
-            const { pathname } = new URL(fragment.href);
-            const frag = await loadFragment(pathname);
-            fragment.parentElement.replaceWith(...frag.children);
-          } catch (error) {
-            // eslint-disable-next-line no-console
-            console.error('Fragment loading failed', error);
-          }
-        });
-      });
-    }
-
-    buildHeroBlock(main);
+    // TODO: add auto block, if needed
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
   }
 }
 
-/**
- * Decorates formatted links to style them as buttons.
- * @param {HTMLElement} main The main container element
- */
-function decorateButtons(main) {
-  main.querySelectorAll('p a[href]').forEach((a) => {
-    a.title = a.title || a.textContent;
-    const p = a.closest('p');
-    const text = a.textContent.trim();
+function a11yLinks(main) {
+  const links = main.querySelectorAll('a');
+  links.forEach((link) => {
+    let label = link.textContent;
+    if (!label && link.querySelector('span.icon')) {
+      const icon = link.querySelector('span.icon');
+      label = icon ? icon.classList[1]?.split('-')[1] : label;
+    }
+    link.setAttribute('aria-label', label);
 
-    // quick structural checks
-    if (a.querySelector('img') || p.textContent.trim() !== text) return;
-
-    // skip URL display links
-    try {
-      if (new URL(a.href).href === new URL(text, window.location).href) return;
-    } catch { /* continue */ }
-
-    // require authored formatting for buttonization
-    const strong = a.closest('strong');
-    const em = a.closest('em');
-    if (!strong && !em) return;
-
-    p.className = 'button-wrapper';
-    a.className = 'button';
-    if (strong && em) { // high-impact call-to-action
-      a.classList.add('accent');
-      const outer = strong.contains(em) ? strong : em;
-      outer.replaceWith(a);
-    } else if (strong) {
-      a.classList.add('primary');
-      strong.replaceWith(a);
-    } else {
-      a.classList.add('secondary');
-      em.replaceWith(a);
+    // Remove title attribute if any ancestor has button-container class
+    if (link.hasAttribute('title') && link.closest('.button-container')) {
+      link.removeAttribute('title');
     }
   });
+}
+
+/**
+ * Moves consecutive grid-section elements into the preceding grid-container
+ * section, making them direct children of that container.
+ * Only runs in author (UE editor) mode, detected by the presence of an iframe
+ * with "author" in its src.
+ * @param {Element} main The main element
+ */
+function addGridSectionsWrapper(main) {
+  let group = [];
+  let currentContainer = null;
+
+  const flush = () => {
+    if (!group.length) return;
+    if (currentContainer) {
+      group.forEach((s) => currentContainer.append(s));
+    }
+    group = [];
+    currentContainer = null;
+  };
+
+  [...main.children].forEach((child) => {
+    if (child.matches('.section[class*="grid-container"]')) {
+      flush();
+      currentContainer = child;
+    } else if (child.matches('.section[class*="grid-cols-"]')) {
+      group.push(child);
+    } else {
+      flush();
+    }
+  });
+  flush();
+}
+
+/**
+ * Apply background images from section-metadata data-background attributes.
+ * Uses a <style> tag so backgrounds persist even if UE resets inline styles.
+ * Automatically derives fetchPriority and loading from section position:
+ * first 2 sections = above fold (eager, high priority), rest = lazy.
+ * @param {Element} main The main element
+ */
+export function decorateSectionBackgrounds(main) {
+  const rules = [];
+  const allSections = [...main.querySelectorAll('.section')];
+
+  main.querySelectorAll('.section').forEach((section, idx) => {
+    const rule = applySectionBackground(section, idx, allSections);
+    if (rule) rules.push(rule);
+  });
+  if (rules.length) {
+    const style = document.createElement('style');
+    style.textContent = rules.join('\n');
+    document.head.appendChild(style);
+  }
+}
+
+/**
+ * Handle fragment visibility in hero sections that contain multiple fragments.
+ * - If the section has the "onlyone" class: show only the first fragment.
+ * - Otherwise: rotate through fragments in authored order across page loads,
+ *   showing one per visit.
+ * Only applies to hero sections (data-section-type="hero").
+ * @param {Element} main The main element
+ */
+function decorateFragmentRotation(main) {
+  main
+    .querySelectorAll('.section[data-section-type="hero"]')
+    .forEach((section) => {
+      const fragmentWrappers = [
+        ...section.querySelectorAll(':scope > .fragment-wrapper'),
+      ];
+      if (fragmentWrappers.length < 2) return;
+
+      if (section.classList.contains('onlyone')) {
+        // Show only the first fragment, remove the rest
+        fragmentWrappers.slice(1).forEach((fw) => fw.remove());
+      } else {
+        // Rotate fragments in authored order across page loads
+        const pagePath = window.location.pathname;
+        const sectionIndex = [...main.querySelectorAll('.section')].indexOf(
+          section,
+        );
+        const storageKey = `fragment-rotation-${pagePath}-${sectionIndex}`;
+
+        const lastIndex = parseInt(
+          sessionStorage.getItem(storageKey) ?? '-1',
+          10,
+        );
+        const nextIndex = (lastIndex + 1) % fragmentWrappers.length;
+        sessionStorage.setItem(storageKey, nextIndex.toString());
+
+        fragmentWrappers.forEach((fw, i) => {
+          if (i !== nextIndex) fw.remove();
+        });
+      }
+    });
 }
 
 /**
@@ -119,11 +406,17 @@ function decorateButtons(main) {
  */
 // eslint-disable-next-line import/prefer-default-export
 export function decorateMain(main) {
+  // hopefully forward compatible button decoration
+  decorateButtons(main);
   decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
+  decorateSectionBackgrounds(main);
   decorateBlocks(main);
-  decorateButtons(main);
+  // Run after decorateBlocks (which assigns fragment-wrapper class) but before loadSection
+  decorateFragmentRotation(main);
+  // add aria-label to links
+  a11yLinks(main);
 }
 
 /**
@@ -132,10 +425,29 @@ export function decorateMain(main) {
  */
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
+  loadCSS(`${window.hlx.codeBasePath}/styles/section.css`);
   decorateTemplateAndTheme();
+  if (getMetadata('breadcrumbs').toLowerCase() === 'true') {
+    doc.body.dataset.breadcrumbs = true;
+  }
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
+
+    // Inject breadcrumbs for pages without a hero block
+    if (
+      !main.querySelector('.hero')
+      && getMetadata('breadcrumbs').toLowerCase() !== 'false'
+    ) {
+      // const breadcrumbs = buildBreadcrumbs();
+      // if (breadcrumbs) {
+      //   const firstWrapper = main.querySelector('.section > .default-content-wrapper');
+      //   if (firstWrapper) {
+      //     firstWrapper.prepend(breadcrumbs);
+      //   }
+      // }
+    }
+
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
@@ -154,16 +466,22 @@ async function loadEager(doc) {
  * Loads everything that doesn't need to be delayed.
  * @param {Element} doc The container element
  */
+
 async function loadLazy(doc) {
-  loadHeader(doc.querySelector('header'));
+  autolinkModals(doc);
 
   const main = doc.querySelector('main');
   await loadSections(main);
+
+  if (shouldRunOutsideAuthorEdit()) {
+    addGridSectionsWrapper(main);
+  }
 
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
+  loadHeader(doc.querySelector('header'));
   loadFooter(doc.querySelector('footer'));
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
@@ -181,6 +499,7 @@ function loadDelayed() {
 }
 
 async function loadPage() {
+  initFooterReturnScrollOnHistoryRestore();
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();

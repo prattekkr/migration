@@ -7,7 +7,8 @@ helix-importer-ui
 .DS_Store
 *.bak
 .idea
-
-# Ensure these files are tracked
-!CLAUDE.md
-!AGENTS.md
+localhost.pem
+localhost-key.pem
+.migration/
+/tmp
+/.claude
