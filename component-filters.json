@@ -233,6 +233,7 @@
   {
     "id": "text-container",
     "components": [
+      "text-container-image",
       "text-container-text"
     ]
   },

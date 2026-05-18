@@ -9203,6 +9203,31 @@
     ]
   },
   {
+    "id": "text-container-image",
+    "fields": [
+      {
+        "component": "custom-asset-namespace:custom-asset",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "configUrl": "/content/dam/config/image/asset-selector.json",
+        "multi": false
+      },
+      {
+        "component": "custom-asset-namespace:custom-asset-mimetype",
+        "valueType": "string",
+        "name": "imageMimeType"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "value": "",
+        "label": "Alt Text"
+      }
+    ]
+  },
+  {
     "id": "text-container-text",
     "fields": [
       {

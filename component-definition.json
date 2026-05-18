@@ -1105,6 +1105,21 @@
           }
         },
         {
+          "title": "Text Container Image",
+          "id": "text-container-image",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Text Container Image",
+                  "model": "text-container-image"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Text Container Text",
           "id": "text-container-text",
           "plugins": {
