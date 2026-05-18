@@ -26,11 +26,35 @@ let heroSubtitleDone = false;
 export default function parse(element, { document }) {
   const cmpText = element.querySelector('.cmp-text') || element;
 
+  // Combine all paragraphs into a SINGLE <p> with <br> between them.
+  // This is required because md2jcr's FieldGroupFieldResolver.resolve() fails
+  // for container blocks with richtext child items containing multiple paragraphs.
+  // Multiple <p> tags create multiple mdast paragraph nodes which exhaust the field.
   const textCell = document.createElement('div');
+  const singleP = document.createElement('p');
+  let firstPara = true;
   for (let i = 0; i < cmpText.children.length; i++) {
     const child = cmpText.children[i];
     if (child.tagName === 'DIV' && !child.textContent.trim()) continue;
-    textCell.appendChild(child.cloneNode(true));
+    if (!child.textContent.trim()) continue;
+
+    if (!firstPara) {
+      singleP.appendChild(document.createElement('br'));
+      singleP.appendChild(document.createElement('br'));
+    }
+    // Append the text content (strip outer <p> tags if present)
+    if (child.tagName === 'P') {
+      // Copy inner content of <p> without the <p> wrapper
+      for (let j = 0; j < child.childNodes.length; j++) {
+        singleP.appendChild(child.childNodes[j].cloneNode(true));
+      }
+    } else {
+      singleP.appendChild(child.cloneNode(true));
+    }
+    firstPara = false;
+  }
+  if (singleP.childNodes.length > 0) {
+    textCell.appendChild(singleP);
   }
 
   const val = (v) => {
@@ -39,16 +63,16 @@ export default function parse(element, { document }) {
     return d;
   };
 
-  // component-models.json has 3 field groups: classes, blockId, language
-  // md2jcr splice(0, 3+1=4) removes first 4 rows as parent.
-  // Row 5 (index 4) becomes child item.
-  // Total: 4 parent rows + 1 child = 5 data rows.
+  // Reference markdown structure (from manually migrated page that passes md2jcr):
+  //   Row 1: id:       (blockId)
+  //   Row 2: none      (language — plain "none", not "lang:none")
+  //   Row 3: (empty)   (classes group)
+  //   Row 4: text      (content — single paragraph)
   const cells = [
-    [val('')],       // Row 0: splice +1 (extra row consumed)
-    [val('')],       // Row 1: classes group
-    [val('')],       // Row 2: blockId
-    [val('none')],   // Row 3: language
-    [textCell],      // Row 4: child text-container-text content
+    [val('id:')],    // Row 0: blockId
+    [val('none')],   // Row 1: language
+    [val('')],       // Row 2: classes group
+    [textCell],      // Row 3: text content (single <p> with <br><br> for multi-paragraph)
   ];
 
   const variants = [];

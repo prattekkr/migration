@@ -10,6 +10,7 @@ import textContainerParser from './parsers/text-container.js';
 import separatorParser from './parsers/separator.js';
 import carouselParser from './parsers/carousel.js';
 import customImageParser from './parsers/custom-image.js';
+import quoteParser from './parsers/quote.js';
 
 // TRANSFORMER IMPORTS
 import abbvieCleanupTransformer from './transformers/abbvie-cleanup.js';
@@ -25,6 +26,7 @@ const parsers = {
   'separator': separatorParser,
   'carousel': carouselParser,
   'custom-image': customImageParser,
+  'quote': quoteParser,
 };
 
 // TRANSFORMER REGISTRY
@@ -43,7 +45,12 @@ const PAGE_TEMPLATE = {
   blocks: [
     {
       name: 'hero-container',
-      instances: ['.container.cmp-container-full-width.height-default.no-bottom-margin'],
+      instances: [
+        '.container.cmp-container-full-width.height-default.no-bottom-margin',
+        '.container.cmp-container-full-width.height-tall.no-bottom-margin',
+        '.container.cmp-container-full-width.height-short.no-bottom-margin',
+        '.container.cmp-container-full-width.no-bottom-margin:not(.overlap-predecessor):not(.footer-overlap)',
+      ],
     },
     {
       name: 'cta',
@@ -55,7 +62,7 @@ const PAGE_TEMPLATE = {
     },
     {
       name: 'custom-title',
-      instances: ['.title.cmp-title-xx-large.light-theme', '.title.cmp-title-xx-large.h5-size'],
+      instances: ['.title.cmp-title-xx-large.light-theme', '.title.cmp-title-xx-large.h5-size', '.title.cmp-title-xx-large'],
     },
     {
       name: 'text-container',
@@ -72,6 +79,10 @@ const PAGE_TEMPLATE = {
     {
       name: 'custom-image',
       instances: ['.cmp-image'],
+    },
+    {
+      name: 'quote',
+      instances: ['.quote.cmp-quote-xx-large', '.cmp-quote'],
     },
   ],
   sections: [

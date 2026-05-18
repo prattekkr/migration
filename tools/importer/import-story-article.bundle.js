@@ -212,10 +212,27 @@ var CustomImportScript = (() => {
   function parse5(element, { document }) {
     const cmpText = element.querySelector(".cmp-text") || element;
     const textCell = document.createElement("div");
+    const singleP = document.createElement("p");
+    let firstPara = true;
     for (let i = 0; i < cmpText.children.length; i++) {
       const child = cmpText.children[i];
       if (child.tagName === "DIV" && !child.textContent.trim()) continue;
-      textCell.appendChild(child.cloneNode(true));
+      if (!child.textContent.trim()) continue;
+      if (!firstPara) {
+        singleP.appendChild(document.createElement("br"));
+        singleP.appendChild(document.createElement("br"));
+      }
+      if (child.tagName === "P") {
+        for (let j = 0; j < child.childNodes.length; j++) {
+          singleP.appendChild(child.childNodes[j].cloneNode(true));
+        }
+      } else {
+        singleP.appendChild(child.cloneNode(true));
+      }
+      firstPara = false;
+    }
+    if (singleP.childNodes.length > 0) {
+      textCell.appendChild(singleP);
     }
     const val = (v) => {
       const d = document.createElement("div");
@@ -223,16 +240,14 @@ var CustomImportScript = (() => {
       return d;
     };
     const cells = [
-      [val("")],
-      // Row 0: splice +1 (extra row consumed)
-      [val("")],
-      // Row 1: classes group
-      [val("")],
-      // Row 2: blockId
+      [val("id:")],
+      // Row 0: blockId
       [val("none")],
-      // Row 3: language
+      // Row 1: language
+      [val("")],
+      // Row 2: classes group
       [textCell]
-      // Row 4: child text-container-text content
+      // Row 3: text content (single <p> with <br><br> for multi-paragraph)
     ];
     const variants = [];
     const cls = element.className || "";
@@ -311,10 +326,14 @@ var CustomImportScript = (() => {
     slides.forEach((slide) => {
       const img = slide.querySelector("img");
       if (!img) return;
+      let imgSrc = img.getAttribute("data-cmp-src") || img.getAttribute("src") || "";
+      if (imgSrc.startsWith("blob:")) imgSrc = "";
+      if (imgSrc.startsWith("data:")) imgSrc = "";
+      if (!imgSrc) return;
       const imageCell = document.createElement("div");
       const pic = document.createElement("picture");
       const imgEl = document.createElement("img");
-      imgEl.src = img.getAttribute("src") || img.getAttribute("data-cmp-src") || "";
+      imgEl.src = imgSrc;
       imgEl.alt = img.getAttribute("alt") || "";
       pic.appendChild(imgEl);
       imageCell.appendChild(pic);
@@ -410,6 +429,55 @@ var CustomImportScript = (() => {
       // Row 15: blockId
     ];
     const block = WebImporter.Blocks.createBlock(document, { name: "custom-image", cells });
+    element.replaceWith(block);
+  }
+
+  // tools/importer/parsers/quote.js
+  function parse9(element, { document }) {
+    var _a, _b, _c, _d, _e, _f;
+    const quoteText = ((_b = (_a = element.querySelector(".cmp-quote__text")) == null ? void 0 : _a.textContent) == null ? void 0 : _b.trim()) || "";
+    const authorName = ((_d = (_c = element.querySelector(".author-name")) == null ? void 0 : _c.textContent) == null ? void 0 : _d.trim()) || "";
+    const authorRole = ((_f = (_e = element.querySelector(".author-title")) == null ? void 0 : _e.textContent) == null ? void 0 : _f.trim()) || "";
+    const val = (v) => {
+      const d = document.createElement("div");
+      if (v) d.textContent = v;
+      return d;
+    };
+    const quotationCell = document.createElement("div");
+    if (quoteText) {
+      const p = document.createElement("p");
+      p.textContent = quoteText;
+      quotationCell.appendChild(p);
+    }
+    const cells = [
+      [val("basic")],
+      // quoteVariant
+      [quotationCell],
+      // quotation (richtext)
+      [val(authorName)],
+      // attributionName
+      [val(authorRole)],
+      // attributionRole
+      [val("")],
+      // attributionImage
+      [val("")],
+      // quoteFragment
+      [val("")],
+      // backgroundImage
+      [val("")],
+      // classes group
+      [val("")],
+      // blockId
+      [val("none")],
+      // language
+      [val("")]
+      // commonCustomClass/analytics
+    ];
+    const variants = [];
+    const cls = element.className || "";
+    if (cls.includes("quote-standard")) variants.push("quote-standard");
+    if (cls.includes("quote-h4")) variants.push("quote-h4");
+    const block = WebImporter.Blocks.createBlock(document, { name: "quote", variants, cells });
     element.replaceWith(block);
   }
 
@@ -509,7 +577,8 @@ var CustomImportScript = (() => {
     "text-container": parse5,
     "separator": parse6,
     "carousel": parse7,
-    "custom-image": parse8
+    "custom-image": parse8,
+    "quote": parse9
   };
   var transformers = [
     transform,
@@ -524,7 +593,12 @@ var CustomImportScript = (() => {
     blocks: [
       {
         name: "hero-container",
-        instances: [".container.cmp-container-full-width.height-default.no-bottom-margin"]
+        instances: [
+          ".container.cmp-container-full-width.height-default.no-bottom-margin",
+          ".container.cmp-container-full-width.height-tall.no-bottom-margin",
+          ".container.cmp-container-full-width.height-short.no-bottom-margin",
+          ".container.cmp-container-full-width.no-bottom-margin:not(.overlap-predecessor):not(.footer-overlap)"
+        ]
       },
       {
         name: "cta",
@@ -536,7 +610,7 @@ var CustomImportScript = (() => {
       },
       {
         name: "custom-title",
-        instances: [".title.cmp-title-xx-large.light-theme", ".title.cmp-title-xx-large.h5-size"]
+        instances: [".title.cmp-title-xx-large.light-theme", ".title.cmp-title-xx-large.h5-size", ".title.cmp-title-xx-large"]
       },
       {
         name: "text-container",
@@ -553,6 +627,10 @@ var CustomImportScript = (() => {
       {
         name: "custom-image",
         instances: [".cmp-image"]
+      },
+      {
+        name: "quote",
+        instances: [".quote.cmp-quote-xx-large", ".cmp-quote"]
       }
     ],
     sections: [

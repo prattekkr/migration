@@ -220,6 +220,20 @@ function generateJcrXml(htmlFile, pageName, pagePath, imageMap) {
     bodyImages.push(src);
   }
 
+  // Extract quotes from body
+  const bodyQuotes = [];
+  const quoteRegex = /<div class="quote[^"]*">([\s\S]*?)<\/div><\/div><\/div>/g;
+  while ((m = quoteRegex.exec(bodySection)) !== null) {
+    // Extract quote text and attribution from the block rows
+    const content = m[1];
+    const rows = content.split('</div></div><div><div>');
+    // Row 0: quoteVariant, Row 1: quotation, Row 2: attributionName, Row 3: attributionRole
+    const quotation = rows[1]?.replace(/<[^>]+>/g, '').trim() || '';
+    const attrName = rows[2]?.replace(/<[^>]+>/g, '').trim() || '';
+    const attrRole = rows[3]?.replace(/<[^>]+>/g, '').trim() || '';
+    bodyQuotes.push({ quotation: xmlEnc(quotation), name: xmlEnc(attrName), role: xmlEnc(attrRole) });
+  }
+
   // Extract subtitle text
   let subtitleText = '';
   const heroLine = sections[0] || '';
@@ -238,14 +252,16 @@ function generateJcrXml(htmlFile, pageName, pagePath, imageMap) {
   // Build JCR XML using blocks found in body
   // Interleave titles and texts in order of appearance
   const bodyBlocks = [];
-  const allBlocksRegex = /<div class="(text-container|custom-title|separator|carousel|custom-image)[^"]*"/g;
-  let blockIdx = { text: 0, title: 0, image: 0 };
+  const allBlocksRegex = /<div class="(text-container|custom-title|separator|carousel|custom-image|quote)[^"]*"/g;
+  let blockIdx = { text: 0, title: 0, image: 0, quote: 0 };
   while ((m = allBlocksRegex.exec(bodySection)) !== null) {
     const type = m[1];
     if (type === 'text-container') {
       if (blockIdx.text < bodyTexts.length) bodyBlocks.push({ type: 'text', data: bodyTexts[blockIdx.text++] });
     } else if (type === 'custom-title') {
       if (blockIdx.title < bodyTitles.length) bodyBlocks.push({ type: 'title', data: bodyTitles[blockIdx.title++] });
+    } else if (type === 'quote') {
+      if (blockIdx.quote < bodyQuotes.length) bodyBlocks.push({ type: 'quote', data: bodyQuotes[blockIdx.quote++] });
     } else if (type === 'separator') {
       bodyBlocks.push({ type: 'separator' });
     } else if (type === 'carousel') {
@@ -276,6 +292,9 @@ function generateJcrXml(htmlFile, pageName, pagePath, imageMap) {
 `;
     } else if (block.type === 'carousel') {
       bodyXml += `<carousel${nodeSuffix} jcr:primaryType="nt:unstructured" sling:resourceType="core/franklin/components/block/v1/block" aueComponentId="carousel" autoplay="{Boolean}false" bypassCarouselOnMobile="{Boolean}false" carouselType="static" centerActiveSlide="{Boolean}false" enableDotNavigation="{Boolean}true" enableLooping="{Boolean}false" enableNextPreviousControls="{Boolean}true" filter="carousel" itemLabel="{Boolean}false" language="none" model="carousel" modelFields="[totalSlides@number,carouselType@select,rssFeedUrl@text,numberOfItems@number,autoplay@boolean,slideTransitionTime@number,pauseOnHover@boolean,numberOfSlidesToShow@number,bypassCarouselOnMobile@boolean,startingSlideIndex@number,centerActiveSlide@boolean,enableLooping@boolean,enableNextPreviousControls@boolean,enableDotNavigation@boolean,carouselLabel@text,previousButtonLabel@text,nextButtonLabel@text,playButtonLabel@text,pauseButtonLabel@text,tablistLabel@text,itemLabel@boolean,classes_customDynamicClass@ngaem:dynamic-picklist,blockId@text,classes_commonCustomClass@text,language@select,analytics_id@text]" name="Carousel" numberOfSlidesToShow="{Long}1" pauseOnHover="{Boolean}false" slideTransitionTime="{Long}3000" startingSlideIndex="{Long}1" totalSlides="{Long}7"/>
+`;
+    } else if (block.type === 'quote') {
+      bodyXml += `<quote${nodeSuffix} jcr:primaryType="nt:unstructured" sling:resourceType="core/franklin/components/block/v1/block" aueComponentId="quote" classes_customDynamicClass="quote-standard,quote-h4" language="none" model="quote" modelFields="[quoteVariant@select,quotation@richtext,attributionName@text,attributionRole@text,attributionImage@custom-asset-namespace:custom-asset,attributionImageMimeType@custom-asset-namespace:custom-asset-mimetype,quoteFragment@aem-content,backgroundImage@custom-asset-namespace:custom-asset,backgroundImageMimeType@custom-asset-namespace:custom-asset-mimetype,backgroundImagePreset@select,backgroundImageModifiers@text,backgroundImageAlt@text,classes_customDynamicClass@ngaem:dynamic-picklist,blockId@text,classes_commonCustomClass@text,language@select,analytics_id@text]" name="Quote" quoteVariant="basic" quotation="&lt;p&gt;${block.data.quotation}&lt;/p&gt;" attributionName="${block.data.name}" attributionRole="${block.data.role}"/>
 `;
     } else if (block.type === 'image') {
       bodyXml += `<custom_image${nodeSuffix} jcr:primaryType="nt:unstructured" sling:resourceType="core/franklin/components/block/v1/block" aueComponentId="custom-image" clickBehavior="_self" displayCaptionBelowImage="{Boolean}false" enableLink="{Boolean}false" enableWarnOnLeave="{Boolean}false" getAltFromDAM="{Boolean}false" getCaptionFromDAM="{Boolean}false" image="${xmlEnc(block.data)}" imageIsDecorative="{Boolean}false" imageMimeType="image/jpeg" language="none" model="custom-image" modelFields="[image@custom-asset-namespace:custom-asset,imageMimeType@custom-asset-namespace:custom-asset-mimetype,imageAlt@text,getAltFromDAM@boolean,imageIsDecorative@boolean,caption@text,getCaptionFromDAM@boolean,displayCaptionBelowImage@boolean,enableLink@boolean,target@aem-content,clickBehavior@select,modalPanelId@text,enableWarnOnLeave@boolean,warnOnLeavePath@aem-content,linkAriaLabel@text,classes_customDynamicClass@ngaem:dynamic-picklist,blockId@text,classes_commonCustomClass@text,language@select,analytics_id@text]" name="Custom Image"/>

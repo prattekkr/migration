@@ -40,10 +40,18 @@ export default function parse(element, { document }) {
     const img = slide.querySelector('img');
     if (!img) return;
 
+    // Prefer data-cmp-src (real URL) over src (may be blob: from lazy loading)
+    let imgSrc = img.getAttribute('data-cmp-src') || img.getAttribute('src') || '';
+    // Skip blob: URLs — they can't be resolved
+    if (imgSrc.startsWith('blob:')) imgSrc = '';
+    // Skip data: URLs
+    if (imgSrc.startsWith('data:')) imgSrc = '';
+    if (!imgSrc) return;
+
     const imageCell = document.createElement('div');
     const pic = document.createElement('picture');
     const imgEl = document.createElement('img');
-    imgEl.src = img.getAttribute('src') || img.getAttribute('data-cmp-src') || '';
+    imgEl.src = imgSrc;
     imgEl.alt = img.getAttribute('alt') || '';
     pic.appendChild(imgEl);
     imageCell.appendChild(pic);
