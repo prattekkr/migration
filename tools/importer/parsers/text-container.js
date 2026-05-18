@@ -4,21 +4,17 @@
 /**
  * Parser: text-container (container block with filter)
  *
- * md2jcr FieldGroup creates 4 parent field groups:
- *   1. classes (classes_customDynamicClass + classes_commonCustomClass)
- *   2. blockId
- *   3. language
- *   4. analytics (analytics_id)
+ * JCR/md2jcr rules:
+ * - 3 block-level rows (1 col each): classes group, blockId, language
+ * - Child item rows (2 cols): | text-container-text | content |
+ * - Field hints on ALL non-empty cells
+ * - Empty cells get NO hints
+ * - Collapsed fields: none for text-container parent
  *
- * md2jcr removes fieldGroup.fields.length + 1 rows from top (header + 4 groups).
- * Remaining rows become child items.
- *
- * Structure: 5+ data rows (4 parent + N child):
- *   Row 0: classes group → empty
- *   Row 1: blockId → empty
- *   Row 2: language → "none"
- *   Row 3: analytics group → empty
- *   Row 4+: child text-container-text content
+ * CRITICAL: createBlock strips outer <p> wrappers from cells.
+ * All content must be inline nodes (text, <br>, <a>, <strong>, <em>) directly
+ * in the cell <div> — NO <p> elements — to avoid multi-paragraph table cells
+ * which break md2jcr FieldGroupFieldResolver.
  */
 
 let heroSubtitleDone = false;
@@ -26,58 +22,74 @@ let heroSubtitleDone = false;
 export default function parse(element, { document }) {
   const cmpText = element.querySelector('.cmp-text') || element;
 
-  // Combine all paragraphs into a SINGLE <p> with <br> between them.
-  // This is required because md2jcr's FieldGroupFieldResolver.resolve() fails
-  // for container blocks with richtext child items containing multiple paragraphs.
-  // Multiple <p> tags create multiple mdast paragraph nodes which exhaust the field.
-  const textCell = document.createElement('div');
-  const singleP = document.createElement('p');
+  // Build child content cell — all content as inline nodes with <br><br> separators
+  // NO <p> elements allowed (they create multi-paragraph markdown cells that break md2jcr)
+  const textContentCell = document.createElement('div');
+  textContentCell.appendChild(document.createComment(' field:text '));
+
   let firstPara = true;
-  for (let i = 0; i < cmpText.children.length; i++) {
-    const child = cmpText.children[i];
-    if (child.tagName === 'DIV' && !child.textContent.trim()) continue;
-    if (!child.textContent.trim()) continue;
-
-    if (!firstPara) {
-      singleP.appendChild(document.createElement('br'));
-      singleP.appendChild(document.createElement('br'));
-    }
-    // Append the text content (strip outer <p> tags if present)
-    if (child.tagName === 'P') {
-      // Copy inner content of <p> without the <p> wrapper
-      for (let j = 0; j < child.childNodes.length; j++) {
-        singleP.appendChild(child.childNodes[j].cloneNode(true));
+  const nodes = cmpText.childNodes;
+  for (let i = 0; i < nodes.length; i++) {
+    const child = nodes[i];
+    if (child.nodeType === 3) {
+      if (!child.textContent.trim()) continue;
+      if (!firstPara) {
+        textContentCell.appendChild(document.createElement('br'));
+        textContentCell.appendChild(document.createElement('br'));
       }
-    } else {
-      singleP.appendChild(child.cloneNode(true));
+      textContentCell.appendChild(document.createTextNode(child.textContent));
+      firstPara = false;
+    } else if (child.nodeType === 1) {
+      if (child.tagName === 'DIV' && !child.textContent.trim()) continue;
+      if (!child.textContent.trim() && !child.querySelector('img, a')) continue;
+
+      if (!firstPara) {
+        textContentCell.appendChild(document.createElement('br'));
+        textContentCell.appendChild(document.createElement('br'));
+      }
+      if (child.tagName === 'P') {
+        // Flatten <p> children as inline content
+        for (let j = 0; j < child.childNodes.length; j++) {
+          textContentCell.appendChild(child.childNodes[j].cloneNode(true));
+        }
+      } else if (child.tagName === 'UL' || child.tagName === 'OL') {
+        textContentCell.appendChild(child.cloneNode(true));
+      } else {
+        // For other elements (spans, strongs, etc), append inline
+        for (let j = 0; j < child.childNodes.length; j++) {
+          textContentCell.appendChild(child.childNodes[j].cloneNode(true));
+        }
+      }
+      firstPara = false;
     }
-    firstPara = false;
-  }
-  if (singleP.childNodes.length > 0) {
-    textCell.appendChild(singleP);
   }
 
-  const val = (v) => {
-    const d = document.createElement('div');
-    if (v) d.textContent = v;
-    return d;
-  };
+  // Build child type name cell
+  const childTypeCell = document.createElement('div');
+  childTypeCell.textContent = 'text-container-text';
 
-  // Reference markdown structure (from manually migrated page that passes md2jcr):
-  //   Row 1: id:       (blockId)
-  //   Row 2: none      (language — plain "none", not "lang:none")
-  //   Row 3: (empty)   (classes group)
-  //   Row 4: text      (content — single paragraph)
+  // Block-level cells — comments and text directly in div (no <p> wrapper)
+  const blockIdCell = document.createElement('div');
+  blockIdCell.appendChild(document.createComment(' field:blockId '));
+  blockIdCell.appendChild(document.createTextNode('id:'));
+
+  const languageCell = document.createElement('div');
+  languageCell.appendChild(document.createComment(' field:language '));
+  languageCell.appendChild(document.createTextNode('none'));
+
+  const emptyCell = () => document.createElement('div');
+
+  // 3 block-level rows (1 col) + 1 child row (2 cols)
   const cells = [
-    [val('id:')],    // Row 0: blockId
-    [val('none')],   // Row 1: language
-    [val('')],       // Row 2: classes group
-    [textCell],      // Row 3: text content (single <p> with <br><br> for multi-paragraph)
+    [emptyCell()],                           // Row 0: classes group (empty, no hint)
+    [blockIdCell],                           // Row 1: blockId (with hint)
+    [languageCell],                          // Row 2: language (with hint)
+    [childTypeCell, textContentCell],        // Row 3: child item (2 cols)
   ];
 
+  // Determine variant
   const variants = [];
   const cls = element.className || '';
-
   if (!heroSubtitleDone && cls.includes('cmp-text-xx-large') && cls.includes('light-theme')) {
     variants.push('body-unica-32-reg');
     heroSubtitleDone = true;

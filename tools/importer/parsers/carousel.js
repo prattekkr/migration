@@ -2,53 +2,70 @@
 /* global WebImporter */
 
 /**
- * Parser: carousel
- * Reference: can-unlocking-one-million-genomes.plain.html (manually migrated)
- *
- * Creates carousel config block (24 rows) PLUS separate custom-image blocks
- * for each slide. The carousel element is replaced with a fragment containing
- * the carousel block followed by N custom-image blocks.
+ * Parser: carousel (container block with filter)
+ * Config fields form field groups. Slides are separate custom-image blocks.
+ * Field hints on non-empty cells. Skip blob: URLs for images.
  */
 export default function parse(element, { document }) {
   const slides = element.querySelectorAll('[role="tabpanel"], .carousel-item, .splide__slide');
   const slideCount = slides.length || 0;
 
-  const val = (v) => {
+  const hintVal = (fieldName, v) => {
     const d = document.createElement('div');
-    if (v !== undefined && v !== null && v !== '') d.textContent = String(v);
+    if (v !== undefined && v !== null && v !== '') {
+      const p = document.createElement('p');
+      p.appendChild(document.createComment(' field:' + fieldName + ' '));
+      p.appendChild(document.createTextNode(String(v)));
+      d.appendChild(p);
+    }
     return d;
   };
+  const empty = () => document.createElement('div');
 
-  // Carousel config block (24 rows)
-  const configCells = [
-    [val(slideCount)], [val('static')], [val('')], [val('')],
-    [val('false')], [val('3000')], [val('false')], [val('1')],
-    [val('false')], [val('1')], [val('false')], [val('false')],
-    [val('true')], [val('true')], [val('')], [val('')],
-    [val('')], [val('')], [val('')], [val('')],
-    [val('false')], [val('')], [val('none')], [val('')],
+  const cells = [
+    [hintVal('totalSlides', slideCount)],
+    [hintVal('carouselType', 'static')],
+    [empty()],                                        // rssFeedUrl
+    [empty()],                                        // numberOfItems
+    [hintVal('autoplay', 'false')],
+    [hintVal('slideTransitionTime', '3000')],
+    [hintVal('pauseOnHover', 'false')],
+    [hintVal('numberOfSlidesToShow', '1')],
+    [hintVal('bypassCarouselOnMobile', 'false')],
+    [hintVal('startingSlideIndex', '1')],
+    [hintVal('centerActiveSlide', 'false')],
+    [hintVal('enableLooping', 'false')],
+    [hintVal('enableNextPreviousControls', 'true')],
+    [hintVal('enableDotNavigation', 'true')],
+    [empty()],                                        // carouselLabel
+    [empty()],                                        // previousButtonLabel
+    [empty()],                                        // nextButtonLabel
+    [empty()],                                        // playButtonLabel
+    [empty()],                                        // pauseButtonLabel
+    [empty()],                                        // tablistLabel
+    [hintVal('itemLabel', 'false')],
+    [empty()],                                        // classes group
+    [empty()],                                        // blockId
+    [hintVal('language', 'none')],
   ];
 
-  const carouselBlock = WebImporter.Blocks.createBlock(document, { name: 'carousel', cells: configCells });
+  const carouselBlock = WebImporter.Blocks.createBlock(document, { name: 'carousel', cells });
 
-  // Create a fragment to hold carousel + custom-image blocks
+  // Create fragment: carousel block + custom-image blocks for each slide
   const fragment = document.createDocumentFragment();
   fragment.appendChild(carouselBlock);
 
-  // Extract each slide image as a separate custom-image block (16 rows)
+  // Extract slide images as separate custom-image blocks
   slides.forEach((slide) => {
     const img = slide.querySelector('img');
     if (!img) return;
 
-    // Prefer data-cmp-src (real URL) over src (may be blob: from lazy loading)
     let imgSrc = img.getAttribute('data-cmp-src') || img.getAttribute('src') || '';
-    // Skip blob: URLs — they can't be resolved
-    if (imgSrc.startsWith('blob:')) imgSrc = '';
-    // Skip data: URLs
-    if (imgSrc.startsWith('data:')) imgSrc = '';
+    if (imgSrc.startsWith('blob:') || imgSrc.startsWith('data:')) return;
     if (!imgSrc) return;
 
     const imageCell = document.createElement('div');
+    imageCell.appendChild(document.createComment(' field:image '));
     const pic = document.createElement('picture');
     const imgEl = document.createElement('img');
     imgEl.src = imgSrc;
@@ -57,22 +74,22 @@ export default function parse(element, { document }) {
     imageCell.appendChild(pic);
 
     const imageCells = [
-      [imageCell],        // Row 0: image
-      [val('false')],     // Row 1: getAltFromDAM
-      [val('false')],     // Row 2: imageIsDecorative
-      [val('')],          // Row 3: caption
-      [val('false')],     // Row 4: getCaptionFromDAM
-      [val('false')],     // Row 5: displayCaptionBelowImage
-      [val('false')],     // Row 6: enableLink
-      [val('')],          // Row 7: target
-      [val('_self')],     // Row 8: clickBehavior
-      [val('')],          // Row 9: modalPanelId
-      [val('false')],     // Row 10: enableWarnOnLeave
-      [val('')],          // Row 11: warnOnLeavePath
-      [val('')],          // Row 12: linkAriaLabel
-      [val('')],          // Row 13: classes group
-      [val('none')],      // Row 14: language
-      [val('')],          // Row 15: blockId
+      [imageCell],
+      [hintVal('getAltFromDAM', 'false')],
+      [hintVal('imageIsDecorative', 'false')],
+      [empty()],                                      // caption
+      [hintVal('getCaptionFromDAM', 'false')],
+      [hintVal('displayCaptionBelowImage', 'false')],
+      [hintVal('enableLink', 'false')],
+      [empty()],                                      // target
+      [hintVal('clickBehavior', '_self')],
+      [empty()],                                      // modalPanelId
+      [hintVal('enableWarnOnLeave', 'false')],
+      [empty()],                                      // warnOnLeavePath
+      [empty()],                                      // linkAriaLabel
+      [empty()],                                      // classes group
+      [empty()],                                      // blockId
+      [hintVal('language', 'none')],
     ];
 
     const imageBlock = WebImporter.Blocks.createBlock(document, { name: 'custom-image', cells: imageCells });

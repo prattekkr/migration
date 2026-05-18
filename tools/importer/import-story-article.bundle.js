@@ -46,6 +46,7 @@ var CustomImportScript = (() => {
     const bgImage = element.querySelector("img.cmp-container__bg-image") || element.querySelector('img[class*="bg-image"]') || element.querySelector(".cmp-container > img");
     const imageCell = document.createElement("div");
     if (bgImage) {
+      imageCell.appendChild(document.createComment(" field:image "));
       const pic = document.createElement("picture");
       const img = document.createElement("img");
       img.src = bgImage.getAttribute("src") || bgImage.getAttribute("data-cmp-src") || "";
@@ -59,11 +60,12 @@ var CustomImportScript = (() => {
     if (cls.includes("height-short")) variants.push("height-short");
     else if (cls.includes("height-default")) variants.push("height-default");
     else if (cls.includes("height-tall")) variants.push("height-tall");
-    if (cls.includes("overlay-height-short")) variants.push("overlay-height-short");
-    else if (cls.includes("overlay-height-default")) variants.push("overlay-height-default");
     if (cls.includes("semi-transparent-layer")) variants.push("navy");
+    const childTypeCell = document.createElement("div");
+    childTypeCell.textContent = "hero-container-item";
     const cells = [
-      [imageCell, empty(), empty(), empty(), empty(), empty()]
+      [empty()],
+      [childTypeCell, imageCell, empty(), empty(), empty(), empty(), empty()]
     ];
     const block = WebImporter.Blocks.createBlock(document, { name: "hero-container", variants, cells });
     element.replaceWith(block);
@@ -78,40 +80,50 @@ var CustomImportScript = (() => {
     const target = (linkEl == null ? void 0 : linkEl.getAttribute("target")) || "_self";
     const linkCell = document.createElement("div");
     if (href) {
+      const p = document.createElement("p");
+      p.appendChild(document.createComment(" field:link "));
       const a = document.createElement("a");
       a.href = href;
       a.textContent = linkText;
-      linkCell.appendChild(a);
+      p.appendChild(a);
+      linkCell.appendChild(p);
     }
-    const val = (v) => {
+    const hintVal = (fieldName, v) => {
       const d = document.createElement("div");
-      if (v) d.textContent = v;
+      if (v) {
+        const p = document.createElement("p");
+        p.appendChild(document.createComment(" field:" + fieldName + " "));
+        p.appendChild(document.createTextNode(v));
+        d.appendChild(p);
+      }
       return d;
     };
+    const empty = () => document.createElement("div");
     const cells = [
       [linkCell],
-      // Row 0: link
-      [val("")],
-      // Row 1: aria-label
-      [val(target)],
+      // Row 0: link (with hint)
+      [empty()],
+      // Row 1: aria-label (empty)
+      [hintVal("ctaTarget", target)],
       // Row 2: ctaTarget
-      [val("none")],
+      [hintVal("iconVariation", "none")],
       // Row 3: iconVariation
-      [val("chevron")],
+      [hintVal("iconFont", "chevron")],
       // Row 4: iconFont
-      [val("")],
-      // Row 5: iconImage
-      [val("before")],
+      [empty()],
+      // Row 5: iconImage (empty)
+      [hintVal("iconPosition", "before")],
       // Row 6: iconPosition
-      [val("false")],
+      [hintVal("ariaHidden", "false")],
       // Row 7: ariaHidden
-      [val("")],
-      // Row 8: blockId
-      [val("none")],
-      // Row 9: language
-      [val("")]
-      // Row 10: classes group
+      [empty()],
+      // Row 8: classes group (empty)
+      [hintVal("blockId", "")],
+      // Row 9: blockId (empty value = no hint needed)
+      [hintVal("language", "none")]
+      // Row 10: language
     ];
+    cells[9] = [empty()];
     const block = WebImporter.Blocks.createBlock(document, {
       name: "cta",
       variants: ["default-cta", "back-cta"],
@@ -124,49 +136,60 @@ var CustomImportScript = (() => {
   function parse3(element, { document }) {
     const cls = element.className || "";
     const isStoryInfo = cls.includes("storyinfo");
-    const val = (v) => {
+    const hintVal = (fieldName, v) => {
       const d = document.createElement("div");
-      if (v !== void 0 && v !== null && v !== "") d.textContent = String(v);
+      const p = document.createElement("p");
+      p.appendChild(document.createComment(" field:" + fieldName + " "));
+      p.appendChild(document.createTextNode(v));
+      d.appendChild(p);
       return d;
     };
-    const linkCell = (href) => {
+    const empty = () => document.createElement("div");
+    const hintLink = (fieldName, href) => {
       const d = document.createElement("div");
       if (href) {
+        const p = document.createElement("p");
+        p.appendChild(document.createComment(" field:" + fieldName + " "));
         const a = document.createElement("a");
         a.href = href;
         a.textContent = href;
-        d.appendChild(a);
+        p.appendChild(a);
+        d.appendChild(p);
       }
       return d;
     };
     const categoryLink = element.querySelector("a[href]");
     const pageHref = (categoryLink == null ? void 0 : categoryLink.getAttribute("href")) || "";
     const cells = isStoryInfo ? [
-      [val("storyCardInfo")],
-      [val("false")],
-      [val("false")],
-      [val("true")],
-      [val("true")],
-      [val("true")],
-      [val("")],
-      [val("")],
-      [linkCell(pageHref)],
-      [val("false")],
-      [val("")],
-      [val("")]
+      [hintVal("storyCardVariant", "storyCardInfo")],
+      [hintVal("hidePublicationDate", "false")],
+      [hintVal("hideReadTime", "false")],
+      [hintVal("hideRole", "true")],
+      [hintVal("hideDescription", "true")],
+      [hintVal("hideImage", "true")],
+      [empty()],
+      // id (empty)
+      [empty()],
+      // customClass (empty)
+      [hintLink("page", pageHref)],
+      [hintVal("openInNewTab", "false")],
+      [empty()],
+      // ctaLabel (empty)
+      [empty()]
+      // analyticsInteractionId (empty)
     ] : [
-      [val("sidePanel")],
-      [val("false")],
-      [val("false")],
-      [val("false")],
-      [val("false")],
-      [val("false")],
-      [val("")],
-      [val("")],
-      [linkCell(pageHref)],
-      [val("false")],
-      [val("")],
-      [val("")]
+      [hintVal("storyCardVariant", "sidePanel")],
+      [hintVal("hidePublicationDate", "false")],
+      [hintVal("hideReadTime", "false")],
+      [hintVal("hideRole", "false")],
+      [hintVal("hideDescription", "false")],
+      [hintVal("hideImage", "false")],
+      [empty()],
+      [empty()],
+      [hintLink("page", pageHref)],
+      [hintVal("openInNewTab", "false")],
+      [empty()],
+      [empty()]
     ];
     const block = WebImporter.Blocks.createBlock(document, { name: "story-card", cells });
     element.replaceWith(block);
@@ -178,22 +201,30 @@ var CustomImportScript = (() => {
     const heading = element.querySelector("h1, h2, h3, h4, h5, h6");
     const headingText = ((_a = heading == null ? void 0 : heading.textContent) == null ? void 0 : _a.trim()) || "";
     const headingTag = ((_b = heading == null ? void 0 : heading.tagName) == null ? void 0 : _b.toLowerCase()) || "h5";
-    const isHero = headingTag === "h1";
     const titleCell = document.createElement("div");
+    titleCell.appendChild(document.createComment(" field:title "));
     const h = document.createElement(headingTag);
     h.textContent = headingText;
     if (heading == null ? void 0 : heading.id) h.id = heading.id;
     titleCell.appendChild(h);
-    const val = (v) => {
+    const hintVal = (fieldName, v) => {
       const d = document.createElement("div");
-      if (v) d.textContent = v;
+      const p = document.createElement("p");
+      p.appendChild(document.createComment(" field:" + fieldName + " "));
+      p.appendChild(document.createTextNode(v));
+      d.appendChild(p);
       return d;
     };
+    const empty = () => document.createElement("div");
     const cells = [
       [titleCell],
-      [val(isHero ? "id:" : "")],
-      [val(isHero ? "lang:none" : "none")],
-      [val("")]
+      // Row 0: title (with hint)
+      [empty()],
+      // Row 1: classes group (empty, no hint)
+      [hintVal("blockId", "id:")],
+      // Row 2: blockId (with hint)
+      [hintVal("language", "none")]
+      // Row 3: language (with hint)
     ];
     const variants = [];
     const cls = element.className || "";
@@ -211,43 +242,59 @@ var CustomImportScript = (() => {
   var heroSubtitleDone = false;
   function parse5(element, { document }) {
     const cmpText = element.querySelector(".cmp-text") || element;
-    const textCell = document.createElement("div");
-    const singleP = document.createElement("p");
+    const textContentCell = document.createElement("div");
+    textContentCell.appendChild(document.createComment(" field:text "));
     let firstPara = true;
-    for (let i = 0; i < cmpText.children.length; i++) {
-      const child = cmpText.children[i];
-      if (child.tagName === "DIV" && !child.textContent.trim()) continue;
-      if (!child.textContent.trim()) continue;
-      if (!firstPara) {
-        singleP.appendChild(document.createElement("br"));
-        singleP.appendChild(document.createElement("br"));
-      }
-      if (child.tagName === "P") {
-        for (let j = 0; j < child.childNodes.length; j++) {
-          singleP.appendChild(child.childNodes[j].cloneNode(true));
+    const nodes = cmpText.childNodes;
+    for (let i = 0; i < nodes.length; i++) {
+      const child = nodes[i];
+      if (child.nodeType === 3) {
+        if (!child.textContent.trim()) continue;
+        if (!firstPara) {
+          textContentCell.appendChild(document.createElement("br"));
+          textContentCell.appendChild(document.createElement("br"));
         }
-      } else {
-        singleP.appendChild(child.cloneNode(true));
+        textContentCell.appendChild(document.createTextNode(child.textContent));
+        firstPara = false;
+      } else if (child.nodeType === 1) {
+        if (child.tagName === "DIV" && !child.textContent.trim()) continue;
+        if (!child.textContent.trim() && !child.querySelector("img, a")) continue;
+        if (!firstPara) {
+          textContentCell.appendChild(document.createElement("br"));
+          textContentCell.appendChild(document.createElement("br"));
+        }
+        if (child.tagName === "P") {
+          for (let j = 0; j < child.childNodes.length; j++) {
+            textContentCell.appendChild(child.childNodes[j].cloneNode(true));
+          }
+        } else if (child.tagName === "UL" || child.tagName === "OL") {
+          textContentCell.appendChild(child.cloneNode(true));
+        } else {
+          for (let j = 0; j < child.childNodes.length; j++) {
+            textContentCell.appendChild(child.childNodes[j].cloneNode(true));
+          }
+        }
+        firstPara = false;
       }
-      firstPara = false;
     }
-    if (singleP.childNodes.length > 0) {
-      textCell.appendChild(singleP);
-    }
-    const val = (v) => {
-      const d = document.createElement("div");
-      if (v) d.textContent = v;
-      return d;
-    };
+    const childTypeCell = document.createElement("div");
+    childTypeCell.textContent = "text-container-text";
+    const blockIdCell = document.createElement("div");
+    blockIdCell.appendChild(document.createComment(" field:blockId "));
+    blockIdCell.appendChild(document.createTextNode("id:"));
+    const languageCell = document.createElement("div");
+    languageCell.appendChild(document.createComment(" field:language "));
+    languageCell.appendChild(document.createTextNode("none"));
+    const emptyCell = () => document.createElement("div");
     const cells = [
-      [val("id:")],
-      // Row 0: blockId
-      [val("none")],
-      // Row 1: language
-      [val("")],
-      // Row 2: classes group
-      [textCell]
-      // Row 3: text content (single <p> with <br><br> for multi-paragraph)
+      [emptyCell()],
+      // Row 0: classes group (empty, no hint)
+      [blockIdCell],
+      // Row 1: blockId (with hint)
+      [languageCell],
+      // Row 2: language (with hint)
+      [childTypeCell, textContentCell]
+      // Row 3: child item (2 cols)
     ];
     const variants = [];
     const cls = element.className || "";
@@ -266,16 +313,24 @@ var CustomImportScript = (() => {
   // tools/importer/parsers/separator.js
   function parse6(element, { document }) {
     const hasHr = !!element.querySelector("hr, .cmp-separator__horizontal-rule");
-    const val = (v) => {
+    const hintVal = (fieldName, v) => {
       const d = document.createElement("div");
-      if (v) d.textContent = v;
+      const p = document.createElement("p");
+      p.appendChild(document.createComment(" field:" + fieldName + " "));
+      p.appendChild(document.createTextNode(v));
+      d.appendChild(p);
       return d;
     };
+    const empty = () => document.createElement("div");
     const cells = [
-      [val(hasHr ? "true" : "false")],
-      [val("")],
-      [val("none")],
-      [val("")]
+      [hintVal("showLine", hasHr ? "true" : "false")],
+      // Row 0: showLine
+      [empty()],
+      // Row 1: classes group
+      [empty()],
+      // Row 2: blockId (empty)
+      [hintVal("language", "none")]
+      // Row 3: language
     ];
     const variants = [];
     const cls = element.className || "";
@@ -289,48 +344,64 @@ var CustomImportScript = (() => {
   function parse7(element, { document }) {
     const slides = element.querySelectorAll('[role="tabpanel"], .carousel-item, .splide__slide');
     const slideCount = slides.length || 0;
-    const val = (v) => {
+    const hintVal = (fieldName, v) => {
       const d = document.createElement("div");
-      if (v !== void 0 && v !== null && v !== "") d.textContent = String(v);
+      if (v !== void 0 && v !== null && v !== "") {
+        const p = document.createElement("p");
+        p.appendChild(document.createComment(" field:" + fieldName + " "));
+        p.appendChild(document.createTextNode(String(v)));
+        d.appendChild(p);
+      }
       return d;
     };
-    const configCells = [
-      [val(slideCount)],
-      [val("static")],
-      [val("")],
-      [val("")],
-      [val("false")],
-      [val("3000")],
-      [val("false")],
-      [val("1")],
-      [val("false")],
-      [val("1")],
-      [val("false")],
-      [val("false")],
-      [val("true")],
-      [val("true")],
-      [val("")],
-      [val("")],
-      [val("")],
-      [val("")],
-      [val("")],
-      [val("")],
-      [val("false")],
-      [val("")],
-      [val("none")],
-      [val("")]
+    const empty = () => document.createElement("div");
+    const cells = [
+      [hintVal("totalSlides", slideCount)],
+      [hintVal("carouselType", "static")],
+      [empty()],
+      // rssFeedUrl
+      [empty()],
+      // numberOfItems
+      [hintVal("autoplay", "false")],
+      [hintVal("slideTransitionTime", "3000")],
+      [hintVal("pauseOnHover", "false")],
+      [hintVal("numberOfSlidesToShow", "1")],
+      [hintVal("bypassCarouselOnMobile", "false")],
+      [hintVal("startingSlideIndex", "1")],
+      [hintVal("centerActiveSlide", "false")],
+      [hintVal("enableLooping", "false")],
+      [hintVal("enableNextPreviousControls", "true")],
+      [hintVal("enableDotNavigation", "true")],
+      [empty()],
+      // carouselLabel
+      [empty()],
+      // previousButtonLabel
+      [empty()],
+      // nextButtonLabel
+      [empty()],
+      // playButtonLabel
+      [empty()],
+      // pauseButtonLabel
+      [empty()],
+      // tablistLabel
+      [hintVal("itemLabel", "false")],
+      [empty()],
+      // classes group
+      [empty()],
+      // blockId
+      [hintVal("language", "none")]
     ];
-    const carouselBlock = WebImporter.Blocks.createBlock(document, { name: "carousel", cells: configCells });
+    const carouselBlock = WebImporter.Blocks.createBlock(document, { name: "carousel", cells });
     const fragment = document.createDocumentFragment();
     fragment.appendChild(carouselBlock);
     slides.forEach((slide) => {
       const img = slide.querySelector("img");
       if (!img) return;
       let imgSrc = img.getAttribute("data-cmp-src") || img.getAttribute("src") || "";
-      if (imgSrc.startsWith("blob:")) imgSrc = "";
-      if (imgSrc.startsWith("data:")) imgSrc = "";
+      if (imgSrc.startsWith("blob:") || imgSrc.startsWith("data:")) return;
       if (!imgSrc) return;
       const imageCell = document.createElement("div");
+      imageCell.appendChild(document.createComment(" field:image "));
       const pic = document.createElement("picture");
       const imgEl = document.createElement("img");
       imgEl.src = imgSrc;
@@ -339,37 +410,28 @@ var CustomImportScript = (() => {
       imageCell.appendChild(pic);
       const imageCells = [
         [imageCell],
-        // Row 0: image
-        [val("false")],
-        // Row 1: getAltFromDAM
-        [val("false")],
-        // Row 2: imageIsDecorative
-        [val("")],
-        // Row 3: caption
-        [val("false")],
-        // Row 4: getCaptionFromDAM
-        [val("false")],
-        // Row 5: displayCaptionBelowImage
-        [val("false")],
-        // Row 6: enableLink
-        [val("")],
-        // Row 7: target
-        [val("_self")],
-        // Row 8: clickBehavior
-        [val("")],
-        // Row 9: modalPanelId
-        [val("false")],
-        // Row 10: enableWarnOnLeave
-        [val("")],
-        // Row 11: warnOnLeavePath
-        [val("")],
-        // Row 12: linkAriaLabel
-        [val("")],
-        // Row 13: classes group
-        [val("none")],
-        // Row 14: language
-        [val("")]
-        // Row 15: blockId
+        [hintVal("getAltFromDAM", "false")],
+        [hintVal("imageIsDecorative", "false")],
+        [empty()],
+        // caption
+        [hintVal("getCaptionFromDAM", "false")],
+        [hintVal("displayCaptionBelowImage", "false")],
+        [hintVal("enableLink", "false")],
+        [empty()],
+        // target
+        [hintVal("clickBehavior", "_self")],
+        [empty()],
+        // modalPanelId
+        [hintVal("enableWarnOnLeave", "false")],
+        [empty()],
+        // warnOnLeavePath
+        [empty()],
+        // linkAriaLabel
+        [empty()],
+        // classes group
+        [empty()],
+        // blockId
+        [hintVal("language", "none")]
       ];
       const imageBlock = WebImporter.Blocks.createBlock(document, { name: "custom-image", cells: imageCells });
       fragment.appendChild(imageBlock);
@@ -545,26 +607,41 @@ var CustomImportScript = (() => {
     const bodyTables = allTables.slice(HERO_BLOCK_COUNT);
     if (heroTables.length === 0) return;
     while (main.firstChild) main.removeChild(main.firstChild);
-    function sectionMeta(variantClasses, hasLanguageRow) {
-      const name = "Section Metadata";
-      const cells = hasLanguageRow ? { language: "none" } : {};
+    function sectionMeta(keyValuePairs) {
+      const cells = {};
+      keyValuePairs.forEach(([key, value]) => {
+        cells[key] = value;
+      });
       return WebImporter.Blocks.createBlock(document, {
-        name,
-        variants: variantClasses,
+        name: "Section Metadata",
         cells
       });
     }
     heroTables.forEach((t) => main.appendChild(t));
-    main.appendChild(sectionMeta(["content-wide", "medium-radius"], true));
+    main.appendChild(sectionMeta([
+      ["classes_customClass", "content-wide medium-radius"]
+    ]));
     main.appendChild(document.createElement("hr"));
-    main.appendChild(sectionMeta(["grid-container", "content-regular"], true));
+    main.appendChild(sectionMeta([
+      ["classes_container", "grid-container"],
+      ["blockModelId", "grid-container"]
+    ]));
     main.appendChild(document.createElement("hr"));
-    main.appendChild(sectionMeta(["grid-cols-2"], false));
+    main.appendChild(sectionMeta([
+      ["classes_gridCols", "grid-cols-2"],
+      ["blockModelId", "grid-section"]
+    ]));
     main.appendChild(document.createElement("hr"));
     bodyTables.forEach((t) => main.appendChild(t));
-    main.appendChild(sectionMeta(["grid-section", "grid-cols-8"], true));
+    main.appendChild(sectionMeta([
+      ["classes_gridCols", "grid-cols-8"],
+      ["blockModelId", "grid-section"]
+    ]));
     main.appendChild(document.createElement("hr"));
-    main.appendChild(sectionMeta(["grid-cols-2"], false));
+    main.appendChild(sectionMeta([
+      ["classes_gridCols", "grid-cols-2"],
+      ["blockModelId", "grid-section"]
+    ]));
     console.log(`[sections] Restructured: ${heroTables.length} hero + ${bodyTables.length} body into 5 sections`);
   }
 

@@ -3,27 +3,27 @@
 
 /**
  * Parser: separator
- * Reference: can-unlocking-one-million-genomes.plain.html (manually migrated)
- * Structure: 4 rows, 1 col each. No field hints.
- *   Row 0: showLine → "false"
- *   Row 1: blockId → empty
- *   Row 2: language → "none"
- *   Row 3: classes group → empty
+ * Field groups: showLine, classes, blockId, language = 4 rows
+ * Field hints on non-empty cells.
  */
 export default function parse(element, { document }) {
   const hasHr = !!element.querySelector('hr, .cmp-separator__horizontal-rule');
 
-  const val = (v) => {
+  const hintVal = (fieldName, v) => {
     const d = document.createElement('div');
-    if (v) d.textContent = v;
+    const p = document.createElement('p');
+    p.appendChild(document.createComment(' field:' + fieldName + ' '));
+    p.appendChild(document.createTextNode(v));
+    d.appendChild(p);
     return d;
   };
+  const empty = () => document.createElement('div');
 
   const cells = [
-    [val(hasHr ? 'true' : 'false')],
-    [val('')],
-    [val('none')],
-    [val('')],
+    [hintVal('showLine', hasHr ? 'true' : 'false')],  // Row 0: showLine
+    [empty()],                                          // Row 1: classes group
+    [empty()],                                          // Row 2: blockId (empty)
+    [hintVal('language', 'none')],                      // Row 3: language
   ];
 
   const variants = [];

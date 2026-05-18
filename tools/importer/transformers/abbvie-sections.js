@@ -3,21 +3,13 @@
 
 /**
  * Transformer: AbbVie story-article section structure.
- * Reference: can-unlocking-one-million-genomes.plain.html (manually migrated)
  *
- * Section-metadata: variant classes ON the block name, language|none as row content.
- * NOT key-value rows for grid classes.
- *
- * Structure:
- *   Section 1: Hero blocks + Section Metadata (content-wide, medium-radius) [language|none]
- *   --- hr ---
- *   Section 2: Section Metadata (grid-container, content-regular) [language|none]
- *   --- hr ---
- *   Section 3: Section Metadata (grid-cols-2) [empty]
- *   --- hr ---
- *   Section 4: Body blocks + Section Metadata (grid-section, grid-cols-8) [language|none]
- *   --- hr ---
- *   Section 5: Sidebar blocks + Section Metadata (grid-cols-2) [empty]
+ * JCR/md2jcr rules for Section Metadata:
+ * - Block name MUST be plain "Section Metadata" — NO variant classes in name
+ * - Grid classes as key-value rows:
+ *   Grid sections: classes_gridCols | grid-cols-N + blockModelId | grid-section
+ *   Grid container: classes_container | grid-container + blockModelId | grid-container
+ *   Regular sections: classes_customClass | content-wide medium-radius
  */
 
 const HERO_BLOCK_COUNT = 5;
@@ -38,42 +30,57 @@ export default function transform(hookName, element, payload) {
 
   while (main.firstChild) main.removeChild(main.firstChild);
 
-  // Helper: create section-metadata with variant classes on block name
-  // and optional language|none row
-  function sectionMeta(variantClasses, hasLanguageRow) {
-    const name = 'Section Metadata';
-    const cells = hasLanguageRow ? { language: 'none' } : {};
+  // Helper: create Section Metadata with key-value rows
+  // Block name is ALWAYS plain "Section Metadata" — no variants in name
+  function sectionMeta(keyValuePairs) {
+    const cells = {};
+    keyValuePairs.forEach(([key, value]) => {
+      cells[key] = value;
+    });
     return WebImporter.Blocks.createBlock(document, {
-      name,
-      variants: variantClasses,
+      name: 'Section Metadata',
       cells,
     });
   }
 
-  // SECTION 1: Hero
+  // SECTION 1: Hero blocks + Section Metadata
   heroTables.forEach((t) => main.appendChild(t));
-  main.appendChild(sectionMeta(['content-wide', 'medium-radius'], true));
+  main.appendChild(sectionMeta([
+    ['classes_customClass', 'content-wide medium-radius'],
+  ]));
 
   main.appendChild(document.createElement('hr'));
 
-  // SECTION 2: Grid container
-  main.appendChild(sectionMeta(['grid-container', 'content-regular'], true));
+  // SECTION 2: Grid container declaration
+  main.appendChild(sectionMeta([
+    ['classes_container', 'grid-container'],
+    ['blockModelId', 'grid-container'],
+  ]));
 
   main.appendChild(document.createElement('hr'));
 
-  // SECTION 3: Left spacer
-  main.appendChild(sectionMeta(['grid-cols-2'], false));
+  // SECTION 3: Left spacer (grid-cols-2)
+  main.appendChild(sectionMeta([
+    ['classes_gridCols', 'grid-cols-2'],
+    ['blockModelId', 'grid-section'],
+  ]));
 
   main.appendChild(document.createElement('hr'));
 
-  // SECTION 4: Body blocks
+  // SECTION 4: Body blocks + Section Metadata
   bodyTables.forEach((t) => main.appendChild(t));
-  main.appendChild(sectionMeta(['grid-section', 'grid-cols-8'], true));
+  main.appendChild(sectionMeta([
+    ['classes_gridCols', 'grid-cols-8'],
+    ['blockModelId', 'grid-section'],
+  ]));
 
   main.appendChild(document.createElement('hr'));
 
-  // SECTION 5: Right spacer (will have sidebar content added later or be empty)
-  main.appendChild(sectionMeta(['grid-cols-2'], false));
+  // SECTION 5: Right spacer (grid-cols-2)
+  main.appendChild(sectionMeta([
+    ['classes_gridCols', 'grid-cols-2'],
+    ['blockModelId', 'grid-section'],
+  ]));
 
   console.log(`[sections] Restructured: ${heroTables.length} hero + ${bodyTables.length} body into 5 sections`);
 }

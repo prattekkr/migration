@@ -2,39 +2,50 @@
 /* global WebImporter */
 
 /**
- * Parser: custom-title
- * Reference: can-unlocking-one-million-genomes.plain.html (manually migrated)
- * Structure: 4 rows, 1 col each. No field hints.
- *   Row 0: title → <h1>text</h1> or <h5>text</h5>
- *   Row 1: blockId → empty (or "id:" for hero)
- *   Row 2: language → "none" (or "lang:none" for hero)
- *   Row 3: classes group → empty
+ * Parser: custom-title (simple block, no children)
  *
- * Variant classes pass through from AEM source.
+ * JCR/md2jcr rules:
+ * - titleType: collapsed (ends with Type) → no row
+ * - 4 field groups: title, classes, blockId, language
+ *   Wait — FieldGroup groups by _ prefix: classes_customDynamicClass + classes_commonCustomClass = 1 group
+ *   title = own group, blockId = own group, language = own group
+ *   Total: 4 groups → 4 rows
+ * - Field hints on non-empty cells
+ *
+ * Rows (4 total, 1 col each):
+ *   Row 0: <!-- field:title --><h1>text</h1>
+ *   Row 1: [empty]                              ← classes group
+ *   Row 2: <!-- field:blockId -->id:
+ *   Row 3: <!-- field:language -->none
  */
 export default function parse(element, { document }) {
   const heading = element.querySelector('h1, h2, h3, h4, h5, h6');
   const headingText = heading?.textContent?.trim() || '';
   const headingTag = heading?.tagName?.toLowerCase() || 'h5';
-  const isHero = headingTag === 'h1';
 
   const titleCell = document.createElement('div');
+  titleCell.appendChild(document.createComment(' field:title '));
   const h = document.createElement(headingTag);
   h.textContent = headingText;
   if (heading?.id) h.id = heading.id;
   titleCell.appendChild(h);
 
-  const val = (v) => {
+  const hintVal = (fieldName, v) => {
     const d = document.createElement('div');
-    if (v) d.textContent = v;
+    const p = document.createElement('p');
+    p.appendChild(document.createComment(' field:' + fieldName + ' '));
+    p.appendChild(document.createTextNode(v));
+    d.appendChild(p);
     return d;
   };
 
+  const empty = () => document.createElement('div');
+
   const cells = [
-    [titleCell],
-    [val(isHero ? 'id:' : '')],
-    [val(isHero ? 'lang:none' : 'none')],
-    [val('')],
+    [titleCell],                     // Row 0: title (with hint)
+    [empty()],                       // Row 1: classes group (empty, no hint)
+    [hintVal('blockId', 'id:')],     // Row 2: blockId (with hint)
+    [hintVal('language', 'none')],   // Row 3: language (with hint)
   ];
 
   const variants = [];
