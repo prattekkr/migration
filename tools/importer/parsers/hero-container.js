@@ -16,8 +16,7 @@ export default function parse(element, { document }) {
       pic.appendChild(img); imageCell.appendChild(pic);
     }
   }
-  const empty = () => document.createElement('div');
-  const cells = [[imageCell, empty(), empty(), empty(), empty(), empty()]];
+  const cells = [[imageCell]];
   const block = WebImporter.Blocks.createBlock(document, { name: blockName, cells });
   element.replaceWith(block);
 }
