@@ -9192,7 +9192,7 @@
         "name": "analytics_tab"
       },
       {
-        "component": "text",
+        "component": "richtext",
         "valueType": "string",
         "name": "analytics_id",
         "value": "",
