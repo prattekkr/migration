@@ -140,10 +140,6 @@
     ]
   },
   {
-    "id": "custom-title",
-    "components": []
-  },
-  {
     "id": "editorial-feed",
     "components": [
       "category-item"

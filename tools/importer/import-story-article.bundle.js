@@ -63,8 +63,7 @@ var CustomImportScript = (() => {
         imageCell.appendChild(pic);
       }
     }
-    const empty = () => document.createElement("div");
-    const cells = [[imageCell, empty(), empty(), empty(), empty(), empty()]];
+    const cells = [[imageCell]];
     const block = WebImporter.Blocks.createBlock(document, { name: blockName, cells });
     element.replaceWith(block);
   }
@@ -152,7 +151,20 @@ var CustomImportScript = (() => {
       }
     }
     if (contentCell.childNodes.length === 0 && cmpText.textContent.trim()) contentCell.textContent = cmpText.textContent.trim();
-    const cells = [[isInHero ? "id:" : ""], ["none"], [""], [contentCell]];
+    const childTypeCell = document.createElement("div");
+    childTypeCell.textContent = "text-container-text";
+    const cells = [
+      [""],
+      // Row 0: classes group (empty)
+      [""],
+      // Row 1: blockId (empty)
+      ["none"],
+      // Row 2: language
+      [""],
+      // Row 3: analytics_id (empty)
+      [childTypeCell, contentCell]
+      // Row 4: child item (type + richtext)
+    ];
     const block = WebImporter.Blocks.createBlock(document, { name: blockName, cells });
     element.replaceWith(block);
   }
@@ -256,7 +268,14 @@ var CustomImportScript = (() => {
           bodyCell.appendChild(p);
         }
       }
-      cells.push([headingText, bodyCell, "accordion-item", "", ""]);
+      const itemCell = document.createElement("div");
+      itemCell.appendChild(document.createTextNode(headingText));
+      const br = document.createElement("br");
+      itemCell.appendChild(br);
+      itemCell.appendChild(bodyCell);
+      const typeCell = document.createElement("div");
+      typeCell.textContent = "accordion-item";
+      cells.push([itemCell]);
     });
     const block = WebImporter.Blocks.createBlock(document, { name: blockName, cells });
     element.replaceWith(block);
