@@ -63,8 +63,7 @@ var CustomImportScript = (() => {
         imageCell.appendChild(pic);
       }
     }
-    const empty = () => document.createElement("div");
-    const cells = [[imageCell, empty(), empty(), empty(), empty(), empty()]];
+    const cells = [[imageCell]];
     const block = WebImporter.Blocks.createBlock(document, { name: blockName, cells });
     element.replaceWith(block);
   }
@@ -256,7 +255,14 @@ var CustomImportScript = (() => {
           bodyCell.appendChild(p);
         }
       }
-      cells.push([headingText, bodyCell, "accordion-item", "", ""]);
+      const itemCell = document.createElement("div");
+      itemCell.appendChild(document.createTextNode(headingText));
+      const br = document.createElement("br");
+      itemCell.appendChild(br);
+      itemCell.appendChild(bodyCell);
+      const typeCell = document.createElement("div");
+      typeCell.textContent = "accordion-item";
+      cells.push([itemCell]);
     });
     const block = WebImporter.Blocks.createBlock(document, { name: blockName, cells });
     element.replaceWith(block);
