@@ -23,7 +23,7 @@ export default function parse(element, { document }) {
     }
   }
   if (contentCell.childNodes.length === 0 && cmpText.textContent.trim()) contentCell.textContent = cmpText.textContent.trim();
-  const cells = [[isInHero ? 'id:' : ''], ['none'], [''], [contentCell]];
+  const cells = [[isInHero ? 'id:' : ''], ['none'], [contentCell]];
   const block = WebImporter.Blocks.createBlock(document, { name: blockName, cells });
   element.replaceWith(block);
 }
