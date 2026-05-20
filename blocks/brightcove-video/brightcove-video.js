@@ -639,55 +639,6 @@ function loadPlayer(container, cfg, options = {}) {
         return;
       }
       bcPlayer.ready(function onReady() {
-        // GTM analytics — ported from AEM _brightcoveplayer.js
-        const dl = () => { window.dataLayer = window.dataLayer || []; return window.dataLayer; };
-        const PROGRESS_POINTS = [25, 50, 75];
-        const progressReached = {};
-        let playFired = false;
-        let completeFired = false;
-
-        this.on('play', () => {
-          if (!playFired && this.mediainfo) {
-            playFired = true;
-            dl().push({
-              event: 'video_start',
-              video_name: this.mediainfo.name,
-              video_length: this.duration(),
-              video_id: this.mediainfo.id,
-            });
-          }
-        });
-
-        this.on('timeupdate', () => {
-          if (!this.mediainfo || !this.duration()) return;
-          const pct = Math.floor((this.currentTime() / this.duration()) * 100);
-          PROGRESS_POINTS.forEach((threshold) => {
-            if (pct === threshold && !progressReached[threshold]) {
-              progressReached[threshold] = true;
-              dl().push({
-                event: 'video_progress',
-                video_name: this.mediainfo.name,
-                video_length: this.duration(),
-                video_id: this.mediainfo.id,
-                percent: String(threshold),
-              });
-            }
-          });
-        });
-
-        this.on('ended', () => {
-          if (!completeFired && this.mediainfo) {
-            completeFired = true;
-            dl().push({
-              event: 'video_complete',
-              video_name: this.mediainfo.name,
-              video_length: this.duration(),
-              video_id: this.mediainfo.id,
-              percent: '100',
-            });
-          }
-        });
-
         // Force controls state at runtime
         this.controls(cfg.enablePlayerControls);
         if (this.controlBar && typeof this.controlBar.hide === 'function') {

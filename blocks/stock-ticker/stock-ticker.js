@@ -174,12 +174,10 @@ export default async function decorate(block) {
   try {
     if (!stockTickerUrl) throw new Error('[StockTicker] Missing stock-ticker-url config.');
 
-    let fetchUrl = stockTickerUrl;
-    if (stockTickerSiteKey) {
-      const workerUrl = new URL(stockTickerUrl, window.location.href);
-      workerUrl.searchParams.set('siteKey', stockTickerSiteKey);
-      fetchUrl = workerUrl.toString();
-    }
+    const siteKey = (stockTickerSiteKey || 'abbvie-us').trim().toLowerCase();
+    const workerUrl = new URL(stockTickerUrl, window.location.href);
+    workerUrl.searchParams.set('siteKey', siteKey);
+    const fetchUrl = workerUrl.toString();
 
     const res = await fetch(fetchUrl, { cache: 'no-store' });
     if (!res.ok) throw new Error(`[StockTicker] HTTP ${res.status}`);

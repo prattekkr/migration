@@ -1,9 +1,10 @@
 .text-container {
   --text-container-li-width: var(--corp-spacing-6);
   --text-container-li-height: var(--corp-spacing-6);
+  --text-container-margin-bottom: var(--corp-spacing-16);
 
   width: 100%;
-  margin-bottom: var(--corp-spacing-16);
+  margin-bottom: var(--text-container-margin-bottom);
 }
 
 /* Text alignment options */
@@ -58,13 +59,18 @@
 
 .text-container ol {
   padding-left: var(--corp-spacing-30);
-  margin-bottom: var(--corp-spacing-30);
 }
 
 .text-container ul {
   list-style: none;
   padding-left: var(--corp-spacing-13);
-  margin-bottom: var(--corp-spacing-30);
+}
+
+.text-container ol:last-child,
+.text-container p:last-child,
+.text-container table:last-child,
+.text-container ul:last-child {
+  margin-bottom: 0;
 }
 
 .text-container.text-rtl ul {
@@ -222,11 +228,55 @@ ol.text-container-text:last-child {
     font-size: var(--corp-font-size-32);
     line-height: var(--corp-typography-lineheight-relaxed-3xl);
   }
+
+  /* Text Container width variation — tablet */
+
+  .text-container:where(.width-medium),
+  .text-container:where(.width-small),
+  .text-container:where(.width-x-small) {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--corp-gap-lg);
+  }
+
+  /* width-medium — 8 cols */
+  .text-container:where(.width-medium) > div {
+    grid-column: 1 / span 8;
+  }
+
+  /* width-small — 7 cols, slight centering translateX */
+  .text-container:where(.width-small) > div {
+    grid-column: 1 / span 7;
+    transform: translateX(calc(var(--direction-multiplier, 1) * 100% / 14));
+  }
+
+  .text-container:where(.width-small):where(.align-right) > div {
+    grid-column-start: 2;
+    transform: none;
+  }
+
+  .text-container:where(.width-small):where(.align-left) > div {
+    grid-column-start: 1;
+    transform: none;
+  }
+
+  /* width-x-small — 6 cols, start col 2 */
+  .text-container:where(.width-x-small) > div {
+    grid-column: 2 / span 6;
+  }
+
+  .text-container:where(.width-x-small):where(.align-right) > div {
+    grid-column-start: 3;
+  }
+
+  .text-container:where(.width-x-small):where(.align-left) > div {
+    grid-column-start: 1;
+  }
 }
 
 @media (min-width: 1024px) {
   .text-container {
-    margin-bottom: var(--corp-spacing-24);
+    --text-container-margin-bottom: var(--corp-spacing-24);
   }
 
   .text-container ol {
@@ -263,31 +313,92 @@ ol.text-container-text:last-child {
     letter-spacing: var(--corp-typography-letterspacing-wide-4xl);
   }
 
-  /* Text Container widht variation */
+  /* Text Container width variation */
 
   .text-container.full-width,
-  .text-container.large-width,
-  .text-container.content-width,
-  .text-container.narrow-width {
+  .text-container:where(.width-x-large),
+  .text-container:where(.width-large),
+  .text-container:where(.width-medium),
+  .text-container:where(.width-small),
+  .text-container:where(.width-x-small) {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     gap: var(--corp-gap-lg);
   }
 
-  .text-container.full-width > div {
+  .text-container:where(.full-width) > div {
     grid-column: 1 / span 12;
   }
 
-  .text-container.large-width > div {
+  /* width-x-large — 10 cols, centered (start col 2) */
+  .text-container:where(.width-x-large) > div {
     grid-column: 2 / span 10;
   }
 
-  .text-container.content-width > div {
+  .text-container:where(.width-x-large):where(.align-right) > div {
+    grid-column: 3 / span 10;
+  }
+
+  .text-container:where(.width-x-large):where(.align-left) > div {
+    grid-column: 1 / span 10;
+  }
+
+  /* width-large — 9 cols, centered (start col 2) */
+  .text-container:where(.width-large) > div {
+    grid-column: 2 / span 9;
+    transform: translateX(calc(var(--direction-multiplier, 1) * 100% / 18));
+  }
+
+  .text-container:where(.width-large):where(.align-right) > div {
+    grid-column: 4 / span 9;
+    transform: none;
+  }
+
+  .text-container:where(.width-large):where(.align-left) > div {
+    grid-column: 1 / span 9;
+    transform: none;
+  }
+
+  /* width-medium — 8 cols, start col 3 */
+  .text-container:where(.width-medium) > div {
     grid-column: 3 / span 8;
   }
 
-  .text-container.narrow-width > div {
+  .text-container:where(.width-medium):where(.align-right) > div {
+    grid-column: 5 / span 8;
+  }
+
+  .text-container:where(.width-medium):where(.align-left) > div {
+    grid-column: 1 / span 8;
+  }
+
+  /* width-small — 7 cols, start col 3 */
+  .text-container:where(.width-small) > div {
+    grid-column: 3 / span 7;
+    transform: none;
+  }
+
+  .text-container:where(.width-small):where(.align-right) > div {
+    grid-column: 6 / span 7;
+    transform: none;
+  }
+
+  .text-container:where(.width-small):where(.align-left) > div {
+    grid-column: 1 / span 7;
+    transform: none;
+  }
+
+  /* width-x-small — 6 cols, start col 4 */
+  .text-container:where(.width-x-small) > div {
     grid-column: 4 / span 6;
+  }
+
+  .text-container:where(.width-x-small):where(.align-right) > div {
+    grid-column: 7 / span 6;
+  }
+
+  .text-container:where(.width-x-small):where(.align-left) > div {
+    grid-column: 1 / span 6;
   }
 }
 
@@ -300,6 +411,18 @@ ol.text-container-text:last-child {
 
 .text-container.content-center {
   grid-column: 3 / 10;
+}
+
+/* Spacing overrides — pipe global utility values through the custom property */
+
+.text-container.spacing-bottom {
+  --text-container-margin-bottom: var(--corp-spacing-32);
+}
+
+@media (min-width: 744px) {
+  .text-container.spacing-bottom {
+    --text-container-margin-bottom: var(--corp-spacing-80);
+  }
 }
 
 /* Theme */

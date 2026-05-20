@@ -1,33 +1,69 @@
 /* eslint-disable */
 /* global WebImporter */
+
+
+import { applyAnalytics } from './utils/analytics.js';
+/**
+ * Parser: accordion
+ * Base block: accordion
+ * Source: https://www.abbvie.com/science/our-people.html
+ * Generated: 2026-02-27
+ *
+ * FAQ accordion with collapsible items.
+ *
+ * Library structure: Each row = 1 accordion item, 2 cells:
+ *   Cell 1: summary/label text (plain text, no <p> wrapper)
+ *   Cell 2: body richtext content
+ *
+ * UE Model (accordion-item): summary (text), text (richtext)
+ * Note: summaryType select field was removed from the model as it lacked
+ * valueType and content_ prefix required for md2jcr content column mapping.
+ *
+ * Source DOM: .cmp-accordion > .cmp-accordion__item
+ *   Each item has .cmp-accordion__title (question) and .cmp-accordion__panel (answer)
+ */
 export default function parse(element, { document }) {
-  const variantClasses = ['accordion-icon-font'];
-  if (element.classList.contains('cmp-accordion-xx-large') || element.classList.contains('h5-size')) variantClasses.push('h5-size', 'width-large');
-  const blockName = `accordion (${variantClasses.join(', ')})`;
-  const title = element.querySelector('.cmp-accordion__title, [class*="accordion__title"]')?.textContent?.trim() || 'References';
-  const expandBtn = element.querySelector('.cmp-accordion__expand-all, [class*="expand-all"]');
-  const collapseBtn = element.querySelector('.cmp-accordion__collapse-all, [class*="collapse-all"]');
-  const cells = [[title],[expandBtn?.textContent?.trim()||'Expand All'],[collapseBtn?.textContent?.trim()||'Collapse All'],['plus'],['minus'],['plus'],['minus'],[''],[''],[''],[''],[''],[''],[''],['none'],['']];
-  const items = element.querySelectorAll('.cmp-accordion__item');
-  items.forEach(item => {
-    const headingEl = item.querySelector('.cmp-accordion__header button, .cmp-accordion__button');
-    const panelEl = item.querySelector('.cmp-accordion__panel');
-    const headingText = headingEl?.textContent?.trim() || '';
-    const bodyCell = document.createElement('div');
+  // Find accordion items
+  const items = element.querySelectorAll(
+    '.cmp-accordion__item, [class*="accordion__item"]',
+  );
+
+  const cells = [];
+
+  items.forEach((item) => {
+    // Extract summary/title text
+    const titleEl = item.querySelector(
+      '.cmp-accordion__title, .cmp-accordion__button span, .cmp-accordion__header button',
+    );
+
+    // Extract body/panel content
+    const panelEl = item.querySelector(
+      '.cmp-accordion__panel, [class*="accordion__panel"], [class*="accordion__content"]',
+    );
+
+    // Cell 1: Summary as plain text (no <p> wrapper, no field hints)
+    const summaryText = titleEl ? titleEl.textContent.trim() : '';
+
+    // Cell 2: Body richtext content
+    const bodyFrag = document.createDocumentFragment();
     if (panelEl) {
-      const pc = panelEl.querySelectorAll('p, div, ul, ol');
-      if (pc.length > 0) pc.forEach(c => { if (c.textContent.trim()) bodyCell.appendChild(c.cloneNode(true)); });
-      else if (panelEl.textContent.trim()) { const p = document.createElement('p'); p.textContent = panelEl.textContent.trim(); bodyCell.appendChild(p); }
+      // Clone panel content to preserve structure
+      while (panelEl.firstChild) {
+        bodyFrag.appendChild(panelEl.firstChild);
+      }
     }
-    const itemCell = document.createElement('div');
-    itemCell.appendChild(document.createTextNode(headingText));
-    const br = document.createElement('br');
-    itemCell.appendChild(br);
-    itemCell.appendChild(bodyCell);
-    const typeCell = document.createElement('div');
-    typeCell.textContent = 'accordion-item';
-    cells.push([itemCell]);
+
+    cells.push([summaryText, bodyFrag]);
   });
-  const block = WebImporter.Blocks.createBlock(document, { name: blockName, cells });
+
+  if (cells.length === 0) {
+    element.replaceWith(document.createTextNode(''));
+    return;
+  }
+
+  const block = WebImporter.Blocks.createBlock(document, { name: 'accordion', cells });
+
+  // Rule 4: Carry analytics from source to block
+  applyAnalytics(element, block, document);
   element.replaceWith(block);
 }

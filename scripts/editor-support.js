@@ -177,7 +177,7 @@ function showGridColumnLabel(scope = document) {
   });
 }
 
-function attachEventListners(main) {
+async function attachEventListners(main) {
   [
     'aue:content-patch',
     'aue:content-update',
@@ -193,6 +193,10 @@ function attachEventListners(main) {
   }));
 
   main?.addEventListener('aue:ui-select', handleSelection);
+  if (main?.querySelector('.form')) {
+    const module = await import('./form-editor-support.js');
+    module.attachEventListners(main);
+  }
 }
 
 const main = document.querySelector('main');
