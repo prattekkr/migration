@@ -63,7 +63,8 @@ var CustomImportScript = (() => {
         imageCell.appendChild(pic);
       }
     }
-    const cells = [[imageCell]];
+    const empty = () => document.createElement("div");
+    const cells = [[imageCell, empty(), empty(), empty(), empty(), empty()]];
     const block = WebImporter.Blocks.createBlock(document, { name: blockName, cells });
     element.replaceWith(block);
   }
@@ -92,19 +93,87 @@ var CustomImportScript = (() => {
 
   // tools/importer/parsers/story-card.js
   function parse3(element, { document }) {
-    const categoryLink = element.querySelector("a[href]");
-    let pageHref = (categoryLink == null ? void 0 : categoryLink.getAttribute("href")) || "";
-    if (pageHref.startsWith("/")) pageHref = "https://www.abbvie.com" + pageHref;
-    const linkCell = document.createElement("div");
-    if (pageHref) {
-      const a = document.createElement("a");
-      a.href = pageHref;
-      a.textContent = pageHref;
-      linkCell.appendChild(a);
+    const cls = element.className || "";
+    const isStoryInfo = cls.includes("storyinfo");
+    const anchor = element.querySelector("a[href]");
+    let pageHref = (anchor == null ? void 0 : anchor.getAttribute("href")) || "";
+    if (isStoryInfo) {
+      if (pageHref.startsWith("/")) pageHref = "https://www.abbvie.com" + pageHref;
+      const linkCell = document.createElement("div");
+      if (pageHref) {
+        const a = document.createElement("a");
+        a.href = pageHref;
+        a.textContent = pageHref;
+        linkCell.appendChild(a);
+      }
+      const cells = [
+        ["storyCardInfo"],
+        // Row 0: storyCardVariant
+        ["false"],
+        // Row 1: hidePublicationDate
+        ["false"],
+        // Row 2: hideReadTime
+        ["true"],
+        // Row 3: hideRole
+        ["true"],
+        // Row 4: hideDescription
+        ["true"],
+        // Row 5: hideImage
+        [""],
+        // Row 6: id
+        [""],
+        // Row 7: customClass
+        [linkCell],
+        // Row 8: page
+        ["false"],
+        // Row 9: openInNewTab
+        [""],
+        // Row 10: ctaLabel
+        [""]
+        // Row 11: analyticsInteractionId
+      ];
+      const block = WebImporter.Blocks.createBlock(document, { name: "story-card", cells });
+      element.replaceWith(block);
+    } else {
+      if (pageHref.endsWith(".html")) pageHref = pageHref.replace(/\.html$/, "");
+      if (pageHref.startsWith("/")) pageHref = "/content/abbvie-nextgen-eds/abbvie-com/us/en" + pageHref;
+      const linkCell = document.createElement("div");
+      if (pageHref) {
+        const a = document.createElement("a");
+        a.href = pageHref;
+        a.textContent = pageHref;
+        linkCell.appendChild(a);
+      }
+      const cells = [
+        ["relatedContent"],
+        // Row 0: storyCardVariant
+        ["false"],
+        // Row 1: hidePublicationDate
+        ["false"],
+        // Row 2: hideReadTime
+        ["false"],
+        // Row 3: hideRole
+        ["false"],
+        // Row 4: hideDescription
+        ["false"],
+        // Row 5: hideImage
+        [""],
+        // Row 6: id
+        [""],
+        // Row 7: customClass
+        [linkCell],
+        // Row 8: page
+        ["true"],
+        // Row 9: openInNewTab
+        [""],
+        // Row 10: ctaLabel
+        [""]
+        // Row 11: analyticsInteractionId
+      ];
+      const block = WebImporter.Blocks.createBlock(document, { name: "story-card", cells });
+      block.setAttribute("data-related-content", "true");
+      element.replaceWith(block);
     }
-    const cells = [["storyCardInfo"], ["false"], ["false"], ["true"], ["true"], ["true"], [""], [""], [linkCell], ["false"], [""], [""]];
-    const block = WebImporter.Blocks.createBlock(document, { name: "story-card", cells });
-    element.replaceWith(block);
   }
 
   // tools/importer/parsers/custom-title.js
@@ -220,10 +289,23 @@ var CustomImportScript = (() => {
   // tools/importer/parsers/custom-image.js
   function parse8(element, { document }) {
     const img = element.querySelector("img");
+    const cmpDiv = element.querySelector("[data-cmp-src]");
+    const cmpIs = element.querySelector('[data-cmp-is="image"]');
     let imgSrc = "", imgAlt = "";
     if (img) {
       imgSrc = img.getAttribute("data-cmp-src") || img.getAttribute("src") || "";
       imgAlt = img.getAttribute("alt") || "";
+    }
+    if (!imgSrc && cmpDiv) {
+      imgSrc = cmpDiv.getAttribute("data-cmp-src") || "";
+      imgAlt = cmpDiv.getAttribute("data-alt") || cmpDiv.getAttribute("alt") || "";
+    }
+    if (!imgSrc && cmpIs) {
+      imgSrc = cmpIs.getAttribute("data-cmp-src") || "";
+      imgAlt = cmpIs.getAttribute("data-alt") || cmpIs.getAttribute("alt") || "";
+    }
+    if (!imgSrc && element.getAttribute("data-cmp-src")) {
+      imgSrc = element.getAttribute("data-cmp-src");
     }
     const imageCell = document.createElement("div");
     if (imgSrc && !imgSrc.startsWith("blob:") && !imgSrc.startsWith("data:")) {
@@ -249,7 +331,24 @@ var CustomImportScript = (() => {
     const title = ((_b = (_a = element.querySelector('.cmp-accordion__title, [class*="accordion__title"]')) == null ? void 0 : _a.textContent) == null ? void 0 : _b.trim()) || "References";
     const expandBtn = element.querySelector('.cmp-accordion__expand-all, [class*="expand-all"]');
     const collapseBtn = element.querySelector('.cmp-accordion__collapse-all, [class*="collapse-all"]');
-    const cells = [[title], [((_c = expandBtn == null ? void 0 : expandBtn.textContent) == null ? void 0 : _c.trim()) || "Expand All"], [((_d = collapseBtn == null ? void 0 : collapseBtn.textContent) == null ? void 0 : _d.trim()) || "Collapse All"], ["plus"], ["minus"], ["plus"], ["minus"], [""], [""], [""], [""], [""], [""], [""], ["none"], [""]];
+    const cells = [
+      [title],
+      [((_c = expandBtn == null ? void 0 : expandBtn.textContent) == null ? void 0 : _c.trim()) || "Expand All"],
+      [((_d = collapseBtn == null ? void 0 : collapseBtn.textContent) == null ? void 0 : _d.trim()) || "Collapse All"],
+      ["plus"],
+      ["minus"],
+      ["plus"],
+      ["minus"],
+      [""],
+      [""],
+      [""],
+      [""],
+      [""],
+      [""],
+      [""],
+      ["none"],
+      [""]
+    ];
     const items = element.querySelectorAll(".cmp-accordion__item");
     items.forEach((item) => {
       var _a2;
@@ -259,24 +358,205 @@ var CustomImportScript = (() => {
       const bodyCell = document.createElement("div");
       if (panelEl) {
         const pc = panelEl.querySelectorAll("p, div, ul, ol");
-        if (pc.length > 0) pc.forEach((c) => {
-          if (c.textContent.trim()) bodyCell.appendChild(c.cloneNode(true));
-        });
-        else if (panelEl.textContent.trim()) {
+        if (pc.length > 0) {
+          pc.forEach((c) => {
+            if (c.textContent.trim()) bodyCell.appendChild(c.cloneNode(true));
+          });
+        } else if (panelEl.textContent.trim()) {
           const p = document.createElement("p");
           p.textContent = panelEl.textContent.trim();
           bodyCell.appendChild(p);
         }
       }
-      const itemCell = document.createElement("div");
-      itemCell.appendChild(document.createTextNode(headingText));
-      const br = document.createElement("br");
-      itemCell.appendChild(br);
-      itemCell.appendChild(bodyCell);
-      const typeCell = document.createElement("div");
-      typeCell.textContent = "accordion-item";
-      cells.push([itemCell]);
+      cells.push([headingText, bodyCell, "accordion-item", "", ""]);
     });
+    const block = WebImporter.Blocks.createBlock(document, { name: blockName, cells });
+    element.replaceWith(block);
+  }
+
+  // tools/importer/parsers/quote.js
+  function parse10(element, { document }) {
+    var _a, _b, _c, _d, _e;
+    const variantClasses = [];
+    if (element.classList.contains("cmp-quote-xx-large")) variantClasses.push("cmp-quote-xx-large");
+    if (element.classList.contains("quote-standard")) variantClasses.push("quote-standard");
+    if (element.classList.contains("quote-h4")) variantClasses.push("quote-h4");
+    const blockName = variantClasses.length > 0 ? `quote (${variantClasses.join(", ")})` : "quote";
+    const quoteTextEl = element.querySelector(".cmp-quote__text");
+    const quoteText = ((_a = quoteTextEl == null ? void 0 : quoteTextEl.textContent) == null ? void 0 : _a.trim()) || "";
+    const quotationCell = document.createElement("div");
+    if (quoteText) {
+      const strong = document.createElement("strong");
+      strong.textContent = quoteText;
+      quotationCell.appendChild(strong);
+    }
+    const authorName = ((_c = (_b = element.querySelector(".author-name, .cmp-quote__author-name")) == null ? void 0 : _b.textContent) == null ? void 0 : _c.trim()) || "";
+    const authorRole = ((_e = (_d = element.querySelector(".author-title, .cmp-quote__author-role, .cmp-quote__author-title")) == null ? void 0 : _d.textContent) == null ? void 0 : _e.trim()) || "";
+    const authorImg = element.querySelector(".cmp-quote__author-block img, .author-img");
+    const authorImageCell = document.createElement("div");
+    if (authorImg) {
+      const src = authorImg.getAttribute("data-cmp-src") || authorImg.getAttribute("src") || "";
+      if (src && !src.startsWith("blob:") && !src.startsWith("data:")) {
+        const pic = document.createElement("picture");
+        const img = document.createElement("img");
+        img.setAttribute("src", src);
+        img.setAttribute("alt", authorImg.getAttribute("alt") || "");
+        img.setAttribute("loading", "lazy");
+        pic.appendChild(img);
+        authorImageCell.appendChild(pic);
+      }
+    }
+    const cells = [
+      ["basic"],
+      // Row 0: quoteVariant
+      [quotationCell],
+      // Row 1: quotation (richtext)
+      [authorName],
+      // Row 2: attributionName
+      [authorRole],
+      // Row 3: attributionRole
+      [authorImageCell],
+      // Row 4: attributionImage
+      [""],
+      // Row 5: quoteFragment
+      [""],
+      // Row 6: backgroundImage
+      [""],
+      // Row 7: backgroundImagePreset
+      [""],
+      // Row 8: backgroundImageModifiers
+      [""],
+      // Row 9: classes
+      ["none"],
+      // Row 10: language
+      [""]
+      // Row 11: blockId/analytics
+    ];
+    const block = WebImporter.Blocks.createBlock(document, { name: blockName, cells });
+    element.replaceWith(block);
+  }
+
+  // tools/importer/parsers/brightcove-video.js
+  function parse11(element, { document }) {
+    var _a, _b;
+    const variantClasses = [];
+    if (element.classList.contains("cmp-video-xx-large")) variantClasses.push("cmp-video-xx-large");
+    const blockName = variantClasses.length > 0 ? `brightcove-video (${variantClasses.join(", ")})` : "brightcove-video";
+    const videoEl = element.querySelector("[data-video-id]") || element.querySelector("video-js");
+    const videoId = (videoEl == null ? void 0 : videoEl.getAttribute("data-video-id")) || "";
+    const accountId = (videoEl == null ? void 0 : videoEl.getAttribute("data-account")) || "2157889328001";
+    const playerId = (videoEl == null ? void 0 : videoEl.getAttribute("data-player")) || "default";
+    const overlayHeading = element.querySelector('.cmp-video__text-content [role="heading"]') || element.querySelector(".cmp-video__title");
+    const overlayTitle = ((_a = overlayHeading == null ? void 0 : overlayHeading.textContent) == null ? void 0 : _a.trim()) || "";
+    const overlayBtn = element.querySelector(".cmp-video__text-content button span") || element.querySelector(".cmp-video__text-content button");
+    const overlayButtonText = ((_b = overlayBtn == null ? void 0 : overlayBtn.textContent) == null ? void 0 : _b.trim()) || "Watch Video";
+    const posterImg = element.querySelector(".cmp-video__image img, .video-poster img");
+    const posterCell = document.createElement("div");
+    if (posterImg) {
+      const src = posterImg.getAttribute("data-cmp-src") || posterImg.getAttribute("src") || "";
+      const alt = posterImg.getAttribute("alt") || "";
+      if (src && !src.startsWith("blob:") && !src.startsWith("data:")) {
+        const pic = document.createElement("picture");
+        const img = document.createElement("img");
+        img.setAttribute("src", src);
+        img.setAttribute("alt", alt);
+        img.setAttribute("loading", "lazy");
+        pic.appendChild(img);
+        posterCell.appendChild(pic);
+      }
+    }
+    const row0 = document.createElement("div");
+    if (overlayTitle) {
+      const h = document.createElement("h2");
+      h.textContent = overlayTitle;
+      row0.appendChild(h);
+    }
+    const row3 = document.createElement("div");
+    const p = document.createElement("p");
+    p.textContent = overlayButtonText;
+    row3.appendChild(p);
+    const cells = [
+      [row0],
+      // Row 0: projectNumber + overlayTitle(collapsed as h2)
+      [""],
+      // Row 1: overlayDescription
+      [posterCell],
+      // Row 2: posterImage + posterAlt(collapsed as img alt)
+      [row3],
+      // Row 3: colorOverlay + overlayButtonText(collapsed as p)
+      ["play"],
+      // Row 4: overlayButtonFontIcon
+      [""],
+      // Row 5: overlayButtonImageIcon
+      ["left"],
+      // Row 6: iconPosition
+      [accountId],
+      // Row 7: accountId
+      [playerId],
+      // Row 8: playerId
+      [videoId],
+      // Row 9: videoId
+      [""],
+      // Row 10: playlistId
+      [""],
+      // Row 11: defaultPlaylistVideoId
+      ["none"],
+      // Row 12: videoContentLayout
+      ["false"],
+      // Row 13: enablePlaylistThumbnailMetadata
+      [""],
+      // Row 14: captionDescription
+      [""],
+      // Row 15: playButtonAriaLabel
+      [""],
+      // Row 16: videoCaption
+      ["false"],
+      // Row 17: enableAutoplay
+      ["false"],
+      // Row 18: enableLoop
+      ["false"],
+      // Row 19: enableCaptions
+      ["false"],
+      // Row 20: enableVideoChapters
+      ["false"],
+      // Row 21: enableRecommendedVideo
+      ["true"],
+      // Row 22: enablePlayerControls
+      ["false"],
+      // Row 23: enableSocialShare
+      ["false"],
+      // Row 24: enableTranscript
+      ["transcript"],
+      // Row 25: showTranscriptLabel
+      ["transcript"],
+      // Row 26: hideTranscriptLabel
+      ["new-tab"],
+      // Row 27: transcriptClickBehavior
+      [""],
+      // Row 28: modalHiddenPanelId
+      [""],
+      // Row 29: transcriptLink
+      ["play"],
+      // Row 30: transcriptShowFontIcon
+      [""],
+      // Row 31: transcriptShowImageIcon
+      ["play"],
+      // Row 32: transcriptHideFontIcon
+      [""],
+      // Row 33: transcriptHideImageIcon
+      ["after"],
+      // Row 34: transcriptLinkIconPosition
+      [""],
+      // Row 35: classes_customDynamicClass
+      [""],
+      // Row 36: blockId
+      [""],
+      // Row 37: classes_commonCustomClass
+      ["none"],
+      // Row 38: language
+      [""]
+      // Row 39: analytics_id
+    ];
     const block = WebImporter.Blocks.createBlock(document, { name: blockName, cells });
     element.replaceWith(block);
   }
@@ -285,9 +565,77 @@ var CustomImportScript = (() => {
   function transform(hookName, element, payload) {
     if (hookName !== "beforeTransform") return;
     const { document } = payload;
-    ["#onetrust-consent-sdk", ".experiencefragment", ".cmp-experiencefragment--header", ".cmp-experiencefragment--footer", "header.nav-bar", ".button.back-to-top", "link[href]", "noscript", "script", "style", ".sticky-nav"].forEach((sel) => {
-      document.querySelectorAll(sel).forEach((el) => el.remove());
+    [
+      "#onetrust-consent-sdk",
+      ".experiencefragment",
+      ".cmp-experiencefragment--header",
+      ".cmp-experiencefragment--footer",
+      "header.nav-bar",
+      ".button.back-to-top",
+      "link[href]",
+      "noscript",
+      "script",
+      "style",
+      ".sticky-nav",
+      // Related content / dashboard cards area (renders as junk text)
+      ".dashboardcards",
+      '[class*="dashboardcards"]',
+      // Warn-on-leave / disclaimer popup
+      '[class*="warnonleave"]',
+      '[class*="warn-on"]',
+      ".popup-container",
+      "[data-popup-type]",
+      // Tracking pixels and ad iframes
+      "iframe",
+      'img[src*="adsrvr"]',
+      'img[src*="twitter.com"]',
+      'img[src*="t.co"]',
+      'img[src*="bing.com"]',
+      'a[href*="adsrvr"]',
+      'a[href*="insight.adsrvr"]',
+      // Popup close button and related content header
+      ".popup-close",
+      ".standard-header-with-divider"
+    ].forEach((sel) => {
+      try {
+        document.querySelectorAll(sel).forEach((el) => el.remove());
+      } catch (e) {
+      }
     });
+    const warnContainers = document.querySelectorAll('[class*="warnonthirdparty"], [class*="warn-on-legal"]');
+    warnContainers.forEach((el) => el.remove());
+    document.querySelectorAll(".container.cmp-container-medium.height-short").forEach((el) => el.remove());
+    const overlapContainers = document.querySelectorAll(".container.overlap-predecessor");
+    overlapContainers.forEach((overlap) => {
+      const unwrap = (el) => {
+        const containers = el.querySelectorAll(":scope > .cmp-container, :scope > .container");
+        containers.forEach((c) => unwrap(c));
+        const parent = el.parentNode;
+        if (parent) {
+          while (el.firstChild) {
+            parent.insertBefore(el.firstChild, el);
+          }
+          el.remove();
+        }
+      };
+      unwrap(overlap);
+    });
+    document.querySelectorAll("[data-cmp-src]").forEach((el) => {
+      if (!el.querySelector("img")) {
+        const img = document.createElement("img");
+        img.setAttribute("src", el.getAttribute("data-cmp-src"));
+        img.setAttribute("alt", el.getAttribute("data-alt") || el.getAttribute("alt") || "");
+        img.setAttribute("loading", "lazy");
+        el.appendChild(img);
+      }
+    });
+    const relatedCards = document.querySelectorAll(".cardpagestory");
+    if (relatedCards.length > 0) {
+      const container = document.createElement("div");
+      container.id = "related-content-cards";
+      relatedCards.forEach((card) => container.appendChild(card));
+      document.body.appendChild(container);
+    }
   }
 
   // tools/importer/transformers/abbvie-sections.js
@@ -295,37 +643,178 @@ var CustomImportScript = (() => {
     if (hookName !== "afterTransform") return;
     const { document } = payload;
     const main = document.body;
-    const heroMeta = WebImporter.Blocks.createBlock(document, { name: "section-metadata (content-wide, medium-radius)", cells: [["language", "none"]] });
-    const gridContainerMeta = WebImporter.Blocks.createBlock(document, { name: "section-metadata (grid-container, content-regular)", cells: [["language", "none"]] });
-    const leftSpacerMeta = WebImporter.Blocks.createBlock(document, { name: "section-metadata (grid-cols-2)", cells: [["", ""]] });
-    const mainContentMeta = WebImporter.Blocks.createBlock(document, { name: "section-metadata (grid-section, grid-cols-8)", cells: [["", ""]] });
-    const rightSpacerMeta = WebImporter.Blocks.createBlock(document, { name: "section-metadata (grid-cols-2)", cells: [["", ""]] });
-    const overlapContainer = main.querySelector(".container.overlap-predecessor");
-    const gridEl = main.querySelector(".grid");
-    if (overlapContainer) {
-      let lastHeroEl = overlapContainer;
-      while (lastHeroEl.nextElementSibling && lastHeroEl.nextElementSibling !== gridEl) lastHeroEl = lastHeroEl.nextElementSibling;
-      lastHeroEl.after(heroMeta);
-      heroMeta.after(document.createElement("hr"));
+    main.querySelectorAll("h5").forEach((h) => {
+      const text = h.textContent.trim().toLowerCase();
+      if (text === "related content" || text === "related contents") h.remove();
+    });
+    main.querySelectorAll("p").forEach((p) => {
+      const text = p.textContent.trim();
+      if (text === "Related content" || text === "CLOSE" || text === "No, I disagree" || text === "Yes, I agree") p.remove();
+    });
+    function getBlockName(el) {
+      if (!el || !el.querySelector) return "";
+      const th = el.querySelector("th");
+      return th ? th.textContent.trim().toLowerCase().replace(/\s+/g, "-") : "";
     }
-    if (gridEl) {
-      gridEl.before(gridContainerMeta);
-      gridContainerMeta.after(document.createElement("hr"));
-      const mainCol = main.querySelector(".grid-row__col-with-8");
-      if (mainCol) {
-        mainCol.before(leftSpacerMeta);
-        leftSpacerMeta.after(document.createElement("hr"));
-        mainCol.appendChild(mainContentMeta);
-        mainCol.after(document.createElement("hr"));
-        mainCol.after(rightSpacerMeta);
+    function isHeroBlock(el) {
+      const name = getBlockName(el);
+      if (name === "hero-container") return true;
+      if (name.startsWith("cta")) return true;
+      if (name === "story-card") {
+        const firstTd = el.querySelector("td");
+        return firstTd && firstTd.textContent.trim() === "storyCardInfo";
+      }
+      if (name.startsWith("custom-title") && name.includes("h1")) return true;
+      if (name.startsWith("text-container") && name.includes("body-unica-32-reg")) return true;
+      return false;
+    }
+    const allElements = Array.from(main.querySelectorAll(":scope > *, :scope > * > table, :scope > * table"));
+    const allTables = Array.from(main.querySelectorAll("table"));
+    const relatedCards = [];
+    const heroContent = [];
+    const bodyContent = [];
+    const relatedContainer = main.querySelector("#related-content-cards");
+    if (relatedContainer) {
+      Array.from(relatedContainer.children).forEach((el) => relatedCards.push(el));
+      relatedContainer.remove();
+    }
+    const mainCol = main.querySelector(".grid-row__col-with-8");
+    const allChildren = Array.from(main.children);
+    let bodyElements = mainCol ? Array.from(mainCol.children) : [];
+    let foundHero = null, foundCta = null, foundStoryCard = null, foundTitle = null, foundSubtitle = null;
+    allTables.forEach((table) => {
+      const name = getBlockName(table);
+      if (!foundHero && name.startsWith("hero-container")) {
+        foundHero = table;
+        return;
+      }
+      if (!foundCta && name.startsWith("cta")) {
+        foundCta = table;
+        return;
+      }
+      if (!foundStoryCard && name === "story-card") {
+        const firstTd = table.querySelector("td");
+        if (firstTd && firstTd.textContent.trim() === "storyCardInfo") {
+          foundStoryCard = table;
+          return;
+        }
+      }
+      if (!foundTitle && name.startsWith("custom-title") && name.includes("h1")) {
+        foundTitle = table;
+        return;
+      }
+      if (!foundSubtitle && name.startsWith("text-container") && name.includes("body-unica-32-reg")) {
+        foundSubtitle = table;
+        return;
+      }
+    });
+    if (foundHero) heroContent.push(foundHero);
+    if (foundCta) heroContent.push(foundCta);
+    if (foundStoryCard) heroContent.push(foundStoryCard);
+    if (foundTitle) heroContent.push(foundTitle);
+    if (foundSubtitle) heroContent.push(foundSubtitle);
+    const heroSet = new Set(heroContent);
+    if (mainCol) {
+      Array.from(mainCol.children).forEach((el) => {
+        if (!heroSet.has(el)) bodyContent.push(el);
+      });
+    }
+    while (main.firstChild) main.removeChild(main.firstChild);
+    heroContent.forEach((el) => main.appendChild(el));
+    main.appendChild(WebImporter.Blocks.createBlock(document, {
+      name: "Section Metadata",
+      cells: [
+        ["classes_customClass", "content-wide medium-radius"],
+        ["language", "none"]
+      ]
+    }));
+    main.appendChild(document.createElement("hr"));
+    main.appendChild(WebImporter.Blocks.createBlock(document, {
+      name: "Section Metadata",
+      cells: [
+        ["name", "Grid Container"],
+        ["identifier", "Grid Container"],
+        ["classes_container", "grid-container"],
+        ["classes_customDynamicClass", "content-regular"],
+        ["blockModelId", "grid-container"],
+        ["language", "none"]
+      ]
+    }));
+    main.appendChild(document.createElement("hr"));
+    main.appendChild(WebImporter.Blocks.createBlock(document, {
+      name: "Section Metadata",
+      cells: [
+        ["name", "Grid Section"],
+        ["identifier", "Grid Section"],
+        ["classes_container", "grid-section"],
+        ["classes_customDynamicClass", "grid-cols-2"],
+        ["blockModelId", "grid-section"],
+        ["language", "none"]
+      ]
+    }));
+    main.appendChild(document.createElement("hr"));
+    bodyContent.forEach((el) => main.appendChild(el));
+    main.appendChild(WebImporter.Blocks.createBlock(document, {
+      name: "Section Metadata",
+      cells: [
+        ["name", "Grid Section"],
+        ["identifier", "Grid Section"],
+        ["classes_container", "grid-section"],
+        ["classes_customDynamicClass", "grid-cols-8"],
+        ["blockModelId", "grid-section"],
+        ["language", "none"]
+      ]
+    }));
+    main.appendChild(document.createElement("hr"));
+    if (relatedCards.length > 0) {
+      main.appendChild(relatedCards[0]);
+    }
+    main.appendChild(WebImporter.Blocks.createBlock(document, {
+      name: "Section Metadata",
+      cells: [
+        ["name", "Grid Section"],
+        ["identifier", "Grid Section"],
+        ["classes_container", "grid-section"],
+        ["classes_customDynamicClass", "grid-cols-2"],
+        ["blockModelId", "grid-section"],
+        ["language", "none"]
+      ]
+    }));
+    if (relatedCards.length > 1) {
+      main.appendChild(document.createElement("hr"));
+      main.appendChild(WebImporter.Blocks.createBlock(document, {
+        name: "Section Metadata",
+        cells: [
+          ["name", "Grid Container"],
+          ["identifier", "Grid Container"],
+          ["classes_container", "grid-container"],
+          ["classes_customDynamicClass", "bg-f4f4f4 regular-padding no-top-padding no-bottom-margin"],
+          ["blockModelId", "grid-container"],
+          ["language", "none"]
+        ]
+      }));
+      for (let i = 1; i < relatedCards.length; i++) {
+        main.appendChild(document.createElement("hr"));
+        main.appendChild(relatedCards[i]);
+        main.appendChild(WebImporter.Blocks.createBlock(document, {
+          name: "Section Metadata",
+          cells: [
+            ["name", "Grid Section"],
+            ["identifier", "Grid Section"],
+            ["classes_container", "grid-section"],
+            ["classes_customDynamicClass", "grid-cols-6"],
+            ["blockModelId", "grid-section"],
+            ["language", "none"]
+          ]
+        }));
       }
     }
   }
 
   // tools/importer/import-story-article.js
-  var parsers = { "hero-container": parse, "cta": parse2, "story-card": parse3, "custom-title": parse4, "text-container": parse5, "separator": parse6, "carousel": parse7, "custom-image": parse8, "accordion": parse9 };
+  var parsers = { "hero-container": parse, "cta": parse2, "story-card": parse3, "custom-title": parse4, "text-container": parse5, "separator": parse6, "carousel": parse7, "custom-image": parse8, "accordion": parse9, "quote": parse10, "brightcove-video": parse11 };
   var transformers = [transform, transform2];
-  var PAGE_TEMPLATE = { name: "story-article", blocks: [{ name: "hero-container", instances: [".container.cmp-container-full-width.height-default"] }, { name: "cta", instances: [".button.back-cta"] }, { name: "story-card", instances: [".storyinfo"] }, { name: "custom-title", instances: [".title.cmp-title-xx-large"] }, { name: "text-container", instances: [".text.cmp-text-xx-large", ".text.cmp-text-x-large"] }, { name: "separator", instances: [".separator.separator-height-24", ".separator.separator-height-48", ".separator.separator-height-80"] }, { name: "carousel", instances: [".carousel.panelcontainer.carousel-minimal"] }, { name: "custom-image", instances: [".image .cmp-image"] }, { name: "accordion", instances: [".accordion.panelcontainer"] }] };
+  var PAGE_TEMPLATE = { name: "story-article", blocks: [{ name: "hero-container", instances: [".container.cmp-container-full-width.height-default", ".container.cmp-container-full-width.no-bottom-margin"] }, { name: "cta", instances: [".button.back-cta"] }, { name: "story-card", instances: [".storyinfo", ".cardpagestory"] }, { name: "custom-image", instances: [".image:not(.cmp-video__image)", 'div.image[class="image"]:not(.cmp-video__image)'] }, { name: "custom-title", instances: [".title.cmp-title-xx-large"] }, { name: "text-container", instances: [".text.cmp-text-xx-large", ".text.cmp-text-x-large"] }, { name: "separator", instances: [".separator.separator-height-24", ".separator.separator-height-48", ".separator.separator-height-80"] }, { name: "carousel", instances: [".carousel.panelcontainer.carousel-minimal"] }, { name: "accordion", instances: [".accordion.panelcontainer"] }, { name: "quote", instances: [".quote.cmp-quote-xx-large"] }, { name: "brightcove-video", instances: [".video.cmp-video-xx-large"] }] };
   function executeTransformers(hookName, element, payload) {
     transformers.forEach((fn) => {
       try {

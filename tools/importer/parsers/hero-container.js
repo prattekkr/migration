@@ -16,7 +16,9 @@ export default function parse(element, { document }) {
       pic.appendChild(img); imageCell.appendChild(pic);
     }
   }
-  const cells = [[imageCell]];
+  const empty = () => document.createElement('div');
+  // 1 row × 6 cols matching hero-container-item fields: image, videoUrl, text, bgColor, ctaLabel, ctaUrl
+  const cells = [[imageCell, empty(), empty(), empty(), empty(), empty()]];
   const block = WebImporter.Blocks.createBlock(document, { name: blockName, cells });
   element.replaceWith(block);
 }

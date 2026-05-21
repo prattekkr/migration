@@ -44,7 +44,7 @@ export default function parse(element, { document }) {
   const childTypeCell = document.createElement('div');
   childTypeCell.textContent = 'text-container-text';
 
-  // 4 block-level rows (1 col each) + 1 child item row (2 cols)
+  // 5 rows: 4 block-level (1 col each) + 1 child item (2 cols)
   const cells = [
     [''],                              // Row 0: classes group (empty)
     [''],                              // Row 1: blockId (empty)
