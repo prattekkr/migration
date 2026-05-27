@@ -1,0 +1,24 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/a-legacy-of-leadership-in-mental-health.html",
+  "path": "who-we-are/our-stories/a-legacy-of-leadership-in-mental-health",
+  "timestamp": "2026-05-27T16:08:42.714Z",
+  "title": "How AbbVie is working to push boundaries in mental health research | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "cta",
+    "story-card",
+    "story-card",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "separator",
+    "quote"
+  ]
+}

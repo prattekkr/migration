@@ -1,0 +1,27 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/meet-the-arch-a-time-saving-tool-for-researchers-focused-on-finding-cures.html",
+  "path": "who-we-are/our-stories/meet-the-arch-a-time-saving-tool-for-researchers-focused-on-finding-cures",
+  "timestamp": "2026-05-27T16:16:50.534Z",
+  "title": "Meet the ARCH, a time-saving tool for researchers focused on finding cures | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "cta",
+    "story-card",
+    "story-card",
+    "custom-image",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "separator",
+    "separator",
+    "quote"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/two-lives-converging-in-the-fight-against-parkinsons.html",
+  "path": "who-we-are/our-stories/two-lives-converging-in-the-fight-against-parkinsons",
+  "timestamp": "2026-05-27T16:23:18.772Z",
+  "title": "Two Lives Converge in the Fight Against Parkinson’s | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "cta",
+    "story-card",
+    "story-card",
+    "custom-image",
+    "custom-image",
+    "custom-image",
+    "custom-image",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "quote"
+  ]
+}

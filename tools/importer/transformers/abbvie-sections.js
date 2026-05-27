@@ -76,8 +76,11 @@ export default function transform(hookName, element, payload) {
   const allChildren = Array.from(main.children);
   let bodyElements = mainCol ? Array.from(mainCol.children) : [];
 
+  // Hero image is now inside the hero-container block (as child item row)
+  // No separate image extraction needed
+
   // Hero = exactly these blocks (one of each, in order):
-  // 1. hero-container, 2. cta, 3. story-card(storyCardInfo), 4. custom-title(h1), 5. text-container(hero subtitle)
+  // 0. hero image (<p><picture>), 1. hero-container, 2. cta, 3. story-card(storyCardInfo), 4. custom-title(h1), 5. text-container(hero subtitle)
   // Find ONE of each from allTables, then everything else is body content.
   let foundHero = null, foundCta = null, foundStoryCard = null, foundTitle = null, foundSubtitle = null;
 

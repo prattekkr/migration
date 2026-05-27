@@ -1,0 +1,32 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/an-innovative-approach-to-improve-maternal-health.html",
+  "path": "who-we-are/our-stories/an-innovative-approach-to-improve-maternal-health",
+  "timestamp": "2026-05-27T16:09:48.270Z",
+  "title": "An Innovative Approach to Improve Maternal Health | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "cta",
+    "story-card",
+    "custom-image",
+    "custom-image",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "separator",
+    "separator",
+    "separator",
+    "separator",
+    "quote"
+  ]
+}

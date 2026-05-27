@@ -1,0 +1,29 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/living-with-an-illness.html",
+  "path": "who-we-are/our-stories/living-with-an-illness",
+  "timestamp": "2026-05-27T16:15:12.014Z",
+  "title": "How AbbVie makes medications more accessible | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "hero-container",
+    "cta",
+    "story-card",
+    "custom-image",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "separator",
+    "separator",
+    "quote"
+  ]
+}

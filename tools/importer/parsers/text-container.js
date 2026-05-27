@@ -1,7 +1,16 @@
 /* eslint-disable */
 /* global WebImporter */
+
+// Track if hero subtitle has been found (only first light-theme text is hero)
+let heroSubtitleFound = false;
+
 export default function parse(element, { document }) {
-  const isInHero = !!(element.closest('.cmp-container-full-width') || element.closest('.container.height-default') || (element.classList.contains('light-theme') && element.classList.contains('cmp-text-xx-large')));
+  // Hero subtitle: FIRST text with light-theme + cmp-text-xx-large only
+  let isInHero = false;
+  if (!heroSubtitleFound && element.classList.contains('light-theme') && element.classList.contains('cmp-text-xx-large')) {
+    isInHero = true;
+    heroSubtitleFound = true;
+  }
   const variantClasses = [];
   if (element.classList.contains('cmp-text-xx-large')) {
     if (isInHero) variantClasses.push('body-unica-32-reg');

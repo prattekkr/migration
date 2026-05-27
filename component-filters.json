@@ -102,22 +102,10 @@
     ]
   },
   {
-    "id": "grid-container",
-    "components": []
-  },
-  {
     "id": "accordion",
     "components": [
       "accordion-item"
     ]
-  },
-  {
-    "id": "brightcove-podcast-player",
-    "components": []
-  },
-  {
-    "id": "brightcove-video",
-    "components": []
   },
   {
     "id": "cards",
@@ -141,18 +129,10 @@
     ]
   },
   {
-    "id": "custom-title",
-    "components": []
-  },
-  {
     "id": "editorial-feed",
     "components": [
       "category-item"
     ]
-  },
-  {
-    "id": "eyebrow-text",
-    "components": []
   },
   {
     "id": "hero-container",
@@ -167,10 +147,6 @@
     ]
   },
   {
-    "id": "linklist-child-pages",
-    "components": []
-  },
-  {
     "id": "press-releases",
     "components": [
       "press-release"
@@ -181,14 +157,6 @@
     "components": [
       "number"
     ]
-  },
-  {
-    "id": "search-input",
-    "components": []
-  },
-  {
-    "id": "separator",
-    "components": []
   },
   {
     "id": "social-media",
@@ -244,9 +212,5 @@
       "text-container-image",
       "text-container-text"
     ]
-  },
-  {
-    "id": "video",
-    "components": []
   }
 ]

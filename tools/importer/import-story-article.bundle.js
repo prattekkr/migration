@@ -42,11 +42,26 @@ var CustomImportScript = (() => {
   });
 
   // tools/importer/parsers/hero-container.js
+  function getMimeType(url) {
+    const u = (url || "").toLowerCase().split("?")[0];
+    if (u.endsWith(".png")) return "image/png";
+    if (u.endsWith(".jpg") || u.endsWith(".jpeg")) return "image/jpeg";
+    if (u.endsWith(".webp")) return "image/webp";
+    if (u.endsWith(".avif")) return "image/avif";
+    if (u.endsWith(".gif")) return "image/gif";
+    if (u.endsWith(".svg")) return "image/svg+xml";
+    if (url.includes("fmt=webp")) return "image/webp";
+    if (url.includes("fmt=png")) return "image/png";
+    if (url.includes("fmt=jpg") || url.includes("fmt=jpeg")) return "image/jpeg";
+    if (url.includes("scene7.com")) return "image/jpeg";
+    return "image/jpeg";
+  }
   function parse(element, { document }) {
     const variantClasses = [];
     ["height-default", "height-short", "height-tall", "height-xx-tall", "overlay-height-short", "overlay-height-default", "overlay-height-tall", "overlay-height-xx-tall"].forEach((v) => {
       if (element.classList.contains(v)) variantClasses.push(v);
     });
+    if (!variantClasses.some((v) => v.startsWith("height-") && !v.startsWith("height-xx"))) variantClasses.unshift("height-default");
     if (!variantClasses.some((v) => v.startsWith("overlay-height"))) variantClasses.push("overlay-height-short");
     const blockName = variantClasses.length > 0 ? `hero-container (${variantClasses.join(", ")})` : "hero-container";
     const bgImage = element.querySelector("img.cmp-container__bg-image") || element.querySelector(".cmp-container img") || element.querySelector("img");
@@ -56,6 +71,11 @@ var CustomImportScript = (() => {
       const alt = bgImage.getAttribute("alt") || "";
       if (src && !src.startsWith("blob:") && !src.startsWith("data:")) {
         const pic = document.createElement("picture");
+        const mimeType2 = getMimeType(src);
+        const source = document.createElement("source");
+        source.setAttribute("type", mimeType2);
+        source.setAttribute("srcset", src);
+        pic.appendChild(source);
         const img = document.createElement("img");
         img.setAttribute("src", src);
         img.setAttribute("alt", alt);
@@ -65,7 +85,15 @@ var CustomImportScript = (() => {
       }
     }
     const empty = () => document.createElement("div");
-    const cells = [[imageCell, empty(), empty(), empty(), empty(), empty()]];
+    const mimeType = getMimeType((bgImage == null ? void 0 : bgImage.getAttribute("data-cmp-src")) || (bgImage == null ? void 0 : bgImage.getAttribute("src")) || "");
+    const mimeCell = document.createElement("div");
+    mimeCell.textContent = mimeType;
+    const altCell = document.createElement("div");
+    altCell.textContent = (bgImage == null ? void 0 : bgImage.getAttribute("alt")) || "";
+    const cells = [
+      [empty()],
+      [imageCell, mimeCell, altCell, empty(), empty(), empty(), empty(), empty()]
+    ];
     const block = WebImporter.Blocks.createBlock(document, { name: blockName, cells });
     element.replaceWith(block);
   }
@@ -198,8 +226,13 @@ var CustomImportScript = (() => {
   }
 
   // tools/importer/parsers/text-container.js
+  var heroSubtitleFound = false;
   function parse5(element, { document }) {
-    const isInHero = !!(element.closest(".cmp-container-full-width") || element.closest(".container.height-default") || element.classList.contains("light-theme") && element.classList.contains("cmp-text-xx-large"));
+    let isInHero = false;
+    if (!heroSubtitleFound && element.classList.contains("light-theme") && element.classList.contains("cmp-text-xx-large")) {
+      isInHero = true;
+      heroSubtitleFound = true;
+    }
     const variantClasses = [];
     if (element.classList.contains("cmp-text-xx-large")) {
       if (isInHero) variantClasses.push("body-unica-32-reg");
@@ -280,16 +313,44 @@ var CustomImportScript = (() => {
   }
 
   // tools/importer/parsers/custom-image.js
+  function getMimeType2(url) {
+    const u = (url || "").toLowerCase().split("?")[0];
+    if (u.endsWith(".png")) return "image/png";
+    if (u.endsWith(".jpg") || u.endsWith(".jpeg")) return "image/jpeg";
+    if (u.endsWith(".webp")) return "image/webp";
+    if (u.endsWith(".avif")) return "image/avif";
+    if (u.endsWith(".gif")) return "image/gif";
+    if (u.endsWith(".svg")) return "image/svg+xml";
+    if (url.includes("fmt=webp")) return "image/webp";
+    if (url.includes("fmt=png")) return "image/png";
+    if (url.includes("fmt=jpg") || url.includes("fmt=jpeg")) return "image/jpeg";
+    if (url.includes("scene7.com")) return "image/jpeg";
+    return "image/jpeg";
+  }
   function parse8(element, { document }) {
     const img = element.querySelector("img");
+    const cmpDiv = element.querySelector("[data-cmp-src]");
+    const cmpIs = element.querySelector('[data-cmp-is="image"]');
     let imgSrc = "", imgAlt = "";
     if (img) {
       imgSrc = img.getAttribute("data-cmp-src") || img.getAttribute("src") || "";
       imgAlt = img.getAttribute("alt") || "";
     }
+    if (!imgSrc && cmpDiv) {
+      imgSrc = cmpDiv.getAttribute("data-cmp-src") || "";
+      imgAlt = cmpDiv.getAttribute("data-alt") || "";
+    }
+    if (!imgSrc && cmpIs) {
+      imgSrc = cmpIs.getAttribute("data-cmp-src") || "";
+    }
     const imageCell = document.createElement("div");
     if (imgSrc && !imgSrc.startsWith("blob:") && !imgSrc.startsWith("data:")) {
       const pic = document.createElement("picture");
+      const mimeType = getMimeType2(imgSrc);
+      const source = document.createElement("source");
+      source.setAttribute("type", mimeType);
+      source.setAttribute("srcset", imgSrc);
+      pic.appendChild(source);
       const imgEl = document.createElement("img");
       imgEl.setAttribute("src", imgSrc);
       imgEl.setAttribute("alt", imgAlt);
@@ -313,19 +374,27 @@ var CustomImportScript = (() => {
     const items = element.querySelectorAll(".cmp-accordion__item");
     items.forEach((item) => {
       var _a2;
-      const headingEl = item.querySelector(".cmp-accordion__header button, .cmp-accordion__button");
-      const panelEl = item.querySelector(".cmp-accordion__panel");
+      const headingEl = item.querySelector(".cmp-accordion__button span, .cmp-accordion__header button, .cmp-accordion__button");
       const headingText = ((_a2 = headingEl == null ? void 0 : headingEl.textContent) == null ? void 0 : _a2.trim()) || "";
+      const panelEl = item.querySelector(".cmp-accordion__panel");
       const bodyCell = document.createElement("div");
       if (panelEl) {
-        const pc = panelEl.querySelectorAll("p, div, ul, ol");
-        if (pc.length > 0) pc.forEach((c) => {
-          if (c.textContent.trim()) bodyCell.appendChild(c.cloneNode(true));
-        });
-        else if (panelEl.textContent.trim()) {
-          const p = document.createElement("p");
-          p.textContent = panelEl.textContent.trim();
-          bodyCell.appendChild(p);
+        const cmpText = panelEl.querySelector(".cmp-text");
+        if (cmpText) {
+          Array.from(cmpText.children).forEach((child) => {
+            if (child.textContent.trim()) bodyCell.appendChild(child.cloneNode(true));
+          });
+        } else {
+          const directPs = panelEl.querySelectorAll(":scope > p, :scope > .cmp-text > p");
+          if (directPs.length > 0) {
+            directPs.forEach((p) => {
+              if (p.textContent.trim()) bodyCell.appendChild(p.cloneNode(true));
+            });
+          } else if (panelEl.textContent.trim()) {
+            const p = document.createElement("p");
+            p.textContent = panelEl.textContent.trim();
+            bodyCell.appendChild(p);
+          }
         }
       }
       cells.push([headingText, bodyCell, "accordion-item", "", ""]);
@@ -371,7 +440,6 @@ var CustomImportScript = (() => {
   function parse11(element, { document }) {
     var _a, _b;
     const variantClasses = [];
-    if (element.classList.contains("cmp-video-xx-large")) variantClasses.push("cmp-video-xx-large");
     const blockName = variantClasses.length > 0 ? `brightcove-video (${variantClasses.join(", ")})` : "brightcove-video";
     const videoEl = element.querySelector("[data-video-id]") || element.querySelector("video-js");
     const videoId = (videoEl == null ? void 0 : videoEl.getAttribute("data-video-id")) || "";
@@ -745,7 +813,7 @@ var CustomImportScript = (() => {
   // tools/importer/import-story-article.js
   var parsers = { "hero-container": parse, "cta": parse2, "story-card": parse3, "custom-title": parse4, "text-container": parse5, "separator": parse6, "carousel": parse7, "custom-image": parse8, "accordion": parse9, "quote": parse10, "brightcove-video": parse11 };
   var transformers = [transform, transform2];
-  var PAGE_TEMPLATE = { name: "story-article", blocks: [{ name: "hero-container", instances: [".container.cmp-container-full-width.height-default", ".container.cmp-container-full-width.no-bottom-margin"] }, { name: "cta", instances: [".button.back-cta"] }, { name: "story-card", instances: [".storyinfo", ".cardpagestory"] }, { name: "custom-image", instances: [".image:not(.cmp-video__image)", 'div.image[class="image"]:not(.cmp-video__image)'] }, { name: "custom-title", instances: [".title.cmp-title-xx-large"] }, { name: "text-container", instances: [".text.cmp-text-xx-large", ".text.cmp-text-x-large"] }, { name: "separator", instances: [".separator.separator-height-24", ".separator.separator-height-48", ".separator.separator-height-80"] }, { name: "carousel", instances: [".carousel.panelcontainer.carousel-minimal"] }, { name: "accordion", instances: [".accordion.panelcontainer"] }, { name: "quote", instances: [".quote.cmp-quote-xx-large"] }, { name: "brightcove-video", instances: [".video.cmp-video-xx-large"] }] };
+  var PAGE_TEMPLATE = { name: "story-article", blocks: [{ name: "hero-container", instances: [".container.cmp-container-full-width.height-default", ".container.cmp-container-full-width.no-bottom-margin"] }, { name: "cta", instances: [".button.back-cta"] }, { name: "story-card", instances: [".storyinfo", ".cardpagestory"] }, { name: "accordion", instances: [".accordion.panelcontainer"] }, { name: "custom-image", instances: [".image:not(.cmp-video__image)", 'div.image[class="image"]:not(.cmp-video__image)'] }, { name: "custom-title", instances: [".title.cmp-title-xx-large"] }, { name: "text-container", instances: [".text.cmp-text-xx-large", ".text.cmp-text-x-large"] }, { name: "separator", instances: [".separator.separator-height-24", ".separator.separator-height-48", ".separator.separator-height-80"] }, { name: "carousel", instances: [".carousel.panelcontainer.carousel-minimal"] }, { name: "quote", instances: [".quote.cmp-quote-xx-large"] }, { name: "brightcove-video", instances: [".video.cmp-video-xx-large"] }] };
   function executeTransformers(hookName, element, payload) {
     transformers.forEach((fn) => {
       try {

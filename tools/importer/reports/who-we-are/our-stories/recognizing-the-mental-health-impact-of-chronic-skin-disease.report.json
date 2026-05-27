@@ -1,0 +1,32 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/recognizing-the-mental-health-impact-of-chronic-skin-disease.html",
+  "path": "who-we-are/our-stories/recognizing-the-mental-health-impact-of-chronic-skin-disease",
+  "timestamp": "2026-05-27T16:20:31.641Z",
+  "title": "Recognizing the mental health impact of chronic skin disease | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "cta",
+    "story-card",
+    "story-card",
+    "custom-image",
+    "custom-image",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "separator",
+    "separator",
+    "separator",
+    "quote"
+  ]
+}

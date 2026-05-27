@@ -1,0 +1,24 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/real-people-real-inspiration-joes-story.html",
+  "path": "who-we-are/our-stories/real-people-real-inspiration-joes-story",
+  "timestamp": "2026-05-27T16:20:01.746Z",
+  "title": "Real People, Real Inspiration: Joe’s Story | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "hero-container",
+    "cta",
+    "story-card",
+    "story-card",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "separator",
+    "separator",
+    "quote"
+  ]
+}

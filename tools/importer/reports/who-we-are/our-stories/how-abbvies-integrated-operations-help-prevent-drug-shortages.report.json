@@ -1,0 +1,30 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/how-abbvies-integrated-operations-help-prevent-drug-shortages.html",
+  "path": "who-we-are/our-stories/how-abbvies-integrated-operations-help-prevent-drug-shortages",
+  "timestamp": "2026-05-27T16:13:42.636Z",
+  "title": "AbbVie’s Resilient Global Distribution Network Helps Prevent Drug Shortages | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "cta",
+    "story-card",
+    "custom-image",
+    "custom-image",
+    "custom-image",
+    "custom-image",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container"
+  ]
+}

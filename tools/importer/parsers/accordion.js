@@ -8,15 +8,32 @@ export default function parse(element, { document }) {
   const cells = [[title],[expandBtn?.textContent?.trim()||'Expand All'],[collapseBtn?.textContent?.trim()||'Collapse All'],['plus'],['minus'],['plus'],['minus'],[''],[''],[''],[''],[''],[''],[''],['none'],['']];
   const items = element.querySelectorAll('.cmp-accordion__item');
   items.forEach(item => {
-    const headingEl = item.querySelector('.cmp-accordion__header button, .cmp-accordion__button');
-    const panelEl = item.querySelector('.cmp-accordion__panel');
+    // Get the heading/summary text from the accordion button
+    const headingEl = item.querySelector('.cmp-accordion__button span, .cmp-accordion__header button, .cmp-accordion__button');
     const headingText = headingEl?.textContent?.trim() || '';
+    // Get the panel content — only direct text/paragraph children, not nested blocks
+    const panelEl = item.querySelector('.cmp-accordion__panel');
     const bodyCell = document.createElement('div');
     if (panelEl) {
-      const pc = panelEl.querySelectorAll('p, div, ul, ol');
-      if (pc.length > 0) pc.forEach(c => { if (c.textContent.trim()) bodyCell.appendChild(c.cloneNode(true)); });
-      else if (panelEl.textContent.trim()) { const p = document.createElement('p'); p.textContent = panelEl.textContent.trim(); bodyCell.appendChild(p); }
+      // Get only the .cmp-text content inside the panel (not nested block tables)
+      const cmpText = panelEl.querySelector('.cmp-text');
+      if (cmpText) {
+        Array.from(cmpText.children).forEach(child => {
+          if (child.textContent.trim()) bodyCell.appendChild(child.cloneNode(true));
+        });
+      } else {
+        // Fallback: get direct <p> children only (not nested divs which could be blocks)
+        const directPs = panelEl.querySelectorAll(':scope > p, :scope > .cmp-text > p');
+        if (directPs.length > 0) {
+          directPs.forEach(p => { if (p.textContent.trim()) bodyCell.appendChild(p.cloneNode(true)); });
+        } else if (panelEl.textContent.trim()) {
+          const p = document.createElement('p');
+          p.textContent = panelEl.textContent.trim();
+          bodyCell.appendChild(p);
+        }
+      }
     }
+    // Exact reference format: 5 cols [summary, text, "accordion-item", empty, empty]
     cells.push([headingText, bodyCell, 'accordion-item', '', '']);
   });
   const block = WebImporter.Blocks.createBlock(document, { name: blockName, cells });

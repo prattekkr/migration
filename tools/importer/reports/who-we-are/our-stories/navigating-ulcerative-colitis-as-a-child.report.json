@@ -1,0 +1,30 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/navigating-ulcerative-colitis-as-a-child.html",
+  "path": "who-we-are/our-stories/navigating-ulcerative-colitis-as-a-child",
+  "timestamp": "2026-05-27T16:19:09.481Z",
+  "title": "Navigating ulcerative colitis as a child | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "cta",
+    "story-card",
+    "custom-image",
+    "custom-image",
+    "custom-image",
+    "custom-image",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "separator",
+    "brightcove-video"
+  ]
+}

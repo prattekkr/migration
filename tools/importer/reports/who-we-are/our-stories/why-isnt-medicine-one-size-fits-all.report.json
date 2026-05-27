@@ -1,0 +1,30 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/why-isnt-medicine-one-size-fits-all.html",
+  "path": "who-we-are/our-stories/why-isnt-medicine-one-size-fits-all",
+  "timestamp": "2026-05-27T16:23:57.466Z",
+  "title": "Why isn’t medicine one size fits all? | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "cta",
+    "story-card",
+    "custom-image",
+    "custom-image",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "accordion",
+    "quote",
+    "brightcove-video"
+  ]
+}

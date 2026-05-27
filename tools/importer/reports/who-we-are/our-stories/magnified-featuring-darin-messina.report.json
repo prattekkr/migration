@@ -1,0 +1,33 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/magnified-featuring-darin-messina.html",
+  "path": "who-we-are/our-stories/magnified-featuring-darin-messina",
+  "timestamp": "2026-05-27T16:15:26.627Z",
+  "title": "Magnified featuring Darin Messina | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "cta",
+    "story-card",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "separator",
+    "separator",
+    "separator",
+    "separator",
+    "separator",
+    "quote"
+  ]
+}

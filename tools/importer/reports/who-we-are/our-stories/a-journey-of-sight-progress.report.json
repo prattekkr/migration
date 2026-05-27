@@ -1,0 +1,29 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/a-journey-of-sight-progress.html",
+  "path": "who-we-are/our-stories/a-journey-of-sight-progress",
+  "timestamp": "2026-05-27T16:08:35.290Z",
+  "title": "A journey of sight: Progress toward treating neglected tropical diseases | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "cta",
+    "story-card",
+    "story-card",
+    "custom-image",
+    "custom-image",
+    "custom-image",
+    "custom-image",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "quote"
+  ]
+}

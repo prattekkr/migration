@@ -1,0 +1,30 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/navigating-the-hidden-side-of-cancer.html",
+  "path": "who-we-are/our-stories/navigating-the-hidden-side-of-cancer",
+  "timestamp": "2026-05-27T16:17:23.369Z",
+  "title": "Navigating the hidden side of cancer | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "cta",
+    "story-card",
+    "custom-image",
+    "custom-image",
+    "custom-image",
+    "custom-image",
+    "custom-image",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "brightcove-video"
+  ]
+}

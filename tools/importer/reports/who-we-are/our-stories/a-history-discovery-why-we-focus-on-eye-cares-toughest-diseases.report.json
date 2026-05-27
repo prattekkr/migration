@@ -1,0 +1,33 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/a-history-discovery-why-we-focus-on-eye-cares-toughest-diseases.html",
+  "path": "who-we-are/our-stories/a-history-discovery-why-we-focus-on-eye-cares-toughest-diseases",
+  "timestamp": "2026-05-27T16:08:26.448Z",
+  "title": "A history of discovery: Why we focus on challenging eye care diseases | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "cta",
+    "story-card",
+    "story-card",
+    "custom-image",
+    "custom-image",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "separator",
+    "separator",
+    "accordion",
+    "quote",
+    "brightcove-video"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/abbvie-research-collaborative.html",
+  "path": "who-we-are/our-stories/abbvie-research-collaborative",
+  "timestamp": "2026-05-27T16:09:07.002Z",
+  "title": "AbbVie Research Collaborative | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "hero-container",
+    "cta",
+    "story-card",
+    "story-card",
+    "story-card",
+    "story-card",
+    "custom-image",
+    "custom-image",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "accordion",
+    "quote"
+  ]
+}

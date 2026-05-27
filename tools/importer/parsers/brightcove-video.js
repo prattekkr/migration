@@ -8,7 +8,7 @@
  */
 export default function parse(element, { document }) {
   const variantClasses = [];
-  if (element.classList.contains('cmp-video-xx-large')) variantClasses.push('cmp-video-xx-large');
+  // No EDS variants for brightcove-video (cmp-video-xx-large is AEM class, not EDS)
   const blockName = variantClasses.length > 0 ? `brightcove-video (${variantClasses.join(', ')})` : 'brightcove-video';
 
   // Extract video data
