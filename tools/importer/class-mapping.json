@@ -1,0 +1,105 @@
+{
+  "_description": "AEM source class → EDS variant class mapping. Rules evaluated in order, first match wins. 'add' rules always apply (append variants). 'default' is fallback when no rule matches.",
+  "_usage": "Import in parsers: import classMapping from '../class-mapping.json'. Use resolveVariants(element, classMapping['block-name'])",
+
+  "hero-container": {
+    "rules": [
+      {"match": ["height-tall"], "variants": ["height-tall"]},
+      {"match": ["height-short"], "variants": ["height-short"]},
+      {"match": ["height-default"], "variants": ["height-default"]}
+    ],
+    "add": [
+      {"match": ["overlap-predecessor"], "source": "sibling", "variants": ["overlay-height-short"]}
+    ],
+    "default": ["height-default", "overlay-height-short"]
+  },
+
+  "cta": {
+    "rules": [
+      {"match": ["back-cta"], "variants": ["default-cta", "back-cta"]},
+      {"match": ["default-cta"], "variants": ["default-cta"]}
+    ],
+    "default": ["default-cta"]
+  },
+
+  "custom-title": {
+    "rules": [
+      {"match": ["light-theme"], "variants": ["h1-size"]},
+      {"match": ["h3-size", "book-weight"], "variants": ["h3-size", "book-weight", "spacing-bottom", "section-padding"]},
+      {"match": ["h5-size"], "variants": ["h5-size", "width-large"]},
+      {"match": ["medium-weight"], "variants": ["h5-size", "width-large"]}
+    ],
+    "default": []
+  },
+
+  "text-container": {
+    "rules": [
+      {"match": ["cmp-text-xx-large", "light-theme"], "context": "hero", "variants": ["body-unica-32-reg"]},
+      {"match": ["cmp-text-x-large"], "variants": ["spacing-bottom", "width-large", "body-unica-20-reg"]},
+      {"match": ["cmp-text-xx-large", "standard"], "variants": ["standard", "custom-class"]},
+      {"match": ["cmp-text-xx-large", "single-column", "standard"], "variants": ["standard", "width-large", "spacing-bottom", "body-unica-14-reg"]},
+      {"match": ["cmp-text-xx-large"], "variants": ["spacing-bottom", "width-large"]}
+    ],
+    "add": [
+      {"match": ["section-padding"], "variants": ["section-padding"]}
+    ],
+    "default": ["spacing-bottom", "width-large"]
+  },
+
+  "separator": {
+    "rules": [
+      {"match": ["separator-height-24"], "variants": ["separator-height-24"]},
+      {"match": ["separator-height-32"], "variants": ["separator-height-32"]},
+      {"match": ["separator-height-48"], "variants": ["separator-height-48"]},
+      {"match": ["separator-height-64"], "variants": ["separator-height-64"]},
+      {"match": ["separator-height-80"], "variants": ["separator-height-80"]},
+      {"match": ["separator-height-112"], "variants": ["separator-height-112"]}
+    ],
+    "default": ["separator-height-24"]
+  },
+
+  "carousel": {
+    "rules": [
+      {"match": ["carousel-minimal"], "variants": ["carousel-show-btn-margin", "carousel-minimal"]}
+    ],
+    "default": ["carousel-show-btn-margin", "carousel-minimal"]
+  },
+
+  "accordion": {
+    "rules": [
+      {"match": ["cmp-accordion-xx-large"], "variants": ["accordion-icon-font", "h5-size", "width-large"]}
+    ],
+    "default": ["accordion-icon-font", "h5-size", "width-large"]
+  },
+
+  "quote": {
+    "rules": [
+      {"match": ["cmp-quote-xx-large"], "variants": ["quote-standard", "quote-h4"]}
+    ],
+    "default": ["quote-standard", "quote-h4"]
+  },
+
+  "brightcove-video": {
+    "rules": [],
+    "default": []
+  },
+
+  "custom-image": {
+    "rules": [],
+    "default": []
+  },
+
+  "story-card": {
+    "rules": [],
+    "default": []
+  },
+
+  "section-metadata-hero": {
+    "_description": "Hero section styling based on AEM container classes",
+    "rules": [
+      {"match": ["large-radius"], "variants": ["content-wide", "large-radius"]},
+      {"match": ["medium-radius"], "variants": ["content-wide", "medium-radius"]}
+    ],
+    "default": ["content-wide", "medium-radius"]
+  }
+}

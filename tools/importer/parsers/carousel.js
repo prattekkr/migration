@@ -4,10 +4,9 @@ export default function parse(element, { document }) {
   const slides = element.querySelectorAll('.carousel-item, .cmp-carousel__item, .splide__slide, [role="tabpanel"]');
   const uniqueSlides = new Set(); slides.forEach(s => uniqueSlides.add(s));
   const totalSlides = uniqueSlides.size || 0;
-  const variantClasses = [];
-  if (element.classList.contains('carousel-show-btn-margin')) variantClasses.push('carousel-show-btn-margin');
+  const variantClasses = ['carousel-show-btn-margin'];
   if (element.classList.contains('carousel-minimal')) variantClasses.push('carousel-minimal');
-  const blockName = variantClasses.length > 0 ? `carousel (${variantClasses.join(', ')})` : 'carousel';
+  const blockName = `carousel (${variantClasses.join(', ')})`;
   const cells = [[String(totalSlides)],['static'],[''],[''],['false'],['3000'],['false'],['1'],['false'],['1'],['false'],['false'],['true'],['true'],[''],[''],[''],[''],[''],[''],['false'],[''],['none'],['']];
   const block = WebImporter.Blocks.createBlock(document, { name: blockName, cells });
   const fragment = document.createDocumentFragment(); fragment.appendChild(block);

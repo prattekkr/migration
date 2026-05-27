@@ -162,3 +162,16 @@ blocks: [
 7. Verify related cards in bg-f4f4f4 grid-cols-6 sections
 8. Fix any lazy-loaded images manually (check for empty custom-image blocks)
 9. Push and preview on EDS
+
+---
+
+## Companion Files (READ THESE)
+
+| File | What it contains |
+|------|-----------------|
+| `tools/importer/RULES.md` | 12 mandatory rules covering md2jcr mapping, container blocks, variants, grid layout, cleanup, brightcove |
+| `tools/importer/SKILLS.md` | 10 step-by-step skills: pre-flight, import, post-process, validate, fix images, bulk import, add parsers, debug md2jcr |
+| `tools/importer/BLOCK-STRUCTURE.md` | Exact row/col counts for every block from reference pages |
+| `tools/importer/class-mapping.json` | AEM source class → EDS variant mapping rules |
+
+**Before migrating, read RULES.md first. For execution steps, follow SKILLS.md.**

@@ -3,6 +3,8 @@
 export default function parse(element, { document }) {
   const variantClasses = [];
   ['height-default','height-short','height-tall','height-xx-tall','overlay-height-short','overlay-height-default','overlay-height-tall','overlay-height-xx-tall'].forEach(v => { if (element.classList.contains(v)) variantClasses.push(v); });
+  // Always add overlay-height-short (all story articles have it per reference)
+  if (!variantClasses.some(v => v.startsWith('overlay-height'))) variantClasses.push('overlay-height-short');
   const blockName = variantClasses.length > 0 ? `hero-container (${variantClasses.join(', ')})` : 'hero-container';
   const bgImage = element.querySelector('img.cmp-container__bg-image') || element.querySelector('.cmp-container img') || element.querySelector('img');
   const imageCell = document.createElement('div');
@@ -17,7 +19,6 @@ export default function parse(element, { document }) {
     }
   }
   const empty = () => document.createElement('div');
-  // 1 row × 6 cols matching hero-container-item fields: image, videoUrl, text, bgColor, ctaLabel, ctaUrl
   const cells = [[imageCell, empty(), empty(), empty(), empty(), empty()]];
   const block = WebImporter.Blocks.createBlock(document, { name: blockName, cells });
   element.replaceWith(block);

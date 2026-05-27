@@ -47,6 +47,7 @@ var CustomImportScript = (() => {
     ["height-default", "height-short", "height-tall", "height-xx-tall", "overlay-height-short", "overlay-height-default", "overlay-height-tall", "overlay-height-xx-tall"].forEach((v) => {
       if (element.classList.contains(v)) variantClasses.push(v);
     });
+    if (!variantClasses.some((v) => v.startsWith("overlay-height"))) variantClasses.push("overlay-height-short");
     const blockName = variantClasses.length > 0 ? `hero-container (${variantClasses.join(", ")})` : "hero-container";
     const bgImage = element.querySelector("img.cmp-container__bg-image") || element.querySelector(".cmp-container img") || element.querySelector("img");
     const imageCell = document.createElement("div");
@@ -208,6 +209,7 @@ var CustomImportScript = (() => {
     } else {
       variantClasses.push("spacing-bottom", "width-large");
     }
+    if (element.classList.contains("section-padding")) variantClasses.push("section-padding");
     const blockName = variantClasses.length > 0 ? `text-container (${variantClasses.join(", ")})` : "text-container";
     const cmpText = element.querySelector(".cmp-text") || element;
     const contentCell = document.createElement("div");
@@ -222,18 +224,7 @@ var CustomImportScript = (() => {
     if (contentCell.childNodes.length === 0 && cmpText.textContent.trim()) contentCell.textContent = cmpText.textContent.trim();
     const childTypeCell = document.createElement("div");
     childTypeCell.textContent = "text-container-text";
-    const cells = [
-      [""],
-      // Row 0: classes group (empty)
-      [""],
-      // Row 1: blockId (empty)
-      ["none"],
-      // Row 2: language
-      [""],
-      // Row 3: analytics_id (empty)
-      [childTypeCell, contentCell]
-      // Row 4: child item (type + richtext)
-    ];
+    const cells = [[""], [""], ["none"], [""], [childTypeCell, contentCell]];
     const block = WebImporter.Blocks.createBlock(document, { name: blockName, cells });
     element.replaceWith(block);
   }
@@ -244,8 +235,11 @@ var CustomImportScript = (() => {
     const variants = [];
     const cls = element.className || "";
     if (cls.includes("separator-height-24")) variants.push("separator-height-24");
+    else if (cls.includes("separator-height-32")) variants.push("separator-height-32");
     else if (cls.includes("separator-height-48")) variants.push("separator-height-48");
+    else if (cls.includes("separator-height-64")) variants.push("separator-height-64");
     else if (cls.includes("separator-height-80")) variants.push("separator-height-80");
+    else if (cls.includes("separator-height-112")) variants.push("separator-height-112");
     const blockName = variants.length > 0 ? `separator (${variants.join(", ")})` : "separator";
     const cells = [[hasHr ? "true" : "false"], [""], ["none"], [""]];
     const block = WebImporter.Blocks.createBlock(document, { name: blockName, cells });
@@ -258,10 +252,9 @@ var CustomImportScript = (() => {
     const uniqueSlides = /* @__PURE__ */ new Set();
     slides.forEach((s) => uniqueSlides.add(s));
     const totalSlides = uniqueSlides.size || 0;
-    const variantClasses = [];
-    if (element.classList.contains("carousel-show-btn-margin")) variantClasses.push("carousel-show-btn-margin");
+    const variantClasses = ["carousel-show-btn-margin"];
     if (element.classList.contains("carousel-minimal")) variantClasses.push("carousel-minimal");
-    const blockName = variantClasses.length > 0 ? `carousel (${variantClasses.join(", ")})` : "carousel";
+    const blockName = `carousel (${variantClasses.join(", ")})`;
     const cells = [[String(totalSlides)], ["static"], [""], [""], ["false"], ["3000"], ["false"], ["1"], ["false"], ["1"], ["false"], ["false"], ["true"], ["true"], [""], [""], [""], [""], [""], [""], ["false"], [""], ["none"], [""]];
     const block = WebImporter.Blocks.createBlock(document, { name: blockName, cells });
     const fragment = document.createDocumentFragment();
@@ -289,23 +282,10 @@ var CustomImportScript = (() => {
   // tools/importer/parsers/custom-image.js
   function parse8(element, { document }) {
     const img = element.querySelector("img");
-    const cmpDiv = element.querySelector("[data-cmp-src]");
-    const cmpIs = element.querySelector('[data-cmp-is="image"]');
     let imgSrc = "", imgAlt = "";
     if (img) {
       imgSrc = img.getAttribute("data-cmp-src") || img.getAttribute("src") || "";
       imgAlt = img.getAttribute("alt") || "";
-    }
-    if (!imgSrc && cmpDiv) {
-      imgSrc = cmpDiv.getAttribute("data-cmp-src") || "";
-      imgAlt = cmpDiv.getAttribute("data-alt") || cmpDiv.getAttribute("alt") || "";
-    }
-    if (!imgSrc && cmpIs) {
-      imgSrc = cmpIs.getAttribute("data-cmp-src") || "";
-      imgAlt = cmpIs.getAttribute("data-alt") || cmpIs.getAttribute("alt") || "";
-    }
-    if (!imgSrc && element.getAttribute("data-cmp-src")) {
-      imgSrc = element.getAttribute("data-cmp-src");
     }
     const imageCell = document.createElement("div");
     if (imgSrc && !imgSrc.startsWith("blob:") && !imgSrc.startsWith("data:")) {
@@ -325,30 +305,11 @@ var CustomImportScript = (() => {
   // tools/importer/parsers/accordion.js
   function parse9(element, { document }) {
     var _a, _b, _c, _d;
-    const variantClasses = ["accordion-icon-font"];
-    if (element.classList.contains("cmp-accordion-xx-large") || element.classList.contains("h5-size")) variantClasses.push("h5-size", "width-large");
-    const blockName = `accordion (${variantClasses.join(", ")})`;
+    const blockName = "accordion (accordion-icon-font, h5-size, width-large)";
     const title = ((_b = (_a = element.querySelector('.cmp-accordion__title, [class*="accordion__title"]')) == null ? void 0 : _a.textContent) == null ? void 0 : _b.trim()) || "References";
     const expandBtn = element.querySelector('.cmp-accordion__expand-all, [class*="expand-all"]');
     const collapseBtn = element.querySelector('.cmp-accordion__collapse-all, [class*="collapse-all"]');
-    const cells = [
-      [title],
-      [((_c = expandBtn == null ? void 0 : expandBtn.textContent) == null ? void 0 : _c.trim()) || "Expand All"],
-      [((_d = collapseBtn == null ? void 0 : collapseBtn.textContent) == null ? void 0 : _d.trim()) || "Collapse All"],
-      ["plus"],
-      ["minus"],
-      ["plus"],
-      ["minus"],
-      [""],
-      [""],
-      [""],
-      [""],
-      [""],
-      [""],
-      [""],
-      ["none"],
-      [""]
-    ];
+    const cells = [[title], [((_c = expandBtn == null ? void 0 : expandBtn.textContent) == null ? void 0 : _c.trim()) || "Expand All"], [((_d = collapseBtn == null ? void 0 : collapseBtn.textContent) == null ? void 0 : _d.trim()) || "Collapse All"], ["plus"], ["minus"], ["plus"], ["minus"], [""], [""], [""], [""], [""], [""], [""], ["none"], [""]];
     const items = element.querySelectorAll(".cmp-accordion__item");
     items.forEach((item) => {
       var _a2;
@@ -358,11 +319,10 @@ var CustomImportScript = (() => {
       const bodyCell = document.createElement("div");
       if (panelEl) {
         const pc = panelEl.querySelectorAll("p, div, ul, ol");
-        if (pc.length > 0) {
-          pc.forEach((c) => {
-            if (c.textContent.trim()) bodyCell.appendChild(c.cloneNode(true));
-          });
-        } else if (panelEl.textContent.trim()) {
+        if (pc.length > 0) pc.forEach((c) => {
+          if (c.textContent.trim()) bodyCell.appendChild(c.cloneNode(true));
+        });
+        else if (panelEl.textContent.trim()) {
           const p = document.createElement("p");
           p.textContent = panelEl.textContent.trim();
           bodyCell.appendChild(p);
@@ -377,11 +337,7 @@ var CustomImportScript = (() => {
   // tools/importer/parsers/quote.js
   function parse10(element, { document }) {
     var _a, _b, _c, _d, _e;
-    const variantClasses = [];
-    if (element.classList.contains("cmp-quote-xx-large")) variantClasses.push("cmp-quote-xx-large");
-    if (element.classList.contains("quote-standard")) variantClasses.push("quote-standard");
-    if (element.classList.contains("quote-h4")) variantClasses.push("quote-h4");
-    const blockName = variantClasses.length > 0 ? `quote (${variantClasses.join(", ")})` : "quote";
+    const blockName = "quote (quote-standard, quote-h4)";
     const quoteTextEl = element.querySelector(".cmp-quote__text");
     const quoteText = ((_a = quoteTextEl == null ? void 0 : quoteTextEl.textContent) == null ? void 0 : _a.trim()) || "";
     const quotationCell = document.createElement("div");
@@ -406,32 +362,7 @@ var CustomImportScript = (() => {
         authorImageCell.appendChild(pic);
       }
     }
-    const cells = [
-      ["basic"],
-      // Row 0: quoteVariant
-      [quotationCell],
-      // Row 1: quotation (richtext)
-      [authorName],
-      // Row 2: attributionName
-      [authorRole],
-      // Row 3: attributionRole
-      [authorImageCell],
-      // Row 4: attributionImage
-      [""],
-      // Row 5: quoteFragment
-      [""],
-      // Row 6: backgroundImage
-      [""],
-      // Row 7: backgroundImagePreset
-      [""],
-      // Row 8: backgroundImageModifiers
-      [""],
-      // Row 9: classes
-      ["none"],
-      // Row 10: language
-      [""]
-      // Row 11: blockId/analytics
-    ];
+    const cells = [["basic"], [quotationCell], [authorName], [authorRole], [authorImageCell], [""], [""], [""], [""], [""], ["none"], [""]];
     const block = WebImporter.Blocks.createBlock(document, { name: blockName, cells });
     element.replaceWith(block);
   }
