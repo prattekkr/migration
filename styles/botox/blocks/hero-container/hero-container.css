@@ -101,7 +101,7 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  padding: var(--corp-spacing-20) var(--corp-spacing-20) 0;
+  padding: var(--corp-spacing-32) var(--corp-spacing-20) 0;
   box-sizing: border-box;
 }
 
@@ -200,6 +200,15 @@
   .hero-container.purple :where(.hero-container-title-row) :where(p) {
     margin-bottom: var(--corp-spacing-24);
     line-height: var(--corp-typography-lineheight-body-md);
+  }
+}
+
+/* ── Desktop (≥1024px, ≤133rem) ───────────────────────────────────────────── */
+
+@media (min-width: 1024px) and (width <= 1330px) {
+  .hero-container-section-outer {
+    padding-left: var(--corp-spacing-55);
+    padding-right: var(--corp-spacing-55);
   }
 }
 

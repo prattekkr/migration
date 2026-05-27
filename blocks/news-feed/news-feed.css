@@ -72,6 +72,16 @@
   margin-bottom: var(--corp-spacing-32);
 }
 
+/* Dark Theme */
+.news-feed.dark-theme .newsfeed-rss-eyebrow,
+.news-feed.dark-theme .newsfeed-rss-title {
+  color: var(--color-surface-default);
+}
+
+.news-feed.dark-theme .news-feed {
+  border-top: var(--corp-spacing-1) solid var(--color-surface-default);
+}
+
 /* ========================================================================
    Tablet (768px+)
    ======================================================================== */

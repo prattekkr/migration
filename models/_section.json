@@ -102,18 +102,18 @@
       "title": "Grid Section",
       "fields": [
         {
+          "component": "tab",
+          "label": "Overview",
+          "name": "overview"
+        },
+        {
           "component": "text",
           "name": "name",
-          "label": "Section Name",
+          "label": "Grid Section Name",
           "id": "grid-section",
           "description": "The label shown for this section in the Content Tree",
           "value": "",
           "valueType": "string"
-        },
-        {
-          "component": "tab",
-          "label": "Properties",
-          "name": "properties"
         },
         {
           "component": "text",
@@ -216,12 +216,12 @@
         "press-releases",
         "separator",
         "story-card",
-        "form",
         "hero",
         "navigation-content",
         "stock-ticker",
-        "eds-form",
-        "embed-form",
+
+        "form",
+        "embed-adaptive-form",
         "image",
         "quote",
         "search",
@@ -244,7 +244,9 @@
         "news-feed",
         "pipeline-utility-nav",
         "hero-container",
-        "teaser"
+        "teaser",
+        "eyebrow-text",
+        "pipeline"
       ]
     },
     {
@@ -263,12 +265,11 @@
         "press-releases",
         "separator",
         "story-card",
-        "form",
         "hero",
         "navigation-content",
         "stock-ticker",
-        "eds-form",
-        "embed-form",
+        "form",
+        "embed-adaptive-form",
         "image",
         "quote",
         "search",
@@ -290,7 +291,8 @@
         "news-feed",
         "pipeline-utility-nav",
         "teaser",
-        "editorial-feed"
+        "editorial-feed",
+        "eyebrow-text"
       ]
     },
     {

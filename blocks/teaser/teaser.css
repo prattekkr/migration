@@ -34,7 +34,12 @@
   color: var(--corp-color-text-default);
   font-family: var(--heading-font-family-bold);
   font-weight: var(--corp-font-weight-extrabold);
-  line-height: var(--corp-spacing-32);
+  font-size: var(--corp-font-size-28);
+  line-height: var(--corp-spacing-32);  
+}
+
+.teaser .teaser-title :is(strong, b) {
+  font-weight: var(--corp-font-weight-extrabold);
 }
 
 /* H2: mobile → tablet → desktop */
@@ -140,6 +145,7 @@
   }
 
   .teaser .teaser-title {
+    font-size: var(--corp-font-size-36);
     line-height: var(--corp-spacing-40);
   }
 
@@ -196,6 +202,7 @@
 
   .teaser .teaser-title {
     line-height: var(--corp-spacing-64);
+    font-size: var(--corp-font-size-56);
   }
 
   .teaser.teaser-h2 .teaser-title {

@@ -218,6 +218,32 @@
 }
 
 /* =====================================================
+  Text align variants — quote-left, quote-center, quote-right
+   Controls quote text  alignment 
+   ===================================================== */
+
+.align-left blockquote .quote-attribution-text,
+.align-right blockquote .quote-attribution-text,
+.align-center blockquote .quote-attribution-text {
+  flex-grow: 1;
+}
+
+.align-left blockquote .quote-quotation,
+.align-left blockquote .quote-attribution-text {
+  text-align: left; 
+}
+
+.align-center blockquote .quote-quotation,
+.align-center blockquote .quote-attribution-text {
+  text-align: center; 
+}
+
+.align-right blockquote .quote-quotation,
+.align-right blockquote .quote-attribution-text {
+  text-align: right;  
+}
+
+/* =====================================================
    Dark theme — white text on dark/image backgrounds
    ===================================================== */
 .dark .quote .quote-quotation,

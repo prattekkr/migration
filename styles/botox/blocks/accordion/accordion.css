@@ -201,9 +201,6 @@
   display: flex;
   justify-content: space-between;
 }
-.accordion-container .custom-title .custom-title-heading {
-  margin-bottom: var(--corp-spacing-52);
-}
 .dark-theme .accordion-item-label p,
 .dark-theme .accordion-item-label h2,
 .dark-theme .accordion-item-label h3,
@@ -408,137 +405,160 @@
   .accordion.h5-size :where(.accordion-item-label)::before {
     font-size: var(--corp-font-size-28);
   }
-}
-@media (min-width: 1024px) {
-  .accordion-wrapper {
+
+  /* Width variations — tablet */
+  .accordion:where(.width-medium),
+  .accordion:where(.width-small),
+  .accordion:where(.width-x-small) {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
-    width: 100%;
-    gap: var(--corp-gap-lg);
+    gap: 0;
   }
 
-  /* Default (centered) grid columns for each size */
-  .accordion,
-  .accordion.cmp-accordion-xx-large {
-    grid-column: 1 / -1;
+  /* Base rules (0,2,0) — must precede align overrides */
+  .accordion.width-medium > * {
+    grid-column: 1 / span 8;
   }
 
-  .accordion.accordion-xxl {
-    grid-column: 2 / 12;
+  .accordion.width-small > * {
+    grid-column: 1 / span 7;
   }
 
-  .accordion.cmp-accordion-x-large {
-    grid-column: 3 / 11;
+  .accordion.width-x-small > * {
+    grid-column: 2 / span 6;
   }
 
-  .accordion.cmp-accordion-large {
-    grid-column: 4 / 11;
+  /* Align overrides (0,3,0) */
+  .accordion.width-small.align-right > * {
+    grid-column-start: 2;
   }
 
-  .accordion.cmp-accordion-medium {
-    grid-column: 4 / 10;
+  .accordion.width-small.align-left > * {
+    grid-column-start: 1;
   }
 
-  .accordion.cmp-accordion-small {
-    grid-column: 5 / 10;
+  .accordion.width-x-small.align-right > * {
+    grid-column-start: 3;
   }
 
-  .accordion.cmp-accordion-x-small {
-    grid-column: 5 / 9;
+  .accordion.width-x-small.align-left > * {
+    grid-column-start: 1;
+  }
+}
+@media (min-width: 1024px) {
+  /* Width variations — accordion creates its own 12-col internal grid (mirrors text-container pattern) */
+  .accordion.full-width,
+  .accordion:where(.width-x-large),
+  .accordion:where(.width-large),
+  .accordion:where(.width-medium),
+  .accordion:where(.width-small),
+  .accordion:where(.width-x-small),
+  .accordion:where(.width-xx-small),
+  .accordion:where(.width-xxx-small) {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 0;
   }
 
-  /* Alignment overrides for grid layout */
-
-  /* LEFT aligned: start at 1 */
-  .accordion.cmp-accordion-xx-large.align-left {
-    grid-column: 1 / -1;
+  /* Base rules (0,2,0) — must precede align overrides */
+  .accordion.full-width > * {
+    grid-column: 1 / span 12;
   }
 
-  .accordion.accordion-xxl.align-left {
-    grid-column: 1 / 11;
+  .accordion.width-x-large > * {
+    grid-column: 2 / span 10;
   }
 
-  .accordion.cmp-accordion-x-large.align-left {
-    grid-column: 1 / 9;
+  .accordion.width-large > * {
+    grid-column: 2 / span 9;
+    transform: translateX(calc(var(--direction-multiplier, 1) * 100% / 18));
   }
 
-  .accordion.cmp-accordion-large.align-left {
-    grid-column: 1 / 8;
+  .accordion.width-medium > * {
+    grid-column: 3 / span 8;
   }
 
-  .accordion.cmp-accordion-medium.align-left {
-    grid-column: 1 / 7;
+  .accordion.width-small > * {
+    grid-column: 3 / span 7;
+    transform: none;
   }
 
-  .accordion.cmp-accordion-small.align-left {
-    grid-column: 1 / 6;
+  .accordion.width-x-small > * {
+    grid-column: 4 / span 6;
   }
 
-  .accordion.cmp-accordion-x-small.align-left {
-    grid-column: 1 / 5;
+  /* width-xx-small — 5 col */
+  .accordion.width-xx-small > * {
+    grid-column: 4 / span 5;
+    transform: translateX(calc(var(--direction-multiplier, 1) * 100% / 10));
   }
 
-  /* RIGHT aligned: end at -1 */
-  .accordion.cmp-accordion-xx-large.align-right {
-    grid-column: 1 / -1;
+  /* width-xxx-small — 4 col */
+  .accordion.width-xxx-small > * {
+    grid-column: 5 / span 4;
   }
 
-  .accordion.accordion-xxl.align-right {
-    grid-column: 3 / -1;
+  /* Align overrides (0,3,0) */
+  .accordion.width-x-large.align-right > * {
+    grid-column: 3 / span 10;
   }
 
-  .accordion.cmp-accordion-x-large.align-right {
-    grid-column: 5 / -1;
+  .accordion.width-x-large.align-left > * {
+    grid-column: 1 / span 10;
   }
 
-  .accordion.cmp-accordion-large.align-right {
-    grid-column: 6 / -1;
+  .accordion.width-large.align-right > * {
+    grid-column: 4 / span 9;
+    transform: none;
   }
 
-  .accordion.cmp-accordion-medium.align-right {
-    grid-column: 7 / -1;
+  .accordion.width-large.align-left > * {
+    grid-column: 1 / span 9;
+    transform: none;
   }
 
-  .accordion.cmp-accordion-small.align-right {
-    grid-column: 8 / -1;
+  .accordion.width-medium.align-right > * {
+    grid-column: 5 / span 8;
   }
 
-  .accordion.cmp-accordion-x-small.align-right {
-    grid-column: 9 / -1;
+  .accordion.width-medium.align-left > * {
+    grid-column: 1 / span 8;
   }
 
-  /* CENTER aligned: explicit centered grid-column for each size */
-  .accordion.cmp-accordion-xx-large.align-center {
-    grid-column: 1 / -1;
+  .accordion.width-small.align-right > * {
+    grid-column: 6 / span 7;
+    transform: none;
   }
 
-  .accordion.accordion-xxl.align-center {
-    grid-column: 2 / 12;
+  .accordion.width-small.align-left > * {
+    grid-column: 1 / span 7;
+    transform: none;
   }
 
-  .accordion.cmp-accordion-x-large.align-center {
-    grid-column: 3 / 11;
+  .accordion.width-x-small.align-right > * {
+    grid-column: 7 / span 6;
   }
 
-  .accordion.cmp-accordion-large.align-center {
-    grid-column: 4 / 11;
+  .accordion.width-x-small.align-left > * {
+    grid-column: 1 / span 6;
   }
 
-  .accordion.cmp-accordion-medium.align-center {
-    grid-column: 4 / 10;
+  .accordion.width-xx-small.align-right > * {
+    grid-column: 8 / span 5;
+    transform: none;
   }
 
-  .accordion.cmp-accordion-small.align-center {
-    grid-column: 4 / 9;
+  .accordion.width-xx-small.align-left > * {
+    grid-column: 1 / span 5;
+    transform: none;
   }
 
-  .accordion.cmp-accordion-x-small.align-center {
-    grid-column: 5 / 9;
+  .accordion.width-xxx-small.align-right > * {
+    grid-column: 9 / span 4;
   }
 
-  .cmp-accordion-large.align-center,
-  .cmp-accordion-small.align-center {
-    transform: translateX(calc(-1 * 100% / 14));
+  .accordion.width-xxx-small.align-left > * {
+    grid-column: 1 / span 4;
   }
 
   .accordion,

@@ -1,5 +1,7 @@
 .carousel {
-  padding-bottom: var(--corp-spacing-60);
+  --carousel-padding-bottom: var(--corp-spacing-53);
+
+  padding-bottom: var(--carousel-padding-bottom);
   margin-bottom: var(--corp-spacing-56);
 }
 
@@ -240,6 +242,10 @@ button.slide-prev:hover::after {
 }
 
 @media (--bp-desktop) {
+  .carousel {
+    --carousel-padding-bottom: var(--corp-spacing-60);
+  }
+
   .carousel.carousel-default .carousel-slide {
     flex: 0 0 82%;
   }
@@ -272,6 +278,25 @@ button.slide-prev:hover::after {
   .carousel-default[data-slides-to-show] {
     --carousel-peek: 8%;
   }
+
+  .carousel.carousel-show-btn-margin {
+    margin-bottom: var(--corp-spacing-56);
+  }
+}
+
+/* show bottom margin  */
+.carousel.carousel-show-btn-margin {
+  margin-bottom: var(--corp-spacing-56);
+}
+
+/* hide bottom margin  */
+.carousel.carousel-hide-btn-margin {
+  margin-bottom: 0;
+}
+
+/* no bottom margin */
+.carousel.no-bottom-margin {
+  margin-bottom: 0;
 }
 
 @media (--bp-desktop) {
@@ -390,21 +415,6 @@ button.slide-prev:hover::after {
   background-color: var(--color-accent-blue-light);
 }
 
-/* show bottom margin  */
-.carousel.carousel-show-btn-margin {
-  margin-bottom: var(--corp-spacing-56);
-}
-
-/* hide bottom  margin  */
-.carousel.carousel-hide-btn-margin {
-  margin-bottom: 0;
-}
-
-/* no bottom margin */
-.carousel.no-bottom-margin {
-  margin-bottom: 0;
-}
-
 /*** RSS feed slide styles */
 
 .carousel .rsscarousel-slide-date {
@@ -422,7 +432,7 @@ button.slide-prev:hover::after {
 .carousel .rsscarousel-slide-title {
   color: var(--corp-color-text-default);
   display: block;
-  font-family: var(--roboto-regular-font-family);
+  font-family: var(--body-font-family);
   font-size: var(--corp-font-size-14);
   font-weight: var(--corp-font-weight-regular);
   line-height: var(--corp-typography-lineheight-body-sm);

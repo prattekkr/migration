@@ -1,5 +1,6 @@
 .cta {
     --cta-custom-icon-image-size: 1em;
+    --cta-active-opacity: 0.5;
 }
 
 /* -------------------------------------------------------
@@ -56,8 +57,9 @@
         text-transform: var(--text-transform-uppercase);
     }
 
-.cta .button:focus {
+.cta .button:focus, .cta .button:active, .cta .button:focus-visible {
         outline: var(--corp-spacing-1) solid var(--color-navy-dark);
+        outline-offset: var(--corp-focus-visible-outline-offset);
     }
 
 @media (min-width: 744px) {
@@ -67,10 +69,18 @@
     }
 
 .default-cta .button:hover,
+    .default-cta .button:focus-visible,
     :where(.light-theme).default-cta .button:hover,
     :where(.light-theme).default-cta .button:focus-visible {
         color: var(--color-surface-default);
         background-color: var(--color-accent-blue);
+    }
+
+.default-cta .button:active,
+    :where(.light-theme).default-cta .button:active {
+        color: var(--color-surface-default);
+        border-color: var(--color-accent-blue);
+        opacity: var(--cta-active-opacity);
     }
 
 :where(.dark-theme).default-cta a.button {
@@ -80,9 +90,16 @@
     }
 
 :where(.dark-theme).default-cta .button:hover,
-     :where(.dark-theme).default-cta .button:focus-visible {
+    :where(.dark-theme).default-cta .button:focus,
+    :where(.dark-theme).default-cta .button:focus-visible {
         background-color: var(--color-surface-default);
         color: var(--corp-color-text-default);
+    }
+
+:where(.dark-theme).default-cta .button:active {
+        background-color: var(--color-surface-default);
+        color: var(--corp-color-text-default);
+        opacity: var(--cta-active-opacity);
     }
 
 @media (min-width: 1024px)  {
@@ -115,10 +132,17 @@
 }
 
 .external-cta .button:hover,
+.external-cta .button:focus-visible,
 :where(.light-theme).external-cta .button:hover,
  :where(.light-theme).external-cta .button:focus-visible {
     color: var(--corp-color-text-default);
     background-color: unset;
+}
+
+.external-cta .button:active,
+:where(.light-theme).external-cta .button:active {
+    color: var(--corp-color-text-default);
+    opacity: var(--cta-active-opacity);
 }
 
 :where(.dark-theme).external-cta a.button {
@@ -129,6 +153,11 @@
 :where(.dark-theme).external-cta .button:focus-visible {
     color: var(--color-blue-light);
     background-color: unset;
+}
+
+:where(.dark-theme).external-cta .button:active {
+    color: var(--color-blue-light);
+    opacity: var(--cta-active-opacity);
 }
 
 .external-cta a.button::after {
@@ -172,15 +201,28 @@
 }
 
 .internal-cta .button:hover,
+.internal-cta .button:focus-visible,
 :where(.light-theme).internal-cta .button:hover,
 :where(.light-theme).internal-cta .button:focus-visible {
     color: var(--color-navy-dark);
     background-color: unset;
 }
 
+.internal-cta .button:active,
+:where(.light-theme).internal-cta .button:active {
+    color: var(--color-navy-dark);
+    opacity: var(--cta-active-opacity);
+}
+
 :where(.dark-theme).internal-cta .button:hover,
 :where(.dark-theme).internal-cta .button:focus-visible {
     color: var(--color-blue-light);
+    background-color: unset;
+}
+
+:where(.dark-theme).internal-cta .button:active {
+    color: var(--color-blue-light);
+    opacity: var(--cta-active-opacity);
 }
 
 @media (min-width: 744px) {
@@ -235,15 +277,28 @@
 }
 
 .back-cta .button:hover,
+.back-cta .button:focus-visible,
 :where(.light-theme).back-cta .button:hover,
 :where(.light-theme).back-cta .button:focus-visible {
     color: var(--corp-color-text-default);
     background-color: unset;
 }
 
+.back-cta .button:active,
+:where(.light-theme).back-cta .button:active {
+    color: var(--corp-color-text-default);
+    opacity: var(--cta-active-opacity);
+}
+
 :where(.dark-theme).back-cta .button:hover,
 :where(.dark-theme).back-cta .button:focus-visible {
     color: var(--color-blue-light);
+    background-color: unset;
+}
+
+:where(.dark-theme).back-cta .button:active {
+    color: var(--color-blue-light);
+    opacity: var(--cta-active-opacity);
 }
 
 @media (min-width: 744px) {
@@ -339,3 +394,43 @@
     text-transform: unset;
 }
 
+/* -------------------------------------------------------
+   Popup close button style
+   ------------------------------------------------------- */
+
+.cta.popup-close .button-container {
+    margin-bottom: 0;
+}
+
+.cta.popup-close .button {
+    color: transparent;
+    position: relative;
+    padding: var(--corp-spacing-1) var(--corp-spacing-6);
+    margin: 0;
+    width: var(--corp-spacing-40);
+    height: var(--corp-spacing-40);
+    overflow: hidden;
+    background-color: unset;
+    border-radius: 0;
+}
+
+.cta.popup-close .cta-custom-icon {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    color: var(--corp-color-text-default);
+}
+
+.cta.popup-close .cta-custom-icon-font {
+    font-size: var(--corp-font-size-22);
+    transform: none;
+}
+
+@media (min-width: 744px) {
+ .cta.popup-close .button-container {
+     margin-bottom: var(--corp-spacing-24);
+ }
+}

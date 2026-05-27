@@ -218,6 +218,7 @@ function buildEyebrow(config) {
   label.textContent = 'Search Pipeline';
 
   form.append(input, label);
+  form.addEventListener('submit', (e) => e.preventDefault());
   searchContainer.append(form);
   eyebrow.append(searchContainer);
 
@@ -538,6 +539,27 @@ export default async function decorate(block) {
 
   block.append(nav);
 
+  // Central dispatch — notifies the pipeline block of search/filter/sort state
+  const searchInput = block.querySelector('.pipeline-nav-search-input');
+  const sortCurrent = block.querySelector('.pipeline-nav-sort-current');
+
+  function dispatchPipelineFilter() {
+    const searchQuery = searchInput?.value || '';
+    const checked = [...filterPanel.querySelectorAll('input[type="checkbox"]:checked:not([data-filter-type])')];
+    const filters = checked.map((cb) => cb.value);
+    const sortBy = (sortCurrent?.textContent || 'Focus Area').toLowerCase().replace(/\s+/g, '-');
+    document.dispatchEvent(new CustomEvent('pipeline-filter', {
+      detail: { searchQuery, filters, sortBy },
+    }));
+  }
+
+  // Search: dispatch on keyup (matches live site behavior)
+  if (searchInput) {
+    searchInput.addEventListener('keyup', () => {
+      dispatchPipelineFilter();
+    });
+  }
+
   // Wire filter toggle
   const filterBtn = block.querySelector('.pipeline-nav-filter-btn');
   if (filterBtn) {
@@ -569,6 +591,7 @@ export default async function decorate(block) {
         cb.checked = false;
         cb.dispatchEvent(new Event('change', { bubbles: true }));
         updateChips();
+        dispatchPipelineFilter();
       });
       chipsButtons.append(chip);
     });
@@ -578,7 +601,11 @@ export default async function decorate(block) {
     }
   }
 
-  filterPanel.addEventListener('change', updateChips);
+  // Dispatch on every filter checkbox change
+  filterPanel.addEventListener('change', () => {
+    updateChips();
+    dispatchPipelineFilter();
+  });
 
   [chipsClear, navPanelClear].forEach((btn) => {
     if (btn) {
@@ -593,7 +620,19 @@ export default async function decorate(block) {
         });
 
         updateChips();
+        dispatchPipelineFilter();
       });
     }
   });
+
+  // Sort change — dispatch when sort option selected
+  const sortModal = block.querySelector('.pipeline-nav-sort-modal');
+  if (sortModal) {
+    sortModal.addEventListener('click', (e) => {
+      const opt = e.target.closest('button');
+      if (opt) {
+        setTimeout(dispatchPipelineFilter, 0);
+      }
+    });
+  }
 }

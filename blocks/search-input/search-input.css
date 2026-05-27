@@ -1,22 +1,22 @@
 /* search-input block */
 .search-input-wrapper,
-.search-input {
+.search-input:where(.block) {
   width: 100%;
 }
 
-.search-input-form {
+.search-input:where(.block) .search-input-form {
   display: block;
   width: 100%;
 }
 
-.search-input-field {
+.search-input:where(.block) .search-input-field {
   position: relative;
   display: flex;
   flex-direction: column;
   padding-top: var(--corp-spacing-50);
 }
 
-.search-input-text {
+.search-input:where(.block) .search-input-text {
   box-sizing: border-box;
   display: block;
   width: 100%;
@@ -38,22 +38,22 @@
   text-overflow: ellipsis;
 }
 
-.search-input-text:focus {
+.search-input:where(.block) .search-input-text:focus {
   outline: none;
 }
 
-.search-input-text.search-input-error {
+.search-input:where(.block) .search-input-text.search-input-error {
   border-bottom-color: var(--color-error);
 }
 
-.search-input-text::-webkit-search-decoration,
-.search-input-text::-webkit-search-cancel-button,
-.search-input-text::-webkit-search-results-button,
-.search-input-text::-webkit-search-results-decoration {
+.search-input:where(.block) .search-input-text::-webkit-search-decoration,
+.search-input:where(.block) .search-input-text::-webkit-search-cancel-button,
+.search-input:where(.block) .search-input-text::-webkit-search-results-button,
+.search-input:where(.block) .search-input-text::-webkit-search-results-decoration {
   display: none;
 }
 
-.search-input-label {
+.search-input:where(.block) .search-input-label {
   position: absolute;
   top: 0;
   left: 0;
@@ -68,25 +68,29 @@
   transition: all 0.3s ease-in;
 }
 
-.search-input-label-active {
+.search-input:where(.block) .search-input-label-active {
   color: var(--corp-color-text-label);
   opacity: 1;
   transform: translateY(0);
 }
 
-.search-input-text:focus ~ .search-input-label {
+.search-input:where(.block) .search-input-text:focus ~ :where(.search-input-label) {
   color: var(--corp-color-text-label);
   opacity: 1;
   transform: translateY(0);
 }
 
-.search-input-label-down {
+.search-input:where(.block) .search-input-text.search-input-error ~ :where(.search-input-label) {
+  color: var(--color-error);
+}
+
+.search-input:where(.block) .search-input-label-down {
   color: var(--corp-color-text-muted);
   opacity: var(--opacity-muted, 0.7);
   transform: translateY(var(--corp-spacing-30));
 }
 
-.search-input-alert {
+.search-input:where(.block) .search-input-alert {
   display: none;
   margin: 0;
   padding: 0.75rem 0;
@@ -95,15 +99,16 @@
   line-height: var(--corp-typography-lineheight-body-lg);
 }
 
-.search-input-alert p {
+.search-input:where(.block) .search-input-alert p {
   margin: 0;
+  font-size: var(--corp-font-size-12);
 }
 
-.search-input-alert.visible {
+.search-input:where(.block) .search-input-alert.visible {
   display: block;
 }
 
-.search-input-no-results {
+.search-input:where(.block) .search-input-no-results {
   box-sizing: border-box;
   margin-top: var(--corp-spacing-24);
   padding: var(--corp-spacing-10) var(--corp-spacing-20);
@@ -117,43 +122,43 @@
 }
 
 @media (--bp-tablet) {
-  .search-input-text {
+  .search-input:where(.block) .search-input-text {
     font-size: var(--corp-font-size-30);
     line-height: var(--corp-typography-lineheight-relaxed-xl);
   }
 
-  .search-input-no-results {
+  .search-input:where(.block) .search-input-no-results {
     font-size: var(--corp-font-size-16);
     line-height: var(--corp-typography-lineheight-body-md);
   }
 }
 
 @media (--bp-desktop) {
-  .search-input-field {
+  .search-input:where(.block) .search-input-field {
     padding-top: var(--corp-spacing-50);
   }
 
-  .search-input-text {
+  .search-input:where(.block) .search-input-text {
     font-size: var(--corp-font-size-40);
     line-height: var(--corp-typography-lineheight-heading-md);
   }
 
-  .search-input-label-down {
+  .search-input:where(.block) .search-input-label-down {
     transform: translateY(var(--corp-spacing-40));
   }
 
-  .search-input-no-results {
+  .search-input:where(.block) .search-input-no-results {
     font-size: var(--corp-font-size-18);
     line-height: var(--corp-typography-lineheight-body-lg);
   }
 }
 
 @media (--bp-wide) {
-  .search-input-field {
+  .search-input:where(.block) .search-input-field {
     padding-top: var(--corp-spacing-50);
   }
 
-  .search-input-label-down {
+  .search-input:where(.block) .search-input-label-down {
     transform: translateY(var(--corp-spacing-50));
   }
 }

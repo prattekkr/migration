@@ -7,6 +7,7 @@
   --nav-icon-width: var(--corp-spacing-18);
   --space-neg-55: -5.5rem;
   --letterspacing-wide-048: 0.48px;
+  --hamburger-icon-width: 2.35rem;
 }
 
 @media (min-width: 744px) {
@@ -105,7 +106,7 @@ header nav .nav-item-level-0 .back-btn {
   font-size: var(--corp-font-size-16);
   font-weight: var(--corp-font-weight-bold);
   left: var(--corp-spacing-35);
-  letter-spacing: var(--corp-typography-letterspacing-wide-sm);
+  letter-spacing: var(--corp-typography-letterspacing-wide-4xl);
   line-height: var(--corp-typography-lineheight-body-sm);
   padding: 0;
   position: fixed;
@@ -161,7 +162,7 @@ header nav .nav-item-level-0 .default-content-wrapper>:where(ul)>:where(li)>:whe
   margin-left: var(--corp-spacing-12);
   margin-right: 0;
   position: relative;
-  left: var(--corp-spacing-1);
+  left: var(--corp-spacing-05);
 }
 
 header nav .nav-item-level-0:where(.nav-sections) .default-content-wrapper>:where(ul)>:where(li)>:where(button)::before {
@@ -184,7 +185,6 @@ header nav .nav-item-level-0 :where(.default-content-wrapper)>:where(ul)>:where(
   width: 100%;
   height: calc(100vh - 6.4rem);
   background: var(--color-surface-default);
-  border-top: var(--border-width-hairline) solid var(--color-gray-medium);
   transform: scaleY(0);
   transform-origin: top;
   opacity: 0;
@@ -255,15 +255,15 @@ header nav .nav-item-level-0 .default-content-wrapper>:where(ul)>:where(li[aria-
   color: var(--color-surface-highlight-inverse);
   display: flex;
   font-family: var(--roboto-bold-font-family);
-  font-size: var(--corp-font-size-14);
+  font-size: var(--corp-font-size-16);
   font-weight: var(--corp-font-weight-bold);
-  letter-spacing: var(--corp-typography-letterspacing-wide-2xl);
+  letter-spacing: var(--corp-typography-letterspacing-wide-4xl);
   line-height: var(--corp-typography-lineheight-body-sm);
   text-decoration: none;
   text-transform: uppercase;
   width: fit-content;
   border-radius: 0;
-  padding: var(--corp-spacing-16) var(--corp-spacing-40);
+  padding: var(--corp-spacing-12) var(--corp-spacing-32);
 }
 
 .mega-menu-left .dashboard-links li {
@@ -323,7 +323,7 @@ header nav .nav-item-level-0 .default-content-wrapper>:where(ul)>:where(li[aria-
 .mega-menu-card .card-description {
   margin: 0;
   font-family: var(--body-font-family);
-  font-size: var(--corp-font-size-16);
+  font-size: var(--corp-font-size-14);
   line-height: var(--corp-typography-lineheight-body-sm);
   color: var(--corp-color-text-default);
   font-weight: normal;
@@ -398,7 +398,6 @@ header nav .nav-item-level-0 .default-content-wrapper>:where(ul)>:where(li[aria-
   text-align: left;
   width: 100%;
   margin: 0;
-  font-weight: var(--corp-font-weight-regular);
   border-radius: 0;
   text-wrap: auto;
 }
@@ -418,6 +417,8 @@ header nav .nav-item-level-0 :where(.default-content-wrapper) :where(ul) :where(
 
 .navigation-item-level-1 .level-two-menu>:where(.root-two-dropdown-btn) .accordion-icon {
   position: relative;
+  font-size: inherit;
+  line-height: inherit;
 }
 
 .navigation-item-level-1 .level-two-menu>:where(.root-two-dropdown-btn) :where(.accordion-icon)::after {
@@ -433,20 +434,19 @@ header nav .nav-item-level-0 :where(.default-content-wrapper) :where(ul) :where(
 }
 
 .navigation-item-level-1 .level-two-menu .level-two-menu-items {
-  display: none;
-  margin-top: -100%;
+  max-height: 0;
   opacity: 0;
+  overflow: hidden;
   position: relative;
   transform-origin: top center;
-  transition: margin .2s ease-out, opacity .3s ease-out;
-  transition-delay: .3s, 0s;
+  transition: max-height 0.4s ease-out, opacity 0.3s ease-out;
 }
 
 .navigation-item-level-1 .level-two-menu .level-two-menu-items:where(.show-child) {
+  max-height: 1000px;
   margin-top: var(--corp-spacing-10);
   opacity: var(--opacity-full);
-  transition-delay: 0s, .3s;
-  display: block;
+  transition: max-height 0.4s ease-in, opacity 0.3s ease-in 0.1s;
 }
 
 .navigation-item-level-1 .level-two-menu :where(.level-two-menu-items) .go-to-page-btn {
@@ -530,7 +530,8 @@ header nav .nav-sections .default-content-wrapper>:where(ul)>:where(li[aria-expa
 header nav .nav-sections :where(.default-content-wrapper)>:where(ul)>:where(li):nth-last-child(1) {
   border-bottom: none;
   border-top: var(--border-width-thin) solid var(--color-gray-medium);
-  margin-top: auto;
+  margin-top: var(--corp-spacing-31);
+  padding: var(--corp-spacing-10) 0 0;
 }
 
 header nav .nav-item-level-0 :where(.default-content-wrapper)>:where(ul)>:where(li):nth-last-child(1)>:where(button) {
@@ -571,6 +572,7 @@ header nav .nav-hamburger :where(button) {
   overflow: initial;
   text-overflow: initial;
   white-space: initial;
+  width: var(--hamburger-icon-width);
 }
 
 header nav .nav-hamburger :where(button)>:where(span) {
@@ -633,8 +635,8 @@ header nav[aria-expanded='true'] .nav-sections {
   width: 100%;
   padding: var(--corp-spacing-24) var(--corp-spacing-35);
   left: 0;
-  overflow: auto;
   height: calc(100vh - 10rem);
+  overflow: auto;
 }
 
 header nav:where(.second-level-active) .nav-item-level-0 .back-btn {
@@ -715,6 +717,11 @@ header nav:has(.menu-[aria-expanded='true']) :where(.nav-brand) {
 
 .nav-tools .search-input-alert p {
   margin: 0;
+  font-size: var(--corp-font-size-125);
+}
+
+.nav-tools .search-input-error + .search-input-label {
+  color: var(--color-error);
 }
 
 input[type="search"] {
@@ -740,6 +747,12 @@ input[type="search"]::-webkit-search-results-decoration {
 .menu-quick-links .navigation-item-level-1 .level-two-menu>:where(.root-two-dropdown-btn[aria-expanded="true"]),
 .menu-global .navigation-item-level-1 .level-two-menu>:where(.root-two-dropdown-btn[aria-expanded="true"]) {
   padding-bottom: var(--corp-spacing-32);
+}
+
+.menu-global button span {
+  font-size: var(--corp-font-size-12);
+  line-height: var(--corp-typography-lineheight-tight-xs);
+  letter-spacing: var(--corp-typography-letterspacing-wide-base);
 }
 
 .mega-menu-card.mega-card-primary :where(.mega-card):hover {
@@ -784,7 +797,18 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 
 header nav :where(.nav-tools) .icon.icon-icon-search {
-  margin-right: var(--corp-spacing-20);
+  margin-right: var(--corp-spacing-16);
+}
+
+.nav-tools .accordion .menu-item :where(.submenu-wrapper.two-columns)>:where(ul) {
+  column-count: 2;
+  column-gap: var(--corp-spacing-32);
+}
+
+.navigation-item-level-1 .level-two-menu :where(.level-two-menu-items.two-columns)>.navigation-group {
+  display: block;
+  column-count: 2;
+  column-gap: var(--corp-spacing-32);
 }
 
 @media (min-width: 744px) {
@@ -869,6 +893,9 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
 
   header nav .nav-item-level-0 .back-btn {
     left: var(--corp-spacing-70);
+    font-size: var(--corp-font-size-14);
+    letter-spacing: var(--corp-typography-letterspacing-wide-2xl);
+
   }
 
   .navigation-item-level-1>a {
@@ -904,11 +931,29 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     margin: 0;
     border-radius: 0;
   }
+
+  header nav .nav-sections :where(.default-content-wrapper)>:where(ul)>:where(li):nth-last-child(1) {
+    margin-top: auto;
+  }
+
+    .mega-menu-left .button-container :where(a).button {
+      font-size: var(--corp-font-size-14);
+      letter-spacing: var(--corp-typography-letterspacing-wide-2xl);
+    }
+
+    header nav :where(.nav-tools) .icon.icon-icon-search {
+      margin-right: var(--corp-spacing-25);
+    }
+
+    header nav .nav-hamburger :where(button) {
+      width: auto;
+    }
 }
 
 @media (min-width: 1024px) {
   header {
     height: var(--header-height);
+    min-width: var(--corp-spacing-1110);
   }
 
   header nav {
@@ -1040,10 +1085,16 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     display: none;
   }
 
+  header nav .nav-tools {
+    margin-right: 0;
+  }
+
   header nav .nav-tools .default-content-wrapper>:where(ul) {
     display: flex;
     gap: var(--corp-gap-sm);
     margin: 0;
+    padding-left: var(--corp-spacing-15);
+    padding-right: var(--corp-spacing-15);
   }
 
   header nav .nav-item-level-0 .default-content-wrapper>:where(ul)>:where(li)>:where(button) {
@@ -1241,6 +1292,7 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     align-self: start;
     padding: 0;
     position: static;
+    overflow: visible;
   }
 
   /* Accordion */
@@ -1400,13 +1452,26 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     margin: 0;
   }
 
+  .mega-menu-left .button-container :where(a).button {
+    padding: var(--corp-spacing-16) var(--corp-spacing-40);
+  }
+
+  .mega-menu-card .card-description {
+    font-size: var(--corp-font-size-16);
+  }
+
+  .menu-global button span {
+    font-size: var(--corp-font-size-14);
+    letter-spacing: var(--corp-typography-letterspacing-wide-lg);
+  }
+
 
 }
 
 @media (min-width: 1440px) {
   header nav {
     max-width: var(--corp-layout-container-max-width-lg);
-    padding: 0;
+    padding: 0 var(--corp-spacing-24);
   }
 
   .nav-tools .accordion,

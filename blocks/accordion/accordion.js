@@ -227,7 +227,9 @@ export default function decorate(block) {
 
     details.addEventListener('toggle', () => {
       details.setAttribute('aria-label', details.open ? ariaExpandLabel : ariaCollapseLabel);
-      if (!isImageIcon) {
+      if (isImageIcon) {
+        summary.classList.toggle('open', details.open);
+      } else {
         summary.classList.toggle(cfg.collapseIcon, details.open);
         summary.classList.toggle(cfg.expandIcon, !details.open);
       }

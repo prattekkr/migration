@@ -76,7 +76,7 @@
    ───────────────────────────────────────────── */
 .press-title {
   color: var(--corp-color-text-default);
-  font-family: var(--roboto-regular-font-family);
+  font-family: var(--body-font-family);
   font-size: var(--corp-font-size-14);
   font-weight: var(--corp-font-weight-regular);
   line-height: var(--corp-typography-lineheight-body-sm);

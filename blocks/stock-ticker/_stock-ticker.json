@@ -50,6 +50,20 @@
         },
         {
           "component": "tab",
+          "label": "Styles",
+          "name": "styles"
+        },
+        {
+          "component": "ngaem:dynamic-picklist",
+          "name": "classes_customDynamicClass",
+          "value": "",
+          "label": "Select Block Styles",
+          "valueType": "string",
+          "sourceAEMNodeName": "stock-ticker-picklist-config",
+          "valueSeperator": ","
+        },
+        {
+          "component": "tab",
           "name": "tab-analytics",
           "label": "Analytics"
         },

@@ -437,6 +437,25 @@ async function buildLevelTwoNavigations(block, languageLinkData, element) {
       const menuItems = createElement('div', { className: 'level-two-menu-items' });
       button.addEventListener('click', () => {
         const isExpanded = button.getAttribute('aria-expanded') === 'true';
+        const openBtn = ul.querySelector(
+          '.root-two-dropdown-btn.active',
+        );
+        if (openBtn && openBtn !== button) {
+          openBtn.setAttribute('aria-expanded', 'false');
+          openBtn.classList.remove('active');
+          const openMenu = openBtn.nextElementSibling;
+          openMenu?.classList.remove('show-child');
+          if (!isExpanded) {
+            openMenu?.addEventListener('transitionend', () => {
+              setTimeout(() => {
+                button.setAttribute('aria-expanded', 'true');
+                button.classList.add('active');
+                menuItems.classList.add('show-child');
+              }, 300);
+            }, { once: true });
+            return;
+          }
+        }
         button.setAttribute('aria-expanded', !isExpanded);
         button.classList.toggle('active');
         menuItems.classList.toggle('show-child');
@@ -461,6 +480,9 @@ async function buildLevelTwoNavigations(block, languageLinkData, element) {
         subLi.appendChild(subLink);
         subUl.appendChild(subLi);
       });
+      if (subUl.querySelectorAll(':scope > li').length > 17) {
+        menuItems.classList.add('two-columns');
+      }
       menuItems.appendChild(goToPageLink);
       menuItems.appendChild(subUl);
       levelTwoMenu.appendChild(button);
@@ -508,6 +530,9 @@ function buildLevelTwoLanguageLinks(selector) {
 
     if (childUL) {
       const wrapper = createElement('div', { className: 'submenu-wrapper' });
+      if (childUL.querySelectorAll(':scope > li').length > 17) {
+        wrapper.classList.add('two-columns');
+      }
       wrapper.appendChild(childUL);
       item.appendChild(wrapper);
       item.classList.add('has-arrow');
@@ -605,6 +630,16 @@ function createSearchForm(block, errorMessage = 'Please enter a valid search ter
   input.addEventListener('focus', () => {
     alertDiv.classList.remove('visible');
     input.classList.remove('search-input-error');
+  });
+
+  input.addEventListener('input', () => {
+    if (input.value.length > 0 && !input.value.trim()) {
+      alertDiv.classList.add('visible');
+      input.classList.add('search-input-error');
+    } else {
+      alertDiv.classList.remove('visible');
+      input.classList.remove('search-input-error');
+    }
   });
 
   const mq = window.matchMedia('(width < 744px)');

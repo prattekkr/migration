@@ -2,6 +2,7 @@
   /* Block-scoped custom properties — avoids duplicate :root lint error */
   --custom-title-color: var(--corp-color-text-default);
   --custom-title-accent-color: var(--corp-color-link-default);
+  --custom-title-heading-mb: var(--corp-spacing-16);
 
   margin: 0;
   padding: 0;
@@ -12,7 +13,7 @@
   color: var(--custom-title-color);
   margin: 0;
   padding: 0;
-  margin-bottom: var(--corp-spacing-20);
+  margin-bottom: var(--custom-title-heading-mb);
   font-weight: var(--corp-font-weight-extrabold);
 }
 
@@ -118,29 +119,172 @@
 }
 
 /* Width variations */
-@media (--bp-desktop) {
-  .custom-title.full-width,
-  .custom-title.large-width,
-  .custom-title.content-width,
-  .custom-title.narrow-width {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: var(--corp-gap-lg);
+
+@media (--bp-tablet) {
+  .custom-title {
+    --custom-title-heading-mb: var(--corp-spacing-24);
   }
 
-  .custom-title.full-width > div {
+  .custom-title:where(.width-medium),
+  .custom-title:where(.width-small),
+  .custom-title:where(.width-x-small) {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 0;
+  }
+
+  .custom-title:where(.width-medium) > div {
+    grid-column: 1 / span 8;
+  }
+
+  .custom-title:where(.width-medium):where(.align-right) > div {
+    grid-column: 5 / span 8;
+  }
+
+  .custom-title:where(.width-medium):where(.align-left) > div {
+    grid-column: 1 / span 8;
+  }
+
+  .custom-title:where(.width-small) > div {
+    grid-column: 1 / span 7;
+  }
+
+  .custom-title:where(.width-small):where(.align-right) > div {
+    grid-column: 2 / span 7;
+  }
+
+  .custom-title:where(.width-small):where(.align-left) > div {
+    grid-column: 1 / span 7;
+  }
+
+  .custom-title:where(.width-x-small) > div {
+    grid-column: 2 / span 6;
+  }
+
+  .custom-title:where(.width-x-small):where(.align-right) > div {
+    grid-column: 3 / span 6;
+  }
+
+  .custom-title:where(.width-x-small):where(.align-left) > div {
+    grid-column: 1 / span 6;
+  }
+}
+
+@media (--bp-desktop) {
+  .custom-title.full-width,
+  .custom-title:where(.width-x-large),
+  .custom-title:where(.width-large),
+  .custom-title:where(.width-medium),
+  .custom-title:where(.width-small),
+  .custom-title:where(.width-x-small),
+  .custom-title:where(.width-xx-small),
+  .custom-title:where(.width-xxx-small) {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 0;
+  }
+
+  .custom-title:where(.full-width) > div {
     grid-column: 1 / span 12;
   }
 
-  .custom-title.large-width > div {
+  /* width-x-large — 10 cols, centered (start col 2) */
+  .custom-title:where(.width-x-large) > div {
     grid-column: 2 / span 10;
   }
 
-  .custom-title.content-width > div {
+  .custom-title:where(.width-x-large):where(.align-right) > div {
+    grid-column: 3 / span 10;
+  }
+
+  .custom-title:where(.width-x-large):where(.align-left) > div {
+    grid-column: 1 / span 10;
+  }
+
+  /* width-large — 9 cols, centered (start col 2) */
+  .custom-title:where(.width-large) > div {
+    grid-column: 2 / span 9;
+    transform: translateX(calc(var(--direction-multiplier, 1) * 100% / 18));
+  }
+
+  .custom-title:where(.width-large):where(.align-right) > div {
+    grid-column: 4 / span 9;
+    transform: none;
+  }
+
+  .custom-title:where(.width-large):where(.align-left) > div {
+    grid-column: 1 / span 9;
+    transform: none;
+  }
+
+  /* width-medium — 8 cols, start col 3 */
+  .custom-title:where(.width-medium) > div {
     grid-column: 3 / span 8;
   }
 
-  .custom-title.narrow-width > div {
+  .custom-title:where(.width-medium):where(.align-right) > div {
+    grid-column: 5 / span 8;
+  }
+
+  .custom-title:where(.width-medium):where(.align-left) > div {
+    grid-column: 1 / span 8;
+  }
+
+  /* width-small — 7 cols, start col 3 */
+  .custom-title:where(.width-small) > div {
+    grid-column: 3 / span 7;
+    transform: none;
+  }
+
+  .custom-title:where(.width-small):where(.align-right) > div {
+    grid-column: 6 / span 7;
+    transform: none;
+  }
+
+  .custom-title:where(.width-small):where(.align-left) > div {
+    grid-column: 1 / span 7;
+    transform: none;
+  }
+
+  /* width-x-small — 6 cols, start col 4 */
+  .custom-title:where(.width-x-small) > div {
     grid-column: 4 / span 6;
+  }
+
+  .custom-title:where(.width-x-small):where(.align-right) > div {
+    grid-column: 7 / span 6;
+  }
+
+  .custom-title:where(.width-x-small):where(.align-left) > div {
+    grid-column: 1 / span 6;
+  }
+
+  /* width-xx-small — 5 col */
+  .custom-title:where(.width-xx-small) > div {
+    grid-column: 4 / span 5;
+    transform: translateX(calc(var(--direction-multiplier, 1) * 100% / 10));
+  }
+
+  .custom-title:where(.width-xx-small):where(.align-right) > div {
+    grid-column: 8 / span 5;
+    transform: none;
+  }
+
+  .custom-title:where(.width-xx-small):where(.align-left) > div {
+    grid-column: 1 / span 5;
+    transform: none;
+  }
+
+  /* width-xxx-small — 4 col */
+  .custom-title:where(.width-xxx-small) > div {
+    grid-column: 5 / span 4;
+  }
+
+  .custom-title:where(.width-xxx-small):where(.align-right) > div {
+    grid-column: 9 / span 4;
+  }
+
+  .custom-title:where(.width-xxx-small):where(.align-left) > div {
+    grid-column: 1 / span 4;
   }
 }

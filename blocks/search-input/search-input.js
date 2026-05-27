@@ -91,6 +91,16 @@ export default async function decorate(block) {
     input.classList.remove('search-input-error');
   });
 
+  input.addEventListener('input', () => {
+    if (input.value.length > 0 && !input.value.trim()) {
+      alertBox.classList.add('visible');
+      input.classList.add('search-input-error');
+    } else {
+      alertBox.classList.remove('visible');
+      input.classList.remove('search-input-error');
+    }
+  });
+
   input.addEventListener('blur', () => {
     if (!input.value) {
       label.classList.remove('search-input-label-active');

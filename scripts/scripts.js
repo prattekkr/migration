@@ -419,6 +419,91 @@ export function decorateMain(main) {
   a11yLinks(main);
 }
 
+// Helper function to create and append meta tag
+function createMeta(attributes, doc = document) {
+  const meta = doc.createElement('meta');
+  Object.entries(attributes).forEach(([key, value]) => {
+    if (value) meta.setAttribute(key, value);
+  });
+  doc.head.appendChild(meta);
+}
+
+/**
+ * Add client-side metadata to document head
+ * - itemprop name and description
+ * - twitter:url
+ * - og:image properties (type, width, height)
+ * @param {Document} doc The document object
+ */
+function addClientSideMetadata(doc) {
+  // 1. Add itemprop="name" - derive from og:title or page title
+  const ogTitle = getMetadata('og:title');
+  const title = ogTitle || doc.title;
+  if (title) {
+    createMeta({ itemprop: 'name', content: title }, doc);
+  }
+
+  // 2. Add itemprop="description" - derive from description or og:description
+  const description = getMetadata('description');
+  const ogDescription = getMetadata('og:description');
+  const content = description || ogDescription;
+  if (content) {
+    createMeta({ itemprop: 'description', content }, doc);
+  }
+
+  // 3. Add twitter:url - derive from og:url
+  const ogUrl = getMetadata('og:url');
+  if (ogUrl) {
+    createMeta({ name: 'twitter:url', content: ogUrl }, doc);
+  }
+
+  // 4-6. Add og:image properties (type, width, height)
+  const ogImage = getMetadata('og:image');
+  if (ogImage) {
+    try {
+      // Convert relative URL to absolute URL
+      const imageUrl = new URL(ogImage, window.location.href).href;
+      const urlObj = new URL(imageUrl);
+      const urlParams = new URLSearchParams(urlObj.search);
+
+      // Resolve image type from URL params or extension — no fetch needed
+      let imageType = 'image/jpeg'; // default
+      const format = urlParams.get('format');
+      if (format) {
+        const formatMap = {
+          pjpg: 'image/jpeg',
+          jpg: 'image/jpeg',
+          jpeg: 'image/jpeg',
+          png: 'image/png',
+          gif: 'image/gif',
+          webp: 'image/webp',
+        };
+        imageType = formatMap[format.toLowerCase()] || imageType;
+      } else {
+        const extension = imageUrl.split('.').pop().split('?')[0].toLowerCase();
+        const typeMap = {
+          jpg: 'image/jpeg',
+          jpeg: 'image/jpeg',
+          png: 'image/png',
+          gif: 'image/gif',
+          webp: 'image/webp',
+          svg: 'image/svg+xml',
+        };
+        imageType = typeMap[extension] || imageType;
+      }
+      createMeta({ property: 'og:image:type', content: imageType }, doc);
+
+      const imageWidth = urlParams.get('width');
+      const imageHeight = urlParams.get('height');
+      if (imageWidth) createMeta({ property: 'og:image:width', content: imageWidth }, doc);
+      if (imageHeight) createMeta({ property: 'og:image:height', content: imageHeight }, doc);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn('Failed to process og:image metadata:', error);
+    }
+  }
+}
+
 /**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
@@ -449,7 +534,10 @@ async function loadEager(doc) {
     }
 
     document.body.classList.add('appear');
-    await loadSection(main.querySelector('.section'), waitForFirstImage);
+    await Promise.all([
+      loadSection(main.querySelector('.section'), waitForFirstImage),
+      addClientSideMetadata(doc),
+    ]);
   }
 
   try {

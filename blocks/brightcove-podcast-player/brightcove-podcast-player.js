@@ -162,8 +162,10 @@ function loadPlayer(container, cfg, imgContainer, titleEl) {
         const progressReached = {};
         let playFired = false;
         let completeFired = false;
+        let pauseTimer = null;
 
         this.on('play', () => {
+          clearTimeout(pauseTimer); // cancel pending pause if playback resumes (e.g. after seek)
           if (!playFired && this.mediainfo) {
             playFired = true;
             dl().push({
@@ -179,7 +181,7 @@ function loadPlayer(container, cfg, imgContainer, titleEl) {
           if (!this.mediainfo || !this.duration()) return;
           const pct = Math.floor((this.currentTime() / this.duration()) * 100);
           PROGRESS_POINTS.forEach((threshold) => {
-            if (pct === threshold && !progressReached[threshold]) {
+            if (pct >= threshold && !progressReached[threshold]) {
               progressReached[threshold] = true;
               dl().push({
                 event: 'podcast_progress',
@@ -192,7 +194,25 @@ function loadPlayer(container, cfg, imgContainer, titleEl) {
           });
         });
 
+        this.on('pause', () => {
+          if (!playFired || completeFired || !this.mediainfo || this.seeking()) return;
+          clearTimeout(pauseTimer);
+          const { name, id } = this.mediainfo;
+          const len = this.duration();
+          pauseTimer = setTimeout(() => {
+            if (!completeFired) {
+              dl().push({
+                event: 'podcast_pause',
+                podcast_name: name,
+                podcast_length: len,
+                podcast_id: id,
+              });
+            }
+          }, 200);
+        });
+
         this.on('ended', () => {
+          clearTimeout(pauseTimer);
           if (!completeFired && this.mediainfo) {
             completeFired = true;
             dl().push({

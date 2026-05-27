@@ -190,6 +190,7 @@ class IndexUtils {
         path: page.path,
         title: (page.navtitle || '').split('|')[0].trim(),
         description: page.description || '',
+        navigationalOrder: parseInt(page.navigationalorder, 10) || 0,
         level,
         segments: pathSegments,
         parent: level > 1 ? `/${pathSegments.slice(0, level - 1).join('/')}` : null,
@@ -224,23 +225,30 @@ class IndexUtils {
     // Using 'this' to satisfy the linting rule
     this.temp = null;
 
-    // Sort all levels alphabetically by title
+    // Sort by navigationalOrder (numeric), fallback to alphabetical
+    const sortByOrder = (a, b) => {
+      if (a.navigationalOrder !== b.navigationalOrder) {
+        return a.navigationalOrder - b.navigationalOrder;
+      }
+      return a.title.localeCompare(b.title);
+    };
+
     Object.keys(indexLevels).forEach((level) => {
-      indexLevels[level].sort((a, b) => a.title.localeCompare(b.title));
+      indexLevels[level].sort(sortByOrder);
     });
 
-    // Assign children to level 2 items
+    // Assign children to level 2 items (sorted)
     indexLevels.level2.forEach((level2Item) => {
-      level2Item.children = indexLevels.level3.filter((level3Item) => (
-        level3Item.parent === level2Item.path
-      ));
+      level2Item.children = indexLevels.level3
+        .filter((level3Item) => level3Item.parent === level2Item.path)
+        .sort(sortByOrder);
     });
 
-    // Assign children to level 1 items
+    // Assign children to level 1 items (sorted)
     indexLevels.level1.forEach((level1Item) => {
-      level1Item.children = indexLevels.level2.filter((level2Item) => (
-        level2Item.parent === level1Item.path
-      ));
+      level1Item.children = indexLevels.level2
+        .filter((level2Item) => level2Item.parent === level1Item.path)
+        .sort(sortByOrder);
     });
 
     return indexLevels.level1;

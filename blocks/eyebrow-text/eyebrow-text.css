@@ -1,0 +1,215 @@
+/* Eyebrow Text block — standard variant (default) */
+.eyebrow-text {
+  font-family: var(--roboto-bold-font-family);
+  font-size: var(--corp-font-size-16);
+  font-weight: var(--corp-font-weight-bold);
+  letter-spacing: var(--corp-typography-letterspacing-wide-em-xs);
+  line-height: var(--corp-spacing-20);
+  text-transform: uppercase;
+  color: var(--corp-color-text-default);
+  margin-bottom: var(--corp-spacing-16);
+}
+
+/* UE author mode injects a richtext wrapper div with <p> back into the span — inherit all typography */
+.eyebrow-text p {
+  margin: 0;
+  font-size: inherit;
+  line-height: inherit;
+  font-family: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+}
+
+/* Alignment */
+.eyebrow-text.align-left { text-align: left; }
+.eyebrow-text.align-center { text-align: center; }
+.eyebrow-text.align-right { text-align: right; }
+
+/* Mini variant — .mini-header>.cmp-header>.cmp-header__text */
+.eyebrow-text.mini {
+  font-family: var(--body-font-family);
+  font-size: var(--corp-font-size-12);
+  font-weight: var(--corp-font-weight-regular);
+  text-transform: none;
+  color: var(--color-gray-dark);
+}
+
+/* Divider variant — .standard-header-with-divider>.cmp-header>.cmp-header__text */
+.eyebrow-text.divider {
+  border-top: var(--border-width-accent) solid var(--corp-color-text-accent);
+  padding-top: var(--corp-spacing-16);
+}
+
+/* Font weight overrides — .bold-font/.regular-font>.cmp-header>.cmp-header__text */
+.eyebrow-text.bold-font {
+  font-family: var(--roboto-bold-font-family);
+  font-weight: var(--corp-font-weight-bold);
+}
+
+.eyebrow-text.regular-font {
+  font-family: var(--body-font-family);
+  font-weight: var(--corp-font-weight-regular);
+}
+
+/* Theme overrides — .light-theme>.cmp-header>.cmp-header__text */
+.eyebrow-text.light-theme {
+  color: var(--corp-color-text-default);
+}
+
+/* Mini + light-theme: gray (matches AEM base light-theme color) */
+.eyebrow-text.mini.light-theme {
+  color: var(--color-gray-dark);
+}
+
+/* Theme overrides — .dark-theme>.cmp-header>.cmp-header__text */
+.eyebrow-text.dark-theme {
+  color: var(--color-white);
+}
+
+/* Tablet */
+@media (--bp-tablet) {
+  .eyebrow-text {
+    font-size: var(--corp-font-size-14);
+    line-height: var(--corp-spacing-16);
+    margin-bottom: var(--corp-spacing-24);
+  }
+
+  /* Width variations — tablet */
+  .eyebrow-text:where(.width-medium),
+  .eyebrow-text:where(.width-small),
+  .eyebrow-text:where(.width-x-small) {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 0;
+  }
+
+  /* width-medium — 8 cols */
+  .eyebrow-text:where(.width-medium) > span {
+    grid-column: 1 / span 8;
+  }
+
+  .eyebrow-text:where(.width-medium):where(.align-right) > span {
+    grid-column: 5 / span 8;
+  }
+
+  .eyebrow-text:where(.width-medium):where(.align-left) > span {
+    grid-column: 1 / span 8;
+  }
+
+  /* width-small — 7 cols */
+  .eyebrow-text:where(.width-small) > span {
+    grid-column: 1 / span 7;
+  }
+
+  .eyebrow-text:where(.width-small):where(.align-right) > span {
+    grid-column: 2 / span 7;
+  }
+
+  .eyebrow-text:where(.width-small):where(.align-left) > span {
+    grid-column: 1 / span 7;
+  }
+
+  /* width-x-small — 6 cols */
+  .eyebrow-text:where(.width-x-small) > span {
+    grid-column: 2 / span 6;
+  }
+
+  .eyebrow-text:where(.width-x-small):where(.align-right) > span {
+    grid-column: 3 / span 6;
+  }
+
+  .eyebrow-text:where(.width-x-small):where(.align-left) > span {
+    grid-column: 1 / span 6;
+  }
+}
+
+/* Desktop */
+@media (--bp-desktop) {
+  .eyebrow-text.full-width,
+  .eyebrow-text:where(.width-x-large),
+  .eyebrow-text:where(.width-large),
+  .eyebrow-text:where(.width-medium),
+  .eyebrow-text:where(.width-small),
+  .eyebrow-text:where(.width-x-small) {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 0;
+  }
+
+  .eyebrow-text:where(.full-width) > span {
+    grid-column: 1 / span 12;
+  }
+
+  /* width-x-large — 10 cols, centered (start col 2) */
+  .eyebrow-text:where(.width-x-large) > span {
+    grid-column: 2 / span 10;
+  }
+
+  .eyebrow-text:where(.width-x-large):where(.align-right) > span {
+    grid-column: 3 / span 10;
+  }
+
+  .eyebrow-text:where(.width-x-large):where(.align-left) > span {
+    grid-column: 1 / span 10;
+  }
+
+  /* width-large — 9 cols, centered (start col 2) */
+  .eyebrow-text:where(.width-large) > span {
+    grid-column: 2 / span 9;
+    transform: translateX(calc(var(--direction-multiplier, 1) * 100% / 18));
+  }
+
+  .eyebrow-text:where(.width-large):where(.align-right) > span {
+    grid-column: 4 / span 9;
+    transform: none;
+  }
+
+  .eyebrow-text:where(.width-large):where(.align-left) > span {
+    grid-column: 1 / span 9;
+    transform: none;
+  }
+
+  /* width-medium — 8 cols, start col 3 */
+  .eyebrow-text:where(.width-medium) > span {
+    grid-column: 3 / span 8;
+  }
+
+  .eyebrow-text:where(.width-medium):where(.align-right) > span {
+    grid-column: 5 / span 8;
+  }
+
+  .eyebrow-text:where(.width-medium):where(.align-left) > span {
+    grid-column: 1 / span 8;
+  }
+
+  /* width-small — 7 cols, start col 3 */
+  .eyebrow-text:where(.width-small) > span {
+    grid-column: 3 / span 7;
+    transform: none;
+  }
+
+  .eyebrow-text:where(.width-small):where(.align-right) > span {
+    grid-column: 6 / span 7;
+    transform: none;
+  }
+
+  .eyebrow-text:where(.width-small):where(.align-left) > span {
+    grid-column: 1 / span 7;
+    transform: none;
+  }
+
+  /* width-x-small — 6 cols, start col 4 */
+  .eyebrow-text:where(.width-x-small) > span {
+    grid-column: 4 / span 6;
+  }
+
+  .eyebrow-text:where(.width-x-small):where(.align-right) > span {
+    grid-column: 7 / span 6;
+  }
+
+  .eyebrow-text:where(.width-x-small):where(.align-left) > span {
+    grid-column: 1 / span 6;
+  }
+}

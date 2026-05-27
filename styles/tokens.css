@@ -16,6 +16,12 @@
 @custom-media --bp-desktop (min-width: 1024px);
 @custom-media --bp-wide (min-width: 1440px);
 
+/* Container width upper bounds (px = rem × 10, avoids rem-in-media-query 16px pitfall)
+   --bp-container-md: matches --corp-layout-container-max-width-md (133rem = 1330px)
+   --bp-container-lg: matches --corp-layout-container-max-width-lg (144rem = 1440px) */
+@custom-media --bp-container-md (width <= 1330px);
+@custom-media --bp-container-lg (width <= 1440px);
+
 :root {
     /* -----------------------------------------------------------
    PX → REM Conversion Helper
@@ -27,6 +33,7 @@
     --base-size: 10; /* 1rem = 10px */
     --px-to-rem: calc(1rem / var(--base-size));
     --corp-layout-multiplier-direction-value: 1;
+    --direction-multiplier: 1;
 
     /* Colors */
     --corp-color-link-default: #035fe6;
@@ -38,6 +45,7 @@
     --color-border-container: #a6b5e0;
     --corp-color-text-default: #071d49; /* primary dark/nav text */
     --corp-color-text-label: #061e47;
+    --color-blue-medium: #6f89cd;
     --corp-color-text-muted: #808080;
     --corp-color-text-accent: #0066f5;
     --corp-color-text-subtle: #555;
@@ -106,6 +114,7 @@
 
     --corp-font-size-11: 1.1rem;
     --corp-font-size-12: 1.2rem;
+    --corp-font-size-125: 1.25rem;
     --corp-font-size-13: 1.3rem;
     --corp-font-size-14: 1.4rem;
     --corp-font-size-16: 1.6rem;
@@ -174,6 +183,7 @@
     --corp-space-token-xxxl: calc(104 * var(--px-to-rem));
 
     /* Generalized Spacing Tokens */
+    --corp-spacing-05: 0.05rem;
     --corp-spacing-1: 0.1rem;
     --corp-spacing-2: 0.2rem;
     --corp-spacing-3: 0.3rem;
@@ -186,6 +196,7 @@
     --corp-spacing-8: 0.8rem;
     --corp-spacing-9: 0.9rem;
     --corp-spacing-10: 1rem;
+    --corp-spacing-11: 1.1rem;
     --corp-spacing-12: 1.2rem;
     --corp-spacing-125: 1.25rem;
     --corp-spacing-13: 1.3rem;
@@ -268,6 +279,7 @@
     --corp-spacing-585: 58.5rem;
     --corp-spacing-710: 71rem;
     --corp-spacing-810: 81rem;
+    --corp-spacing-1110: 111rem;
     --corp-spacing-1000: 100rem;
     --corp-spacing-1200: 120rem;
 
@@ -302,6 +314,7 @@
     --border-width-hairline: 0.05rem;
     --border-width-thin: 0.1rem;
     --border-width-thick: 0.2rem;
+    --border-width-accent: 0.5rem;
     --border-radius-xl: 3.2rem;
     --border-radius-subtle: 2.4rem;
 
@@ -360,6 +373,7 @@
     --corp-typography-letterspacing-wide-xs: 0.04rem;
     --corp-typography-letterspacing-wide-sm: 0.06rem;
     --corp-typography-letterspacing-wide-md: 0.08rem;
+    --corp-typography-letterspacing-wide-base: 0.48px;
     --corp-typography-letterspacing-wide-lg: 0.56px;
     --corp-typography-letterspacing-wide-2xl: 0.84px;
     --corp-typography-letterspacing-wide-3xl: 0.86px;
@@ -469,4 +483,8 @@
         --hero-overlap: -11.2rem;
         --border-radius-xl: 8rem;
     }
+}
+
+[dir="rtl"] {
+    --direction-multiplier: -1;
 }

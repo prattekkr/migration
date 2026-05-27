@@ -23,12 +23,11 @@
       "press-releases",
       "separator",
       "story-card",
-      "form",
       "hero",
       "navigation-content",
       "stock-ticker",
-      "eds-form",
-      "embed-form",
+      "form",
+      "embed-adaptive-form",
       "image",
       "quote",
       "search",
@@ -51,7 +50,9 @@
       "news-feed",
       "pipeline-utility-nav",
       "hero-container",
-      "teaser"
+      "teaser",
+      "eyebrow-text",
+      "pipeline"
     ]
   },
   {
@@ -70,12 +71,11 @@
       "press-releases",
       "separator",
       "story-card",
-      "form",
       "hero",
       "navigation-content",
       "stock-ticker",
-      "eds-form",
-      "embed-form",
+      "form",
+      "embed-adaptive-form",
       "image",
       "quote",
       "search",
@@ -97,7 +97,8 @@
       "news-feed",
       "pipeline-utility-nav",
       "teaser",
-      "editorial-feed"
+      "editorial-feed",
+      "eyebrow-text"
     ]
   },
   {
@@ -140,12 +141,19 @@
     ]
   },
   {
+    "id": "custom-title",
+    "components": []
+  },
+  {
     "id": "editorial-feed",
     "components": [
       "category-item"
     ]
   },
-  {},
+  {
+    "id": "eyebrow-text",
+    "components": []
+  },
   {
     "id": "hero-container",
     "components": [
@@ -176,6 +184,10 @@
   },
   {
     "id": "search-input",
+    "components": []
+  },
+  {
+    "id": "separator",
     "components": []
   },
   {

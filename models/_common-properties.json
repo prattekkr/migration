@@ -39,9 +39,10 @@
       "name": "analytics_tab"
     },
     {
-      "component": "richtext",
+      "component": "text",
       "valueType": "string",
       "name": "analytics_id",
+      "readOnly": true,
       "value": "",
       "label": "Analytics Interaction ID",
       "description": "Analytics Interaction ID used for tracking interactions with this block."

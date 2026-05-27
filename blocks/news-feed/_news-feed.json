@@ -33,11 +33,18 @@
           "label": "RSS Feed URL"
         },
         {
-          "component": "select",
-          "name": "variant",
-          "label": "Variant (Theme)",
-          "options": [
-          ]
+          "component": "tab",
+          "label": "Styles",
+          "name": "styles"
+        },
+        {
+          "component": "ngaem:dynamic-picklist",
+          "name": "classes_customDynamicClass",
+          "value": "",
+          "label": "Select Block Styles",
+          "valueType": "string",
+          "sourceAEMNodeName": "news-feed-picklist-config",
+          "valueSeperator": ","
         },
         {
           "...": "../../models/_common-properties.json#/common-prop"

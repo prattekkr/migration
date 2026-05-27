@@ -38,20 +38,6 @@
           "label": "Text"
         },
         {
-          "component": "tab",
-          "label": "Styles",
-          "name": "styles"
-        },
-        {
-          "component": "ngaem:dynamic-picklist",
-          "name": "classes_customDynamicClass",
-          "value": "",
-          "label": "Select Block Styles",
-          "valueType": "string",
-          "sourceAEMNodeName": "title-picklist-config",
-          "valueSeperator": ","
-        },
-        {
           "component": "select",
           "valueType": "string",
           "name": "titleType",
@@ -65,6 +51,20 @@
             { "name": "H5", "value": "h5" },
             { "name": "H6", "value": "h6" }
           ]
+        },
+        {
+          "component": "tab",
+          "label": "Styles",
+          "name": "styles"
+        },
+        {
+          "component": "ngaem:dynamic-picklist",
+          "name": "classes_customDynamicClass",
+          "value": "",
+          "label": "Select Block Styles",
+          "valueType": "string",
+          "sourceAEMNodeName": "title-picklist-config",
+          "valueSeperator": ","
         },
         {
           "...": "../../models/_common-properties.json#/common-prop"

@@ -8,6 +8,7 @@
   margin-bottom: var(--corp-spacing-56);
 
   --corp-brightcove-max-width: 83rem;
+  --corp-brightcove-icon-size: 2rem;
 }
 
 /* =====================================================
@@ -97,6 +98,11 @@
 .brightcove-video .vjs-big-play-button {
   left: 50%;
   top: 50%;
+}
+
+.vjs-control-bar .vjs-button {
+ background-color: unset;
+ border-radius: unset;
 }
 
 /* Hide chapters button when not enabled */
@@ -259,7 +265,6 @@
   .brightcove-video .bcvideo-overlay-title {
     font-size: var(--corp-font-size-30);
     line-height: var(--corp-typography-lineheight-relaxed-3xl);
-    margin: 0 0 var(--corp-spacing-24);
   }
 
   .brightcove-video .bcvideo-overlay-desc {
@@ -293,7 +298,7 @@
   .brightcove-video .bcvideo-overlay-title {
     font-size: var(--corp-font-size-40);
     line-height: var(--corp-typography-lineheight-heading-md);
-    margin: 0 0 var(--corp-spacing-40);
+    margin: 0 0 var(--corp-spacing-24);
   }
 
   .bcvideo-primary-title {
@@ -352,8 +357,8 @@
 
 .brightcove-video .bcvideo-icon-image picture,
 .brightcove-video .bcvideo-icon-image img {
-  width: var(--corp-spacing-16);
-  height: var(--corp-spacing-16);
+  width: var(--corp-brightcove-icon-size);
+  height: var(--corp-brightcove-icon-size);
   object-fit: contain;
 }
 
@@ -378,6 +383,10 @@
   margin-top: var(--corp-spacing-16);
 }
 
+.brightcove-video .bcvideo-caption p {
+  font-size: var(--corp-font-size-13);
+}
+
 .brightcove-video .bcvideo-content-title {
   color: var(--corp-color-text-default);
   font-family: var(--body-font-family);
@@ -394,6 +403,10 @@
 }
 
 @media (--bp-tablet) {
+.brightcove-video .bcvideo-caption p {
+  font-size: var(--corp-font-size-16);
+}
+
 .brightcove-video .bcvideo-content-title {
   font-size: var(--corp-font-size-18);
   line-height: var(--corp-typography-lineheight-body-lg);
@@ -406,6 +419,10 @@
 }
 
 @media (--bp-desktop) {
+.brightcove-video .bcvideo-caption p {
+    font-size: var(--corp-font-size-18);
+  }
+  
 .brightcove-video .bcvideo-content-title {
   font-size: var(--corp-font-size-20);
   line-height: var(--corp-typography-lineheight-body-lg);
@@ -545,6 +562,19 @@
 
 .video-card .video-text {
   margin-top: var(--corp-spacing-16);
+  display: none;
+}
+
+.video-card .video-card-duration {
+  display: none;
+}
+
+.bcvideo-playlist-meta .video-card .video-text {
+  display: block;
+}
+
+.bcvideo-playlist-meta .video-card .video-card-duration {
+  display: block;
 }
 
 .video-card .video-text h2 {
@@ -641,5 +671,9 @@
 @media (--bp-wide) {
     .brightcove-video .bcvideo-overlay-content {
         width: 50%;
+    }
+
+    .brightcove-video .bcvideo-overlay-title {
+     margin: 0 0 var(--corp-spacing-40);
     }
 }

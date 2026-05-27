@@ -1,0 +1,254 @@
+{
+  "definitions": [
+    {
+      "title": "Pipeline",
+      "id": "pipeline",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Pipeline",
+              "model": "pipeline"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "pipeline",
+      "fields": [
+        {
+          "component": "tab",
+          "label": "Overview",
+          "name": "overview"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "shareText",
+          "label": "Share Text",
+          "description": "Text label displayed for the share functionality"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "shareConfirmationText",
+          "label": "Share Confirmation Text",
+          "description": "Confirmation message shown after copying to clipboard"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "targetHeaderText",
+          "label": "Target Header Text",
+          "description": "Header text for the target section"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "moleculeHeaderText",
+          "label": "Type of Molecule Header Text",
+          "description": "Header text for the type of molecule section"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "pronunciationHeaderText",
+          "label": "Pronunciation Header Text",
+          "description": "Header text for the pronunciation section"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "col1HeaderText",
+          "label": "Table Column 1 Header Text",
+          "description": "Header text for the first table column"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "col2HeaderText",
+          "label": "Table Column 2 Header Text",
+          "description": "Header text for the second table column"
+        },
+        {
+          "component": "tab",
+          "label": "Pharmaceutical",
+          "name": "pharmaceutical"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "pharmaCol3HeaderText",
+          "label": "Table Column 3 Header Text (Pharmaceutical)",
+          "description": "Header text for the third table column in pharmaceutical view"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "pharmaCol4HeaderText",
+          "label": "Table Column 4 Header Text (Pharmaceutical)",
+          "description": "Header text for the fourth table column in pharmaceutical view"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "pharmaCol5HeaderText",
+          "label": "Table Column 5 Header Text (Pharmaceutical)",
+          "description": "Header text for the fifth table column in pharmaceutical view"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "pharmaCol6HeaderText",
+          "label": "Table Column 6 Header Text (Pharmaceutical)",
+          "description": "Header text for the sixth table column in pharmaceutical view"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "pharmaCol6Tooltip",
+          "label": "Table Column 6 Tooltip (Pharmaceutical)",
+          "description": "Tooltip text providing additional context for column 6"
+        },
+        {
+          "component": "tab",
+          "label": "Device",
+          "name": "device"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "deviceCol3HeaderText",
+          "label": "Table Column 3 Header Text (Device)",
+          "description": "Header text for the third table column in device view"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "deviceCol4HeaderText",
+          "label": "Table Column 4 Header Text (Device)",
+          "description": "Header text for the fourth table column in device view"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "deviceCol5HeaderText",
+          "label": "Table Column 5 Header Text (Device)",
+          "description": "Header text for the fifth table column in device view"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "deviceCol6HeaderText",
+          "label": "Table Column 6 Header Text (Device)",
+          "description": "Header text for the sixth table column in device view"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "deviceCol6Tooltip",
+          "label": "Table Column 6 Tooltip (Device)",
+          "description": "Tooltip text providing additional context for column 6"
+        },
+        {
+          "component": "tab",
+          "label": "Icons",
+          "name": "icons"
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "classes_shareLinkIconType",
+          "label": "Share Link Icon Type",
+          "value": "share-no-icon",
+          "options": [
+            { "name": "None", "value": "share-no-icon" },
+            { "name": "Icon Font", "value": "share-icon-font" },
+            { "name": "Image", "value": "share-image" }
+          ]
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "shareLinkFontIcon",
+          "label": "Share Link Font Icon",
+          "description": "Font icon name for the share link functionality",
+          "condition": {
+            "===": [{ "var": "classes_shareLinkIconType" }, "share-icon-font"]
+          }
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "shareLinkImageIcon",
+          "label": "Share Link Image Icon",
+          "description": "Path to the icon used for the share link functionality",
+          "multi": false,
+          "condition": {
+            "===": [{ "var": "classes_shareLinkIconType" }, "share-image"]
+          }
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "classes_speakerIconType",
+          "label": "Speaker Icon Type",
+          "value": "speaker-no-icon",
+          "options": [
+            { "name": "None", "value": "speaker-no-icon" },
+            { "name": "Icon Font", "value": "speaker-icon-font" },
+            { "name": "Image", "value": "speaker-image" }
+          ]
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "speakerFontIcon",
+          "label": "Speaker Font Icon",
+          "description": "Font icon name for pronunciation audio functionality",
+          "condition": {
+            "===": [{ "var": "classes_speakerIconType" }, "speaker-icon-font"]
+          }
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "speakerImageIcon",
+          "label": "Speaker Image Icon",
+          "description": "Path to the icon used for pronunciation audio functionality",
+          "multi": false,
+          "condition": {
+            "===": [{ "var": "classes_speakerIconType" }, "speaker-image"]
+          }
+        },
+        {
+          "component": "tab",
+          "label": "No Results",
+          "name": "noResults"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "noResultsHeadline",
+          "label": "No Results Headline Text",
+          "description": "Primary message displayed when no pipeline results are found"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "noResultsSubheading",
+          "label": "No Results Subheading Text",
+          "description": "Secondary message providing guidance when no results are available"
+        },
+        {
+          "...": "../../models/_common-properties.json#/common-prop"
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

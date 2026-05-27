@@ -765,6 +765,7 @@ main > .section > div {
 /* abbvie container styles */
 .abbvie-container {
   display: grid;
+  align-items: start;
   column-gap: var(--corp-spacing-15);
   grid-template-columns: repeat(6, 1fr);
   margin-left: var(--corp-spacing-20);

@@ -54,75 +54,6 @@ async function normalizePath(rawPath) {
 }
 
 /**
- * Fallback: render from generic CF elements structure (model.json format).
- */
-function renderCfElementsFallback(card, elements, options = {}) {
-  const content = document.createElement('div');
-  content.className = 'fact-card-content';
-
-  const entries = Object.entries(elements);
-  const plainTexts = [];
-
-  entries.forEach(([, el]) => {
-    if (!el.value) return;
-    if (typeof el.value === 'string') {
-      plainTexts.push(el.value);
-    }
-  });
-
-  // Map plain text values by position: eyebrow, dataPoint, suffix, description
-  const [eyebrow, dataPoint, dataPointSuffix, description] = plainTexts;
-
-  if (eyebrow) {
-    const eyebrowEl = document.createElement('div');
-    eyebrowEl.className = 'fact-card-eyebrow';
-    eyebrowEl.setAttribute('role', 'heading');
-    eyebrowEl.setAttribute('aria-level', '2');
-    eyebrowEl.textContent = eyebrow;
-    content.append(eyebrowEl);
-  }
-
-  if (dataPoint) {
-    const dataContainer = document.createElement('div');
-    dataContainer.className = 'fact-card-data';
-    const dataEl = document.createElement('div');
-    dataEl.className = 'fact-card-data-point';
-    dataEl.textContent = dataPoint;
-    dataContainer.append(dataEl);
-
-    if (dataPointSuffix) {
-      const suffixEl = document.createElement('div');
-      suffixEl.className = 'fact-card-data-suffix';
-      suffixEl.textContent = dataPointSuffix;
-      dataContainer.append(suffixEl);
-    }
-    content.append(dataContainer);
-  }
-
-  if (description) {
-    const descEl = document.createElement('div');
-    descEl.className = 'fact-card-description';
-    descEl.textContent = description;
-    content.append(descEl);
-  }
-
-  if (!options.hideImage) {
-    entries.forEach(([, el]) => {
-      if (el.value && (el[':type']?.startsWith('image') || el.dataType === 'image')) {
-        const img = document.createElement('img');
-        img.className = 'fact-card-image';
-        img.src = el.value;
-        img.alt = '';
-        img.loading = 'lazy';
-        card.prepend(img);
-      }
-    });
-  }
-
-  card.append(content);
-}
-
-/**
  * Renders CF fact data into the fact card DOM.
  * Expected CF fields: eyebrow, dataPoint, dataPointSuffix, description, image
  * @param {HTMLElement} card - The card container
@@ -135,15 +66,7 @@ function renderCfFactCard(card, cfData, options = {}) {
     || cfData?.item
     || null;
 
-  if (!item) {
-    // Fallback: try generic elements approach (like quote CF fallback)
-    const elements = cfData?.elements || {};
-    if (Object.keys(elements).length > 0) {
-      renderCfElementsFallback(card, elements, options);
-      return;
-    }
-    return;
-  }
+  if (!item) return;
 
   const {
     eyebrow,
@@ -276,29 +199,8 @@ export default async function decorate(block) {
     renderCfFactCard(card, cfData, options);
     if (card.childNodes.length > 0) {
       block.append(card);
-      return;
     }
   } catch (e) {
     // GraphQL fetch failed, try model.json fallback
-  }
-
-  // Fallback: try AEM Content Fragment JSON endpoint
-  try {
-    const cfPath = rawPath.replace(/\.html$/, '');
-    const resp = await fetch(`${cfPath}.model.json`);
-    if (resp.ok) {
-      const cfData = await resp.json();
-      renderCfFactCard(card, cfData, options);
-      if (card.childNodes.length === 0) {
-        // Try elements fallback
-        const elements = cfData?.elements || {};
-        renderCfElementsFallback(card, elements, options);
-      }
-      if (card.childNodes.length > 0) {
-        block.append(card);
-      }
-    }
-  } catch (e) {
-    // CF JSON fetch failed
   }
 }

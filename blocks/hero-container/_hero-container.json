@@ -167,10 +167,6 @@
             {
               "name": "Purple",
               "value": "purple"
-            },
-            {
-              "name": "Light (transparent)",
-              "value": "light"
             }
           ]
         },
@@ -194,9 +190,7 @@
   "filters": [
     {
       "id": "hero-container",
-      "components": [
-        "hero-container-item"
-      ]
+      "components": ["hero-container-item"]
     }
   ]
 }

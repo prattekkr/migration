@@ -10,7 +10,8 @@
 
 .story-card {
   --surface-background-default: var(--color-surface-default, rgb(255 255 255));
-  --border-subtle: var(--corp-separator-hairline, 0.1rem) solid var(--color-border-container, rgb(166 181 224));
+  --border-subtle: var(--corp-separator-hairline, 0.1rem) solid
+    var(--color-border-container, rgb(166 181 224));
   --transition-duration-fast: 0.2s;
   --transition-duration-medium: 0.3s;
   --transition-easing-standard: ease;
@@ -30,7 +31,7 @@
   --story-card-placeholder-min-height: var(--corp-spacing-120);
   --story-card-placeholder-min-height-tablet: var(--corp-spacing-140);
   --story-card-eyebrow-margin-bottom: var(--corp-spacing-38);
-  --story-card-read-time-icon: '\e904';
+  --story-card-read-time-icon: "\e904";
   --story-card-read-time-icon-line-height: 1;
   --story-card-title-font-weight: var(--corp-font-weight-semibold-alt);
   --story-card-description-font-weight: var(--corp-font-weight-regular);
@@ -94,7 +95,7 @@
 
 .story-card .story-card-placeholder-text {
   color: var(--story-card-text-color);
-  font-family: var(--roboto-regular-font-family);
+  font-family: var(--body-font-family);
   font-size: var(--corp-font-size-16);
   line-height: var(--corp-typography-lineheight-body-md);
   margin: 0;
@@ -154,7 +155,6 @@
   flex-direction: column;
   justify-content: center;
   min-height: auto;
-  padding: var(--corp-spacing-64) var(--corp-spacing-35) var(--corp-spacing-120) var(--corp-spacing-35);
 }
 
 .story-card .story-card-content * {
@@ -178,7 +178,7 @@
   text-transform: var(--text-transform-uppercase);
 }
 
-.story-card .story-card-meta> :where(*:not(:first-child))::before {
+.story-card .story-card-meta > :where(*:not(:first-child))::before {
   content: none;
 }
 
@@ -186,10 +186,6 @@
   flex-direction: column;
   align-items: flex-start;
   gap: var(--corp-spacing-14);
-}
-
-.story-card.story-card-info .story-card-content {
-  padding: 0;
 }
 
 /* ================================================================
@@ -320,7 +316,7 @@
 
 .story-card .story-card-description {
   color: var(--story-card-text-color);
-  font-family: var(--roboto-regular-font-family);
+  font-family: var(--body-font-family);
   font-size: var(--corp-font-size-12);
   font-weight: var(--story-card-description-font-weight);
   line-height: var(--corp-typography-lineheight-tight-sm);
@@ -411,7 +407,9 @@
 }
 
 :where(.story-card) .story-card-panel:hover .story-card-image :where(img),
-:where(.story-card .story-card-panel):has(.story-card-link:focus-visible) .story-card-image :where(img) {
+:where(.story-card .story-card-panel):has(.story-card-link:focus-visible)
+  .story-card-image
+  :where(img) {
   transform: scale(var(--motion-hover-scale));
 }
 
@@ -425,8 +423,10 @@
 }
 
 :where(.story-card):hover .story-card-cta::after {
-  border-right: var(--story-card-cta-arrow-stroke-width) solid var(--story-card-text-color);
-  border-bottom: var(--story-card-cta-arrow-stroke-width) solid var(--story-card-text-color);
+  border-right: var(--story-card-cta-arrow-stroke-width) solid
+    var(--story-card-text-color);
+  border-bottom: var(--story-card-cta-arrow-stroke-width) solid
+    var(--story-card-text-color);
 }
 
 /* ================================================================
@@ -456,7 +456,6 @@
 .story-card.is-leader-card .story-card-content {
   display: block;
   min-height: auto;
-  padding: 0;
 }
 
 .story-card.is-leader-card .story-card-title {
@@ -517,7 +516,7 @@
 .story-card.large-title .story-card-description {
   -webkit-line-clamp: var(--story-card-typography-lineclamp-description);
   color: var(--story-card-text-color);
-  font-family: var(--roboto-regular-font-family);
+  font-family: var(--body-font-family);
   font-size: var(--corp-font-size-16);
   font-weight: var(--story-card-description-font-weight);
   line-height: var(--corp-typography-lineheight-body-md);
@@ -527,7 +526,8 @@
   aspect-ratio: var(--story-card-image-ratio-large-title);
 }
 
-.story-card.large-title:not(.hide-description) :where(:is(.story-card-title, .story-card-description)) {
+.story-card.large-title:not(.hide-description)
+  :where(:is(.story-card-title, .story-card-description)) {
   margin-top: var(--corp-spacing-32);
 }
 
@@ -569,12 +569,11 @@
 
 .story-card.is-side-panel .story-card-content {
   min-height: auto;
-  padding: 0;
 }
 
 .story-card.is-side-panel .story-card-meta {
-  flex-flow: row;
   flex-flow: row wrap;
+  align-items: center;
   margin-bottom: var(--corp-spacing-10);
   gap: var(--corp-spacing-8);
 }
@@ -584,20 +583,30 @@
 }
 
 .story-card.is-side-panel .story-card-date {
-  font-size: var(--corp-font-size-18);
+  font-size: var(--corp-font-size-16);
 }
 
 .story-card.is-side-panel .story-card-title {
-  font-family: var(--roboto-regular-font-family);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--story-card-typography-lineclamp-title);
+  line-clamp: var(--story-card-typography-lineclamp-title);
+  font-family: var(--body-font-family);
   font-size: var(--corp-font-size-18);
   font-weight: var(--corp-font-weight-regular);
   line-height: var(--corp-typography-lineheight-body-md);
+  overflow: hidden;
 }
 
 .story-card.is-side-panel .story-card-description {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--story-card-typography-lineclamp-description);
+  line-clamp: var(--story-card-typography-lineclamp-description);
   font-size: var(--corp-font-size-16);
   font-weight: var(--corp-font-weight-regular);
   line-height: var(--corp-typography-lineheight-body-sm);
+  overflow: hidden;
 }
 
 .story-card.is-side-panel .story-card-cta {
@@ -615,7 +624,13 @@
 }
 
 .story-card.is-side-panel .story-card-read-time-inline {
+  font-size: var(--corp-font-size-16);
   margin-top: 0;
+  gap: 0;
+}
+
+:where(.story-card).is-side-panel .story-card-read-time-inline::before {
+  font-size: var(--corp-font-size-22);
 }
 
 /* ================================================================
@@ -626,6 +641,7 @@
 
 .story-card.is-related-content .story-card-link {
   flex-direction: column;
+  gap: var(--corp-spacing-20);
 }
 
 .story-card.is-related-content .story-card-image,
@@ -647,7 +663,6 @@
 
 .story-card.is-related-content .story-card-content {
   display: grid;
-  padding: var(--corp-spacing-24) 0;
 }
 
 .story-card.is-related-content .story-card-eyebrow {
@@ -660,7 +675,7 @@
 }
 
 .story-card.is-related-content .story-card-title {
-  font-family: var(--roboto-regular-font-family);
+  font-family: var(--body-font-family);
   font-size: var(--corp-font-size-18);
   font-weight: var(--corp-font-weight-regular);
   line-height: var(--corp-typography-lineheight-body-md);
@@ -675,10 +690,22 @@
   margin-top: 0;
   white-space: nowrap;
   width: auto;
+  letter-spacing: 0;
+  gap: 0;
 }
 
 :where(.story-card).is-related-content .story-card-read-time-inline::before {
-  font-size: var(--corp-font-size-18);
+  font-size: var(--corp-font-size-22);
+  line-height: normal;
+}
+
+.story-card.is-related-content .story-card-description {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: var(--corp-font-size-16);
 }
 
 .story-card.is-related-content .story-card-cta-container {
@@ -723,7 +750,6 @@
   /* Content */
   .story-card .story-card-content {
     min-height: auto;
-    padding: var(--corp-space-token-xxl, 8rem) var(--corp-spacing-70) var(--corp-spacing-120, 12rem) 0;
   }
 
   /* Meta — row on tablet */
@@ -759,15 +785,14 @@
     font-size: var(--corp-font-size-14);
   }
 
+  .story-card.is-side-panel .story-card-cta {
+    white-space: normal;
+  }
+
   .story-card .story-card-cta-container {
     align-items: center;
     flex-direction: row;
     gap: var(--corp-spacing-10);
-  }
-
-  /* Story Card Info — tablet */
-  .story-card.story-card-info .story-card-content {
-    padding: 0;
   }
 
   .story-card.card-info .story-card-date {
@@ -831,7 +856,6 @@
 
   .story-card.is-side-panel .story-card-content {
     min-height: auto;
-    padding: 0;
   }
 
   .story-card.is-side-panel .story-card-meta {
@@ -844,15 +868,22 @@
   }
 
   .story-card.is-side-panel .story-card-title {
-    font-size: var(--corp-font-size-20);
+    font-size: var(--corp-font-size-18);
     font-weight: var(--corp-font-weight-regular);
     line-height: var(--corp-typography-lineheight-body-lg);
+  }
+
+  .story-card.is-side-panel .story-card-description {
+    font-size: var(--corp-font-size-12);
+  }
+
+  .story-card.is-side-panel .story-card-read-time-inline {
+    font-size: var(--corp-font-size-12);
   }
 
   /* Related Content — side-by-side image + content at tablet */
   .story-card.is-related-content .story-card-link {
     flex-direction: row;
-    gap: var(--corp-spacing-16);
   }
 
   .story-card.is-related-content .story-card-image,
@@ -870,7 +901,6 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: var(--corp-spacing-16) var(--corp-spacing-8);
   }
 
   .story-card.is-related-content .story-card-meta {
@@ -953,7 +983,8 @@
     grid-column: span 2;
   }
 
-  .story-card.large-title:not(.hide-description) :where(:is(.story-card-title, .story-card-description)) {
+  .story-card.large-title:not(.hide-description)
+    :where(:is(.story-card-title, .story-card-description)) {
     grid-column: span 1;
     margin-top: 0;
   }
@@ -994,7 +1025,6 @@
   /* Content — desktop */
   .story-card .story-card-content {
     min-height: auto;
-    padding: 0 var(--corp-spacing-120) 0 0;
   }
 
   /* Meta — single row, no wrap */
@@ -1029,7 +1059,6 @@
 
   .story-card.story-card-info .story-card-content {
     max-width: 100%;
-    padding: var(--corp-spacing-36) 0;
     width: 100%;
   }
 
@@ -1097,10 +1126,17 @@
     padding: 0;
   }
 
+  .story-card.is-side-panel .story-card-description {
+    font-size: var(--corp-font-size-14);
+  }
+
+  .story-card.is-side-panel .story-card-read-time-inline {
+    font-size: var(--corp-font-size-14);
+  }
+
   /* Related Content — side-by-side at desktop */
   .story-card.is-related-content .story-card-link {
     flex-direction: row;
-    gap: var(--corp-spacing-16);
   }
 
   .story-card.is-related-content .story-card-image,
@@ -1118,7 +1154,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: var(--corp-spacing-48) var(--corp-spacing-16);
+    align-self: center;
   }
 
   .story-card.is-related-content .story-card-meta {
@@ -1145,9 +1181,12 @@
 
 /* ================================================================
    Carousel (default) context overrides
+   TODO: Need to remove after the implementation of Story card: Themes and styles
    ================================================================ */
 
-.carousel:where(.carousel-default) .story-card.is-side-panel :where(.story-card-title) {
+.carousel:where(.carousel-default)
+  .story-card.is-side-panel
+  :where(.story-card-title) {
   font-size: var(--corp-font-size-18);
   font-family: var(--heading-font-family);
   font-weight: var(--corp-font-weight-semibold-alt);
@@ -1155,14 +1194,18 @@
 }
 
 @media (min-width: 744px) {
-  .carousel:where(.carousel-default) .story-card.is-side-panel :where(.story-card-title) {
+  .carousel:where(.carousel-default)
+    .story-card.is-side-panel
+    :where(.story-card-title) {
     font-size: var(--corp-font-size-30);
     line-height: var(--corp-typography-lineheight-relaxed-xl);
   }
 }
 
 @media (min-width: 1024px) {
-  .carousel:where(.carousel-default) .story-card.is-side-panel :where(.story-card-title) {
+  .carousel:where(.carousel-default)
+    .story-card.is-side-panel
+    :where(.story-card-title) {
     font-size: var(--corp-font-size-40);
     line-height: var(--corp-typography-lineheight-heading-md);
   }

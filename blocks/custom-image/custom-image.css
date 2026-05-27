@@ -1,5 +1,12 @@
 .block.custom-image {
     position: relative;
+    margin-bottom: var(--corp-spacing-16);
+}
+
+@media (--bp-tablet) {
+    .block.custom-image {
+        margin-bottom: var(--corp-spacing-24);
+    }
 }
 
 .custom-image picture img {
@@ -40,16 +47,43 @@
     object-fit: cover;
 }
 
-@media (width >= 744px) {
+@media (--bp-tablet) {
     .custom-image.cmp-image--abbvie-logo picture img {
         height: 1.4rem;
         max-width: 8rem;
     }
 }
 
-@media (width >= 1024px) {
+@media (--bp-desktop) {
     .custom-image.cmp-image--abbvie-logo picture img {
         height: 2rem;
         max-width: 11.2rem;
+    }
+}
+
+/* Variant: add-margins — controlled from authoring */
+.custom-image.add-margins {
+    margin-left: var(--corp-spacing-35);
+    margin-right: var(--corp-spacing-35);
+}
+
+@media (--bp-tablet) {
+    .custom-image.add-margins {
+        margin-left: var(--corp-spacing-70);
+        margin-right: var(--corp-spacing-70);
+    }
+}
+
+@media (--bp-desktop) {
+    .custom-image.add-margins {
+        margin-left: var(--corp-spacing-55);
+        margin-right: var(--corp-spacing-55);
+    }
+}
+
+@media (--bp-wide) {
+    .custom-image.add-margins {
+        margin-left: auto;
+        margin-right: auto;
     }
 }

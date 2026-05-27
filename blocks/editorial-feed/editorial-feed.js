@@ -262,7 +262,7 @@ async function buildStoryCard(pageData, hideOptions = {}, placeholders = {}) {
   const rawTitle = pageData.cardtitle || pageData.navtitle || pageData.title || '';
   const description = pageData.carddescription || pageData.description || '';
   const title = rawTitle || description;
-  const tagLabel = extractTagLabel(pageData.tags || '');
+  const tagLabel = extractTagLabel(pageData?.['cq-tags'] || '');
   const image = pageData.cardimage || pageData.image || '';
   const imageAlt = pageData.cardimagealt || pageData.pageimagealt || title;
   const publicationDate = pageData.publicationdate || '';

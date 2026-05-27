@@ -319,12 +319,6 @@
   transition: all 0.3s ease-out;
 }
 
-.story-cards:where(.leader-cards-grid) :where(.story-card):hover .story-card-cta {
-  --leader-cta-border-color: var(--corp-color-text-default);
-
-  color: var(--corp-color-text-default);
-}
-
 /* Leader grid: image + content full width */
 .story-cards:where(.leader-cards-grid) .story-cards-grid-item .story-card-image,
 .story-cards:where(.leader-cards-grid) .story-cards-grid-item .story-card-content {
@@ -382,6 +376,15 @@
   line-height: var(--corp-typography-lineheight-body-sm);
   padding-right: var(--corp-spacing-18);
   position: relative;
+  color: var(--color-accent-blue);
+}
+
+.story-cards.leader-cards-grid :where(.story-card-cta):hover {
+  color: var(--corp-color-text-default);
+}
+
+.story-cards:where(.leader-cards-grid) :where(.story-card):hover .story-card-cta {
+  color: var(--corp-color-text-default);
 }
 
 .story-cards:where(.leader-cards-grid) .story-card-cta::after {

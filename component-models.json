@@ -44,11 +44,25 @@
         "label": "Page Subtitle"
       },
       {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "OG Image"
+      },
+      {
         "component": "boolean",
         "valueType": "boolean",
         "name": "hideFromNavigation",
         "label": "Hide from Navigation",
         "value": false
+      },
+      {
+        "component": "number",
+        "valueType": "number",
+        "name": "navigationalOrder",
+        "label": "Navigational Order",
+        "description": "Numeric value to control the custom order of level 2 and 3 header links. Lower numbers appear first.",
+        "value": 0
       },
       {
         "component": "tab",
@@ -459,9 +473,10 @@
         "name": "analytics_tab"
       },
       {
-        "component": "richtext",
+        "component": "text",
         "valueType": "string",
         "name": "analytics_id",
+        "readOnly": true,
         "value": "",
         "label": "Analytics Interaction ID",
         "description": "Analytics Interaction ID used for tracking interactions with this block."
@@ -473,18 +488,18 @@
     "title": "Grid Section",
     "fields": [
       {
+        "component": "tab",
+        "label": "Overview",
+        "name": "overview"
+      },
+      {
         "component": "text",
         "name": "name",
-        "label": "Section Name",
+        "label": "Grid Section Name",
         "id": "grid-section",
         "description": "The label shown for this section in the Content Tree",
         "value": "",
         "valueType": "string"
-      },
-      {
-        "component": "tab",
-        "label": "Properties",
-        "name": "properties"
       },
       {
         "component": "text",
@@ -659,9 +674,10 @@
         "name": "analytics_tab"
       },
       {
-        "component": "richtext",
+        "component": "text",
         "valueType": "string",
         "name": "analytics_id",
+        "readOnly": true,
         "value": "",
         "label": "Analytics Interaction ID",
         "description": "Analytics Interaction ID used for tracking interactions with this block."
@@ -872,9 +888,10 @@
         "name": "analytics_tab"
       },
       {
-        "component": "richtext",
+        "component": "text",
         "valueType": "string",
         "name": "analytics_id",
+        "readOnly": true,
         "value": "",
         "label": "Analytics Interaction ID",
         "description": "Analytics Interaction ID used for tracking interactions with this block."
@@ -1309,9 +1326,10 @@
         "name": "analytics_tab"
       },
       {
-        "component": "richtext",
+        "component": "text",
         "valueType": "string",
         "name": "analytics_id",
+        "readOnly": true,
         "value": "",
         "label": "Analytics Interaction ID",
         "description": "Analytics Interaction ID used for tracking interactions with this block."
@@ -1657,9 +1675,10 @@
         "name": "analytics_tab"
       },
       {
-        "component": "richtext",
+        "component": "text",
         "valueType": "string",
         "name": "analytics_id",
+        "readOnly": true,
         "value": "",
         "label": "Analytics Interaction ID",
         "description": "Analytics Interaction ID used for tracking interactions with this block."
@@ -2656,9 +2675,10 @@
         "name": "analytics_tab"
       },
       {
-        "component": "richtext",
+        "component": "text",
         "valueType": "string",
         "name": "analytics_id",
+        "readOnly": true,
         "value": "",
         "label": "Analytics Interaction ID",
         "description": "Analytics Interaction ID used for tracking interactions with this block."
@@ -3102,9 +3122,10 @@
         "name": "analytics_tab"
       },
       {
-        "component": "richtext",
+        "component": "text",
         "valueType": "string",
         "name": "analytics_id",
+        "readOnly": true,
         "value": "",
         "label": "Analytics Interaction ID",
         "description": "Analytics Interaction ID used for tracking interactions with this block."
@@ -3513,9 +3534,10 @@
         "name": "analytics_tab"
       },
       {
-        "component": "richtext",
+        "component": "text",
         "valueType": "string",
         "name": "analytics_id",
+        "readOnly": true,
         "value": "",
         "label": "Analytics Interaction ID",
         "description": "Analytics Interaction ID used for tracking interactions with this block."
@@ -3903,9 +3925,10 @@
         "name": "analytics_tab"
       },
       {
-        "component": "richtext",
+        "component": "text",
         "valueType": "string",
         "name": "analytics_id",
+        "readOnly": true,
         "value": "",
         "label": "Analytics Interaction ID",
         "description": "Analytics Interaction ID used for tracking interactions with this block."
@@ -3926,20 +3949,6 @@
         "name": "title",
         "value": "",
         "label": "Text"
-      },
-      {
-        "component": "tab",
-        "label": "Styles",
-        "name": "styles"
-      },
-      {
-        "component": "ngaem:dynamic-picklist",
-        "name": "classes_customDynamicClass",
-        "value": "",
-        "label": "Select Block Styles",
-        "valueType": "string",
-        "sourceAEMNodeName": "title-picklist-config",
-        "valueSeperator": ","
       },
       {
         "component": "select",
@@ -3973,6 +3982,20 @@
             "value": "h6"
           }
         ]
+      },
+      {
+        "component": "tab",
+        "label": "Styles",
+        "name": "styles"
+      },
+      {
+        "component": "ngaem:dynamic-picklist",
+        "name": "classes_customDynamicClass",
+        "value": "",
+        "label": "Select Block Styles",
+        "valueType": "string",
+        "sourceAEMNodeName": "title-picklist-config",
+        "valueSeperator": ","
       },
       {
         "component": "tab",
@@ -4126,9 +4149,10 @@
         "name": "analytics_tab"
       },
       {
-        "component": "richtext",
+        "component": "text",
         "valueType": "string",
         "name": "analytics_id",
+        "readOnly": true,
         "value": "",
         "label": "Analytics Interaction ID",
         "description": "Analytics Interaction ID used for tracking interactions with this block."
@@ -4545,9 +4569,10 @@
         "name": "analytics_tab"
       },
       {
-        "component": "richtext",
+        "component": "text",
         "valueType": "string",
         "name": "analytics_id",
+        "readOnly": true,
         "value": "",
         "label": "Analytics Interaction ID",
         "description": "Analytics Interaction ID used for tracking interactions with this block."
@@ -4570,60 +4595,6 @@
         "name": "pagePath",
         "value": "",
         "label": "Category Link"
-      }
-    ]
-  },
-  {
-    "id": "eds-form",
-    "fields": [
-      {
-        "component": "select",
-        "name": "classes",
-        "label": "Select Form",
-        "valueType": "string",
-        "options": [
-          {
-            "name": "find-an-injector",
-            "value": "find-an-injector"
-          }
-        ]
-      },
-      {
-        "component": "aem-content",
-        "name": "text",
-        "label": "Form Link",
-        "multi": false,
-        "required": true
-      },
-      {
-        "component": "aem-content",
-        "name": "optionsLink",
-        "label": "Options Link",
-        "multi": false,
-        "required": true,
-        "condition": {
-          "===": [
-            {
-              "var": "classes"
-            },
-            "find-an-injector"
-          ]
-        }
-      },
-      {
-        "component": "boolean",
-        "name": "showMap",
-        "label": "Show Map",
-        "valueType": "boolean",
-        "value": true,
-        "condition": {
-          "===": [
-            {
-              "var": "classes"
-            },
-            "find-an-injector"
-          ]
-        }
       }
     ]
   },
@@ -4684,6 +4655,197 @@
         "valueType": "string",
         "name": "embed_uri",
         "label": "URI"
+      }
+    ]
+  },
+  {
+    "id": "eyebrow-text",
+    "fields": [
+      {
+        "component": "tab",
+        "label": "Overview",
+        "name": "overview"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "text",
+        "value": "",
+        "label": "Text"
+      },
+      {
+        "component": "tab",
+        "label": "Styles",
+        "name": "styles"
+      },
+      {
+        "component": "ngaem:dynamic-picklist",
+        "name": "classes_customDynamicClass",
+        "value": "",
+        "label": "Select Text Block Styles",
+        "valueType": "string",
+        "sourceAEMNodeName": "eyebrow-text-picklist-config",
+        "valueSeperator": ","
+      },
+      {
+        "component": "tab",
+        "label": "Advanced",
+        "name": "advanced"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "blockId",
+        "valueFormat": "regexp",
+        "label": "ID",
+        "value": "",
+        "description": "Unique identifier for this block",
+        "validation": {
+          "regExp": "^\\S*$",
+          "customErrorMsg": "ID must not contain spaces"
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "classes_commonCustomClass",
+        "label": "Custom Class",
+        "description": "Custom CSS class to apply to this block"
+      },
+      {
+        "component": "tab",
+        "label": "Accessibility",
+        "name": "accessibility"
+      },
+      {
+        "component": "select",
+        "name": "language",
+        "label": "Language",
+        "value": "none",
+        "options": [
+          {
+            "name": "None",
+            "value": "none"
+          },
+          {
+            "name": "Bulgarian",
+            "value": "bg"
+          },
+          {
+            "name": "Chinese",
+            "value": "zh"
+          },
+          {
+            "name": "Chinese (Taiwan)",
+            "value": "zh-TW"
+          },
+          {
+            "name": "Czech",
+            "value": "cs"
+          },
+          {
+            "name": "Danish",
+            "value": "da"
+          },
+          {
+            "name": "Dutch",
+            "value": "nl"
+          },
+          {
+            "name": "English",
+            "value": "en"
+          },
+          {
+            "name": "Finnish",
+            "value": "fi"
+          },
+          {
+            "name": "French",
+            "value": "fr"
+          },
+          {
+            "name": "German",
+            "value": "de"
+          },
+          {
+            "name": "Greek",
+            "value": "el"
+          },
+          {
+            "name": "Hebrew",
+            "value": "he"
+          },
+          {
+            "name": "Hungarian",
+            "value": "hu"
+          },
+          {
+            "name": "Italian",
+            "value": "it"
+          },
+          {
+            "name": "Japanese",
+            "value": "ja"
+          },
+          {
+            "name": "Korean",
+            "value": "ko"
+          },
+          {
+            "name": "Norwegian",
+            "value": "no"
+          },
+          {
+            "name": "Polish",
+            "value": "pl"
+          },
+          {
+            "name": "Portuguese",
+            "value": "pt"
+          },
+          {
+            "name": "Russian",
+            "value": "ru"
+          },
+          {
+            "name": "Slovak",
+            "value": "sk"
+          },
+          {
+            "name": "Slovenian",
+            "value": "sl"
+          },
+          {
+            "name": "Spanish",
+            "value": "es"
+          },
+          {
+            "name": "Swedish",
+            "value": "sv"
+          },
+          {
+            "name": "Turkish",
+            "value": "tr"
+          },
+          {
+            "name": "Ukrainian",
+            "value": "uk"
+          }
+        ]
+      },
+      {
+        "component": "tab",
+        "label": "Analytics",
+        "name": "analytics_tab"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "analytics_id",
+        "readOnly": true,
+        "value": "",
+        "label": "Analytics Interaction ID",
+        "description": "Analytics Interaction ID used for tracking interactions with this block."
       }
     ]
   },
@@ -4938,28 +5100,13 @@
         "name": "analytics_tab"
       },
       {
-        "component": "richtext",
+        "component": "text",
         "valueType": "string",
         "name": "analytics_id",
+        "readOnly": true,
         "value": "",
         "label": "Analytics Interaction ID",
         "description": "Analytics Interaction ID used for tracking interactions with this block."
-      }
-    ]
-  },
-  {
-    "id": "form",
-    "fields": [
-      {
-        "component": "aem-content",
-        "name": "reference",
-        "label": "Form"
-      },
-      {
-        "component": "text",
-        "name": "action",
-        "label": "Action URL",
-        "valueType": "string"
       }
     ]
   },
@@ -5100,10 +5247,6 @@
           {
             "name": "Purple",
             "value": "purple"
-          },
-          {
-            "name": "Light (transparent)",
-            "value": "light"
           }
         ]
       },
@@ -6584,9 +6727,10 @@
         "name": "analytics_tab"
       },
       {
-        "component": "richtext",
+        "component": "text",
         "valueType": "string",
         "name": "analytics_id",
+        "readOnly": true,
         "value": "",
         "label": "Analytics Interaction ID",
         "description": "Analytics Interaction ID used for tracking interactions with this block."
@@ -6607,10 +6751,18 @@
         "label": "RSS Feed URL"
       },
       {
-        "component": "select",
-        "name": "variant",
-        "label": "Variant (Theme)",
-        "options": []
+        "component": "tab",
+        "label": "Styles",
+        "name": "styles"
+      },
+      {
+        "component": "ngaem:dynamic-picklist",
+        "name": "classes_customDynamicClass",
+        "value": "",
+        "label": "Select Block Styles",
+        "valueType": "string",
+        "sourceAEMNodeName": "news-feed-picklist-config",
+        "valueSeperator": ","
       },
       {
         "component": "tab",
@@ -6764,9 +6916,10 @@
         "name": "analytics_tab"
       },
       {
-        "component": "richtext",
+        "component": "text",
         "valueType": "string",
         "name": "analytics_id",
+        "readOnly": true,
         "value": "",
         "label": "Analytics Interaction ID",
         "description": "Analytics Interaction ID used for tracking interactions with this block."
@@ -7140,9 +7293,437 @@
         "name": "analytics_tab"
       },
       {
-        "component": "richtext",
+        "component": "text",
         "valueType": "string",
         "name": "analytics_id",
+        "readOnly": true,
+        "value": "",
+        "label": "Analytics Interaction ID",
+        "description": "Analytics Interaction ID used for tracking interactions with this block."
+      }
+    ]
+  },
+  {
+    "id": "pipeline",
+    "fields": [
+      {
+        "component": "tab",
+        "label": "Overview",
+        "name": "overview"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "shareText",
+        "label": "Share Text",
+        "description": "Text label displayed for the share functionality"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "shareConfirmationText",
+        "label": "Share Confirmation Text",
+        "description": "Confirmation message shown after copying to clipboard"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "targetHeaderText",
+        "label": "Target Header Text",
+        "description": "Header text for the target section"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "moleculeHeaderText",
+        "label": "Type of Molecule Header Text",
+        "description": "Header text for the type of molecule section"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "pronunciationHeaderText",
+        "label": "Pronunciation Header Text",
+        "description": "Header text for the pronunciation section"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "col1HeaderText",
+        "label": "Table Column 1 Header Text",
+        "description": "Header text for the first table column"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "col2HeaderText",
+        "label": "Table Column 2 Header Text",
+        "description": "Header text for the second table column"
+      },
+      {
+        "component": "tab",
+        "label": "Pharmaceutical",
+        "name": "pharmaceutical"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "pharmaCol3HeaderText",
+        "label": "Table Column 3 Header Text (Pharmaceutical)",
+        "description": "Header text for the third table column in pharmaceutical view"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "pharmaCol4HeaderText",
+        "label": "Table Column 4 Header Text (Pharmaceutical)",
+        "description": "Header text for the fourth table column in pharmaceutical view"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "pharmaCol5HeaderText",
+        "label": "Table Column 5 Header Text (Pharmaceutical)",
+        "description": "Header text for the fifth table column in pharmaceutical view"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "pharmaCol6HeaderText",
+        "label": "Table Column 6 Header Text (Pharmaceutical)",
+        "description": "Header text for the sixth table column in pharmaceutical view"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "pharmaCol6Tooltip",
+        "label": "Table Column 6 Tooltip (Pharmaceutical)",
+        "description": "Tooltip text providing additional context for column 6"
+      },
+      {
+        "component": "tab",
+        "label": "Device",
+        "name": "device"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "deviceCol3HeaderText",
+        "label": "Table Column 3 Header Text (Device)",
+        "description": "Header text for the third table column in device view"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "deviceCol4HeaderText",
+        "label": "Table Column 4 Header Text (Device)",
+        "description": "Header text for the fourth table column in device view"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "deviceCol5HeaderText",
+        "label": "Table Column 5 Header Text (Device)",
+        "description": "Header text for the fifth table column in device view"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "deviceCol6HeaderText",
+        "label": "Table Column 6 Header Text (Device)",
+        "description": "Header text for the sixth table column in device view"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "deviceCol6Tooltip",
+        "label": "Table Column 6 Tooltip (Device)",
+        "description": "Tooltip text providing additional context for column 6"
+      },
+      {
+        "component": "tab",
+        "label": "Icons",
+        "name": "icons"
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "classes_shareLinkIconType",
+        "label": "Share Link Icon Type",
+        "value": "share-no-icon",
+        "options": [
+          {
+            "name": "None",
+            "value": "share-no-icon"
+          },
+          {
+            "name": "Icon Font",
+            "value": "share-icon-font"
+          },
+          {
+            "name": "Image",
+            "value": "share-image"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "shareLinkFontIcon",
+        "label": "Share Link Font Icon",
+        "description": "Font icon name for the share link functionality",
+        "condition": {
+          "===": [
+            {
+              "var": "classes_shareLinkIconType"
+            },
+            "share-icon-font"
+          ]
+        }
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "shareLinkImageIcon",
+        "label": "Share Link Image Icon",
+        "description": "Path to the icon used for the share link functionality",
+        "multi": false,
+        "condition": {
+          "===": [
+            {
+              "var": "classes_shareLinkIconType"
+            },
+            "share-image"
+          ]
+        }
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "classes_speakerIconType",
+        "label": "Speaker Icon Type",
+        "value": "speaker-no-icon",
+        "options": [
+          {
+            "name": "None",
+            "value": "speaker-no-icon"
+          },
+          {
+            "name": "Icon Font",
+            "value": "speaker-icon-font"
+          },
+          {
+            "name": "Image",
+            "value": "speaker-image"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "speakerFontIcon",
+        "label": "Speaker Font Icon",
+        "description": "Font icon name for pronunciation audio functionality",
+        "condition": {
+          "===": [
+            {
+              "var": "classes_speakerIconType"
+            },
+            "speaker-icon-font"
+          ]
+        }
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "speakerImageIcon",
+        "label": "Speaker Image Icon",
+        "description": "Path to the icon used for pronunciation audio functionality",
+        "multi": false,
+        "condition": {
+          "===": [
+            {
+              "var": "classes_speakerIconType"
+            },
+            "speaker-image"
+          ]
+        }
+      },
+      {
+        "component": "tab",
+        "label": "No Results",
+        "name": "noResults"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "noResultsHeadline",
+        "label": "No Results Headline Text",
+        "description": "Primary message displayed when no pipeline results are found"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "noResultsSubheading",
+        "label": "No Results Subheading Text",
+        "description": "Secondary message providing guidance when no results are available"
+      },
+      {
+        "component": "tab",
+        "label": "Advanced",
+        "name": "advanced"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "blockId",
+        "valueFormat": "regexp",
+        "label": "ID",
+        "value": "",
+        "description": "Unique identifier for this block",
+        "validation": {
+          "regExp": "^\\S*$",
+          "customErrorMsg": "ID must not contain spaces"
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "classes_commonCustomClass",
+        "label": "Custom Class",
+        "description": "Custom CSS class to apply to this block"
+      },
+      {
+        "component": "tab",
+        "label": "Accessibility",
+        "name": "accessibility"
+      },
+      {
+        "component": "select",
+        "name": "language",
+        "label": "Language",
+        "value": "none",
+        "options": [
+          {
+            "name": "None",
+            "value": "none"
+          },
+          {
+            "name": "Bulgarian",
+            "value": "bg"
+          },
+          {
+            "name": "Chinese",
+            "value": "zh"
+          },
+          {
+            "name": "Chinese (Taiwan)",
+            "value": "zh-TW"
+          },
+          {
+            "name": "Czech",
+            "value": "cs"
+          },
+          {
+            "name": "Danish",
+            "value": "da"
+          },
+          {
+            "name": "Dutch",
+            "value": "nl"
+          },
+          {
+            "name": "English",
+            "value": "en"
+          },
+          {
+            "name": "Finnish",
+            "value": "fi"
+          },
+          {
+            "name": "French",
+            "value": "fr"
+          },
+          {
+            "name": "German",
+            "value": "de"
+          },
+          {
+            "name": "Greek",
+            "value": "el"
+          },
+          {
+            "name": "Hebrew",
+            "value": "he"
+          },
+          {
+            "name": "Hungarian",
+            "value": "hu"
+          },
+          {
+            "name": "Italian",
+            "value": "it"
+          },
+          {
+            "name": "Japanese",
+            "value": "ja"
+          },
+          {
+            "name": "Korean",
+            "value": "ko"
+          },
+          {
+            "name": "Norwegian",
+            "value": "no"
+          },
+          {
+            "name": "Polish",
+            "value": "pl"
+          },
+          {
+            "name": "Portuguese",
+            "value": "pt"
+          },
+          {
+            "name": "Russian",
+            "value": "ru"
+          },
+          {
+            "name": "Slovak",
+            "value": "sk"
+          },
+          {
+            "name": "Slovenian",
+            "value": "sl"
+          },
+          {
+            "name": "Spanish",
+            "value": "es"
+          },
+          {
+            "name": "Swedish",
+            "value": "sv"
+          },
+          {
+            "name": "Turkish",
+            "value": "tr"
+          },
+          {
+            "name": "Ukrainian",
+            "value": "uk"
+          }
+        ]
+      },
+      {
+        "component": "tab",
+        "label": "Analytics",
+        "name": "analytics_tab"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "analytics_id",
+        "readOnly": true,
         "value": "",
         "label": "Analytics Interaction ID",
         "description": "Analytics Interaction ID used for tracking interactions with this block."
@@ -7518,9 +8099,10 @@
         "name": "analytics_tab"
       },
       {
-        "component": "richtext",
+        "component": "text",
         "valueType": "string",
         "name": "analytics_id",
+        "readOnly": true,
         "value": "",
         "label": "Analytics Interaction ID",
         "description": "Analytics Interaction ID used for tracking interactions with this block."
@@ -7709,9 +8291,10 @@
         "name": "analytics_tab"
       },
       {
-        "component": "richtext",
+        "component": "text",
         "valueType": "string",
         "name": "analytics_id",
+        "readOnly": true,
         "value": "",
         "label": "Analytics Interaction ID",
         "description": "Analytics Interaction ID used for tracking interactions with this block."
@@ -7765,7 +8348,7 @@
         "component": "boolean",
         "valueType": "boolean",
         "name": "showLine",
-        "value": true,
+        "value": false,
         "label": "Show Line"
       },
       {
@@ -7929,9 +8512,10 @@
         "name": "analytics_tab"
       },
       {
-        "component": "richtext",
+        "component": "text",
         "valueType": "string",
         "name": "analytics_id",
+        "readOnly": true,
         "value": "",
         "label": "Analytics Interaction ID",
         "description": "Analytics Interaction ID used for tracking interactions with this block."
@@ -8093,9 +8677,10 @@
         "name": "analytics_tab"
       },
       {
-        "component": "richtext",
+        "component": "text",
         "valueType": "string",
         "name": "analytics_id",
+        "readOnly": true,
         "value": "",
         "label": "Analytics Interaction ID",
         "description": "Analytics Interaction ID used for tracking interactions with this block."
@@ -8149,6 +8734,20 @@
         "valueType": "string",
         "description": "Provide label name for the stock. Example: \"Source\".",
         "tooltip": "Provide label name for the stock."
+      },
+      {
+        "component": "tab",
+        "label": "Styles",
+        "name": "styles"
+      },
+      {
+        "component": "ngaem:dynamic-picklist",
+        "name": "classes_customDynamicClass",
+        "value": "",
+        "label": "Select Block Styles",
+        "valueType": "string",
+        "sourceAEMNodeName": "stock-ticker-picklist-config",
+        "valueSeperator": ","
       },
       {
         "component": "tab",
@@ -8994,9 +9593,10 @@
         "name": "analytics_tab"
       },
       {
-        "component": "richtext",
+        "component": "text",
         "valueType": "string",
         "name": "analytics_id",
+        "readOnly": true,
         "value": "",
         "label": "Analytics Interaction ID",
         "description": "Analytics Interaction ID used for tracking interactions with this block."
@@ -9172,9 +9772,10 @@
         "name": "analytics_tab"
       },
       {
-        "component": "richtext",
+        "component": "text",
         "valueType": "string",
         "name": "analytics_id",
+        "readOnly": true,
         "value": "",
         "label": "Analytics Interaction ID",
         "description": "Analytics Interaction ID used for tracking interactions with this block."
@@ -9587,9 +10188,10 @@
         "name": "analytics_tab"
       },
       {
-        "component": "richtext",
+        "component": "text",
         "valueType": "string",
         "name": "analytics_id",
+        "readOnly": true,
         "value": "",
         "label": "Analytics Interaction ID",
         "description": "Analytics Interaction ID used for tracking interactions with this block."

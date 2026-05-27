@@ -41,9 +41,37 @@
    ======================================================================== */
 
 .section.container-full-width {
-  max-width: 100%;
-  padding-left: 0;
-  padding-right: 0;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+@media (width >= 744px) {
+  .section.container-full-width {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+@media (width >= 1024px) {
+  .section.container-full-width {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+/* Beyond default max-widths (133rem for sections, 144rem for grid-container): center */
+@media (width >= 1440px) {
+  .section.container-full-width {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* When combined with explicit max-width class: center as soon as max-width is hit */
+.section.container-full-width.content-wide,
+.section.container-full-width.content-regular {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Tablet (8-col): small → xxx-small constrain; larger sizes remain full width */
@@ -59,13 +87,15 @@
 
   /* Default (centered) column spans at tablet */
   .section.container-small > :where(div) {
-    grid-column: 1 / 8;
+    grid-column: 1 / span 7;
+    transform: translateX(calc(100% / 14));
   } /* 7 of 8 */
   .section.container-x-small > :where(div) {
     grid-column: 2 / 8;
   } /* 6 of 8 */
   .section.container-xx-small > :where(div) {
-    grid-column: 2 / 7;
+    grid-column: 2 / span 5;
+    transform: translateX(calc(100% / 10));
   } /* 5 of 8 */
   .section.container-xxx-small > :where(div) {
     grid-column: 3 / 7;
@@ -74,6 +104,7 @@
   /* Left-aligned at tablet */
   .section.container-small.align-left > :where(div) {
     grid-column: 1 / 8;
+    transform: none;
   }
 
   .section.container-x-small.align-left > :where(div) {
@@ -82,6 +113,7 @@
 
   .section.container-xx-small.align-left > :where(div) {
     grid-column: 1 / 6;
+    transform: none;
   }
 
   .section.container-xxx-small.align-left > :where(div) {
@@ -91,6 +123,7 @@
   /* Right-aligned at tablet */
   .section.container-small.align-right > :where(div) {
     grid-column: 2 / -1;
+    transform: none;
   }
 
   .section.container-x-small.align-right > :where(div) {
@@ -99,10 +132,20 @@
 
   .section.container-xx-small.align-right > :where(div) {
     grid-column: 4 / -1;
+    transform: none;
   }
 
   .section.container-xxx-small.align-right > :where(div) {
     grid-column: 5 / -1;
+  }
+
+  /* RTL: flip centering transform for odd-column sizes */
+  .section.dir-rtl.container-small > :where(div) {
+    transform: translateX(calc(-100% / 14));
+  }
+
+  .section.dir-rtl.container-xx-small > :where(div) {
+    transform: translateX(calc(-100% / 10));
   }
 }
 
@@ -127,25 +170,29 @@
     grid-column: 1 / -1;
   } /* 12 col */
   .section.container-xx-large > :where(div) {
-    grid-column: 1 / 12;
+    grid-column: 1 / span 11;
+    transform: translateX(calc(100% / 22));
   } /* 11 col */
   .section.container-x-large > :where(div) {
     grid-column: 2 / 12;
   } /* 10 col */
   .section.container-large > :where(div) {
-    grid-column: 2 / 11;
+    grid-column: 2 / span 9;
+    transform: translateX(calc(100% / 18));
   } /*  9 col */
   .section.container-medium > :where(div) {
     grid-column: 3 / 11;
   } /*  8 col */
   .section.container-small > :where(div) {
-    grid-column: 3 / 10;
+    grid-column: 3 / span 7;
+    transform: translateX(calc(100% / 14));
   } /*  7 col */
   .section.container-x-small > :where(div) {
     grid-column: 4 / 10;
   } /*  6 col */
   .section.container-xx-small > :where(div) {
-    grid-column: 4 / 9;
+    grid-column: 4 / span 5;
+    transform: translateX(calc(100% / 10));
   } /*  5 col */
   .section.container-xxx-small > :where(div) {
     grid-column: 5 / 9;
@@ -153,7 +200,8 @@
 
   /* Left-aligned at desktop */
   .section.container-xx-large.align-left > :where(div) {
-    grid-column: 1 / 12;
+    grid-column: 1 / span 11;
+    transform: none;
   }
 
   .section.container-x-large.align-left > :where(div) {
@@ -161,7 +209,8 @@
   }
 
   .section.container-large.align-left > :where(div) {
-    grid-column: 1 / 10;
+    grid-column: 1 / span 9;
+    transform: none;
   }
 
   .section.container-medium.align-left > :where(div) {
@@ -169,7 +218,8 @@
   }
 
   .section.container-small.align-left > :where(div) {
-    grid-column: 1 / 8;
+    grid-column: 1 / span 7;
+    transform: none;
   }
 
   .section.container-x-small.align-left > :where(div) {
@@ -177,7 +227,8 @@
   }
 
   .section.container-xx-small.align-left > :where(div) {
-    grid-column: 1 / 6;
+    grid-column: 1 / span 5;
+    transform: none;
   }
 
   .section.container-xxx-small.align-left > :where(div) {
@@ -187,6 +238,7 @@
   /* Right-aligned at desktop */
   .section.container-xx-large.align-right > :where(div) {
     grid-column: 2 / -1;
+    transform: none;
   }
 
   .section.container-x-large.align-right > :where(div) {
@@ -195,6 +247,7 @@
 
   .section.container-large.align-right > :where(div) {
     grid-column: 4 / -1;
+    transform: none;
   }
 
   .section.container-medium.align-right > :where(div) {
@@ -203,6 +256,7 @@
 
   .section.container-small.align-right > :where(div) {
     grid-column: 6 / -1;
+    transform: none;
   }
 
   .section.container-x-small.align-right > :where(div) {
@@ -211,10 +265,28 @@
 
   .section.container-xx-small.align-right > :where(div) {
     grid-column: 8 / -1;
+    transform: none;
   }
 
   .section.container-xxx-small.align-right > :where(div) {
     grid-column: 9 / -1;
+  }
+
+  /* RTL: flip centering transform for odd-column sizes */
+  .section.dir-rtl.container-xx-large > :where(div) {
+    transform: translateX(calc(-100% / 22));
+  }
+
+  .section.dir-rtl.container-large > :where(div) {
+    transform: translateX(calc(-100% / 18));
+  }
+
+  .section.dir-rtl.container-small > :where(div) {
+    transform: translateX(calc(-100% / 14));
+  }
+
+  .section.dir-rtl.container-xx-small > :where(div) {
+    transform: translateX(calc(-100% / 10));
   }
 
   .section.container-fill-right-margin {
@@ -845,8 +917,6 @@
 .section.bg-f7634f,
 .section.bg-338700 {
   overflow: hidden;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 

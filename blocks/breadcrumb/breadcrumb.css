@@ -32,9 +32,9 @@
   font-weight: var(--corp-font-weight-bold);
   color: var(--color-black);
   text-transform: uppercase;
-  letter-spacing: var(--corp-typography-letterspacing-wide-sm);
+  letter-spacing: normal;
   cursor: pointer;
-  line-height: var(--corp-typography-lineheight-body-sm);
+  line-height: var(--corp-typography-lineheight-tight-sm);
 }
 
 /* Chevron icon after button text (icon font) */
@@ -87,12 +87,13 @@
   gap: var(--corp-spacing-16);
 }
 
-.breadcrumb .breadcrumb-nav ol li {
+.breadcrumb .breadcrumb-nav ol li,
+.breadcrumb .breadcrumb-nav ol :where(li) :where(a) span {
   font-family: var(--roboto-bold-font-family);
   font-size: var(--corp-font-size-12);
   font-weight: var(--corp-font-weight-bold);
-  letter-spacing: var(--corp-typography-letterspacing-wide-sm);
-  line-height: var(--corp-typography-lineheight-body-sm);
+  letter-spacing: var(--corp-typography-letterspacing-wide-xl);
+  line-height: var(--corp-typography-lineheight-tight-sm);
   text-transform: uppercase;
   color: var(--corp-color-text-default);
   display: flex;
@@ -149,7 +150,7 @@
   .breadcrumb .breadcrumb-nav ol {
     flex-flow: row wrap;
     margin: 0;
-    gap: var(--corp-spacing-8);
+    gap: var(--corp-spacing-7);
     align-items: baseline;
   }
 
@@ -157,6 +158,13 @@
     font-size: var(--corp-font-size-14);
     display: flex;
     align-items: flex-end;
+  }
+
+  .breadcrumb .breadcrumb-nav ol li,
+  .breadcrumb .breadcrumb-nav ol :where(li) :where(a) span {
+    font-size: var(--corp-font-size-14);
+    letter-spacing: var(--corp-typography-letterspacing-wide-2xl);
+    line-height: var(--corp-typography-lineheight-body-sm);
   }
 
   /* Chevron separator between items */
@@ -168,5 +176,7 @@
     height: var(--corp-icon-size-md);
     margin: 0 var(--corp-spacing-5);
     width: var(--corp-icon-size-md);
+    line-height: var(--corp-typography-lineheight-body-sm);
+    align-items: center;
   }
 }

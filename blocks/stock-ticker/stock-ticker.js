@@ -25,17 +25,24 @@ function formatTimestamp(ts, tz) {
     .formatToParts(date)
     .find((p) => p.type === 'timeZoneName')?.value ?? '';
 
+  const dayPeriod = new Intl.DateTimeFormat('en-US', {
+    hour: 'numeric',
+    hour12: true,
+    timeZone: tz,
+  })
+    .formatToParts(date)
+    .find((p) => p.type === 'dayPeriod')?.value ?? '';
+
   return `${date
     .toLocaleString('en-US', {
       month: 'short',
       day: '2-digit',
       hour: '2-digit',
       minute: '2-digit',
-      hour12: true,
+      hour12: false,
       timeZone: tz,
     })
-    .replace(',', '')
-    .toUpperCase()} ${tzAbbr}`;
+    .toUpperCase()} ${dayPeriod} ${tzAbbr}`;
 }
 
 function renderSplitPrice(price, containerEl, ariaLabel) {

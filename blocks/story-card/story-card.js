@@ -965,7 +965,7 @@ function buildCard(block, config, data, analyticsId) {
   }
 
   if (!isStoryInfo && !config.hideImage && data.image) {
-    if (!leaderCard && !isSidePanel) {
+    if (!leaderCard && !isSidePanel && !isRelatedContent) {
       panel.classList.add('show-image-hide-desc');
     }
     const figure = document.createElement('div');

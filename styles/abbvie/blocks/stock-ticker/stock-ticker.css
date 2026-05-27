@@ -4,6 +4,8 @@
 
     background-color: var(--color-white);
     border: var(--corp-separator-hairline) solid var(--color-border-container);
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .stock-ticker .content-container {
@@ -128,8 +130,9 @@
 /* Dark theme overrides. Date, source, symbol, and neutral change all collapse to white. */
 
 .stock-ticker.dark-theme {
-    background-color: var(--color-navy-dark);
+    background-color: var(--corp-color-text-default);
     color: var(--color-white);
+    border: var(--corp-spacing-1) solid transparent;
 }
 
 .stock-ticker.dark-theme .date,
@@ -137,6 +140,27 @@
 .stock-ticker.dark-theme .source,
 .stock-ticker.dark-theme .symbol {
     color: var(--color-white);
+}
+
+.stock-ticker.light-theme-stroke {
+    background-color: var(--color-white);
+    border: var(--corp-spacing-1) solid var(--color-border-container);
+}
+
+.stock-ticker.light-theme-no-stroke {
+    background-color: var(--color-white);
+    border: var(--corp-spacing-1) solid transparent;
+}
+
+.stock-ticker.medium-theme {
+	background-color: var(--color-surface-highlight);
+	border: var(--corp-spacing-1) solid transparent;
+}
+
+.stock-ticker.medium-theme-stroke {
+	background-color: var(--color-surface-highlight);
+	border: var(--corp-spacing-1) solid transparent;
+    border: var(--corp-spacing-1) solid var(--color-border-container);
 }
 
 /* Tablet: larger type for headline price and change indicator. */
@@ -180,13 +204,9 @@
     }
 }
 
-/* Desktop: container cap and largest type scale. */
+/* Desktop: largest type scale. */
 
 @media (min-width: 1024px) {
-    .stock-ticker {
-        max-width: 295.25px;
-    }
-
     .stock-ticker .symbol,
     .stock-ticker .date {
         font-size: var(--corp-font-size-14);

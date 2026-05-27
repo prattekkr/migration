@@ -227,6 +227,7 @@
   .fact-card .fact-card-data-suffix {
     font-size: var(--corp-font-size-30);
     line-height: var(--corp-typography-lineheight-relaxed-xl);
+    margin-bottom: var(--corp-spacing-7);
   }
 
   .fact-card .fact-card-description {

@@ -45,11 +45,25 @@
           "label": "Page Subtitle"
         },
         {
+          "component": "reference",
+          "valueType": "string",
+          "name": "image",
+          "label": "OG Image"
+        },
+        {
           "component": "boolean",
           "valueType": "boolean",
           "name": "hideFromNavigation",
           "label": "Hide from Navigation",
           "value": false
+        },
+        {
+          "component": "number",
+          "valueType": "number",
+          "name": "navigationalOrder",
+          "label": "Navigational Order",
+          "description": "Numeric value to control the custom order of level 2 and 3 header links. Lower numbers appear first.",
+          "value": 0
         },
         {
           "component": "tab",

@@ -19,7 +19,7 @@
               "iconImage": "",
               "ariaHidden": false,
               "iconPosition": "after",
-              "classes": "default-cta",
+              "classes_customDynamicClass": "default-cta",
               "language": "none",
               "blockId": ""
             }

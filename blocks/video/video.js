@@ -177,12 +177,10 @@ function resolvePlaceholder(block) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GTM analytics for YouTube — ported from AEM _ytplayer.js
-// Attaches a scoped postMessage listener to a single YouTube iframe so each
-// block instance tracks independently. Cleans up when the iframe is removed.
+// GTM analytics helpers
 // ─────────────────────────────────────────────────────────────────────────────
 
-function setupYouTubeAnalytics(iframe) {
+function setupNativeVideoAnalytics(video) {
   const dl = () => {
     window.dataLayer = window.dataLayer || [];
     return window.dataLayer;
@@ -191,8 +189,117 @@ function setupYouTubeAnalytics(iframe) {
   const progressReached = {};
   let started = false;
   let completed = false;
+
+  const src = video.querySelector('source')?.src || '';
+  const videoId = src.split('/').pop()?.split('?')[0] || '';
+  const videoName = videoId;
+
+  function checkProgress() {
+    if (!video.duration) return;
+    const pct = Math.floor((video.currentTime / video.duration) * 100);
+    PROGRESS_POINTS.forEach((threshold) => {
+      if (pct >= threshold && !progressReached[threshold]) {
+        progressReached[threshold] = true;
+        dl().push({
+          event: 'video_progress',
+          video_name: videoName,
+          video_id: videoId,
+          video_length: video.duration,
+          percent: String(threshold),
+        });
+      }
+    });
+    if (pct >= 97 && !completed) {
+      completed = true;
+      dl().push({
+        event: 'video_complete',
+        video_name: videoName,
+        video_id: videoId,
+        video_length: video.duration,
+      });
+    }
+  }
+
+  video.addEventListener('play', () => {
+    if (!started) {
+      started = true;
+      PROGRESS_POINTS.forEach((p) => { progressReached[p] = false; });
+      completed = false;
+      dl().push({
+        event: 'video_start',
+        video_name: videoName,
+        video_id: videoId,
+        video_length: video.duration,
+      });
+    }
+  });
+
+  video.addEventListener('timeupdate', checkProgress);
+
+  video.addEventListener('ended', () => {
+    if (!completed) {
+      completed = true;
+      dl().push({
+        event: 'video_complete',
+        video_name: videoName,
+        video_id: videoId,
+        video_length: video.duration,
+      });
+    }
+  });
+
+  video.addEventListener('pause', () => {
+    if (started && !completed) {
+      dl().push({
+        event: 'video_pause',
+        video_name: videoName,
+        video_id: videoId,
+        video_length: video.duration,
+      });
+    }
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GTM analytics for YouTube
+// Uses the YouTube IFrame API (youtube.com/iframe_api) to adopt the already-
+// loaded iframe. Raw postMessage alone is not reliable — YouTube only sends
+// onStateChange events once the two-way channel is initialised by the API.
+// ─────────────────────────────────────────────────────────────────────────────
+
+let ytApiPromise = null;
+function loadYouTubeAPI() {
+  if (ytApiPromise) return ytApiPromise;
+  ytApiPromise = new Promise((resolve) => {
+    if (window.YT?.Player) { resolve(window.YT); return; }
+    const prev = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => {
+      if (typeof prev === 'function') prev();
+      resolve(window.YT);
+    };
+    const script = document.createElement('script');
+    script.src = 'https://www.youtube.com/iframe_api';
+    document.head.append(script);
+  });
+  return ytApiPromise;
+}
+
+let ytPlayerSeq = 0;
+
+async function setupYouTubeAnalytics(iframe) {
+  const dl = () => { window.dataLayer = window.dataLayer || []; return window.dataLayer; };
+  const PROGRESS_POINTS = [25, 50, 75];
+  const progressReached = {};
+  let started = false;
+  let completed = false;
   let duration = 0;
   let title = '';
+
+  if (!iframe.id) {
+    ytPlayerSeq += 1;
+    iframe.id = `yt-player-${ytPlayerSeq}`;
+  }
+  const iframeId = iframe.id;
 
   const idMatch = iframe.src.match(/\/embed\/([^?&]+)/);
   const videoId = idMatch ? idMatch[1] : '';
@@ -223,54 +330,79 @@ function setupYouTubeAnalytics(iframe) {
     }
   }
 
+  // Registered synchronously — before any await — so events fired during YT
+  // API init or by an autoplaying video are never missed.
+  // Source is looked up by id on every message rather than captured once so
+  // the check stays valid even if GTM's YT.Player adoption replaces the element.
   function onMessage(e) {
-    if (!e.data || e.source !== iframe.contentWindow) return;
+    const el = document.getElementById(iframeId);
+    if (!el || !e.data || e.source !== el.contentWindow) return;
     let obj;
-    try {
-      obj = JSON.parse(e.data);
-    } catch {
+    try { obj = JSON.parse(e.data); } catch { return; }
+
+    if (obj.event === 'onStateChange') {
+      const state = obj.info;
+      if (state === 1 && !started) {
+        started = true;
+        completed = false;
+        PROGRESS_POINTS.forEach((p) => { progressReached[p] = false; });
+        dl().push({
+          event: 'video_start',
+          video_name: title || videoId,
+          video_id: videoId,
+          video_length: duration,
+        });
+      }
+      if (state === 2 && started && !completed) {
+        dl().push({
+          event: 'video_pause',
+          video_name: title || videoId,
+          video_id: videoId,
+          video_length: duration,
+        });
+      }
+      if (state === 0 && !completed) {
+        completed = true;
+        dl().push({
+          event: 'video_complete',
+          video_name: title || videoId,
+          video_id: videoId,
+          video_length: duration,
+        });
+      }
       return;
     }
-    if (obj.event !== 'infoDelivery' || !obj.info) return;
 
-    const {
-      playerState, currentTime, duration: dur, videoData,
-    } = obj.info;
+    // infoDelivery fires ~250 ms while playing — drives progress and captures
+    // duration/title. Naturally pauses when the player pauses, so no interval
+    // management needed; pause → resume tracking just works.
+    if (obj.event !== 'infoDelivery' || !obj.info) return;
+    const { currentTime, duration: dur, videoData } = obj.info;
     if (dur) duration = dur;
     if (videoData?.title) title = videoData.title;
-
-    if (playerState === 1 && !started) {
-      started = true;
-      PROGRESS_POINTS.forEach((p) => { progressReached[p] = false; });
-      completed = false;
-      dl().push({
-        event: 'video_start',
-        video_name: title || videoId,
-        video_id: videoId,
-        video_length: duration,
-      });
-    }
-    if (playerState === 0 && !completed) {
-      completed = true;
-      dl().push({
-        event: 'video_complete',
-        video_name: title || videoId,
-        video_id: videoId,
-        video_length: duration,
-      });
-    }
     if (currentTime != null) checkProgress(currentTime);
   }
 
   window.addEventListener('message', onMessage);
 
   const observer = new MutationObserver(() => {
-    if (!document.contains(iframe)) {
+    if (!document.getElementById(iframeId)) {
       window.removeEventListener('message', onMessage);
       observer.disconnect();
     }
   });
   observer.observe(document.body, { childList: true, subtree: true });
+
+  // Load the YT IFrame API and create a minimal player so YouTube initialises
+  // the two-way postMessage channel. No event callbacks are registered here —
+  // all tracking comes from the window message listener above, which receives
+  // YouTube's broadcasts regardless of which YT.Player instance GTM may later
+  // create for the same iframe.
+  const YT = await loadYouTubeAPI();
+  if (YT?.Player) {
+    // eslint-disable-next-line no-new
+    new YT.Player(iframeId, {});
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -323,7 +455,7 @@ function embedYoutube(url, options) {
   iframe.src = videoId
     ? `https://www.youtube.com/embed/${encodeURIComponent(videoId)}?${params.toString()}`
     : url.href;
-  iframe.allow = `${shouldAutoplay ? 'autoplay; ' : ''}${enableFullscreen ? 'fullscreen; ' : ''}picture-in-picture; encrypted-media; accelerometer; gyroscope`;
+  iframe.allow = `${shouldAutoplay ? 'autoplay; ' : ''}${enableFullscreen ? 'fullscreen; ' : ''}picture-in-picture; encrypted-media; accelerometer; gyroscope; web-share`;
   iframe.allowFullscreen = enableFullscreen;
   iframe.loading = 'lazy';
   iframe.title = 'Content from Youtube';
@@ -393,6 +525,8 @@ function getNativeVideoElement(source, options) {
   srcEl.setAttribute('src', source);
   srcEl.setAttribute('type', `video/${source.split('.').pop()}`);
   video.append(srcEl);
+
+  setupNativeVideoAnalytics(video);
 
   const wrap = document.createElement('div');
   wrap.className = 'video-player-wrap';

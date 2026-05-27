@@ -177,7 +177,7 @@ function showGridColumnLabel(scope = document) {
   });
 }
 
-function attachEventListners(main) {
+async function attachEventListners(main) {
   [
     'aue:content-patch',
     'aue:content-update',
