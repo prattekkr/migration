@@ -1,0 +1,33 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/how-medicinal-chemists-are-creating-new-weapons-against-autoimmune-diseases.html",
+  "path": "who-we-are/our-stories/how-medicinal-chemists-are-creating-new-weapons-against-autoimmune-diseases",
+  "timestamp": "2026-05-27T16:13:59.406Z",
+  "title": "How medicinal chemists are creating new weapons against autoimmune diseases | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "cta",
+    "story-card",
+    "custom-image",
+    "custom-image",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "separator",
+    "quote",
+    "quote",
+    "quote",
+    "brightcove-video"
+  ]
+}

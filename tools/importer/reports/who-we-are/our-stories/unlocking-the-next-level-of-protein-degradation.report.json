@@ -1,0 +1,31 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/unlocking-the-next-level-of-protein-degradation.html",
+  "path": "who-we-are/our-stories/unlocking-the-next-level-of-protein-degradation",
+  "timestamp": "2026-05-27T16:23:26.870Z",
+  "title": "Unlocking the next level of protein degradation | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "hero-container",
+    "cta",
+    "story-card",
+    "custom-image",
+    "custom-image",
+    "custom-image",
+    "custom-image",
+    "custom-image",
+    "custom-image",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "separator",
+    "separator"
+  ]
+}

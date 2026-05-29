@@ -1,0 +1,32 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/celebrating-abbvies-2025-working-parents-caregivers.html",
+  "path": "who-we-are/our-stories/celebrating-abbvies-2025-working-parents-caregivers",
+  "timestamp": "2026-05-27T16:10:27.054Z",
+  "title": "Celebrating AbbVies Working Parents Caregivers | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "hero-container",
+    "cta",
+    "story-card",
+    "story-card",
+    "story-card",
+    "story-card",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "separator",
+    "quote",
+    "quote"
+  ]
+}

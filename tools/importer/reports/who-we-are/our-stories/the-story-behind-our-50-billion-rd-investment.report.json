@@ -1,0 +1,32 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/the-story-behind-our-50-billion-rd-investment.html",
+  "path": "who-we-are/our-stories/the-story-behind-our-50-billion-rd-investment",
+  "timestamp": "2026-05-27T16:22:16.063Z",
+  "title": "The story behind our $50 billion R&D investment | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "hero-container",
+    "cta",
+    "story-card",
+    "custom-image",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "separator",
+    "separator",
+    "separator"
+  ]
+}

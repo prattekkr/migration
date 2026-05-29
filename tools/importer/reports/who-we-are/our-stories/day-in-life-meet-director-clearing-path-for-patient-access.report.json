@@ -1,0 +1,29 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/day-in-life-meet-director-clearing-path-for-patient-access.html",
+  "path": "who-we-are/our-stories/day-in-life-meet-director-clearing-path-for-patient-access",
+  "timestamp": "2026-05-27T16:11:19.888Z",
+  "title": "Day in the Life: Meet a Director Clearing the Path for Patient Access | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "cta",
+    "story-card",
+    "story-card",
+    "custom-image",
+    "custom-image",
+    "custom-image",
+    "custom-image",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "carousel",
+    "quote"
+  ]
+}

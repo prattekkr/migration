@@ -1,0 +1,30 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/striving-for-patient-centricity-down-to-the-packaging.html",
+  "path": "who-we-are/our-stories/striving-for-patient-centricity-down-to-the-packaging",
+  "timestamp": "2026-05-27T16:21:25.387Z",
+  "title": "Striving for patient centricity, down to the packaging | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "hero-container",
+    "cta",
+    "story-card",
+    "custom-image",
+    "custom-image",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "separator",
+    "separator",
+    "separator",
+    "separator",
+    "quote"
+  ]
+}

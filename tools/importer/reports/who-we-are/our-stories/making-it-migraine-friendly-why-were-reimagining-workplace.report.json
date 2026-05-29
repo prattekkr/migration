@@ -1,0 +1,33 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/making-it-migraine-friendly-why-were-reimagining-workplace.html",
+  "path": "who-we-are/our-stories/making-it-migraine-friendly-why-were-reimagining-workplace",
+  "timestamp": "2026-05-27T16:16:42.942Z",
+  "title": "Making it migraine-friendly: Why we’re reimagining the workplace | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "cta",
+    "story-card",
+    "story-card",
+    "custom-image",
+    "custom-image",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "accordion",
+    "quote",
+    "quote"
+  ]
+}

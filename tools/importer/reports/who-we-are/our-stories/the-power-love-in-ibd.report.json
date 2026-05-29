@@ -1,0 +1,28 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/the-power-love-in-ibd.html",
+  "path": "who-we-are/our-stories/the-power-love-in-ibd",
+  "timestamp": "2026-05-27T16:22:08.945Z",
+  "title": "The power of love in IBD | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "cta",
+    "story-card",
+    "custom-image",
+    "custom-image",
+    "custom-image",
+    "custom-image",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "separator",
+    "separator",
+    "brightcove-video"
+  ]
+}

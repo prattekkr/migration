@@ -1,0 +1,32 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/connecting-patients-with-care-3-lessons-learned-during-covid-19.html",
+  "path": "who-we-are/our-stories/connecting-patients-with-care-3-lessons-learned-during-covid-19",
+  "timestamp": "2026-05-27T16:11:03.931Z",
+  "title": "Connecting patients with care: 3 lessons learned during COVID-19 | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "cta",
+    "story-card",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "separator",
+    "separator",
+    "separator",
+    "separator",
+    "separator",
+    "accordion"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/going-inside-prison-walls-to-help-eliminate-hepatitis-c.html",
+  "path": "who-we-are/our-stories/going-inside-prison-walls-to-help-eliminate-hepatitis-c",
+  "timestamp": "2026-05-27T16:13:03.012Z",
+  "title": "Going inside prison walls to help eliminate hepatitis C | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "cta",
+    "story-card",
+    "custom-image",
+    "custom-image",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "separator",
+    "separator",
+    "separator",
+    "accordion",
+    "quote"
+  ]
+}

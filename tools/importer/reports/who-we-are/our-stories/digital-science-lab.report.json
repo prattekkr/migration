@@ -1,0 +1,26 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/digital-science-lab.html",
+  "path": "who-we-are/our-stories/digital-science-lab",
+  "timestamp": "2026-05-27T16:11:50.386Z",
+  "title": "Digital Science Lab | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "hero-container",
+    "cta",
+    "story-card",
+    "story-card",
+    "story-card",
+    "story-card",
+    "custom-image",
+    "custom-image",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "accordion",
+    "quote",
+    "brightcove-video"
+  ]
+}

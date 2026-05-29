@@ -1,0 +1,33 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/voices-abbvie-reflecting-on-decade-impact.html",
+  "path": "who-we-are/our-stories/voices-abbvie-reflecting-on-decade-impact",
+  "timestamp": "2026-05-27T16:23:33.768Z",
+  "title": "Voices of AbbVie: Reflecting on a decade of impact | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "cta",
+    "story-card",
+    "story-card",
+    "custom-image",
+    "custom-image",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "separator",
+    "separator",
+    "accordion",
+    "quote",
+    "brightcove-video"
+  ]
+}

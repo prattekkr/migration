@@ -1,0 +1,31 @@
+{
+  "status": "success",
+  "url": "https://www.abbvie.com/who-we-are/our-stories/why-you-cant-wait-with-rheumatoid-arthritis.html",
+  "path": "who-we-are/our-stories/why-you-cant-wait-with-rheumatoid-arthritis",
+  "timestamp": "2026-05-27T16:24:04.744Z",
+  "title": "Why you can’t wait with rheumatoid arthritis | AbbVie",
+  "template": "story-article",
+  "blocks": [
+    "hero-container",
+    "cta",
+    "story-card",
+    "custom-image",
+    "custom-image",
+    "custom-image",
+    "custom-image",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "custom-title",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "text-container",
+    "accordion",
+    "quote",
+    "brightcove-video"
+  ]
+}
