@@ -513,6 +513,23 @@
   .accordion.width-x-small.align-left > * {
     grid-column-start: 1;
   }
+
+  .accordion.width-large.align-center > * {
+    transform: translateX(calc((var(--direction-multiplier, 1) * 100%) / 14));
+  }
+
+  .accordion.width-medium.align-center > * {
+    grid-column-start: 2;
+  }
+
+  .accordion.width-small.align-center > * {
+    transform: translateX(calc((var(--direction-multiplier, 1) * 100%) / 10));
+    grid-column-start: 2;
+  }
+
+  .accordion.width-x-small.align-center > * {
+    grid-column-start: 2;
+  }
 }
 
 @media (--bp-desktop) {
@@ -629,6 +646,26 @@
 
   .accordion.width-xxx-small.align-left > * {
     grid-column: 1 / span 4;
+  }
+
+  .accordion.width-x-large.align-center > * {
+    grid-column-start: 3;
+  }
+
+  .accordion.width-large.align-center > * {
+    grid-column-start: 3;
+  }
+
+  .accordion.width-medium.align-center > * {
+    grid-column-start: 4;
+  }
+
+  .accordion.width-small.align-center > * {
+    grid-column-start: 4;
+  }
+
+  .accordion.width-x-small.align-center > * {
+    grid-column-start: 3;
   }
 
   .accordion,

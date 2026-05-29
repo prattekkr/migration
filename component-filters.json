@@ -51,8 +51,12 @@
       "pipeline-utility-nav",
       "hero-container",
       "teaser",
+      "search-results",
+      "pipeline",
+      "product-listing",
       "eyebrow-text",
-      "pipeline"
+      "pipeline",
+      "custom-embed"
     ]
   },
   {
@@ -98,7 +102,10 @@
       "pipeline-utility-nav",
       "teaser",
       "editorial-feed",
-      "eyebrow-text"
+      "search-results",
+      "product-listing",
+      "eyebrow-text",
+      "custom-embed"
     ]
   },
   {
@@ -141,6 +148,10 @@
     ]
   },
   {
+    "id": "custom-embed",
+    "components": []
+  },
+  {
     "id": "custom-title",
     "components": []
   },
@@ -153,6 +164,36 @@
   {
     "id": "eyebrow-text",
     "components": []
+  },
+  {
+    "id": "form",
+    "components": [
+      "captcha",
+      "checkbox",
+      "checkbox-group",
+      "date-input",
+      "drop-down",
+      "email",
+      "file-input",
+      "form-accordion",
+      "form-button",
+      "form-fragment",
+      "form-image",
+      "form-modal",
+      "form-reset-button",
+      "form-submit-button",
+      "number-input",
+      "panel",
+      "password",
+      "plain-text",
+      "radio-group",
+      "rating",
+      "telephone-input",
+      "text-input",
+      "tnc",
+      "wizard",
+      "range"
+    ]
   },
   {
     "id": "hero-container",
@@ -247,6 +288,30 @@
   },
   {
     "id": "video",
+    "components": []
+  },
+  {
+    "id": "carousel",
+    "components": []
+  },
+  {
+    "id": "cta",
+    "components": []
+  },
+  {
+    "id": "custom-image",
+    "components": []
+  },
+  {
+    "id": "story-card",
+    "components": []
+  },
+  {
+    "id": "quote",
+    "components": []
+  },
+  {
+    "id": "fact-card",
     "components": []
   }
 ]

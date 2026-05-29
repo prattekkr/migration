@@ -1,6 +1,7 @@
 import { getConfigValue } from './config.js';
 import { getBrandCode } from './multi-theme.js';
 import { loadCSS } from './aem.js';
+import { isInUniversalEditor } from './utils.js';
 
 const CORPORATE_BRAND = 'abbvie';
 
@@ -31,10 +32,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   iframe.style.visibility = 'hidden';
   noscript.appendChild(iframe);
   document.body.prepend(noscript);
-}
-
-function isInUniversalEditor() {
-  return window.self !== window.top;
 }
 
 function decorateRTEStyles(main) {

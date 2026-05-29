@@ -455,7 +455,7 @@ function embedYoutube(url, options) {
   iframe.src = videoId
     ? `https://www.youtube.com/embed/${encodeURIComponent(videoId)}?${params.toString()}`
     : url.href;
-  iframe.allow = `${shouldAutoplay ? 'autoplay; ' : ''}${enableFullscreen ? 'fullscreen; ' : ''}picture-in-picture; encrypted-media; accelerometer; gyroscope; web-share`;
+  iframe.allow = `${shouldAutoplay ? 'autoplay; ' : ''}${enableFullscreen ? 'fullscreen; ' : ''}picture-in-picture; encrypted-media; accelerometer; gyroscope; web-share; clipboard-write`;
   iframe.allowFullscreen = enableFullscreen;
   iframe.loading = 'lazy';
   iframe.title = 'Content from Youtube';
@@ -614,7 +614,7 @@ function buildOverlayButton(config) {
 
 function buildOverlay(config, onPlay) {
   const overlay = document.createElement('div');
-  overlay.className = `video-overlay ${config.overlayColor}`;
+  overlay.className = 'video-overlay';
   const isOverlayMode = config.videoContentLayout === 'none';
 
   if (isOverlayMode && config.overlayTitle) {
@@ -700,8 +700,10 @@ export default async function decorate(block) {
   const linkEl = [...block.querySelectorAll('a[href]')].find((a) => isVideoSourceHref(a.href));
   const link = linkEl?.href || '';
 
-  // Guard: nothing to build without a video link
-  if (!link) return;
+  if (!link) {
+    block.textContent = '';
+    return;
+  }
 
   block.textContent = '';
 
@@ -709,7 +711,7 @@ export default async function decorate(block) {
   block.classList.add(`video-content-${layout}`);
 
   const shell = document.createElement('div');
-  shell.className = 'video-shell';
+  shell.className = `video-shell ${config.overlayColor}`;
 
   const media = document.createElement('div');
   media.className = 'video-media';

@@ -38,6 +38,7 @@ const cfgOrder = [
   'iconImage',
   'iconPosition',
   'ariaHidden',
+  'warnOnDeparturePopupFragmentPath',
 ]; // maintain the order where the attributes are defined in the content authoring
 
 function updateAttributes(block, cfg) {
@@ -46,6 +47,7 @@ function updateAttributes(block, cfg) {
   if (cfg.ariaLabel) element.setAttribute('aria-label', cfg.ariaLabel);
   if (cfg.ariaHidden) element.setAttribute('aria-hidden', cfg.ariaHidden);
   if (cfg.ctaTarget) element.setAttribute('target', cfg.ctaTarget);
+  if (cfg.warnOnDeparturePopupFragmentPath) element.setAttribute('data-warn-departure-modal-path', cfg.warnOnDeparturePopupFragmentPath);
 }
 
 function normalizeIconPosition(iconPosition = '') {
@@ -104,7 +106,8 @@ function setIcon(block, cfg) {
 }
 
 export default function decorate(block) {
-  applyCommonProps(block, 8); // link,linkText is single row, so startIndex for commonProps is 8
+  // link,linkText is single row, so startIndex for commonProps is 8
+  applyCommonProps(block, cfgOrder.length + 1);
   const cfg = readBlock(block, cfgOrder);
   updateAttributes(block, cfg);
   setIcon(block, cfg);

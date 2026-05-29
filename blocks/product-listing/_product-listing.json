@@ -1,0 +1,222 @@
+{
+  "definitions": [
+    {
+      "title": "Product Listing",
+      "id": "product-listing",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Product Listing",
+              "model": "product-listing",
+              "searchIconType": "none",
+              "searchFontIcon": "search",
+              "searchImageIcon": "",
+              "shareText": "",
+              "shareConfirmationText": "",
+              "pronunciationHeaderText": "",
+              "shareLinkIcon": "",
+              "speakerIcon": "",
+              "parentPath": "",
+              "orderBy": "created",
+              "sortOrder": "asc",
+              "maxItems": "",
+              "noResultsHeadlineText": "",
+              "noResultsSubheadingText": "",
+              "formEmbedUrl": "",
+              "papEnabled": false,
+              "classes": "",
+              "blockId": "",
+              "classes_commonCustomClass": "",
+              "language": "none"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "product-listing",
+      "fields": [
+        {
+          "component": "tab",
+          "label": "Overview",
+          "name": "overview"
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "searchIconType",
+          "label": "Search Icon - Icon Type",
+          "value": "none",
+          "description": "Choose the type of icon used for Search in the utility navigation.",
+          "options": [
+            { "name": "None", "value": "none" },
+            { "name": "Icon Font", "value": "icon-font" },
+            { "name": "Image", "value": "image" }
+          ]
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "searchFontIcon",
+          "label": "Search - Font Icon",
+          "value": "search",
+          "description": "Provide the icon font name for the search icon when using Icon Font.",
+          "condition": {
+            "===": [{ "var": "searchIconType" }, "icon-font"]
+          }
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "searchImageIcon",
+          "label": "Search - Image Icon",
+          "value": "",
+          "description": "Provide the path to the search icon asset to display. Tool Tip: The path to the icon to display for the search input.",
+          "condition": {
+            "===": [{ "var": "searchIconType" }, "image"]
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "shareText",
+          "label": "Share text",
+          "value": "",
+          "description": "Provide text to display for the share functionality."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "shareConfirmationText",
+          "label": "Share confirmation text",
+          "value": "",
+          "description": "Confirmation message displayed after sharing."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "pronunciationHeaderText",
+          "label": "Pronunciation header text",
+          "value": "",
+          "description": "Header text for pronunciation section."
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "shareLinkIcon",
+          "label": "Share Link icon",
+          "value": "",
+          "description": "Select the icon asset for the share link functionality."
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "speakerIcon",
+          "label": "Speaker icon",
+          "value": "",
+          "description": "Select the icon asset for audio/pronunciation playback."
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "parentPath",
+          "label": "Parent Path",
+          "value": "",
+          "description": "Browse and select the parent path for product content fragments in the DAM."
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "orderBy",
+          "label": "Order By",
+          "value": "created",
+          "description": "Select the field in the product content fragment to order products by (e.g., Branded name).",
+          "options": [
+            { "name": "Created", "value": "created" },
+            { "name": "Last Modified", "value": "lastModified" },
+            { "name": "Title", "value": "title" },
+            { "name": "Branded name", "value": "brandedName" },
+            { "name": "Branded name pronunciation", "value": "brandedNamePronunciation" },
+            { "name": "Generic name", "value": "genericName" },
+            { "name": "Product Disclaimer", "value": "productDisclaimer" },
+            { "name": "Descriptions", "value": "descriptions" },
+            { "name": "Product Links", "value": "productLinks" },
+            { "name": "Apply online link", "value": "applyOnlineLink" },
+            { "name": "Sign In link", "value": "signInLink" },
+            { "name": "Savings Card URL", "value": "savingsCardUrl" },
+            { "name": "Bridge Program Contact Information", "value": "bridgeProgramContactInformation" },
+            { "name": "Contact Number for \"May Not Qualify\" Result", "value": "contactNumberForMayNotQualify" }
+          ]
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "sortOrder",
+          "label": "Sort Order",
+          "value": "asc",
+          "description": "Select the sort order (Ascending or Descending).",
+          "options": [
+            { "name": "Ascending", "value": "asc" },
+            { "name": "Descending", "value": "desc" }
+          ]
+        },
+        {
+          "component": "number",
+          "valueType": "number",
+          "name": "maxItems",
+          "label": "Max Items",
+          "value": "",
+          "description": "Maximum number of products to display in the listing."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "noResultsHeadlineText",
+          "label": "No Results Headline Text",
+          "value": "",
+          "description": "Headline text to display when no products match the search/filter criteria."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "noResultsSubheadingText",
+          "label": "No Results Subheading text",
+          "value": "",
+          "description": "Subheading text to display when no products match the search/filter criteria."
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "papEnabled",
+          "label": "Enable PAP",
+          "value": false,
+          "description": "If checked, only products where the 'PAP enable?' CF field is checked will be displayed."
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "formEmbedUrl",
+          "label": "Form Embed URL",
+          "value": "",
+          "description": "Browse and select the URL path for embedded form functionality.",
+          "condition": {
+            "===": [{ "var": "papEnabled" }, true]
+          }
+        },
+        {
+          "component": "tab",
+          "label": "Styles",
+          "name": "styles"
+        },
+        {
+          "...": "../../models/_common-properties.json#/common-prop"
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

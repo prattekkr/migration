@@ -12,3 +12,5 @@ localhost-key.pem
 .migration/
 /tmp
 /.claude
+tools/importer/*.bundle.js
+tools/importer/reports/

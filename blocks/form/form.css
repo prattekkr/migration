@@ -1,0 +1,1141 @@
+/* stylelint-disable */
+:root {
+  --background-color-primary: var(--color-surface-default);
+  --label-color: #666;
+  --border-color: #818a91;
+  --form-error-color: var(--color-orange-dark);
+  --button-primary-color: #5F8DDA;
+  --button-secondary-color: #666; 
+  --form-font-size-m: 22px;
+  --form-font-size-s: 18px;
+  --form-font-size-xs: 16px;
+  --form-background-color: var(--background-color-primary);
+  --form-columns: 12;
+  --form-field-horz-gap: 40px;
+  --form-field-vert-gap: 20px;
+  --form-invalid-border-color: #ff5f3f;  
+  --form-input-disable-color: #ebebe4;
+  --form-input-border-size: 1px;
+  --form-input-border-color: var(--border-color);
+  --form-input-background-color: var(--background-color-primary);
+  --form-paragraph-color: var(--label-color);
+  --form-paragraph-margin: 0 0 0.9rem;
+  --form-paragraph-font-style: none;
+  --form-paragraph-font-size: var(--form-font-size-s);
+  --form-label-color: var(--label-color);
+  --form-label-font-size: var(--form-font-size-s);
+  --form-title-font-weight: 600;
+  --form-fieldset-border: 0;
+  --form-fieldset-marign: 0;
+  --form-fieldset-columns: 1;
+  --form-fieldset-legend-color: var(--form-label-color);
+  --form-fieldset-legend-font-size: var(--form-label-font-size);
+  --form-fieldset-legend-font-weight: var(--form-title-font-weight);
+  --form-fieldset-legend-border: none;
+  --form-fieldset-legend-padding: 0;
+  --form-button-color: var(--background-color-primary);
+  --form-button-font-size: var(--form-font-size-s);
+  --form-button-background-color: var(--button-primary-color);  
+  --form-button-border: 2px solid transparent;
+  --form-upload-color: var(--form-label-color);
+  --form-upload-font-size: var(--form-font-size-xs);
+  --form-upload-background-color: var(--background-color-primary);
+  --form-submit-width: 100%;
+  --form-width: 100%;
+  --form-wizard-border: 0;
+  --form-wizard-background-color: var(--background-color-primary);
+  --form-wizard-border-color: #757575;
+  --form-wizard-number-color: var(--button-primary-color);
+  
+  --form-wizard-padding-bottom: 160px;
+  --form-wizard-step-legend-padding: 10px;
+  --form-wizard-step-legend-font-size: 1.1rem;
+  --form-field-gap: 5px;
+
+  /* Card styling variables */
+  --form-card-border-color: #e0e0e0;
+  --form-card-border-radius: 4px;
+  --form-card-padding: 0.6rem 0.8rem;
+  --form-card-background: var(--background-color-primary);
+  --form-card-shadow: 0 1px 2px rgb(0 0 0 / 3%);
+  --form-card-hover-shadow: 0 2px 4px rgb(0 0 0 / 6%);
+  --form-card-selected-border-color: var(--button-primary-color);
+  --form-card-selected-background: #F5F9FF;
+  --form-card-selected-shadow: 0 0 0 1px var(--button-primary-color);
+  --form-card-transition: all 0.15s ease-in-out;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.form pre {
+  display: none;
+}
+
+form output {
+  display: block;
+  font-weight: 700;
+  font-size: 1.625rem;
+}
+
+form:not(.edit-mode) [data-visible="false"] {
+  display: none !important;
+}
+
+.form>div:not(:first-child) {
+  display: none;
+}
+
+.form form {
+  display: grid;
+  grid-template-columns: repeat(var(--form-columns), minmax(0, 1fr));
+  gap: var(--form-field-vert-gap) var(--form-field-horz-gap);
+}
+
+.form form fieldset {
+  border: var(--form-fieldset-border);
+  margin: var(--form-fieldset-marign);
+  width: 100%;
+}
+
+.form form fieldset fieldset {
+  padding: 0;
+}
+
+.form .field-description {
+  color: #b9b4b4;
+  font-size: var(--form-font-size-xs);
+}
+
+.form form .field-invalid .field-description {
+  color: var(--color-orange-dark);
+  font-weight: var(--corp-font-weight-regular);
+  font-size: var(--corp-font-size-14);
+}
+
+/**
+ * Required field indicator
+ */
+[data-required="true"]>label::after {
+  content: "*";
+  color: var(--color-orange-dark);
+  padding-inline-start: var(--corp-spacing-5);
+}
+
+/**
+   * Required field indicator not required for checkboxes and radio buttons
+   */
+.radio-wrapper>label::after,
+.checkbox-wrapper>label::after {
+  content: none;
+}
+
+.form form .checkbox-wrapper.field-invalid {
+  flex-wrap: wrap;
+}
+
+.form select {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* ── Custom select ─────────────────────────────────────────────── */
+.form .select-field-container {
+  position: relative;
+  width: 100%;
+}
+
+/* Visually hide the native select but keep it in the a11y tree for label[for] */
+.form .select-field-container select {
+  position: absolute;
+  width: var(--corp-spacing-1);
+  height: var(--corp-spacing-1);
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.form .custom-select {
+  position: relative;
+  width: 100%;
+}
+
+.form .custom-select__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: var(--corp-spacing-1) solid #e8e8e8;
+  border-radius: 0;
+  padding: 0.75rem 0;
+  color: var(--corp-color-text-default);
+  font-size: var(--corp-font-size-18);
+  font-weight: var(--corp-font-weight-regular);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s ease;
+  margin-top: var(--corp-spacing-5);
+  margin-bottom: var(--corp-spacing-10);
+}
+
+.form .custom-select__trigger:hover,
+.form .custom-select__trigger:focus {
+  border-color: var(--color-accent-blue);
+  outline: none;
+}
+
+.form .custom-select__value {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.form .custom-select__icon {  
+  width: 1em;
+  height: 1em;
+  margin-left: var(--corp-spacing-5);
+}
+
+.form .custom-select__icon::after {
+  content: "\e90c";
+  font-family: var(--corp-icon-font-family);
+  font-size: var(--corp-font-size-6);
+  margin-left: var(--corp-spacing-5);
+}
+
+.form .custom-select__options {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  list-style: none;
+  margin: 0; 
+  background: var(--color-surface-default);
+  border: var(--corp-spacing-1)  solid #e8e8e8;
+  border-radius: 0.25rem;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.form .custom-select.is-open .custom-select__options {
+  display: block;
+}
+
+.form .custom-select__option {
+  padding: 0.75rem 1rem;
+  font-size: var(--corp-font-size-16);
+  color: var(--corp-color-text-default);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.form .custom-select__option:hover,
+.form .custom-select__option.is-focused {
+  background: #f0f5ff;
+}
+
+.form .custom-select__option.is-selected {  
+  color: var(--corp-color-text-default);  
+}
+
+.form .custom-select.is-disabled .custom-select__trigger {
+  cursor: not-allowed;
+  background-color: var(--form-input-disable-color);
+  color: #999;
+}
+/* ── End custom select ─────────────────────────────────────────── */
+
+.form input {
+  height: var(--corp-spacing-48); 
+  padding: var(--corp-spacing-12) var(--corp-spacing-6);
+  margin-bottom: var(--corp-spacing-8);
+}
+
+.form input,
+.form textarea,
+.form select {
+  background-color: var(--form-input-background-color);
+  border: var(--form-input-border-size) solid var(--form-input-border-color);
+  width: 100%;
+  height: 42px;
+  color: #b9b4b4; 
+  font-size: var(--corp-font-size-12);
+  line-height: var(--corp-typography-lineheight-body-sm);
+  font-weight: var(--corp-font-weight-regular);
+  max-width: unset;
+  margin-top: var(--corp-spacing-5);
+  margin-bottom: var(--corp-spacing-10);
+  border-radius: 0.25rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form input:not([type='checkbox']):not([type='radio']):not([type='file']),
+.form select {
+  background: transparent;
+  border: none;
+  border-bottom: var(--corp-spacing-1) solid #e8e8e8;
+  border-radius: 0;
+  font-weight: var(--corp-font-weight-regular);
+  color: var(--corp-color-text-default); 
+}
+
+.form textarea {
+  background-color: var(--color-surface-default);
+  border: var(--corp-spacing-1) solid #ccc;
+  border-radius: 3px;
+  color: var(--corp-color-text-default);
+  font-family: Roboto Regular, Helvetica, Arial, sans-serif;
+  font-size: var(--corp-font-size-16);
+  font-weight: var(--corp-font-weight-regular);
+  line-height: 2rem;
+  margin-top: 28px;
+  min-height: 317px;
+  padding: 22px 30px;
+  resize: vertical;
+  width: 100%;
+  outline: none;
+}
+
+.form .field-character-count {
+  font-size: var(--corp-font-size-14);
+  color: var(--corp-color-text-default);
+  text-align: left;
+  margin-top: -0.8rem;
+  margin-bottom: var(--corp-spacing-5);
+  font-weight: 300;
+  padding-top: 8px;
+  margin-bottom: 8px;
+
+}
+
+.form .field-character-count--near {
+  color: #e07b00;
+}
+
+.form .field-character-count--over {
+  color: var(--form-error-color);
+}
+
+@media (--bp-tablet) {
+  .form input,
+  .form textarea,
+  .form select {
+    font-size: var(--corp-font-size-16);
+    line-height: var(--corp-typography-lineheight-body-md);
+  }
+
+  .form .field-label,
+  .form label {
+    font-size: var(--corp-font-size-16);
+  }
+
+  .form input::placeholder,
+  .form textarea::placeholder {
+    font-size: var(--corp-font-size-16)
+  }
+
+  .form form .field-wrapper:has(>.field-label+input:not([type='checkbox']):not([type='radio']):not([type='file'])):not([data-active='true']) .field-label,
+  .form form .field-wrapper:has(>.field-label+textarea):not([data-active='true']) .field-label,
+  .form form .field-wrapper:has(>.field-label+select):not([data-active='true']) .field-label,
+  .form form .field-wrapper:has(>.field-label+.select-field-container):not([data-active='true']) .field-label {
+    font-size: var(--corp-font-size-16);
+  }
+
+  .form form .field-wrapper.field-invalid .field-label,
+  .form form .field-wrapper:has(>.field-label+input:not([type='checkbox']):not([type='radio']):not([type='file']):not(:placeholder-shown)) .field-label,
+  .form form .field-wrapper:has(>.field-label+textarea:not(:placeholder-shown)) .field-label,
+  .form form .field-wrapper:has(>.field-label+select:focus) .field-label,
+  .form form .field-wrapper:has(>.field-label+select:valid) .field-label,
+  .form form .field-wrapper:has(>.field-label+.select-field-container.has-value) .field-label,
+  .form form .field-wrapper:has(>.field-label+.select-field-container .custom-select.is-open) .field-label {
+    font-size: var(--corp-font-size-12);
+  }
+}
+
+@media (--bp-desktop) {
+  .form input,
+  .form textarea,
+  .form select {
+    font-size: var(--corp-font-size-18);
+    line-height: var(--corp-typography-lineheight-body-lg);
+  }
+
+  .form .field-label,
+  .form label {
+    font-size: var(--corp-font-size-18);
+  }
+
+  .form input::placeholder,
+  .form textarea::placeholder {
+    font-size: var(--corp-font-size-18);
+  }
+
+  .form form .field-wrapper:has(>.field-label+input:not([type='checkbox']):not([type='radio']):not([type='file'])):not([data-active='true']) .field-label,
+  .form form .field-wrapper:has(>.field-label+textarea):not([data-active='true']) .field-label,
+  .form form .field-wrapper:has(>.field-label+select):not([data-active='true']) .field-label,
+  .form form .field-wrapper:has(>.field-label+.select-field-container):not([data-active='true']) .field-label {
+    font-size: var(--corp-font-size-18);
+  }
+
+  .form form .field-wrapper.field-invalid .field-label,
+  .form form .field-wrapper:has(>.field-label+input:not([type='checkbox']):not([type='radio']):not([type='file']):not(:placeholder-shown)) .field-label,
+  .form form .field-wrapper:has(>.field-label+textarea:not(:placeholder-shown)) .field-label,
+  .form form .field-wrapper:has(>.field-label+select:focus) .field-label,
+  .form form .field-wrapper:has(>.field-label+select:valid) .field-label,
+  .form form .field-wrapper:has(>.field-label+.select-field-container.has-value) .field-label,
+  .form form .field-wrapper:has(>.field-label+.select-field-container .custom-select.is-open) .field-label {
+    font-size: var(--corp-font-size-14);
+  }
+}
+
+.form input:not([type='checkbox']):not([type='radio']):not([type='file'])::placeholder,
+.form textarea::placeholder {
+  color: transparent;
+}
+
+.form form .field-wrapper:has(>.field-label+input:not([type='checkbox']):not([type='radio']):not([type='file'])),
+.form form .field-wrapper:has(>.field-label+textarea),
+.form form .field-wrapper:has(>.field-label+select),
+.form form .field-wrapper:has(>.field-label+.select-field-container) {
+  position: relative;
+}
+
+.form form .field-wrapper:has(>.field-label+input:not([type='checkbox']):not([type='radio']):not([type='file']))>.field-label,
+.form form .field-wrapper:has(>.field-label+textarea)>.field-label,
+.form form .field-wrapper:has(>.field-label+select)>.field-label,
+.form form .field-wrapper:has(>.field-label+.select-field-container)>.field-label {
+  position: absolute;
+  left: 0;
+  top: var(--corp-spacing-5);
+  z-index: 1;
+  padding: 0;
+  background: transparent;
+  pointer-events: none;
+  transform-origin: left top;
+  color: #b9b4b4;
+  line-height: var(--corp-spacing-16);
+  transition: all 0.2s ease;
+}
+
+.form form .field-wrapper:has(>.field-label+textarea)>.field-label {
+  top: 0;
+}
+
+.form form .field-wrapper[data-active='true']:has(>.field-label+input:not([type='checkbox']):not([type='radio']):not([type='file']))>.field-label,
+.form form .field-wrapper[data-active='true']:has(>.field-label+textarea)>.field-label,
+.form form .field-wrapper[data-active='true']:has(>.field-label+select)>.field-label,
+.form form .field-wrapper:has(>.field-label+input:not([type='checkbox']):not([type='radio']):not([type='file']):not(:placeholder-shown))>.field-label,
+.form form .field-wrapper:has(>.field-label+input:not([type='checkbox']):not([type='radio']):not([type='file']):-webkit-autofill)>.field-label,
+.form form .field-wrapper:has(>.field-label+textarea:not(:placeholder-shown))>.field-label,
+.form form .field-wrapper:has(>.field-label+select:focus)>.field-label,
+.form form .field-wrapper:has(>.field-label+select:valid)>.field-label,
+.form form .field-wrapper:has(>.field-label+.select-field-container .custom-select__trigger:focus)>.field-label,
+.form form .field-wrapper:has(>.field-label+.select-field-container .custom-select.is-open)>.field-label,
+.form form .field-wrapper:has(>.field-label+.select-field-container.has-value)>.field-label {
+  top: -16px;
+  font-size: var(--corp-font-size-14);
+}
+
+.form form .field-wrapper.field-invalid:has(>.field-label+input:not([type='checkbox']):not([type='radio']):not([type='file']))>.field-label,
+.form form .field-wrapper.field-invalid:has(>.field-label+textarea)>.field-label,
+.form form .field-wrapper.field-invalid:has(>.field-label+select)>.field-label,
+.form form .field-wrapper.field-invalid:has(>.field-label+.select-field-container)>.field-label {
+  top: -16px;
+  color: var(--form-error-color);
+  font-size: var(--corp-font-size-14);
+}
+
+.form form .field-wrapper[data-active='true']:has(>input:not([type='checkbox']):not([type='radio']):not([type='file'])),
+.form form .field-wrapper[data-active='true']:has(>textarea),
+.form form .field-wrapper[data-active='true']:has(>select),
+.form form .field-wrapper[data-active='true']:has(>.select-field-container) {
+  color: var(--corp-color-text-default);
+}
+
+.form form .field-wrapper[data-active='true']:has(>input:not([type='checkbox']):not([type='radio']):not([type='file'])) input,
+.form form .field-wrapper[data-active='true']:has(>textarea) textarea,
+.form form .field-wrapper[data-active='true']:has(>select) select {
+  border-color: var(--color-accent-blue);
+}
+
+.form form .field-wrapper[data-active='true']:has(>.select-field-container) .custom-select__trigger {
+  border-color: var(--color-accent-blue);
+}
+
+.form input:hover,
+.form input:focus,
+.form select:hover,
+.form select:focus {
+  border-color: var(--color-accent-blue);
+  outline: none;
+}
+
+.form select option {
+  align-items: center;
+  color: rgb(185, 180, 180);
+  cursor: pointer;
+  display: flex;
+  font-family: "Roboto Regular", Helvetica, Arial, sans-serif;
+  font-size: var(--corp-font-size-13);
+  font-weight: var(--corp-font-weight-regular);
+  height: 3pc;
+  justify-content: space-between;
+  line-height: var(--corp-typography-lineheight-body-sm);
+  text-align: left;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  transition: opacity 0.1s;
+}
+
+.form input:disabled {
+  background-color: var(--form-input-disable-color);
+}
+
+.form form .radio-wrapper.field-invalid>input,
+.form form .checkbox-wrapper.field-invalid>input {
+  outline: var(--corp-spacing-1) solid var(--form-error-color);
+}
+
+.form input[type='file'] {
+  border: none;
+  padding-inline-start: 0;
+  background: unset;
+  color: unset;
+}
+
+.form input[type='checkbox'],
+.form input[type='radio'] {
+  width: var(--corp-spacing-16);
+  height: var(--corp-spacing-16);
+  flex: none;
+  margin: 0;
+  position: static;
+  z-index: 1;
+}
+
+.form fieldset:not(.checkbox-group-wrapper, .radio-group-wrapper) legend {
+  font-weight: var(--form-fieldset-legend-font-weight);
+  font-size: var(--form-fieldset-legend-font-size);
+  color: var(--form-fieldset-legend-color);
+  border-bottom: var(--form-fieldset-legend-border);
+  width: 100%;
+  padding: var(--form-fieldset-legend-padding);
+  margin-bottom: var(--corp-spacing-10);
+}
+
+.form label,
+.form fieldset.checkbox-group-wrapper legend,
+.form fieldset.radio-group-wrapper legend {
+  font-weight: var(--corp-font-weight-regular);
+  font-size: var(--corp-font-size-12);
+  color: #b9b4b4;
+}
+
+.form form .wizard>legend {
+  width: 100%;
+}
+
+.form form fieldset.checkbox-group-wrapper,
+.form form fieldset.radio-group-wrapper {
+  padding-left: 0;
+  margin-left: 0;
+}
+
+.form form fieldset.checkbox-group-wrapper>legend,
+.form form fieldset.radio-group-wrapper>legend {
+  padding-left: 0;
+}
+
+.form label.required::after {
+  content: "*";
+  color: #b9b4b4;
+  padding-inline-start: 5px;
+}
+
+.form form .repeat-wrapper,
+.form form .field-wrapper { 
+  color: #b9b4b4;
+  grid-column: span 12;
+  margin-bottom: 2.4rem;
+}
+
+.form form p {
+  font-size: var(--corp-font-size-18);  
+  color: var(--corp-color-text-default);
+  margin-bottom: 3rem; 
+}
+
+.form form p a {
+  background: linear-gradient(180deg, #0066f5 50%, #0066f5 0);
+  background-position: 0 100%;
+  background-repeat: repeat-x;
+  background-size: .2rem .2rem;
+  color: inherit;
+  padding: 0 .2rem .3rem;
+  text-decoration: none;
+  -webkit-transition: background-size .1s ease, color .1s ease;
+  transition: background-size .1s ease, color .1s ease;
+}
+
+.form form p a:hover {
+  background-size: 100% 100%;
+  color: #fff;
+}
+
+.form form .checkbox-wrapper,
+.form form .radio-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  gap: 8px;
+}
+
+.form form fieldset>.radio-wrapper,
+.form form fieldset>.checkbox-wrapper {
+  margin-left: var(--form-field-gap);
+}
+
+.form .radio-wrapper label,
+.form .checkbox-wrapper label {
+  flex-basis: calc(100% - 24px);
+  color: #071d49;
+}
+
+.form fieldset.link .checkbox-wrapper label {
+  flex-basis: unset;
+}
+
+.form form fieldset.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--corp-spacing-75);
+  margin-top: var(--corp-spacing-5);
+}
+
+.form form fieldset.cards>.radio-wrapper,
+.form form fieldset.cards>.checkbox-wrapper {
+  margin: 0;
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 180px;
+  max-width: 300px;
+}
+
+.form form fieldset.cards>.radio-wrapper>label,
+.form form fieldset.cards>.checkbox-wrapper>label {
+  display: flex;
+  gap: var(--corp-spacing-5);
+  margin: 0;
+  border: var(--corp-spacing-1) solid var(--form-card-border-color);
+  border-radius: var(--form-card-border-radius);
+  padding: var(--form-card-padding);
+  background-color: var(--form-card-background);
+  cursor: pointer;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  box-shadow: var(--form-card-shadow);
+  transition: var(--form-card-transition);
+  font-weight: normal;
+  color: #b9b4b4; 
+  font-size: 0.95em;
+}
+
+.form form fieldset.cards>.radio-wrapper>label:hover,
+.form form fieldset.cards>.checkbox-wrapper>label:hover {
+  box-shadow: var(--form-card-hover-shadow);
+  border-color: #ccc;
+  transform: translateY(-1px);
+}
+
+.form form fieldset.cards.horizontal {
+  flex-direction: row;
+  column-gap: var(--corp-spacing-75);
+  column-gap: 0;
+}
+
+.form form fieldset.cards.horizontal>.radio-wrapper,
+.form form fieldset.cards.horizontal>.checkbox-wrapper {
+  flex: 0 1 auto;
+  max-width: none;
+}
+
+.form form fieldset.cards.horizontal>.radio-wrapper>label,
+.form form fieldset.cards.horizontal>.checkbox-wrapper>label {
+  min-width: -webkit-fill-available;
+}
+
+.form form fieldset.cards>.radio-wrapper>input,
+.form form fieldset.cards>.checkbox-wrapper>input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.form form fieldset.cards>.radio-wrapper>input:checked~label,
+.form form fieldset.cards>.checkbox-wrapper>input:checked~label {
+  border: var(--corp-spacing-1) solid var(--form-card-selected-border-color);
+  background-color: var(--form-card-selected-background);
+  box-shadow: var(--form-card-selected-shadow);
+  transform: translateY(0);
+  font-weight: 500;
+}
+
+.form form fieldset.cards>.radio-wrapper>input:checked~label::after,
+.form form fieldset.cards>.checkbox-wrapper>input:checked~label::after {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: var(--button-primary-color);
+  border-radius: 50%;
+  margin-left: auto;
+}
+
+.form form fieldset.cards>.radio-wrapper>input:focus~label,
+.form form fieldset.cards>.checkbox-wrapper>input:focus~label {
+  outline: none;
+  box-shadow: 0 0 0 var(--corp-spacing-1) var(--button-primary-color);
+}
+
+.form .form-image-wrapper img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* For cards with icons or images */
+.form form fieldset.cards>.radio-wrapper>label>img,
+.form form fieldset.cards>.checkbox-wrapper>label>img {
+  max-width: 18px;
+  max-height: 18px;
+  object-fit: contain;
+}
+
+/* Responsive adjustments for cards */
+@media (width <=768px) {
+
+  .form form fieldset.cards>.radio-wrapper,
+  .form form fieldset.cards>.checkbox-wrapper {
+    min-width: 100%;
+  }
+
+  .form form fieldset.cards.horizontal {
+    flex-wrap: wrap;
+  }
+
+  .form form fieldset.cards.horizontal>.radio-wrapper,
+  .form form fieldset.cards.horizontal>.checkbox-wrapper {
+    min-width: 100%;
+  }
+}
+
+input::file-selector-button {
+  color: var(--form-upload-color);
+  background: var(--form-upload-background-color);
+  font-size: var(--form-upload-font-size);
+  text-align: center;
+}
+
+.form button {
+  font-size: var(--corp-font-size-14);
+  border: var(--corp-spacing-1) solid var(--color-accent-blue);
+  color: var(--color-accent-blue);  
+  border-radius: unset;  
+  font-weight: var(--corp-font-weight-bold);
+  letter-spacing: var(--corp-typography-letterspacing-wide-em);
+  line-height: var(--corp-typography-lineheight-body-sm);
+  text-decoration: none;
+  text-transform: uppercase;
+  background-color: var(--color-surface-default);
+  width: fit-content;
+  padding: var(--corp-spacing-16) var(--corp-spacing-40);
+}
+
+.form .custom-select button {
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.form .custom-select button:hover {
+  background-color: transparent;
+  background-color: transparent;
+  color: var(--corp-color-text-default);
+}
+
+form .file-wrapper>button {
+  display: flex;
+}
+
+.form button:hover {
+ background-color: var(--color-accent-blue);
+ color: var(--color-surface-default);
+}
+
+.submit-wrapper {
+  width: var(--form-submit-width);
+}
+
+.form textarea:disabled,
+.form select:disabled,
+.form button:disabled {
+  background-color: var(--form-input-disable-color);
+}
+
+.file-wrapper.decorated input[type="file"] {
+  display: none;
+}
+
+.file-wrapper .field-dropregion {
+  background: rgb(0 0 0 / 2%);
+  border: var(--corp-spacing-1) dashed var(--form-input-border-color);
+  border-radius: 4px;
+  margin: 11px 0 8px;
+  padding: 32px;
+  text-align: center;
+}
+
+/* Repeatable Styling */
+.form form .repeat-actions {
+  grid-column: span 12;
+  order: 2;
+}
+
+.form form .item-remove,
+.form form .item-add {
+  overflow: unset;
+}
+
+.form form .item-remove {
+  justify-self: end;
+  grid-column: span 12;
+  order: 1;
+}
+
+.form form div[data-variant="addDeleteButtons"] .item-add,
+.form form div[data-variant="addDeleteButtons"] .item-remove {
+  display: block;
+}
+
+/* Hide add button when add instance is disabled */
+.form form .repeat-wrapper[data-add-instance="false"] .item-add {
+  display: none;
+}
+
+/* Hide remove buttons when remove instance is disabled */
+.form form .repeat-wrapper[data-remove-instance="false"] .item-remove {
+  display: none;
+}
+
+/* End of Repeatable Styling */
+.form .file-description {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.form .file-description .file-description-name {
+  cursor: pointer;
+  text-decoration: underline;
+  flex: 1;
+}
+
+.file-wrapper .file-description button {  
+  width: var(--corp-spacing-12);
+  height: var(--corp-spacing-12);
+  border: none;
+  text-align: center;
+  background: var(--border-color);
+  cursor: pointer;
+  position: relative;
+  border-radius: var(--corp-spacing-3);
+}
+
+.file-wrapper .file-description button::after {
+  content: 'X';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  color: var(--background-color-primary);
+  transform: translate(-50%, -50%);
+}
+
+.form .button-wrapper button {
+  cursor: pointer
+}
+
+.form .button-wrapper button:hover { 
+  color: var(--color-surface-default);
+  background-color: var(--color-accent-blue);
+}
+
+.form .button-wrapper button[disabled] {
+  cursor: auto
+}
+
+.form .button-wrapper button[disabled]:hover {
+  border: var(--corp-spacing-3) solid var(--button-secondary-color);
+  color: var(--button-secondary-color);
+  background-color: transparent;
+}
+
+/** Wizard Styling */
+.form form .wizard {
+  display: grid;
+  counter-reset: wizard-step-counter;
+  grid-template-columns: minmax(0, 1fr);
+  border: var(--form-wizard-border) solid var(--form-wizard-border-color);
+  background-color: var(--form-wizard-background-color);
+  gap: unset;
+  padding: 20px 0;
+}
+
+.form form .wizard>fieldset>legend {
+  display: none;
+}
+
+.form form .wizard>fieldset:not(.current-wizard-step) {
+  display: none;
+}
+
+.form form .wizard .wizard-button-wrapper {
+  display: flex;
+  justify-content: end;
+  gap: var(--corp-spacing-50);
+  margin: 0 0;
+  width: 100%;
+  grid-column: span 12;
+}
+
+.form form .wizard .wizard-button-wrapper .field-wrapper {
+  flex: unset;
+}
+
+.wizard-menu-items {
+  display: flex;
+  gap: var(--corp-spacing-50);
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-weight: var(--form-fieldset-legend-font-weight);
+  font-size: var(--form-fieldset-legend-font-size);
+  color: var(--form-fieldset-legend-color);
+  padding-bottom: 0;
+  grid-column: span 12;
+}
+
+.form form .wizard .wizard-menu-item {
+  counter-increment: wizard-step-counter;
+}
+
+.form form .wizard .wizard-menu-item::before {
+  content: counter(wizard-step-counter);
+  border: var(--corp-spacing-2) solid var(--form-wizard-number-color);
+  color: var(--form-wizard-number-color);
+  border-radius: 50%;
+  width: var(--corp-spacing-35);
+  height: var(--corp-spacing-35);
+  margin-right: var(--corp-spacing-10);
+  text-align: center;
+  line-height: 2;
+  display: inline-block;
+}
+
+.form form .wizard .wizard-menu-active-item::before {
+  border: 2px solid var(--form-wizard-number-color);
+  background: var(--form-wizard-number-color);
+  color: var(--background-color-primary);
+  font-weight: 600;
+}
+
+/* wizard title on left */
+.form form .wizard.left {
+  display: flex;
+}
+
+.form form .wizard.left .wizard-menu-items {
+  flex-direction: column;
+  width: 300px;
+}
+
+form .panel-wrapper {
+  display: flex;
+  padding: 0;
+  flex-direction: column;
+}
+
+form .panel-wrapper  legend.field-label{
+  font-size: var(--corp-font-size-32);
+  font-weight: var(--corp-font-weight-regular);
+  font-family: var(--heading-font-family);
+  color: rgb(7 29 73);
+  margin-bottom: var(--corp-spacing-24);
+}
+
+.form form .panel-wrapper {
+  display: grid;
+  grid-template-columns: repeat(var(--form-columns), minmax(0, 1fr));
+  gap: var(--form-field-vert-gap) var(--form-field-horz-gap);
+}
+
+.form form .repeat-wrapper {
+  display: grid;
+  grid-template-columns: repeat(var(--form-columns), minmax(0, 1fr));
+  gap: var(--form-field-vert-gap) var(--form-field-horz-gap);
+}
+
+.form form .wizard.left .panel-wrapper {
+  flex: 1;
+}
+
+@media (--bp-desktop) {
+
+  .form form .form-textarea-wrapper,
+  .form form .file-wrapper,
+  .form form .panel-wrapper {
+    flex: 1 0 100%;
+  }
+
+  .form form .panel-wrapper {
+    flex-flow: row wrap;
+    gap: var(--corp-spacing-10) var(--corp-spacing-15);
+  }
+}
+
+.form .form-message.success-message {
+  color: #0f5132;
+  background-color: #d1e7dd;
+  border-color: #badbcc;
+  flex: 100%;
+  grid-column: span 12;
+  padding: var(--corp-spacing-10);
+}
+
+.form .form-message.error-message {
+  color: #842029;
+  background-color: #f8d7da;
+  border-color: #f5c2c7;
+  flex: 100%;
+  grid-column: span 12;
+  padding: var(--corp-spacing-10);
+}
+
+.form .file-wrapper .file-drag-area {
+  border: var(--corp-spacing-1) dashed var(--border-color);
+  border-radius: var(--corp-spacing-5);
+  padding: var(--corp-spacing-10) var(--corp-spacing-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--corp-spacing-20);
+  justify-content: center;
+  align-items: center;
+}
+
+/* grid css */
+.form form .field-wrapper .field-description {
+  grid-column: span 12;
+}
+
+.form form .field-wrapper.col-12 {
+  grid-column: span 12;
+}
+
+.form form .field-wrapper.col-11 {
+  grid-column: span 11;
+}
+
+.form form .field-wrapper.col-10 {
+  grid-column: span 10;
+}
+
+.form form .field-wrapper.col-9 {
+  grid-column: span 9;
+}
+
+.form form .field-wrapper.col-8 {
+  grid-column: span 8;
+}
+
+.form form .field-wrapper.col-7 {
+  grid-column: span 7;
+}
+
+.form form .field-wrapper.col-6 {
+  grid-column: span 6;
+}
+
+.form form .field-wrapper.col-5 {
+  grid-column: span 5;
+}
+
+.form form .field-wrapper.col-4 {
+  grid-column: span 4;
+}
+
+.form form .field-wrapper.col-3 {
+  grid-column: span 3;
+}
+
+.form form .field-wrapper.col-2 {
+  grid-column: span 2;
+}
+
+.form form .field-wrapper.col-1 {
+  grid-column: span 1;
+}
+
+.form form .wizard>.field-description {
+  width: 100%;
+}
+
+.form form .checkbox-wrapper.field-invalid>.field-description {
+  order: 1;
+}
+
+form .wizard>.current-wizard-step.panel-wrapper:first-of-type~.wizard-button-wrapper>.wizard-button-prev,
+form .wizard>.current-wizard-step.panel-wrapper:last-of-type~.wizard-button-wrapper>.wizard-button-next {
+  display: none;
+}
+
+.form form:not(.edit-mode) .captcha-wrapper {
+  display: block;
+}
+
+.form form .radio-group-wrapper.horizontal,
+.form form .checkbox-group-wrapper.horizontal {
+  display: flex;
+  flex-flow: row wrap;
+  gap: inherit;
+}
+
+.form form .radio-group-wrapper.horizontal .field-description,
+.form form .checkbox-group-wrapper.horizontal .field-description {
+  width: 100%;
+  order: 1;
+  margin-top: var(--corp-spacing-5);
+}
+
+.form-wrapper {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+}
+
+/* custom classes for form */
+
+.form.body-unica-14-reg form p {
+  font-size: 1.4rem;
+  line-height: 2rem;
+}

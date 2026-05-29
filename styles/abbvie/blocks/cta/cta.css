@@ -429,8 +429,20 @@
     transform: none;
 }
 
+.cta.popup-agree,
+.cta.popup-disagree {
+    display: flex;
+    justify-content: center;
+}
+
 @media (min-width: 744px) {
- .cta.popup-close .button-container {
-     margin-bottom: var(--corp-spacing-24);
- }
+    .cta.popup-close .button-container {
+        margin-bottom: var(--corp-spacing-24);
+    }
+    
+    .cta.popup-agree,
+    .cta.popup-disagree {
+        display: flex;
+        justify-content: start;
+    }
 }

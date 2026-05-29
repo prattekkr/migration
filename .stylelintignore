@@ -11,3 +11,6 @@ styles/*/*/*.css
 styles/*/themes/*/*.css
 !styles/*/themes/*/_*.css
 # Ignore the merged CSS files. They are not linted. - End.
+# Form block
+blocks/form/**
+scripts/form-editor-support.css

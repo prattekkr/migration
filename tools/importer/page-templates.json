@@ -1,1 +1,3145 @@
-{"metadata":{"projectType":"xwalk"},"templates":[{"name":"story-article","urls":["https://www.abbvie.com/who-we-are/our-stories/the-math-of-migraine.html"],"description":"Story/feature article page","blocks":[{"name":"hero-container","instances":[".container.cmp-container-full-width.height-default"]},{"name":"cta","instances":[".button.back-cta"]},{"name":"story-card","instances":[".storyinfo"]},{"name":"custom-title","instances":[".title.cmp-title-xx-large"]},{"name":"text-container","instances":[".text.cmp-text-xx-large",".text.cmp-text-x-large"]},{"name":"separator","instances":[".separator.separator-height-24",".separator.separator-height-48",".separator.separator-height-80"]},{"name":"carousel","instances":[".carousel.panelcontainer.carousel-minimal"]},{"name":"custom-image","instances":[".image .cmp-image"]},{"name":"accordion","instances":[".accordion.panelcontainer"]}]}]}
+{
+  "templates": [
+    {
+      "name": "science-page",
+      "urls": [
+        "https://www.abbvie.com/science.html"
+      ],
+      "description": "AbbVie Science landing page with hero, dashboard stats, video embed, content columns, cards, accordion, FAQ CTA band, and footer CTA sections. Note: AbbVie uses Scene7 lazy-loaded images (data-cmp-src) that require resolution during import.",
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            ".container.cmp-container-full-width.height-tall"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            ".container.cmp-container-full-width:has(#container-5ab796dabb)",
+            ".container.cmp-container-xxx-large:has(#title-b50438c68d)",
+            ".container.cmp-container-full-width.footer-overlap"
+          ]
+        },
+        {
+          "name": "embed",
+          "instances": [
+            ".container.cmp-container-full-width:has(.brightcove-video)"
+          ]
+        },
+        {
+          "name": "cards",
+          "instances": [
+            ".grid.cmp-grid-custom .grid-row",
+            ".grid.cmp-grid-full-page-5-v1"
+          ]
+        },
+        {
+          "name": "accordion",
+          "instances": [
+            "#accordion-c31e57db88"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1",
+          "name": "Hero",
+          "selector": [
+            ".container.cmp-container-full-width.height-tall",
+            ".container.overlap-predecessor.cmp-container-xx-large"
+          ],
+          "style": "navy-overlap",
+          "blocks": [
+            "hero"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2",
+          "name": "At a Glance Text",
+          "selector": ".teaser.light-theme",
+          "style": null,
+          "blocks": [],
+          "defaultContent": [
+            ".teaser.light-theme .cmp-teaser__pretitle",
+            ".teaser.light-theme .cmp-teaser__title",
+            ".teaser.light-theme .cmp-teaser__description"
+          ]
+        },
+        {
+          "id": "section-3",
+          "name": "Dashboard Stats + Core Focus",
+          "selector": ".container.cmp-container-full-width .cmp-grid-full-page-5-v1",
+          "style": "navy",
+          "blocks": [
+            "cards"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-5",
+          "name": "R&D Video",
+          "selector": ".container.cmp-container-full-width:has(.brightcove-video)",
+          "style": null,
+          "blocks": [
+            "embed"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-6",
+          "name": "Explore Our Science",
+          "selector": ".container.cmp-container-full-width:has(#container-5ab796dabb)",
+          "style": null,
+          "blocks": [
+            "columns"
+          ],
+          "defaultContent": []
+        }
+      ]
+    },
+    {
+      "name": "leaders-listing",
+      "urls": [
+        "https://www.abbvie.com/science/our-people/our-rd-leaders.html"
+      ],
+      "description": "R&D Leaders listing page with hero header and grid of leader profile cards",
+      "blocks": [
+        {
+          "name": "story-cards",
+          "instances": [
+            ".cardpagestory.card-standard.card-small"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1-hero",
+          "name": "Hero Header",
+          "selector": [
+            ".container.large-radius.cmp-container-full-width.height-short.no-bottom-margin",
+            ".container.overlap-predecessor.medium-radius.cmp-container-xx-large"
+          ],
+          "style": "navy-overlap",
+          "blocks": [],
+          "defaultContent": [
+            ".title.cmp-title-xx-large h1",
+            ".text.cmp-text-xx-large p"
+          ]
+        },
+        {
+          "id": "section-2-leader-cards",
+          "name": "Leader Profile Cards",
+          "selector": ".grid.aem-GridColumn.aem-GridColumn--default--12",
+          "style": null,
+          "blocks": [
+            "story-cards"
+          ],
+          "defaultContent": []
+        }
+      ]
+    },
+    {
+      "name": "leader-profile",
+      "urls": [
+        "https://www.abbvie.com/science/our-people/our-rd-leaders/andrew-campbell.html",
+        "https://www.abbvie.com/science/our-people/our-rd-leaders/christopher-boone.html",
+        "https://www.abbvie.com/science/our-people/our-rd-leaders/daejin-abidoye.html",
+        "https://www.abbvie.com/science/our-people/our-rd-leaders/darin-messina.html",
+        "https://www.abbvie.com/science/our-people/our-rd-leaders/eleni-lagkadinou.html",
+        "https://www.abbvie.com/science/our-people/our-rd-leaders/jonathon-sedgwick.html",
+        "https://www.abbvie.com/science/our-people/our-rd-leaders/linda-scarazzini.html",
+        "https://www.abbvie.com/science/our-people/our-rd-leaders/michael-foley.html",
+        "https://www.abbvie.com/science/our-people/our-rd-leaders/philip-hajduk.html",
+        "https://www.abbvie.com/science/our-people/our-rd-leaders/primal-kaur.html",
+        "https://www.abbvie.com/science/our-people/our-rd-leaders/raymond-votzmeyer.html",
+        "https://www.abbvie.com/science/our-people/our-rd-leaders/shuhong-zhang.html",
+        "https://www.abbvie.com/science/our-people/our-rd-leaders/wolfram-nothaft.html"
+      ],
+      "description": "Individual R&D leader profile page with hero and biography columns",
+      "blocks": [
+        {
+          "name": "hero (profile)",
+          "instances": [
+            ".container.overlap-predecessor"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            ".grid.aem-GridColumn"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1-hero",
+          "name": "Hero Section (Profile)",
+          "selector": [
+            ".container.medium-radius.cmp-container-full-width.height-short.no-bottom-margin",
+            ".container.overlap-predecessor.medium-radius.cmp-container-xx-large"
+          ],
+          "style": "navy-overlap",
+          "blocks": [
+            "hero (profile)"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-7",
+          "name": "Tenacity / Behind the Science",
+          "selector": ".container.cmp-container-xxx-large:has(#title-b50438c68d)",
+          "style": null,
+          "blocks": [
+            "columns"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-8",
+          "name": "Stories Behind Our Science",
+          "selector": ".container:has(#container-b38daf1189)",
+          "style": null,
+          "blocks": [
+            "cards"
+          ],
+          "defaultContent": [
+            "#title-3311f030ae",
+            "#text-78ba5a63d0"
+          ]
+        },
+        {
+          "id": "section-9",
+          "name": "FAQ + CTA Band",
+          "selector": ".container.cmp-container-full-width:has(#accordion-c31e57db88)",
+          "style": null,
+          "blocks": [
+            "accordion"
+          ],
+          "defaultContent": [
+            "#title-d188a77aca",
+            ".cmp-image:has([data-cmp-src*='Cambridge'])",
+            "#title-cta-bold-science",
+            ".cmp-text:has(a[href*='research-and-development'])"
+          ],
+          "_comment": "Section contains FAQ heading + accordion block + CTA band (image, heading, description, CTA link). CTA band is default content after accordion, styled via CSS as a full-bleed light blue band with 2-column grid layout. FAQ accordion is constrained to 7/12 columns centered (grid-column: 3 / span 7)."
+        },
+        {
+          "id": "section-10",
+          "name": "CTA / Careers",
+          "selector": ".container.cmp-container-full-width.footer-overlap",
+          "style": "highlight",
+          "blocks": [
+            "columns"
+          ],
+          "defaultContent": []
+        }
+      ]
+    },
+    {
+      "name": "clinical-trials",
+      "urls": [
+        "https://www.abbvie.com/science/clinical-trials.html"
+      ],
+      "description": "Clinical trials informational page with hero, two-column content grid, full-width image-text section, accordion for additional info, and multi-column bottom sections",
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            ".container.large-radius.cmp-container-full-width.height-default.no-bottom-margin",
+            ".container.overlap-predecessor.medium-radius.cmp-container-xx-large"
+          ]
+        },
+        {
+          "name": "cta",
+          "instances": [
+            ".grid.cmp-grid-custom:not(.no-bottom-margin) .grid-row__col-with-2:last-child"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            ".container.cmp-container-full-width.height-default:not(.large-radius):not(.no-bottom-margin) .grid",
+            ".grid.cmp-grid-custom:not(.no-bottom-margin):last-of-type"
+          ]
+        },
+        {
+          "name": "accordion",
+          "instances": [
+            ".cmp-accordion"
+          ]
+        },
+        {
+          "name": "publications",
+          "urls": [
+            "https://www.abbvie.com/science/publications.html"
+          ],
+          "description": "Science publications listing page with hero, breadcrumb, flex-section layout (7-col main + 2-col sidebar). Main section has tag-utility-nav search block with filterable publication list. Sidebar has related content card, separator block, and topics list.",
+          "blocks": [
+            {
+              "name": "hero (profile)",
+              "variant": "hero profile body-unica-32-reg",
+              "instances": [
+                ".hero.profile.body-unica-32-reg"
+              ]
+            },
+            {
+              "name": "breadcrumb",
+              "instances": [
+                ".breadcrumb"
+              ]
+            },
+            {
+              "name": "tag-utility-nav",
+              "instances": [
+                ".tag-utility-nav"
+              ]
+            },
+            {
+              "name": "separator",
+              "instances": [
+                ".separator"
+              ]
+            }
+          ],
+          "sections": [
+            {
+              "id": "section-1-hero",
+              "name": "Hero Section",
+              "selector": [
+                ".container.large-radius.cmp-container-full-width.height-default.no-bottom-margin",
+                ".container.overlap-predecessor.medium-radius.cmp-container-xx-large"
+              ],
+              "description": "Science publications listing page with hero, breadcrumb, flex-section layout (7-col main + 2-col sidebar). Main section has tag-utility-nav search block with filterable publication list. Sidebar has related content card, separator block, and topics list.",
+              "blocks": [
+                "hero"
+              ],
+              "defaultContent": []
+            },
+            {
+              "name": "Hero + Breadcrumb",
+              "selector": "div:has(> .hero.profile)",
+              "style": null,
+              "blocks": [
+                "hero (profile)",
+                "breadcrumb"
+              ],
+              "defaultContent": []
+            },
+            {
+              "id": "section-2-about",
+              "name": "About Clinical Trials",
+              "selector": ".grid.cmp-grid-custom:not(.no-bottom-margin)",
+              "style": null,
+              "blocks": [
+                "cta"
+              ],
+              "defaultContent": [
+                ".grid.cmp-grid-custom:not(.no-bottom-margin) .grid-row__col-with-8 .cmp-title h2",
+                ".grid.cmp-grid-custom:not(.no-bottom-margin) .grid-row__col-with-8 .cmp-text"
+              ]
+            },
+            {
+              "name": "partner-with-us",
+              "urls": [
+                "https://www.abbvie.com/science/partner-with-us.html"
+              ],
+              "description": "Science sub-page for partnership information, similar layout to clinical-trials with hero, content sections, and informational blocks",
+              "blocks": [
+                {
+                  "name": "hero",
+                  "instances": [
+                    ".container.large-radius.cmp-container-full-width.height-default.no-bottom-margin",
+                    ".container.overlap-predecessor.medium-radius.cmp-container-xx-large"
+                  ]
+                },
+                {
+                  "name": "cta",
+                  "instances": [
+                    ".grid.cmp-grid-custom .grid-row__col-with-2"
+                  ]
+                },
+                {
+                  "name": "accordion",
+                  "instances": [
+                    ".cmp-accordion"
+                  ]
+                }
+              ],
+              "sections": [
+                {
+                  "id": "section-1-hero",
+                  "name": "Hero Section",
+                  "selector": [
+                    ".container.large-radius.cmp-container-full-width.height-default.no-bottom-margin",
+                    ".container.overlap-predecessor.medium-radius.cmp-container-xx-large"
+                  ],
+                  "style": "navy-overlap",
+                  "blocks": [
+                    "hero"
+                  ],
+                  "defaultContent": []
+                },
+                {
+                  "id": "section-2-about",
+                  "name": "Main Content with Sidebar",
+                  "selector": ".grid.cmp-grid-custom",
+                  "style": null,
+                  "blocks": [
+                    "cta",
+                    "accordion"
+                  ],
+                  "defaultContent": [
+                    ".grid-row__col-with-7 .cmp-title h2",
+                    ".grid-row__col-with-7 .cmp-text"
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "abbvie-ventures",
+              "urls": [
+                "https://www.abbvie.com/science/partner-with-us/abbvie-ventures.html"
+              ],
+              "description": "AbbVie Ventures page with hero, sidebar with related content/topics, main content with 2 accordion blocks (investment team, scientists in residence), and related content cards at bottom",
+              "blocks": [
+                {
+                  "name": "hero",
+                  "instances": [
+                    ".container.large-radius.cmp-container-full-width.height-default.no-bottom-margin",
+                    ".container.overlap-predecessor.medium-radius.cmp-container-xx-large"
+                  ]
+                },
+                {
+                  "name": "accordion",
+                  "instances": [
+                    ".cmp-accordion"
+                  ]
+                },
+                {
+                  "name": "cards",
+                  "instances": [
+                    ".container.cmp-container-full-width.no-bottom-margin .grid.cmp-grid-custom .cardpagestory"
+                  ]
+                }
+              ],
+              "sections": [
+                {
+                  "id": "section-1-hero",
+                  "name": "Hero Section",
+                  "selector": [
+                    ".container.large-radius.cmp-container-full-width.height-default.no-bottom-margin",
+                    ".container.overlap-predecessor.medium-radius.cmp-container-xx-large"
+                  ],
+                  "style": "navy-overlap",
+                  "blocks": [
+                    "hero"
+                  ],
+                  "defaultContent": []
+                },
+                {
+                  "id": "section-2-main",
+                  "name": "Main Content with Sidebar",
+                  "selector": ".grid.cmp-grid-custom:first-of-type",
+                  "style": null,
+                  "blocks": [
+                    "accordion"
+                  ],
+                  "defaultContent": [
+                    ".grid-row__col-with-9 .cmp-title h2",
+                    ".grid-row__col-with-9 .cmp-text",
+                    ".grid-row__col-with-2 .cmp-title h2",
+                    ".grid-row__col-with-2 .cmp-text",
+                    ".grid-row__col-with-2 .cmp-image"
+                  ]
+                },
+                {
+                  "id": "section-3-cards",
+                  "name": "Related Content Cards",
+                  "selector": ".container.cmp-container-full-width.no-bottom-margin:has(.cardpagestory)",
+                  "style": null,
+                  "blocks": [
+                    "cards"
+                  ],
+                  "defaultContent": []
+                }
+              ]
+            },
+            {
+              "name": "educational-grants",
+              "urls": [
+                "https://www.abbvie.com/science/independent-educational-grants.html"
+              ],
+              "description": "Independent Educational Grants page with hero, sidebar with topics, main content with CTA, image+goals section, grants list, accordion for therapeutic areas, and full-width apply CTA at bottom",
+              "blocks": [
+                {
+                  "name": "hero",
+                  "instances": [
+                    ".container.large-radius.cmp-container-full-width.height-default.no-bottom-margin",
+                    ".container.overlap-predecessor.medium-radius.cmp-container-xx-large"
+                  ]
+                },
+                {
+                  "name": "accordion",
+                  "instances": [
+                    ".cmp-accordion"
+                  ]
+                }
+              ],
+              "defaultContent": []
+            },
+            {
+              "id": "section-2-about",
+              "name": "Main Content with Sidebar",
+              "selector": ".grid.cmp-grid-custom",
+              "style": null,
+              "blocks": [
+                "cta",
+                "accordion"
+              ],
+              "defaultContent": [
+                ".grid-row__col-with-7 .cmp-title h2",
+                ".grid-row__col-with-7 .cmp-text"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "abbvie-ventures",
+          "urls": [
+            "https://www.abbvie.com/science/partner-with-us/abbvie-ventures.html"
+          ],
+          "description": "AbbVie Ventures page with hero, sidebar with related content/topics, main content with 2 accordion blocks (investment team, scientists in residence), and related content cards at bottom",
+          "blocks": [
+            {
+              "name": "hero",
+              "instances": [
+                ".container.large-radius.cmp-container-full-width.height-default.no-bottom-margin",
+                ".container.overlap-predecessor.medium-radius.cmp-container-xx-large"
+              ]
+            },
+            {
+              "name": "accordion",
+              "instances": [
+                ".cmp-accordion"
+              ]
+            },
+            {
+              "name": "cards",
+              "instances": [
+                ".container.cmp-container-full-width.no-bottom-margin .grid.cmp-grid-custom .cardpagestory"
+              ]
+            }
+          ],
+          "sections": [
+            {
+              "id": "section-1-hero",
+              "name": "Hero Section",
+              "selector": [
+                ".container.large-radius.cmp-container-full-width.height-default.no-bottom-margin",
+                ".container.overlap-predecessor.medium-radius.cmp-container-xx-large"
+              ],
+              "style": "navy-overlap",
+              "blocks": [
+                "hero"
+              ],
+              "defaultContent": []
+            },
+            {
+              "id": "section-2-main",
+              "name": "Main Content with Sidebar",
+              "selector": ".grid.cmp-grid-custom:first-of-type",
+              "style": null,
+              "blocks": [
+                "accordion"
+              ],
+              "defaultContent": [
+                ".grid-row__col-with-9 .cmp-title h2",
+                ".grid-row__col-with-9 .cmp-text",
+                ".grid-row__col-with-2 .cmp-title h2",
+                ".grid-row__col-with-2 .cmp-text",
+                ".grid-row__col-with-2 .cmp-image"
+              ]
+            },
+            {
+              "id": "section-3-cards",
+              "name": "Related Content Cards",
+              "selector": ".container.cmp-container-full-width.no-bottom-margin:has(.cardpagestory)",
+              "style": null,
+              "blocks": [
+                "cards"
+              ],
+              "defaultContent": []
+            }
+          ]
+        },
+        {
+          "name": "educational-grants",
+          "urls": [
+            "https://www.abbvie.com/science/independent-educational-grants.html"
+          ],
+          "description": "Independent Educational Grants page with hero, sidebar with topics, main content with CTA, image+goals section, grants list, accordion for therapeutic areas, and full-width apply CTA at bottom",
+          "blocks": [
+            {
+              "name": "hero",
+              "instances": [
+                ".container.large-radius.cmp-container-full-width.height-default.no-bottom-margin",
+                ".container.overlap-predecessor.medium-radius.cmp-container-xx-large"
+              ]
+            },
+            {
+              "name": "accordion",
+              "instances": [
+                ".cmp-accordion"
+              ]
+            }
+          ],
+          "sections": [
+            {
+              "id": "section-1-hero",
+              "name": "Hero Section",
+              "selector": [
+                ".container.large-radius.cmp-container-full-width.height-default.no-bottom-margin",
+                ".container.overlap-predecessor.medium-radius.cmp-container-xx-large"
+              ],
+              "style": "navy-overlap",
+              "blocks": [
+                "hero"
+              ],
+              "defaultContent": []
+            },
+            {
+              "id": "section-2-main",
+              "name": "Main Content with Sidebar",
+              "selector": ".grid.cmp-grid-custom",
+              "style": null,
+              "blocks": [
+                "accordion"
+              ],
+              "defaultContent": [
+                ".grid-row__col-with-9 .cmp-title h2",
+                ".grid-row__col-with-9 .cmp-text",
+                ".grid-row__col-with-2 .cmp-title h2",
+                ".grid-row__col-with-2 .cmp-text"
+              ]
+            },
+            {
+              "id": "section-2-publications",
+              "name": "Publications Main Content (flex-section col-7)",
+              "selector": "div:has(> .section-metadata.flxsection-col-7)",
+              "style": "align-left flxsection-col-7",
+              "sectionType": "flex-section",
+              "blocks": [
+                "tag-utility-nav"
+              ],
+              "defaultContent": [
+                "h2 (Contributing to the scientific community)",
+                "p (intro text)",
+                "h4 (Recent publication highlights)",
+                "p (post-doc disclaimer)",
+                "ul (publication list items with links, journal em, DOI, authors)"
+              ]
+            },
+            {
+              "id": "section-3-sidebar",
+              "name": "Related Content Sidebar (flex-section col-2)",
+              "selector": "div:has(> .section-metadata.flxsection-col-2)",
+              "style": "no-align flxsection-col-2",
+              "sectionType": "flex-section",
+              "blocks": [
+                "separator"
+              ],
+              "defaultContent": [
+                "h2 (Related content)",
+                "picture (card image)",
+                "p > em (eyebrow: Join Us)",
+                "p > strong (title: Postdoctoral Program)",
+                "p (description)",
+                "p > a (CTA: Learn More)",
+                "h2 (Topics)",
+                "ul (topic links: Areas of Focus, R&D Leaders, Careers)"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "corporate-leader-profile",
+      "urls": [
+        "https://www.abbvie.com/who-we-are/our-leaders/alberto-colzi.html",
+        "https://www.abbvie.com/who-we-are/our-leaders/azita-saleki-gerhardt.html",
+        "https://www.abbvie.com/who-we-are/our-leaders/dave-purdue.html",
+        "https://www.abbvie.com/who-we-are/our-leaders/demetris-crum.html",
+        "https://www.abbvie.com/who-we-are/our-leaders/jag-dosanjh.html",
+        "https://www.abbvie.com/who-we-are/our-leaders/jason-smith.html",
+        "https://www.abbvie.com/who-we-are/our-leaders/jeffrey-stewart.html",
+        "https://www.abbvie.com/who-we-are/our-leaders/jerome-bouyer.html",
+        "https://www.abbvie.com/who-we-are/our-leaders/latif-akintade.html",
+        "https://www.abbvie.com/who-we-are/our-leaders/linda-ray.html",
+        "https://www.abbvie.com/who-we-are/our-leaders/liz-shea.html",
+        "https://www.abbvie.com/who-we-are/our-leaders/nicholas-donoghoe.html",
+        "https://www.abbvie.com/who-we-are/our-leaders/nicole-mowad-nassar.html",
+        "https://www.abbvie.com/who-we-are/our-leaders/nisha-patel-burns.html",
+        "https://www.abbvie.com/who-we-are/our-leaders/perry-siatis.html",
+        "https://www.abbvie.com/who-we-are/our-leaders/rae-livingston.html",
+        "https://www.abbvie.com/who-we-are/our-leaders/robert-michael.html",
+        "https://www.abbvie.com/who-we-are/our-leaders/roopal-thakkar.html",
+        "https://www.abbvie.com/who-we-are/our-leaders/sanjay-narayan.html",
+        "https://www.abbvie.com/who-we-are/our-leaders/scott-reents.html",
+        "https://www.abbvie.com/who-we-are/our-leaders/thomas-hudson.html",
+        "https://www.abbvie.com/who-we-are/our-leaders/timothy-richmond.html",
+        "https://www.abbvie.com/who-we-are/our-leaders/tracie-haas.html",
+        "https://www.abbvie.com/who-we-are/our-leaders/wulff-erik-von-borcke.html"
+      ],
+      "description": "Corporate leader profile page under Who We Are / Our Leaders section with hero (breadcrumb, name, title) and two-column bio (headshot + biography text)",
+      "blocks": [
+        {
+          "name": "columns",
+          "instances": [
+            ".container.overlap-predecessor .grid .grid-row"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1-hero",
+          "name": "Hero Section (Profile)",
+          "selector": [
+            ".container.large-radius.cmp-container-full-width.height-short.no-bottom-margin",
+            ".container.overlap-predecessor.medium-radius.cmp-container-xx-large.align-center"
+          ],
+          "style": "navy-overlap",
+          "blocks": [],
+          "defaultContent": [
+            ".breadcrumb.abbvie-breadcrumb",
+            "#title-4dbb596b7d h1",
+            ".text.cmp-text-xx-large .body-unica-32-reg"
+          ]
+        },
+        {
+          "id": "section-2-bio",
+          "name": "Biography Section",
+          "selector": ".container.overlap-predecessor .grid.aem-GridColumn",
+          "style": null,
+          "blocks": [
+            "columns"
+          ],
+          "defaultContent": []
+        }
+      ]
+    },
+    {
+      "name": "story-detail",
+      "urls": [
+        "https://www.abbvie.com/who-we-are/our-stories/two-lives-converging-in-the-fight-against-parkinsons.html",
+        "https://www.abbvie.com/who-we-are/our-stories/the-math-of-migraine.html",
+        "https://www.abbvie.com/who-we-are/our-stories/five-technologies-supporting-progress-in-challenging-diseases.html",
+        "https://www.abbvie.com/who-we-are/our-stories/little-patients-big-impact.html"
+      ],
+      "description": "AbbVie 'Our Stories' article pages: intro section (breadcrumb/back-CTA + story info strip + title + subtitle), optional featured Brightcove video section, two-column narrative body (heading + paragraphs + custom image + carousel + pull quote + eyebrow + separator + bulleted list), references accordion + media-inquiries text, and related-content rail at the bottom.",
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            ".container.overlap-predecessor"
+          ]
+        },
+        {
+          "name": "cta",
+          "instances": [
+            ".cmp-button.back-button",
+            ".cmp-breadcrumb a.cmp-breadcrumb__link"
+          ]
+        },
+        {
+          "name": "story-card",
+          "instances": [
+            ".cardpagestory.story-card-info",
+            ".container.related-content .cardpagestory",
+            ".container.related-content .cmp-teaser"
+          ]
+        },
+        {
+          "name": "custom-title",
+          "instances": [
+            ".cmp-title.cmp-title-xx-large h1",
+            ".cmp-title.cmp-title-h5 h5",
+            ".cmp-title.cmp-title-h3 h3",
+            ".container .cmp-title h5"
+          ]
+        },
+        {
+          "name": "text-container",
+          "instances": [
+            ".container.overlap-predecessor .cmp-text",
+            ".container.cmp-container-xx-large .grid .cmp-text",
+            ".container.cmp-container-x-large .grid .cmp-text",
+            ".container.related-content .cmp-text"
+          ]
+        },
+        {
+          "name": "eyebrow-text",
+          "instances": [
+            ".cmp-text.cmp-text-eyebrow",
+            ".text.cmp-text-eyebrow",
+            ".cmp-text--pretitle"
+          ]
+        },
+        {
+          "name": "brightcove-video",
+          "instances": [
+            ".cmp-video video-js",
+            ".cmp-video[data-account-id]",
+            ".video.cmp-video-full-width"
+          ]
+        },
+        {
+          "name": "carousel",
+          "instances": [
+            ".carousel .cmp-carousel",
+            ".carousel.cmp-carousel-minimal",
+            ".carousel.cmp-carousel-show-btn-margin"
+          ]
+        },
+        {
+          "name": "custom-image",
+          "instances": [
+            ".container.cmp-container-xx-large .grid .cmp-image",
+            ".container.cmp-container-x-large .grid .cmp-image"
+          ]
+        },
+        {
+          "name": "quote",
+          "instances": [
+            ".container.cmp-container-xx-large .cmp-quote",
+            ".container.cmp-container-x-large .cmp-quote"
+          ]
+        },
+        {
+          "name": "separator",
+          "instances": [
+            ".container.cmp-container-xx-large .cmp-separator",
+            ".container.cmp-container-x-large .cmp-separator",
+            ".container.cmp-container-xx-large hr.cmp-separator__line"
+          ]
+        },
+        {
+          "name": "accordion",
+          "instances": [
+            ".accordion.panelcontainer .cmp-accordion",
+            ".accordion .cmp-accordion-references",
+            ".accordion.cmp-accordion-h5"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1-intro",
+          "name": "Intro (Hero + Breadcrumb + Title + Subtitle)",
+          "selector": [
+            ".container.large-radius.cmp-container-full-width.height-default",
+            ".container.large-radius.cmp-container-full-width.height-tall",
+            ".container.overlap-predecessor.large-radius",
+            ".container.overlap-predecessor.medium-radius"
+          ],
+          "style": "content wide, large radius",
+          "blocks": [
+            "hero",
+            "cta",
+            "story-card",
+            "custom-title",
+            "text-container"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2-featured-video",
+          "name": "Featured Brightcove Video",
+          "selector": ".container.cmp-container-x-large:has(.cmp-video), .video.cmp-video-full-width",
+          "style": "content regular, align center, section padding, container x large",
+          "blocks": [
+            "brightcove-video",
+            "text-container"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-3-story-body",
+          "name": "Story Body (Two-Column Narrative)",
+          "selector": ".container.cmp-container-xx-large .grid.grid-cols-2, .container.cmp-container-x-large .grid.grid-cols-2",
+          "style": "grid container, content regular, padding bottom, grid cols 2",
+          "blocks": [
+            "custom-title",
+            "text-container",
+            "eyebrow-text",
+            "custom-image",
+            "carousel",
+            "quote",
+            "separator"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-3b-references",
+          "name": "References + Media Inquiries (Accordion)",
+          "selector": ".container.cmp-container-xx-large:has(.cmp-accordion), .container.cmp-container-x-large:has(.cmp-accordion)",
+          "style": "grid section, grid cols 8",
+          "blocks": [
+            "accordion",
+            "text-container"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-4-related-content",
+          "name": "Related Content Rail",
+          "selector": ".container.related-content, .container.cmp-container-full-width:has(.cardpagestory):last-of-type",
+          "style": "grid cols 2",
+          "blocks": [
+            "custom-title",
+            "text-container",
+            "story-card",
+            "separator"
+          ],
+          "defaultContent": []
+        }
+      ]
+    },
+    {
+      "name": "homepage",
+      "description": "T01 — AbbVie Homepage: hero + press releases, patient story carousel, featured story card, science intro columns, key stats band (navy), Brightcove video, podcast promo, culture/partnerships columns, careers CTA (highlight), investor + stock ticker, ESG feature (dark), positions PDF linklist",
+      "urls": [
+        "https://www.abbvie.com/"
+      ],
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            ".container.overlap-predecessor"
+          ]
+        },
+        {
+          "name": "press-releases",
+          "instances": [
+            ".press-releases, .cmp-press-releases"
+          ]
+        },
+        {
+          "name": "carousel",
+          "instances": [
+            ".carousel.cmp-carousel"
+          ]
+        },
+        {
+          "name": "story-card",
+          "instances": [
+            ".storyCardInfo, .cardpagestory.cmp-teaser--storyCardInfo"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            ".container.cmp-container-full-width > .cmp-container > .grid.grid-row"
+          ]
+        },
+        {
+          "name": "fact-card",
+          "instances": [
+            ".dashboardcards, .cmp-dashboardcards, .fact-card"
+          ]
+        },
+        {
+          "name": "brightcove-video",
+          "instances": [
+            ".cmp-video.cmp-video-full-width, video-js[data-account]"
+          ]
+        },
+        {
+          "name": "brightcove-podcast-player",
+          "instances": [
+            ".cmp-podcast, .brightcove-podcast-player, [class*=\"podcast\"]"
+          ]
+        },
+        {
+          "name": "stock-ticker",
+          "instances": [
+            ".stock-ticker, .cmp-stock-ticker"
+          ]
+        },
+        {
+          "name": "linklist",
+          "instances": [
+            ".list.cmp-list, nav.linklist, .cmp-linklist"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1-hero-press",
+          "name": "Hero + Press Releases",
+          "selector": ".container.overlap-predecessor",
+          "style": "navy-overlap",
+          "blocks": [
+            "hero",
+            "press-releases"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2-carousel",
+          "name": "Patient Story Carousel",
+          "selector": ".container.cmp-container-full-width:has(.carousel)",
+          "style": null,
+          "blocks": [
+            "carousel"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-3-story",
+          "name": "Featured Story Card",
+          "selector": ".container.cmp-container-full-width:has(.storyCardInfo)",
+          "style": null,
+          "blocks": [
+            "story-card"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-4-science",
+          "name": "Science & Innovation Intro",
+          "selector": ".container:not(.cmp-container-full-width):has(.grid-row__col-with-6)",
+          "style": "grid container",
+          "blocks": [
+            "columns"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 6"
+            },
+            {
+              "style": "grid section, grid cols 6"
+            }
+          ]
+        },
+        {
+          "id": "section-5-stats",
+          "name": "Key Stats Band",
+          "selector": ".container.cmp-container-full-width:has(.dashboardcards)",
+          "style": "navy, grid container",
+          "blocks": [
+            "fact-card"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 3"
+            },
+            {
+              "style": "grid section, grid cols 3"
+            },
+            {
+              "style": "grid section, grid cols 3"
+            },
+            {
+              "style": "grid section, grid cols 3"
+            }
+          ]
+        },
+        {
+          "id": "section-6-video",
+          "name": "Brightcove Video",
+          "selector": ".container.cmp-container-full-width:has(.cmp-video)",
+          "style": null,
+          "blocks": [
+            "brightcove-video"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-7-podcast",
+          "name": "Podcast Promo",
+          "selector": ".container.cmp-container-full-width:has([class*=\"podcast\"])",
+          "style": null,
+          "blocks": [
+            "brightcove-podcast-player"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-8-culture",
+          "name": "Culture / Partnerships",
+          "selector": ".container.cmp-container-full-width:has(.grid-row__col-with-4)",
+          "style": "grid container",
+          "blocks": [
+            "columns"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            }
+          ]
+        },
+        {
+          "id": "section-9-cta",
+          "name": "Careers CTA",
+          "selector": ".container.cmp-container-full-width.medium-radius:has(.cmp-button)",
+          "style": "highlight",
+          "blocks": [
+            "columns"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-10-investor",
+          "name": "Investor + Stock Ticker",
+          "selector": ".container:has(.cmp-stock-ticker)",
+          "style": "grid container",
+          "blocks": [
+            "columns",
+            "stock-ticker"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 6"
+            },
+            {
+              "style": "grid section, grid cols 6"
+            }
+          ]
+        },
+        {
+          "id": "section-11-esg",
+          "name": "ESG Feature",
+          "selector": ".container.cmp-container-full-width:has(.cmp-text):not(:has(.carousel)):not(:has(.dashboardcards))",
+          "style": "dark",
+          "blocks": [
+            "columns"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-12-linklist",
+          "name": "Positions PDF Links",
+          "selector": ".container.cmp-container-full-width:has(.cmp-list)",
+          "style": null,
+          "blocks": [
+            "linklist"
+          ],
+          "defaultContent": []
+        }
+      ]
+    },
+    {
+      "name": "section-landing",
+      "description": "T02 — Section Landing Pages (who-we-are, science, patients, patient-support): hero, mission intro, optional video, featured story cards / tabs (science) / carousel (patients), key stats (navy), content columns, stock ticker + investor links, careers CTA (highlight)",
+      "urls": [
+        "https://www.abbvie.com/who-we-are.html",
+        "https://www.abbvie.com/science.html",
+        "https://www.abbvie.com/patients.html",
+        "https://www.abbvie.com/patients/patient-support.html"
+      ],
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            ".container.overlap-predecessor"
+          ]
+        },
+        {
+          "name": "brightcove-video",
+          "instances": [
+            ".cmp-video.cmp-video-full-width, video-js[data-account]"
+          ]
+        },
+        {
+          "name": "story-cards",
+          "instances": [
+            ".story-cards, .cmp-story-cards, .cardpagestory-list"
+          ]
+        },
+        {
+          "name": "tabs",
+          "instances": [
+            ".tabs.cmp-tabs"
+          ]
+        },
+        {
+          "name": "carousel",
+          "instances": [
+            ".carousel.cmp-carousel"
+          ]
+        },
+        {
+          "name": "fact-card",
+          "instances": [
+            ".dashboardcards, .cmp-dashboardcards"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            ".container.cmp-container-full-width > .cmp-container > .grid.grid-row"
+          ]
+        },
+        {
+          "name": "stock-ticker",
+          "instances": [
+            ".stock-ticker, .cmp-stock-ticker"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1-hero",
+          "name": "Hero",
+          "selector": ".container.overlap-predecessor",
+          "style": "navy-overlap",
+          "blocks": [
+            "hero"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2-mission",
+          "name": "Mission Intro Text",
+          "selector": ".container:not(.cmp-container-full-width):has(.cmp-text):not(:has(.cmp-video)):not(:has(.dashboardcards))",
+          "style": null,
+          "blocks": [],
+          "defaultContent": [
+            "text"
+          ]
+        },
+        {
+          "id": "section-3-video",
+          "name": "Video Feature",
+          "selector": ".container.cmp-container-full-width:has(.cmp-video)",
+          "style": null,
+          "blocks": [
+            "brightcove-video"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-4-stories",
+          "name": "Featured Story Cards / Tabs / Carousel",
+          "selector": ".container.cmp-container-full-width:has(.story-cards, .cmp-tabs, .carousel)",
+          "style": null,
+          "blocks": [
+            "story-cards",
+            "tabs",
+            "carousel"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-5-stats",
+          "name": "Key Stats",
+          "selector": ".container.cmp-container-full-width:has(.dashboardcards)",
+          "style": "navy, grid container",
+          "blocks": [
+            "fact-card"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 3"
+            },
+            {
+              "style": "grid section, grid cols 3"
+            },
+            {
+              "style": "grid section, grid cols 3"
+            },
+            {
+              "style": "grid section, grid cols 3"
+            }
+          ]
+        },
+        {
+          "id": "section-6-columns",
+          "name": "Content Columns",
+          "selector": ".container:not(.cmp-container-full-width):has(.grid-row__col-with-6)",
+          "style": "grid container",
+          "blocks": [
+            "columns"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 6"
+            },
+            {
+              "style": "grid section, grid cols 6"
+            }
+          ]
+        },
+        {
+          "id": "section-7-ticker",
+          "name": "Stock Ticker + Investor Links",
+          "selector": ".container:has(.cmp-stock-ticker)",
+          "style": "grid container",
+          "blocks": [
+            "stock-ticker",
+            "columns"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 6"
+            },
+            {
+              "style": "grid section, grid cols 6"
+            }
+          ]
+        },
+        {
+          "id": "section-8-cta",
+          "name": "Careers / Footer CTA",
+          "selector": ".container.cmp-container-full-width.medium-radius:last-of-type",
+          "style": "highlight",
+          "blocks": [
+            "columns"
+          ],
+          "defaultContent": []
+        }
+      ]
+    },
+    {
+      "name": "therapeutic-area",
+      "description": "T03 — Therapeutic Area Pages (6 pages under /science/areas-of-focus/): hero, optional video, intro text, related topics linklist, optional carousel (neuroscience), disease accordion, 3-col commitments, featured story cards, careers CTA (highlight)",
+      "urls": [
+        "https://www.abbvie.com/science/areas-of-focus/immunology.html",
+        "https://www.abbvie.com/science/areas-of-focus/oncology.html",
+        "https://www.abbvie.com/science/areas-of-focus/neuroscience.html",
+        "https://www.abbvie.com/science/areas-of-focus/eye-care.html",
+        "https://www.abbvie.com/science/areas-of-focus/aesthetics.html",
+        "https://www.abbvie.com/science/areas-of-focus/other-specialties.html"
+      ],
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            ".container.overlap-predecessor"
+          ]
+        },
+        {
+          "name": "brightcove-video",
+          "instances": [
+            ".cmp-video.cmp-video-full-width, video-js[data-account]"
+          ]
+        },
+        {
+          "name": "linklist",
+          "instances": [
+            ".list.cmp-list, nav.linklist"
+          ]
+        },
+        {
+          "name": "carousel",
+          "instances": [
+            ".carousel.cmp-carousel"
+          ]
+        },
+        {
+          "name": "accordion",
+          "instances": [
+            ".accordion.cmp-accordion"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            ".container > .cmp-container > .grid.grid-row:has(.grid-row__col-with-4)"
+          ]
+        },
+        {
+          "name": "story-cards",
+          "instances": [
+            ".story-cards, .cmp-story-cards, .cardpagestory-list"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1-hero",
+          "name": "Hero",
+          "selector": ".container.overlap-predecessor",
+          "style": "navy-overlap",
+          "blocks": [
+            "hero"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2-video",
+          "name": "Video (optional)",
+          "selector": ".container.cmp-container-full-width:has(.cmp-video)",
+          "style": null,
+          "blocks": [
+            "brightcove-video"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-3-intro",
+          "name": "Introduction Text",
+          "selector": ".container:not(.overlap-predecessor):not(.cmp-container-full-width):has(.cmp-text):not(:has(.accordion))",
+          "style": "container large",
+          "blocks": [],
+          "defaultContent": [
+            "text"
+          ]
+        },
+        {
+          "id": "section-4-linklist",
+          "name": "Related Topics Nav",
+          "selector": ".container.cmp-container-full-width:has(.cmp-list)",
+          "style": null,
+          "blocks": [
+            "linklist"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-5-carousel",
+          "name": "Carousel",
+          "selector": ".container.cmp-container-full-width:has(.carousel)",
+          "style": null,
+          "blocks": [
+            "carousel"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-6-accordion",
+          "name": "Disease Accordion",
+          "selector": ".container.cmp-container-full-width:has(.accordion)",
+          "style": null,
+          "blocks": [
+            "accordion"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-7-commitments",
+          "name": "Key Commitments",
+          "selector": ".container.cmp-container-full-width:has(.grid-row__col-with-4)",
+          "style": "grid container",
+          "blocks": [
+            "columns"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            }
+          ]
+        },
+        {
+          "id": "section-8-story-cards",
+          "name": "Featured Article Cards",
+          "selector": ".container.cmp-container-full-width:has(.story-cards)",
+          "style": "grid container",
+          "blocks": [
+            "story-cards"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            }
+          ]
+        },
+        {
+          "id": "section-9-cta",
+          "name": "Careers CTA",
+          "selector": ".container.cmp-container-full-width.medium-radius:last-of-type",
+          "style": "highlight",
+          "blocks": [
+            "columns"
+          ],
+          "defaultContent": []
+        }
+      ]
+    },
+    {
+      "name": "innovation-area",
+      "description": "T04 — Innovation Area Pages (6 pages under /science/areas-of-innovation/): hero, intro text, related topics linklist, 1-2 video embeds, 3-col columns, feature section (2-col asymmetric), application areas accordion, featured story cards, careers CTA (highlight)",
+      "urls": [
+        "https://www.abbvie.com/science/areas-of-innovation/ai-and-data-convergence.html",
+        "https://www.abbvie.com/science/areas-of-innovation/genomics.html",
+        "https://www.abbvie.com/science/areas-of-innovation/precision-medicine.html",
+        "https://www.abbvie.com/science/areas-of-innovation/patient-focused-drug-development.html",
+        "https://www.abbvie.com/science/areas-of-innovation/therapeutic-modalities-and-platforms.html",
+        "https://www.abbvie.com/science/areas-of-innovation/data-convergence.html"
+      ],
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            ".container.overlap-predecessor"
+          ]
+        },
+        {
+          "name": "linklist",
+          "instances": [
+            ".list.cmp-list, nav.linklist"
+          ]
+        },
+        {
+          "name": "video",
+          "instances": [
+            ".embed.cmp-embed:not(:has(video-js)):not(:has([data-account]))"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            ".container > .cmp-container > .grid.grid-row:has(.grid-row__col-with-4, .grid-row__col-with-5, .grid-row__col-with-6)"
+          ]
+        },
+        {
+          "name": "accordion",
+          "instances": [
+            ".accordion.cmp-accordion"
+          ]
+        },
+        {
+          "name": "story-cards",
+          "instances": [
+            ".story-cards, .cmp-story-cards, .cardpagestory-list"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1-hero",
+          "name": "Hero",
+          "selector": ".container.overlap-predecessor",
+          "style": "navy-overlap",
+          "blocks": [
+            "hero"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2-intro",
+          "name": "Introduction Text",
+          "selector": ".container:not(.overlap-predecessor):not(.cmp-container-full-width):has(.cmp-text):first-of-type",
+          "style": "container large",
+          "blocks": [],
+          "defaultContent": [
+            "text"
+          ]
+        },
+        {
+          "id": "section-3-linklist",
+          "name": "Related Topics Nav",
+          "selector": ".container.cmp-container-full-width:has(.cmp-list)",
+          "style": null,
+          "blocks": [
+            "linklist"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-4-video",
+          "name": "Video Embeds",
+          "selector": ".container.cmp-container-full-width:has(.cmp-embed)",
+          "style": null,
+          "blocks": [
+            "video"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-5-columns",
+          "name": "Content Columns (3-col)",
+          "selector": ".container.cmp-container-full-width:has(.grid-row__col-with-4):not(:has(.accordion))",
+          "style": "grid container",
+          "blocks": [
+            "columns"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            }
+          ]
+        },
+        {
+          "id": "section-6-feature",
+          "name": "Feature Section",
+          "selector": ".container:not(.cmp-container-full-width):has(.grid-row__col-with-5)",
+          "style": "grid container",
+          "blocks": [
+            "columns"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 6"
+            },
+            {
+              "style": "grid section, grid cols 6"
+            }
+          ]
+        },
+        {
+          "id": "section-7-accordion",
+          "name": "Application Areas Accordion",
+          "selector": ".container.cmp-container-full-width:has(.accordion)",
+          "style": null,
+          "blocks": [
+            "accordion"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-8-story-cards",
+          "name": "Featured Story Cards",
+          "selector": ".container.cmp-container-full-width:has(.story-cards)",
+          "style": null,
+          "blocks": [
+            "story-cards"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-9-cta",
+          "name": "Careers CTA",
+          "selector": ".container.cmp-container-full-width.medium-radius:last-of-type",
+          "style": "highlight",
+          "blocks": [
+            "columns"
+          ],
+          "defaultContent": []
+        }
+      ]
+    },
+    {
+      "name": "story-article",
+      "description": "T09 — Story Article Pages (116 pages under /who-we-are/our-stories/): full-width hero image (default content), metadata bar, article title H1 (default content), narrow body copy (default content), optional pull quotes, optional inline video embed, related articles story-cards",
+      "urls": [
+        "https://www.abbvie.com/who-we-are/our-stories/5-ways-abbvie-work-to-deliver-medicines-in-half-the-time.html",
+        "https://www.abbvie.com/who-we-are/our-stories/a-history-discovery-why-we-focus-on-eye-cares-toughest-diseases.html",
+        "https://www.abbvie.com/who-we-are/our-stories/a-journey-of-sight-progress.html",
+        "https://www.abbvie.com/who-we-are/our-stories/a-legacy-of-leadership-in-mental-health.html",
+        "https://www.abbvie.com/who-we-are/our-stories/a-molecular-behavior-chart-speeding-up-research-with-predictive-analytics.html",
+        "https://www.abbvie.com/who-we-are/our-stories/abbvie-rebuilds-north-chicagos-middle-school-inspiring-students-to-reach-higher.html",
+        "https://www.abbvie.com/who-we-are/our-stories/abbvie-research-collaborative.html",
+        "https://www.abbvie.com/who-we-are/our-stories/abbvie-volunteers-return-to-serving.html",
+        "https://www.abbvie.com/who-we-are/our-stories/abbvies-2024-working-parents-finding-purpose-in-adversity.html",
+        "https://www.abbvie.com/who-we-are/our-stories/advancing-a-public-health-approach-to-patient-safety.html",
+        "https://www.abbvie.com/who-we-are/our-stories/advice-from-scientist-turned-physician-turned-robot-builder-be-curious.html",
+        "https://www.abbvie.com/who-we-are/our-stories/aesthetics-stories.html",
+        "https://www.abbvie.com/who-we-are/our-stories/ambassadors-in-action.html",
+        "https://www.abbvie.com/who-we-are/our-stories/an-innovative-approach-to-improve-maternal-health.html",
+        "https://www.abbvie.com/who-we-are/our-stories/breaking-the-rules-of-science-to-treat-cancer.html",
+        "https://www.abbvie.com/who-we-are/our-stories/btk-protein-good-bad-and-ugly.html",
+        "https://www.abbvie.com/who-we-are/our-stories/can-unlocking-one-million-genomes.html",
+        "https://www.abbvie.com/who-we-are/our-stories/can-we-find-cures-faster.html",
+        "https://www.abbvie.com/who-we-are/our-stories/celebrating-abbvies-2025-working-parents-caregivers.html",
+        "https://www.abbvie.com/who-we-are/our-stories/change-from-within.html",
+        "https://www.abbvie.com/who-we-are/our-stories/chasing-the-value-of-a-walk-down-the-aisle.html",
+        "https://www.abbvie.com/who-we-are/our-stories/chembeads-improving-artificial-intelligence-through-human-ingenuity.html",
+        "https://www.abbvie.com/who-we-are/our-stories/childhood-cancer-patients-and-their-families-find-a-home-away-from-home.html",
+        "https://www.abbvie.com/who-we-are/our-stories/company-stories.html",
+        "https://www.abbvie.com/who-we-are/our-stories/connecting-patients-with-care-3-lessons-learned-during-covid-19.html",
+        "https://www.abbvie.com/who-we-are/our-stories/day-in-life-government-affairs-director-educates-and-empowers.html",
+        "https://www.abbvie.com/who-we-are/our-stories/day-in-life-meet-director-clearing-path-for-patient-access.html",
+        "https://www.abbvie.com/who-we-are/our-stories/day-in-life-meet-engineer-promoting-diversity-within-manufacturing.html",
+        "https://www.abbvie.com/who-we-are/our-stories/day-in-the-life-creating-impact-with-nonprofit-partners.html",
+        "https://www.abbvie.com/who-we-are/our-stories/decoding-immune-systems-secrets-inside-the-discovery-of-a-new-medicine.html",
+        "https://www.abbvie.com/who-we-are/our-stories/digital-science-lab.html",
+        "https://www.abbvie.com/who-we-are/our-stories/discovery-files-vision-for-blood-cancer-patients.html",
+        "https://www.abbvie.com/who-we-are/our-stories/eedi-stories.html",
+        "https://www.abbvie.com/who-we-are/our-stories/elevating-health-care-for-all.html",
+        "https://www.abbvie.com/who-we-are/our-stories/empowering-innovation-through-the-abbvie-foundation-health-equit.html",
+        "https://www.abbvie.com/who-we-are/our-stories/ensuring-patients-around-world-get-medicines-during-covid-19.html",
+        "https://www.abbvie.com/who-we-are/our-stories/everyones-talking-about-data-science.html",
+        "https://www.abbvie.com/who-we-are/our-stories/expert-insights-the-promise-of-genetic-medicine-and-abbvies-role-in-research.html",
+        "https://www.abbvie.com/who-we-are/our-stories/eye-care-stories.html",
+        "https://www.abbvie.com/who-we-are/our-stories/finding-hope-in-a-pandemic--a-conversation-with-two-hepatitis-c-.html",
+        "https://www.abbvie.com/who-we-are/our-stories/five-reasons-why-small-cell-lung-cancer-is-tough-to-treat.html",
+        "https://www.abbvie.com/who-we-are/our-stories/five-technologies-supporting-progress-in-challenging-diseases.html",
+        "https://www.abbvie.com/who-we-are/our-stories/going-inside-prison-walls-to-help-eliminate-hepatitis-c.html",
+        "https://www.abbvie.com/who-we-are/our-stories/green-chemistry-cleaner-faster-chemical-reactions.html",
+        "https://www.abbvie.com/who-we-are/our-stories/growing-sustainably-through-innovation-how-abbvie-takes-action.html",
+        "https://www.abbvie.com/who-we-are/our-stories/hepatitis-c-mysterious-virus-that-met-its-match.html",
+        "https://www.abbvie.com/who-we-are/our-stories/how-abbvie-is-bringing-antiviral-expertise-to-covid-19-battle.html",
+        "https://www.abbvie.com/who-we-are/our-stories/how-abbvies-integrated-operations-help-prevent-drug-shortages.html",
+        "https://www.abbvie.com/who-we-are/our-stories/how-employee-resource-groups-create-meaningful-impact-at-abbvie.html",
+        "https://www.abbvie.com/who-we-are/our-stories/how-medicinal-chemists-are-creating-new-weapons-against-autoimmune-diseases.html",
+        "https://www.abbvie.com/who-we-are/our-stories/how-patient-voices-are-changing-medicine.html",
+        "https://www.abbvie.com/who-we-are/our-stories/how-the-parkinsons-disease-community-is-shaping-the-future.html",
+        "https://www.abbvie.com/who-we-are/our-stories/how-uterine-fibroids-feel-to-patient-who-is-also-doctor.html",
+        "https://www.abbvie.com/who-we-are/our-stories/i-am.html",
+        "https://www.abbvie.com/who-we-are/our-stories/immunology-stories.html",
+        "https://www.abbvie.com/who-we-are/our-stories/immunologys-next-frontier.html",
+        "https://www.abbvie.com/who-we-are/our-stories/injecting-hope-one-vaccine-at-a-time.html",
+        "https://www.abbvie.com/who-we-are/our-stories/inside-dream-initiative.html",
+        "https://www.abbvie.com/who-we-are/our-stories/lessons-from-a-lifelong-journey-with-psoriasis.html",
+        "https://www.abbvie.com/who-we-are/our-stories/life-after-stroke-living-with-and-researching-spasticity.html",
+        "https://www.abbvie.com/who-we-are/our-stories/little-patients-big-impact.html",
+        "https://www.abbvie.com/who-we-are/our-stories/living-with-an-illness.html",
+        "https://www.abbvie.com/who-we-are/our-stories/living-with-unknowns-alzheimers-disease.html",
+        "https://www.abbvie.com/who-we-are/our-stories/magnified-featuring-darin-messina.html",
+        "https://www.abbvie.com/who-we-are/our-stories/magnified-featuring-edrice-simmons.html",
+        "https://www.abbvie.com/who-we-are/our-stories/magnified-featuring-johanna-corbin.html",
+        "https://www.abbvie.com/who-we-are/our-stories/magnified-featuring-jonathon-sedgwick.html",
+        "https://www.abbvie.com/who-we-are/our-stories/magnified-featuring-linda-scarazzini.html",
+        "https://www.abbvie.com/who-we-are/our-stories/magnified-featuring-matt-widman.html",
+        "https://www.abbvie.com/who-we-are/our-stories/magnified-featuring-nicholas-donoghoe.html",
+        "https://www.abbvie.com/who-we-are/our-stories/magnified-featuring-sean-mcewen.html",
+        "https://www.abbvie.com/who-we-are/our-stories/magnified-featuring-shuhong-zhang.html",
+        "https://www.abbvie.com/who-we-are/our-stories/make-complicated-simple-inside-world-human-factors-engineers.html",
+        "https://www.abbvie.com/who-we-are/our-stories/making-it-migraine-friendly-why-were-reimagining-workplace.html",
+        "https://www.abbvie.com/who-we-are/our-stories/meet-the-arch-a-time-saving-tool-for-researchers-focused-on-finding-cures.html",
+        "https://www.abbvie.com/who-we-are/our-stories/more-than-a-stiff-neck-the-impact-of-living-with-cervical-dyston.html",
+        "https://www.abbvie.com/who-we-are/our-stories/more-than-skin-deep-3-lessons-for-expanding-equity-in-dermatology.html",
+        "https://www.abbvie.com/who-we-are/our-stories/much-more-than-itchy-skin-breaking-down-complexities-atopic-dermatitis.html",
+        "https://www.abbvie.com/who-we-are/our-stories/navigating-the-hidden-side-of-cancer.html",
+        "https://www.abbvie.com/who-we-are/our-stories/navigating-ulcerative-colitis-as-a-child.html",
+        "https://www.abbvie.com/who-we-are/our-stories/neuroscience-stories.html",
+        "https://www.abbvie.com/who-we-are/our-stories/new-microsite-clinic-brings-healthcare-to-chicago-southwest-side.html",
+        "https://www.abbvie.com/who-we-are/our-stories/not-good-enough-behind-the-drive-to-give-cancer-patients-more-time.html",
+        "https://www.abbvie.com/who-we-are/our-stories/oncology-stories.html",
+        "https://www.abbvie.com/who-we-are/our-stories/one-veterans-journey-and-abbvies-commitment-to-mental-health-research.html",
+        "https://www.abbvie.com/who-we-are/our-stories/partnerships-stories.html",
+        "https://www.abbvie.com/who-we-are/our-stories/patient-support-stories.html",
+        "https://www.abbvie.com/who-we-are/our-stories/philanthropy-stories.html",
+        "https://www.abbvie.com/who-we-are/our-stories/precision-medicine-its-not-just-for-oncology-anymore.html",
+        "https://www.abbvie.com/who-we-are/our-stories/profile-stories.html",
+        "https://www.abbvie.com/who-we-are/our-stories/putting-our-people-first-abbvies-family-benefits.html",
+        "https://www.abbvie.com/who-we-are/our-stories/ready-set-launch-abbvie-opens-new-facility-in-the-bay-area.html",
+        "https://www.abbvie.com/who-we-are/our-stories/real-people-real-inspiration-joes-story.html",
+        "https://www.abbvie.com/who-we-are/our-stories/real-world-data-rounds-out-value-picture-drugs.html",
+        "https://www.abbvie.com/who-we-are/our-stories/real-world-evidence-uncovers-gaps-in-IBD-care.html",
+        "https://www.abbvie.com/who-we-are/our-stories/rebuilding-puerto-rico-one-community-health-center-at-a-time.html",
+        "https://www.abbvie.com/who-we-are/our-stories/recognizing-the-mental-health-impact-of-chronic-skin-disease.html",
+        "https://www.abbvie.com/who-we-are/our-stories/resilient-reality-the-emotional-toll-of-ovarian-cancer.html",
+        "https://www.abbvie.com/who-we-are/our-stories/science-stories.html",
+        "https://www.abbvie.com/who-we-are/our-stories/serving-communities-stories.html",
+        "https://www.abbvie.com/who-we-are/our-stories/sharpening-focus-on-eye-diseases-caused-by-diabetes.html",
+        "https://www.abbvie.com/who-we-are/our-stories/shedding-light-upon-a-misunderstood-skin-condition-hidradenitis.html",
+        "https://www.abbvie.com/who-we-are/our-stories/shining-light-on-glaucoma-and-eye-health.html",
+        "https://www.abbvie.com/who-we-are/our-stories/specialized-research-in-chaotic-systems-sparcs.html",
+        "https://www.abbvie.com/who-we-are/our-stories/starting-with-a-spark-an-inside-look-at-environmental-sustainability.html",
+        "https://www.abbvie.com/who-we-are/our-stories/striving-for-patient-centricity-down-to-the-packaging.html",
+        "https://www.abbvie.com/who-we-are/our-stories/stronger-together-convergence-minds-and-data.html",
+        "https://www.abbvie.com/who-we-are/our-stories/sustainability-stories.html",
+        "https://www.abbvie.com/who-we-are/our-stories/synthetic-control-arm-end-placebos.html",
+        "https://www.abbvie.com/who-we-are/our-stories/the-blueprint-of-you-unlocking-potential-whole-genome-sequencing.html",
+        "https://www.abbvie.com/who-we-are/our-stories/the-hardest-hit-how-nonprofits-rise-to-challenge-covid-19.html",
+        "https://www.abbvie.com/who-we-are/our-stories/the-math-of-migraine.html",
+        "https://www.abbvie.com/who-we-are/our-stories/the-persistence-lab-podcasts.html",
+        "https://www.abbvie.com/who-we-are/our-stories/the-power-love-in-ibd.html",
+        "https://www.abbvie.com/who-we-are/our-stories/the-story-behind-our-50-billion-rd-investment.html",
+        "https://www.abbvie.com/who-we-are/our-stories/the-value-of-education-from-a-dim-reality-to-a-bright-future.html",
+        "https://www.abbvie.com/who-we-are/our-stories/then-and-now-renaissance-in-blood-cancer-treatment.html",
+        "https://www.abbvie.com/who-we-are/our-stories/they-wont-back-down.html",
+        "https://www.abbvie.com/who-we-are/our-stories/three-factors-that-drove-transformational-integration-abbvie-allergan.html",
+        "https://www.abbvie.com/who-we-are/our-stories/three-ways-ai-is-changing-drug-discovery-at-abbvie.html",
+        "https://www.abbvie.com/who-we-are/our-stories/time-is-hours.html",
+        "https://www.abbvie.com/who-we-are/our-stories/transforming-cancer-care-from-the-inside-out.html",
+        "https://www.abbvie.com/who-we-are/our-stories/trapped-in-your-own-skin.html",
+        "https://www.abbvie.com/who-we-are/our-stories/two-lives-converging-in-the-fight-against-parkinsons.html",
+        "https://www.abbvie.com/who-we-are/our-stories/unlocking-the-next-level-of-protein-degradation.html",
+        "https://www.abbvie.com/who-we-are/our-stories/virology-stories.html",
+        "https://www.abbvie.com/who-we-are/our-stories/voices-abbvie-reflecting-on-decade-impact.html",
+        "https://www.abbvie.com/who-we-are/our-stories/what-does-it-take-to-discover-a-new-medicine.html",
+        "https://www.abbvie.com/who-we-are/our-stories/why-delivering-science-based-targets-are-key-to-sustainable-grow.html",
+        "https://www.abbvie.com/who-we-are/our-stories/why-isnt-medicine-one-size-fits-all.html",
+        "https://www.abbvie.com/who-we-are/our-stories/why-you-cant-wait-with-rheumatoid-arthritis.html",
+        "https://www.abbvie.com/who-we-are/our-stories/working-at-abbvie-stories.html",
+        "https://www.abbvie.com/who-we-are/our-stories/working-parents-2023-finding-comfort-in-community.html"
+      ],
+      "blocks": [
+        {
+          "name": "quote",
+          "instances": [
+            ".quote.cmp-quote, .cmp-quote--default, blockquote.cmp-quote"
+          ]
+        },
+        {
+          "name": "embed",
+          "instances": [
+            ".embed.cmp-embed:not(:has(video-js)):not(:has([data-account]))"
+          ]
+        },
+        {
+          "name": "story-cards",
+          "instances": [
+            ".story-cards, .cmp-story-cards, .cardpagestory-list"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1-hero-image",
+          "name": "Article Hero Image",
+          "selector": ".container.cmp-container-full-width:has(.cmp-image):first-of-type",
+          "style": null,
+          "blocks": [],
+          "defaultContent": [
+            "image"
+          ]
+        },
+        {
+          "id": "section-2-body",
+          "name": "Article Body",
+          "selector": ".container.cmp-container-full-width:has(.cmp-text)",
+          "style": "container medium",
+          "blocks": [
+            "quote",
+            "embed"
+          ],
+          "defaultContent": [
+            "text"
+          ]
+        },
+        {
+          "id": "section-3-related",
+          "name": "Related Articles",
+          "selector": ".container.cmp-container-full-width:has(.story-cards)",
+          "style": "grid container",
+          "blocks": [
+            "story-cards"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "stories-listing",
+      "description": "T10 — Stories Listing / Category Filter (17 pages under /who-we-are/our-stories/): featured hero story card (dark bg), optional secondary teaser, category filter + search tag-utility-nav, story card grid with show-more",
+      "urls": [
+        "https://www.abbvie.com/who-we-are/our-stories.html",
+        "https://www.abbvie.com/who-we-are/our-stories/eye-care-stories.html",
+        "https://www.abbvie.com/who-we-are/our-stories/neuroscience-stories.html",
+        "https://www.abbvie.com/who-we-are/our-stories/oncology-stories.html",
+        "https://www.abbvie.com/who-we-are/our-stories/immunology-stories.html",
+        "https://www.abbvie.com/who-we-are/our-stories/science-stories.html"
+      ],
+      "blocks": [
+        {
+          "name": "story-card",
+          "instances": [
+            ".storyCardInfo, .cardpagestory.cmp-teaser--storyCardInfo"
+          ]
+        },
+        {
+          "name": "teaser",
+          "instances": [
+            ".teaser.cmp-teaser:not(.storyCardInfo):not(.cardpagestory)"
+          ]
+        },
+        {
+          "name": "tag-utility-nav",
+          "instances": [
+            ".tag-utility-nav, .cmp-tag-utility-nav"
+          ]
+        },
+        {
+          "name": "story-cards",
+          "instances": [
+            ".story-cards, .cmp-story-cards, .cardpagestory-list"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1-featured",
+          "name": "Featured Hero Story",
+          "selector": ".container.cmp-container-full-width:has(.storyCardInfo):first-of-type",
+          "style": "dark",
+          "blocks": [
+            "story-card"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2-teaser",
+          "name": "Secondary Featured Article",
+          "selector": ".container.cmp-container-full-width:has(.teaser):not(:has(.storyCardInfo))",
+          "style": null,
+          "blocks": [
+            "teaser"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-3-filter",
+          "name": "Category Filter + Search",
+          "selector": ".container:has(.tag-utility-nav, .cmp-tag-utility-nav)",
+          "style": null,
+          "blocks": [
+            "tag-utility-nav"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-4-grid",
+          "name": "Story Card Grid",
+          "selector": ".container.cmp-container-full-width:has(.story-cards)",
+          "style": "grid container",
+          "blocks": [
+            "story-cards"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "key-facts",
+      "description": "T12 — Stats & Facts Page (key-facts.html only): hero, intro text, report download cards (3-col), key metrics fact-card grid, recognition accordion",
+      "urls": [
+        "https://www.abbvie.com/who-we-are/key-facts.html"
+      ],
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            ".container.overlap-predecessor"
+          ]
+        },
+        {
+          "name": "cards",
+          "instances": [
+            ".cards.cmp-cards, .cmp-card-list"
+          ]
+        },
+        {
+          "name": "fact-card",
+          "instances": [
+            ".dashboardcards, .cmp-dashboardcards"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            ".container > .cmp-container > .grid.grid-row:has(.grid-row__col-with-4)"
+          ]
+        },
+        {
+          "name": "accordion",
+          "instances": [
+            ".accordion.cmp-accordion"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1-hero",
+          "name": "Hero",
+          "selector": ".container.overlap-predecessor",
+          "style": "navy-overlap",
+          "blocks": [
+            "hero"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2-intro",
+          "name": "Intro Text",
+          "selector": ".container:not(.cmp-container-full-width):has(.cmp-text)",
+          "style": "container large",
+          "blocks": [],
+          "defaultContent": [
+            "text"
+          ]
+        },
+        {
+          "id": "section-3-cards",
+          "name": "Report Download Cards",
+          "selector": ".container.cmp-container-full-width:has(.cards, .cmp-card-list)",
+          "style": "grid container",
+          "blocks": [
+            "cards",
+            "columns"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            }
+          ]
+        },
+        {
+          "id": "section-4-metrics",
+          "name": "Key Metrics Grid",
+          "selector": ".container.cmp-container-full-width:has(.dashboardcards)",
+          "style": "grid container",
+          "blocks": [
+            "fact-card"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 3"
+            },
+            {
+              "style": "grid section, grid cols 3"
+            },
+            {
+              "style": "grid section, grid cols 3"
+            },
+            {
+              "style": "grid section, grid cols 3"
+            }
+          ]
+        },
+        {
+          "id": "section-5-accordion",
+          "name": "Recognition Accordion",
+          "selector": ".container.cmp-container-full-width:has(.accordion)",
+          "style": null,
+          "blocks": [
+            "accordion"
+          ],
+          "defaultContent": []
+        }
+      ]
+    },
+    {
+      "name": "rd-sites",
+      "description": "T13 — R&D Sites Page (rd-sites.html only): hero, intro text + key stats, global map visualization (pipeline placeholder), location spotlight card, location details accordion",
+      "urls": [
+        "https://www.abbvie.com/science/rd-sites.html"
+      ],
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            ".container.overlap-predecessor"
+          ]
+        },
+        {
+          "name": "fact-card",
+          "instances": [
+            ".dashboardcards, .cmp-dashboardcards"
+          ]
+        },
+        {
+          "name": "teaser",
+          "instances": [
+            ".teaser.cmp-teaser:not(.storyCardInfo)"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            ".container > .cmp-container > .grid.grid-row:has(.grid-row__col-with-5, .grid-row__col-with-6)"
+          ]
+        },
+        {
+          "name": "accordion",
+          "instances": [
+            ".accordion.cmp-accordion"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1-hero",
+          "name": "Hero",
+          "selector": ".container.overlap-predecessor",
+          "style": "navy-overlap",
+          "blocks": [
+            "hero"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2-intro-stats",
+          "name": "Intro Text + Key Stats",
+          "selector": ".container:not(.overlap-predecessor):not(.cmp-container-full-width):has(.cmp-text, .dashboardcards)",
+          "style": "container large",
+          "blocks": [
+            "fact-card"
+          ],
+          "defaultContent": [
+            "text"
+          ]
+        },
+        {
+          "id": "section-3-map",
+          "name": "Global Map",
+          "selector": ".container.cmp-container-full-width:has([class*=\"map\"])",
+          "style": null,
+          "blocks": [],
+          "defaultContent": []
+        },
+        {
+          "id": "section-4-spotlight",
+          "name": "Location Spotlight",
+          "selector": ".container:not(.cmp-container-full-width):has(.cmp-teaser)",
+          "style": "grid container",
+          "blocks": [
+            "teaser",
+            "columns"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 6"
+            },
+            {
+              "style": "grid section, grid cols 6"
+            }
+          ]
+        },
+        {
+          "id": "section-5-accordion",
+          "name": "Location Details Accordion",
+          "selector": ".container.cmp-container-full-width:has(.accordion)",
+          "style": null,
+          "blocks": [
+            "accordion"
+          ],
+          "defaultContent": []
+        }
+      ]
+    },
+    {
+      "name": "patient-assistance",
+      "description": "T14 — Patient Assistance Pages (7 pages): hero, program intro text, eligibility FAQ accordion, portal CTA linklist/columns, income criteria table (income-criteria.html only), related content cards, optional patient testimonial quote (highlight)",
+      "urls": [
+        "https://www.abbvie.com/patients.html",
+        "https://www.abbvie.com/patients/patient-support.html",
+        "https://www.abbvie.com/patients/patient-support/patient-assistance.html",
+        "https://www.abbvie.com/patients/patient-support/patient-assistance/income-criteria.html",
+        "https://www.abbvie.com/patients/patient-support/patient-assistance/online-application-overview.html",
+        "https://www.abbvie.com/patients/patient-support/patient-assistance/online-application-frequently-asked-questions.html",
+        "https://www.abbvie.com/patients/patient-support/patient-assistance/patient-assistance-frequently-asked-questions.html"
+      ],
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            ".container.overlap-predecessor"
+          ]
+        },
+        {
+          "name": "accordion",
+          "instances": [
+            ".accordion.cmp-accordion"
+          ]
+        },
+        {
+          "name": "linklist",
+          "instances": [
+            ".list.cmp-list, nav.linklist"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            ".container > .cmp-container > .grid.grid-row:has(.grid-row__col-with-6)"
+          ]
+        },
+        {
+          "name": "table",
+          "instances": [
+            "table, .cmp-table"
+          ]
+        },
+        {
+          "name": "story-cards",
+          "instances": [
+            ".story-cards, .cmp-story-cards"
+          ]
+        },
+        {
+          "name": "cards",
+          "instances": [
+            ".cards.cmp-cards"
+          ]
+        },
+        {
+          "name": "quote",
+          "instances": [
+            ".quote.cmp-quote, blockquote.cmp-quote"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1-hero",
+          "name": "Hero",
+          "selector": ".container.overlap-predecessor",
+          "style": "navy-overlap",
+          "blocks": [
+            "hero"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2-intro",
+          "name": "Program Intro Text",
+          "selector": ".container:not(.overlap-predecessor):not(.cmp-container-full-width):has(.cmp-text):not(:has(.accordion))",
+          "style": "container large",
+          "blocks": [],
+          "defaultContent": [
+            "text"
+          ]
+        },
+        {
+          "id": "section-3-faq",
+          "name": "Eligibility FAQ Accordion",
+          "selector": ".container.cmp-container-full-width:has(.accordion)",
+          "style": null,
+          "blocks": [
+            "accordion"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-4-portal",
+          "name": "Portal CTA Links",
+          "selector": ".container:has(.cmp-list, .grid-row__col-with-6):not(:has(.accordion))",
+          "style": "grid container",
+          "blocks": [
+            "linklist",
+            "columns"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 6"
+            },
+            {
+              "style": "grid section, grid cols 6"
+            }
+          ]
+        },
+        {
+          "id": "section-5-table",
+          "name": "Income Criteria Table",
+          "selector": ".container:has(table, .cmp-table)",
+          "style": "container x-large",
+          "blocks": [
+            "table"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-6-related",
+          "name": "Related Content Cards",
+          "selector": ".container.cmp-container-full-width:has(.story-cards, .cards)",
+          "style": "grid container",
+          "blocks": [
+            "story-cards",
+            "cards"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            }
+          ]
+        },
+        {
+          "id": "section-7-quote",
+          "name": "Patient Testimonial Quote",
+          "selector": ".container.cmp-container-full-width:has(.cmp-quote)",
+          "style": "highlight",
+          "blocks": [
+            "quote"
+          ],
+          "defaultContent": []
+        }
+      ]
+    },
+    {
+      "name": "brand-partnership",
+      "description": "T16 — Brand Partnership Pages (3 pages): hero, campaign intro + donation stat (default content), player testimonial quote, partnership cross-link teaser, partner features columns (2-col 50:42), related story cards",
+      "urls": [
+        "https://www.abbvie.com/who-we-are/brand-partnerships.html",
+        "https://www.abbvie.com/who-we-are/brand-partnerships/cubs.html",
+        "https://www.abbvie.com/who-we-are/brand-partnerships/major-league-baseball.html"
+      ],
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            ".container.overlap-predecessor"
+          ]
+        },
+        {
+          "name": "quote",
+          "instances": [
+            ".quote.cmp-quote, blockquote.cmp-quote"
+          ]
+        },
+        {
+          "name": "teaser",
+          "instances": [
+            ".teaser.cmp-teaser:not(.storyCardInfo):not(.cardpagestory)"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            ".container > .cmp-container > .grid.grid-row:has(.grid-row__col-with-5, .grid-row__col-with-6)"
+          ]
+        },
+        {
+          "name": "story-cards",
+          "instances": [
+            ".story-cards, .cmp-story-cards, .cardpagestory-list"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1-hero",
+          "name": "Hero",
+          "selector": ".container.overlap-predecessor",
+          "style": "navy-overlap",
+          "blocks": [
+            "hero"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2-intro",
+          "name": "Campaign Intro + Donation Stat",
+          "selector": ".container:not(.overlap-predecessor):not(.cmp-container-full-width):has(.cmp-text):not(:has(.cmp-quote))",
+          "style": "container medium",
+          "blocks": [],
+          "defaultContent": [
+            "text"
+          ]
+        },
+        {
+          "id": "section-3-quote",
+          "name": "Player Testimonial Quote",
+          "selector": ".container.cmp-container-full-width:has(.cmp-quote)",
+          "style": null,
+          "blocks": [
+            "quote"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-4-cross-link",
+          "name": "Partnership Cross-Link",
+          "selector": ".container:has(.cmp-teaser):not(:has(.storyCardInfo))",
+          "style": "grid container",
+          "blocks": [
+            "teaser",
+            "columns"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 6"
+            },
+            {
+              "style": "grid section, grid cols 6"
+            }
+          ]
+        },
+        {
+          "id": "section-5-partner",
+          "name": "Partner Features",
+          "selector": ".container.cmp-container-full-width:has(.grid-row__col-with-5)",
+          "style": "grid container",
+          "blocks": [
+            "columns"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 6"
+            },
+            {
+              "style": "grid section, grid cols 6"
+            }
+          ]
+        },
+        {
+          "id": "section-6-story-cards",
+          "name": "Related Story Cards",
+          "selector": ".container.cmp-container-full-width:has(.story-cards)",
+          "style": "grid container",
+          "blocks": [
+            "story-cards"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "rich-content",
+      "description": "T17 + T17b — Rich Content / Policy Pages (15 pages) and Disclosure/Data Table Pages (3 pages): optional hero (T17b has no hero), intro/mission text, optional linklist nav, optional columns, optional cards, optional quote (EEDI), optional 3-col columns, optional accordion, awards/recognitions default content",
+      "urls": [
+        "https://www.abbvie.com/who-we-are/our-principles.html",
+        "https://www.abbvie.com/who-we-are/our-principles/equity-equality-inclusion-diversity.html",
+        "https://www.abbvie.com/who-we-are/operating-with-integrity.html",
+        "https://www.abbvie.com/who-we-are/operating-with-integrity/transparency-in-payment/allergan-ous-disclosures.html",
+        "https://www.abbvie.com/who-we-are/operating-with-integrity/transparency-in-payment/abbvie-inquiry.html",
+        "https://www.abbvie.com/who-we-are/policies-disclosures.html"
+      ],
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            ".container.overlap-predecessor"
+          ]
+        },
+        {
+          "name": "linklist",
+          "instances": [
+            ".list.cmp-list, nav.linklist"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            ".container > .cmp-container > .grid.grid-row:has(.grid-row__col-with-4, .grid-row__col-with-6)"
+          ]
+        },
+        {
+          "name": "cards",
+          "instances": [
+            ".cards.cmp-cards"
+          ]
+        },
+        {
+          "name": "quote",
+          "instances": [
+            ".quote.cmp-quote, blockquote.cmp-quote"
+          ]
+        },
+        {
+          "name": "accordion",
+          "instances": [
+            ".accordion.cmp-accordion"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1-hero",
+          "name": "Hero (T17 only)",
+          "selector": ".container.overlap-predecessor",
+          "style": "navy-overlap",
+          "blocks": [
+            "hero"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2-intro",
+          "name": "Intro / Mission Text",
+          "selector": ".container:not(.overlap-predecessor):not(.cmp-container-full-width):has(.cmp-text):not(:has(.accordion)):not(:has(.cmp-list)):first-of-type",
+          "style": null,
+          "blocks": [],
+          "defaultContent": [
+            "text"
+          ]
+        },
+        {
+          "id": "section-3-linklist",
+          "name": "Related Topics Nav",
+          "selector": ".container.cmp-container-full-width:has(.cmp-list)",
+          "style": null,
+          "blocks": [
+            "linklist"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-4-columns",
+          "name": "Content Columns image+text",
+          "selector": ".container.cmp-container-full-width:has(.grid-row__col-with-6):not(:has(.accordion)):not(:has(.cmp-quote))",
+          "style": "grid container",
+          "blocks": [
+            "columns"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 6"
+            },
+            {
+              "style": "grid section, grid cols 6"
+            }
+          ]
+        },
+        {
+          "id": "section-5-cards",
+          "name": "Text Action Cards",
+          "selector": ".container.cmp-container-full-width:has(.cards, .cmp-card-list)",
+          "style": "grid container",
+          "blocks": [
+            "cards"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            }
+          ]
+        },
+        {
+          "id": "section-6-quote",
+          "name": "Quote with Attribution",
+          "selector": ".container.cmp-container-full-width:has(.cmp-quote)",
+          "style": null,
+          "blocks": [
+            "quote"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-7-3col",
+          "name": "3-Col Text Blocks",
+          "selector": ".container.cmp-container-full-width:has(.grid-row__col-with-4)",
+          "style": "grid container",
+          "blocks": [
+            "columns"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            }
+          ]
+        },
+        {
+          "id": "section-8-accordion",
+          "name": "Topic / Disclosure Accordion",
+          "selector": ".container.cmp-container-full-width:has(.accordion)",
+          "style": null,
+          "blocks": [
+            "accordion"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-9-awards",
+          "name": "Awards / Recognitions",
+          "selector": ".container.cmp-container-full-width:last-of-type:has(.cmp-text):not(:has(.accordion))",
+          "style": null,
+          "blocks": [],
+          "defaultContent": [
+            "text"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sub-section-hub",
+      "description": "T05 — Sub-Section Hub Pages (5 pages under /science/): hero, intro text (container large), optional linklist nav, optional 2-col or 3-col columns, optional cards, optional accordion, optional video, careers CTA (highlight)",
+      "urls": [
+        "https://www.abbvie.com/science/partner-with-us.html",
+        "https://www.abbvie.com/science/independent-educational-grants.html",
+        "https://www.abbvie.com/science/abbvie-research-collaborative-endometrosis.html",
+        "https://www.abbvie.com/science/abbvie-research-collaborative-migraine.html",
+        "https://www.abbvie.com/science/the-case-for-big-bets.html"
+      ],
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            ".container.overlap-predecessor"
+          ]
+        },
+        {
+          "name": "linklist",
+          "instances": [
+            ".list.cmp-list, nav.linklist, .cmp-linklist"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            ".container > .cmp-container > .grid.grid-row:has(.grid-row__col-with-4, .grid-row__col-with-5, .grid-row__col-with-6)"
+          ]
+        },
+        {
+          "name": "accordion",
+          "instances": [
+            ".accordion.cmp-accordion"
+          ]
+        },
+        {
+          "name": "cards",
+          "instances": [
+            ".cards.cmp-cards, .cmp-card-list"
+          ]
+        },
+        {
+          "name": "teaser",
+          "instances": [
+            ".teaser.cmp-teaser:not(.storyCardInfo):not(.cardpagestory)"
+          ]
+        },
+        {
+          "name": "brightcove-video",
+          "instances": [
+            ".cmp-video.cmp-video-full-width, video-js[data-account]"
+          ]
+        },
+        {
+          "name": "video",
+          "instances": [
+            ".embed.cmp-embed:not(:has(video-js)):not(:has([data-account]))"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1-hero",
+          "name": "Hero",
+          "selector": ".container.overlap-predecessor",
+          "style": "navy-overlap",
+          "blocks": [
+            "hero"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2-intro",
+          "name": "Intro Text",
+          "selector": ".container:not(.overlap-predecessor):not(.cmp-container-full-width):has(.cmp-text):first-of-type",
+          "style": "container large",
+          "blocks": [],
+          "defaultContent": [
+            "text"
+          ]
+        },
+        {
+          "id": "section-3-linklist",
+          "name": "Related Topics Nav",
+          "selector": ".container.cmp-container-full-width:has(.cmp-list)",
+          "style": null,
+          "blocks": [
+            "linklist"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-4-columns",
+          "name": "Content Columns (2-col)",
+          "selector": ".container.cmp-container-full-width:has(.grid-row__col-with-6):not(:has(.accordion))",
+          "style": "grid container",
+          "blocks": [
+            "columns"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 6"
+            },
+            {
+              "style": "grid section, grid cols 6"
+            }
+          ]
+        },
+        {
+          "id": "section-5-3col",
+          "name": "3-Col Content",
+          "selector": ".container.cmp-container-full-width:has(.grid-row__col-with-4):not(:has(.accordion))",
+          "style": "grid container",
+          "blocks": [
+            "columns"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            }
+          ]
+        },
+        {
+          "id": "section-6-cards",
+          "name": "Cards",
+          "selector": ".container.cmp-container-full-width:has(.cards, .cmp-card-list)",
+          "style": null,
+          "blocks": [
+            "cards"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-7-accordion",
+          "name": "Accordion",
+          "selector": ".container.cmp-container-full-width:has(.accordion)",
+          "style": null,
+          "blocks": [
+            "accordion"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-8-video",
+          "name": "Video",
+          "selector": ".container.cmp-container-full-width:has(.cmp-video, .cmp-embed)",
+          "style": null,
+          "blocks": [
+            "brightcove-video",
+            "video"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-9-cta",
+          "name": "Careers CTA",
+          "selector": ".container.cmp-container-full-width.medium-radius:last-of-type",
+          "style": "highlight",
+          "blocks": [
+            "columns"
+          ],
+          "defaultContent": []
+        }
+      ]
+    },
+    {
+      "name": "publications",
+      "description": "T06 — Publications Page (science/publications.html): optional hero, intro text (container large), optional linklist nav, publications search/filter component, optional related 3-col cards",
+      "urls": [
+        "https://www.abbvie.com/science/publications.html"
+      ],
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            ".container.overlap-predecessor"
+          ]
+        },
+        {
+          "name": "linklist",
+          "instances": [
+            ".list.cmp-list, nav.linklist, .cmp-linklist"
+          ]
+        },
+        {
+          "name": "press-releases",
+          "instances": [
+            ".cmp-press-releases, .press-releases, [class*=\"publication\"], [class*=\"search-results\"]"
+          ]
+        },
+        {
+          "name": "cards",
+          "instances": [
+            ".cards.cmp-cards, .cmp-card-list"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            ".container > .cmp-container > .grid.grid-row:has(.grid-row__col-with-4)"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1-hero",
+          "name": "Hero",
+          "selector": ".container.overlap-predecessor",
+          "style": "navy-overlap",
+          "blocks": [
+            "hero"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2-intro",
+          "name": "Intro Text",
+          "selector": ".container:not(.overlap-predecessor):not(.cmp-container-full-width):has(.cmp-text)",
+          "style": "container large",
+          "blocks": [],
+          "defaultContent": [
+            "text"
+          ]
+        },
+        {
+          "id": "section-3-linklist",
+          "name": "Topic Nav",
+          "selector": ".container.cmp-container-full-width:has(.cmp-list)",
+          "style": null,
+          "blocks": [
+            "linklist"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-4-publications",
+          "name": "Publications Search",
+          "selector": ".container.cmp-container-full-width:has(.cmp-press-releases, [class*=\"publication\"], [class*=\"search\"])",
+          "style": null,
+          "blocks": [
+            "press-releases"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-5-related",
+          "name": "Related Cards",
+          "selector": ".container.cmp-container-full-width:has(.cards, .cmp-card-list)",
+          "style": "grid container",
+          "blocks": [
+            "cards",
+            "columns"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "science-hub",
+      "description": "T07 — Science Our-People Hub Pages (7 pages under /science/our-people/): hero, intro text (container large), optional linklist nav, optional video/podcast, optional tabs, optional story-card carousel, optional 3-col columns",
+      "urls": [
+        "https://www.abbvie.com/science/our-people.html",
+        "https://www.abbvie.com/science/our-people/community-of-science.html",
+        "https://www.abbvie.com/science/our-people/science-in-60-seconds.html",
+        "https://www.abbvie.com/science/our-people/discovery-files.html",
+        "https://www.abbvie.com/science/our-people/lab-of-the-future.html",
+        "https://www.abbvie.com/science/our-people/lab-to-life.html",
+        "https://www.abbvie.com/science/our-people/behind-the-science.html"
+      ],
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            ".container.overlap-predecessor"
+          ]
+        },
+        {
+          "name": "linklist",
+          "instances": [
+            ".list.cmp-list, nav.linklist, .cmp-linklist"
+          ]
+        },
+        {
+          "name": "brightcove-video",
+          "instances": [
+            ".cmp-video.cmp-video-full-width, video-js[data-account]"
+          ]
+        },
+        {
+          "name": "brightcove-podcast-player",
+          "instances": [
+            ".cmp-podcast, .brightcove-podcast-player, [class*=\"podcast\"]"
+          ]
+        },
+        {
+          "name": "tabs",
+          "instances": [
+            ".tabs.cmp-tabs"
+          ]
+        },
+        {
+          "name": "carousel",
+          "instances": [
+            ".carousel.cmp-carousel"
+          ]
+        },
+        {
+          "name": "story-card",
+          "instances": [
+            ".storyCardInfo, .cardpagestory.cmp-teaser--storyCardInfo"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            ".container > .cmp-container > .grid.grid-row:has(.grid-row__col-with-4, .grid-row__col-with-6)"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1-hero",
+          "name": "Hero",
+          "selector": ".container.overlap-predecessor",
+          "style": "navy-overlap",
+          "blocks": [
+            "hero"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2-intro",
+          "name": "Intro Text",
+          "selector": ".container:not(.overlap-predecessor):not(.cmp-container-full-width):has(.cmp-text):not(:has(.cmp-video)):first-of-type",
+          "style": "container large",
+          "blocks": [],
+          "defaultContent": [
+            "text"
+          ]
+        },
+        {
+          "id": "section-3-linklist",
+          "name": "Topic Nav",
+          "selector": ".container.cmp-container-full-width:has(.cmp-list)",
+          "style": null,
+          "blocks": [
+            "linklist"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-4-video",
+          "name": "Video / Podcast",
+          "selector": ".container.cmp-container-full-width:has(.cmp-video, [class*=\"podcast\"])",
+          "style": null,
+          "blocks": [
+            "brightcove-video",
+            "brightcove-podcast-player"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-5-tabs",
+          "name": "Tabs",
+          "selector": ".container.cmp-container-full-width:has(.cmp-tabs)",
+          "style": null,
+          "blocks": [
+            "tabs"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-6-carousel",
+          "name": "Story Carousel",
+          "selector": ".container.cmp-container-full-width:has(.carousel)",
+          "style": null,
+          "blocks": [
+            "carousel",
+            "story-card"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-7-columns",
+          "name": "Content Columns",
+          "selector": ".container.cmp-container-full-width:has(.grid-row__col-with-4)",
+          "style": "grid container",
+          "blocks": [
+            "columns"
+          ],
+          "defaultContent": [],
+          "childSections": [
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            },
+            {
+              "style": "grid section, grid cols 4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "pipeline",
+      "description": "T08 — Pipeline Page (science/pipeline.html): hero, intro text (container large), optional phase filter linklist/tabs, pipeline data table (container x-large), optional disclosure accordion",
+      "urls": [
+        "https://www.abbvie.com/science/pipeline.html"
+      ],
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            ".container.overlap-predecessor"
+          ]
+        },
+        {
+          "name": "linklist",
+          "instances": [
+            ".list.cmp-list, nav.linklist, .cmp-linklist"
+          ]
+        },
+        {
+          "name": "tabs",
+          "instances": [
+            ".tabs.cmp-tabs"
+          ]
+        },
+        {
+          "name": "table",
+          "instances": [
+            "table, .cmp-table, [class*=\"pipeline-table\"]"
+          ]
+        },
+        {
+          "name": "accordion",
+          "instances": [
+            ".accordion.cmp-accordion"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            ".container > .cmp-container > .grid.grid-row:has(.grid-row__col-with-4, .grid-row__col-with-6)"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1-hero",
+          "name": "Hero",
+          "selector": ".container.overlap-predecessor",
+          "style": "navy-overlap",
+          "blocks": [
+            "hero"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2-intro",
+          "name": "Intro Text",
+          "selector": ".container:not(.overlap-predecessor):not(.cmp-container-full-width):has(.cmp-text)",
+          "style": "container large",
+          "blocks": [],
+          "defaultContent": [
+            "text"
+          ]
+        },
+        {
+          "id": "section-3-filter",
+          "name": "Phase Filter",
+          "selector": ".container.cmp-container-full-width:has(.cmp-list, .cmp-tabs):not(:has(table))",
+          "style": null,
+          "blocks": [
+            "linklist",
+            "tabs"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-4-table",
+          "name": "Pipeline Table",
+          "selector": ".container.cmp-container-full-width:has(table, .cmp-table, [class*=\"pipeline\"])",
+          "style": "container x-large",
+          "blocks": [
+            "table"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-5-accordion",
+          "name": "Notes / Disclosures",
+          "selector": ".container.cmp-container-full-width:has(.accordion)",
+          "style": null,
+          "blocks": [
+            "accordion"
+          ],
+          "defaultContent": []
+        }
+      ]
+    }
+  ]
+}

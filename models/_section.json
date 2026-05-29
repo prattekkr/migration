@@ -219,7 +219,6 @@
         "hero",
         "navigation-content",
         "stock-ticker",
-
         "form",
         "embed-adaptive-form",
         "image",
@@ -245,8 +244,12 @@
         "pipeline-utility-nav",
         "hero-container",
         "teaser",
+        "search-results",
+        "pipeline",
+        "product-listing",
         "eyebrow-text",
-        "pipeline"
+        "pipeline",
+        "custom-embed"
       ]
     },
     {
@@ -292,7 +295,10 @@
         "pipeline-utility-nav",
         "teaser",
         "editorial-feed",
-        "eyebrow-text"
+        "search-results",
+        "product-listing",
+        "eyebrow-text",
+        "custom-embed"
       ]
     },
     {

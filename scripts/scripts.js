@@ -16,6 +16,8 @@ import {
 import {
   initFooterReturnScrollOnHistoryRestore,
   shouldRunOutsideAuthorEdit,
+  isExternalLink,
+  isInUniversalEditor,
 } from './utils.js';
 /**
  * Moves all the attributes from a given elmenet to another given element.
@@ -227,6 +229,22 @@ function autolinkModals(doc) {
         `${window.hlx.codeBasePath}/blocks/modal/modal.js`
       );
       openModal(origin.href);
+    }
+
+    // ── Warn on Departure ──
+    // Only trigger for EXTERNAL http/https links
+    // Internal links (same origin) navigate normally — no modal
+    if (origin && isExternalLink(origin.href)) {
+      e.preventDefault();
+      try {
+        const { default: initWarnOnDeparture } = await import(
+          `${window.hlx.codeBasePath}/scripts/warn-on-departure/warn-on-departure.js`
+        );
+        await initWarnOnDeparture(origin);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error('[delayed] Warn on Departure failed to initialise:', err);
+      }
     }
   });
 }
@@ -557,6 +575,22 @@ async function loadEager(doc) {
 
 async function loadLazy(doc) {
   autolinkModals(doc);
+
+  // ── Warn on Arrival ──
+  // Only import module if warnarrivalmodalpath is set on this page.
+  // getMetadata() reads <meta name="warnarrivalmodalpath"> from page <head>.
+  // EDS lowercases all metadata keys — key is 'warnarrivalmodalpath'.
+  // Avoids unnecessary JS download on pages with no arrival modal configured.
+  // .then() — non-blocking, does not delay loadSections/loadHeader/loadFooter.
+  const warnArrivalModalPath = getMetadata('warnarrivalmodalpath');
+  if (warnArrivalModalPath && !isInUniversalEditor()) {
+    import(`${window.hlx.codeBasePath}/scripts/warn-on-arrival/warn-on-arrival.js`)
+      .then(({ default: initWarnOnArrival }) => initWarnOnArrival())
+      .catch((err) => {
+        // eslint-disable-next-line no-console
+        console.error('[scripts] Warn on Arrival failed to initialise:', err);
+      });
+  }
 
   const main = doc.querySelector('main');
   await loadSections(main);

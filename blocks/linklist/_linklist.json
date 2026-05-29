@@ -672,11 +672,51 @@
           "value": "",
           "description": "Path to a modal fragment (e.g. /modals/warning).",
           "condition": {
-            "===": [
+            "and": [
               {
-                "var": "enableConfirmationModal"
+                "===": [
+                  {
+                    "var": "enableConfirmationModal"
+                  },
+                  true
+                ]
               },
-              true
+              {
+                "===": [
+                  {
+                    "var": "confirmationModalType"
+                  },
+                  "standard"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "warnOnDeparturePopupFragmentPath",
+          "label": "Warn on Departure Modal Fragment",
+          "value": "",
+          "description": "Path to the Fragment used for the departure warning popup.",
+          "condition": {
+            "and": [
+              {
+                "===": [
+                  {
+                    "var": "enableConfirmationModal"
+                  },
+                  true
+                ]
+              },
+              {
+                "===": [
+                  {
+                    "var": "confirmationModalType"
+                  },
+                  "exit-modal"
+                ]
+              }
             ]
           }
         },

@@ -108,12 +108,6 @@ export default async function decorate(block) {
     }
   });
 
-  // No Results message (i18n)
-  const noResultsText = placeholders?.searchNoResults || 'No Results';
-  const noResults = document.createElement('div');
-  noResults.classList.add('search-input-no-results');
-  noResults.textContent = noResultsText;
-
   // Form submit handler — validation, sanitization, navigation
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -141,7 +135,7 @@ export default async function decorate(block) {
 
   inputWrapper.append(input, label, alertBox);
   form.append(inputWrapper, charsetInput);
-  block.append(form, noResults);
+  block.append(form);
 
   // Responsive placeholder swap
   const mediaQuery = window.matchMedia('(max-width: 743px)');

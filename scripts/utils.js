@@ -6,6 +6,7 @@ const INTERNAL_EXTERNAL_LINK_WHITELIST = [
 export function isExternalLink(url) {
   try {
     const linkUrl = new URL(url, window.location.origin);
+    if (linkUrl.protocol === 'mailto:' || linkUrl.protocol === 'tel:') return false;
     return (
       linkUrl.origin !== window.location.origin
       && !url.startsWith('/')
@@ -29,6 +30,16 @@ export default function decorateExternalLinksUtility(container) {
 
 export function isEditor() {
   return window.document.querySelector('.adobe-ue-edit') !== null;
+}
+
+export function isEDSPage() {
+  const { hostname } = window.location;
+  return hostname.endsWith('.aem.live') || hostname.endsWith('.aem.page');
+}
+
+export function isLocal() {
+  const { hostname } = window.location;
+  return hostname === 'localhost' || hostname === '127.0.0.1';
 }
 
 export function isAuthorEnvironment() {
@@ -90,6 +101,10 @@ export function applyCommonProps(block, startIndex) {
   [analyticsRow, langRow, idRow]
     .filter(Boolean)
     .forEach((row) => row.remove());
+}
+
+export function isInUniversalEditor() {
+  return window.self !== window.top;
 }
 
 export function isUEEditMode() {
@@ -449,4 +464,30 @@ export function registerFooterSameTabNavigationMark(footerBlock) {
     },
     true,
   );
+}
+
+export function addGridSectionsWrapper(container) {
+  let group = [];
+  let currentContainer = null;
+
+  const flush = () => {
+    if (!group.length) return;
+    if (currentContainer) {
+      group.forEach((s) => currentContainer.append(s));
+    }
+    group = [];
+    currentContainer = null;
+  };
+
+  [...container.children].forEach((child) => {
+    if (child.matches('.section.grid-container')) {
+      flush();
+      currentContainer = child;
+    } else if (child.matches('.section[class*="grid-cols-"]')) {
+      group.push(child);
+    } else {
+      flush();
+    }
+  });
+  flush();
 }

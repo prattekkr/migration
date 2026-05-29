@@ -41,10 +41,6 @@
   inset: 0;
 }
 
-.video .video-overlay > *,
-.video.video-minimal .video-overlay > * {
-  width: 100%;
-}
 
 .video.video-stage .video-media > * {
   position: absolute;
@@ -83,35 +79,48 @@
   z-index: var(--corp-z-index-raised);
 }
 
-.video.video-stage .video-overlay {
+:where(.video-stage[data-embed-loaded='true']) .video-shell::before {
+  display: none;
+}
+
+/* Overlay background via ::before on shell */
+.video-stage .video-shell::before {
+  content: "";
   position: absolute;
   inset: 0;
+  z-index: var(--corp-z-index-raised);
+  pointer-events: none;
+}
+
+:where(.video-stage) .video-shell.video-overlay-navy::before {
+  background: var(--color-overlay-navy);
+}
+
+:where(.video-stage) .video-shell.video-overlay-gray::before {
+  background: var(--color-overlay-gray);
+}
+
+:where(.video-stage) .video-shell.video-overlay-purple::before {
+  background: var(--color-overlay-purple);
+}
+
+/* Overlay content container — centered, responsive width */
+.video.video-stage .video-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: var(--corp-z-index-dropdown);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--corp-spacing-2);
   text-align: center;
+  padding: var(--corp-spacing-2);
 }
 
-/* Overlay color variants - lower specificity with :where() */
-:where(.video).video-stage .video-overlay-navy,
-:where(.video).video-stage .video-overlay-gray,
-:where(.video).video-stage .video-overlay-purple {
-  background: var(--color-blue-gray);
-}
-
-:where(.video).video-stage.has-poster .video-overlay-navy {
-  background: var(--color-overlay-navy);
-}
-
-:where(.video).video-stage.has-poster .video-overlay-gray {
-  background: var(--color-overlay-gray);
-}
-
-:where(.video).video-stage.has-poster .video-overlay-purple {
-  background: var(--color-overlay-purple);
+.video.video-stage:where(.video-minimal) .video-overlay {
+  width: 100%;
 }
 
 /* ── Overlay title ───────────────────────────────────────────────────────── */
@@ -145,6 +154,12 @@ p.video-overlay-title {
   line-height: var(--corp-typography-lineheight-body-sm);
   font-family: var(--body-font-family);
 } */
+
+@media (--bp-mobile) {
+  .video.video-stage .video-overlay {
+    width: 100%;
+  }
+}
 
 @media (--bp-tablet) {
   .video.video-stage .video-overlay-title {
@@ -230,15 +245,15 @@ p.video-overlay-title {
 .video.video-stage .video-play-icon {
   display: inline-flex;
   align-items: center;
-  flex-shrink: 0;   
+  flex-shrink: 0;
 }
 
 .video .video-play-icon::before {
   color: inherit;
   font-family: var(--corp-icon-font-family);
   margin-left: var(--corp-spacing-3);
-  margin-right: var(--corp-spacing-12); 
-  transform: scale(.8);  
+  margin-right: var(--corp-spacing-12);
+  transform: scale(.8);
   transition: color .1s ease;
 }
 
@@ -252,7 +267,7 @@ p.video-overlay-title {
   line-height: var(--corp-typography-lineheight-body-sm);
   font-size: var(--corp-font-size-16);
   font-family: var(--roboto-bold-font-family);
-  letter-spacing: var(--corp-typography-letterspacing-wide-md);
+  letter-spacing: var(--corp-typography-letterspacing-wide-em);
 }
 
 .video.video-stage:where(.video-minimal) .video-play-label {
@@ -393,6 +408,11 @@ p.video-overlay-title {
 
   .video.video-stage .video-overlay {
     padding: var(--corp-spacing-5);
+     width: 80%;
+  }
+
+  .video.video-stage:where(.video-minimal) .video-overlay {
+      width: 100%;
   }
 
   .video.video-stage .video-play-btn {
@@ -403,10 +423,6 @@ p.video-overlay-title {
   .video.video-stage .video-play-time {
     font-size: var(--corp-font-size-14);
   }
-
-    .video .video-overlay > * {
-        width: 80%;
-    }
 
   .video.video-stage .video-content-title {
     font-size: var(--corp-font-size-18);
@@ -428,9 +444,13 @@ p.video-overlay-title {
      padding: 0;
   }
 
-    .video .video-overlay > * {
+    .video.video-stage .video-overlay {
         width: 60%;
     }
+
+   .video.video-stage:where(.video-minimal) .video-overlay {
+     width: 100%;
+   }
 
   .video.video-stage .video-content-title {
     font-size: var(--corp-font-size-20);
@@ -463,8 +483,12 @@ p.video-overlay-title {
 }
 
 @media (--bp-wide) {
-    .video .video-overlay > * {
+    .video.video-stage .video-overlay {
         width: 50%;
+    }
+
+    .video.video-stage:where(.video-minimal) .video-overlay {
+        width: 100%;
     }
 
     .video.video-stage .video-overlay-title {

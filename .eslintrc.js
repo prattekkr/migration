@@ -69,5 +69,11 @@ module.exports = {
         'xwalk/no-orphan-collapsible-fields': 'off',
       },
     },
+    {
+      files: ['component-definition.json'],
+      rules: {
+        'xwalk/no-custom-resource-types': 'off',
+      },
+    },
   ],
 };

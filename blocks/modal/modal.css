@@ -1,91 +1,96 @@
-/* Todo: disabled eslint check for this block, because
-this  blck has not been developed  yet, We will revisit 
-this during block development  or enhancement */
-
-/* stylelint-disable */
+.modal {
+  --modal-backdrop-color: rgb(19 19 19 / 75%);
+  --modal-background: rgb(0, 0, 0, 0.5); /* stylelint-disable */
+  --modal-z-index: 1000;
+  --modal-content-max-width: 88rem;
+}
 
 body.modal-open {
   overflow: hidden;
 }
 
 .modal dialog::backdrop {
-  background-color: rgb(19 19 19 / 75%);
+  background-color: var(--modal-backdrop-color);
 }
 
-.modal dialog {
-  overscroll-behavior: none;
-  overflow-y: hidden;
-  width: calc(100vw - 48px);
-  max-width: 900px;
-  max-height: calc(100dvh - (2 * var(--header-height)));
-  padding: 0;
-  border: 1px solid var(--corp-color-text-strong);
-}
-
-.modal dialog .modal-content {
-  box-sizing: border-box;
-  overflow-y: auto;
-  overscroll-behavior: none;
-  width: 100%;
-  max-height: calc(100dvh - (2 * var(--header-height)) - 48px);
-  padding: 24px;
-  padding-top: 0;
-  margin-top: 44px;
-}
-
-@media (width >= 900px) {
-  .modal dialog {
-    width: calc(100vw - 64px);
-  }
-  
-  .modal dialog .modal-content {
-    max-height: calc(100dvh - (2 * var(--header-height)) - 64px);
-    padding: 32px;
-    padding-top: 0;
-  }
-}
-
-.modal .close-button {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 44px;
-  height: 44px;
-  margin: 0;
-  border: none;
-  border-radius: 0;
-  padding: 0;
-  background-color: transparent;
-  color: var(--corp-color-text-default);
-  line-height: 0;
-}
-
-.modal .close-button .icon-close {
-  content: '';
-  width: 24px;
-  height: 24px;
-}
-
-
-.modal .close-button:where(.icon-close)::before,
-.modal .close-button:where(.icon-close)::after {
-  content: '';
-  box-sizing: border-box;
+dialog {
+  position: fixed;
+  inset: 0;
+  z-index: var(--modal-z-index);
   display: block;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(45deg);
-  width: 24px;
-  height: 2px;
-  border-radius: 2px;
-  background-color: var(--corp-color-text-default);
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  padding: var(--corp-spacing-20) 0;
+  background: var(--modal-background);
+  border: none;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
-.modal .close-button .icon-close::after {
-  transform: translate(-50%, -50%) rotate(-45deg);
+dialog[open] {
+  overflow: scroll;
 }
 
-.modal dialog .section {
-  padding: 0;
+.modal-content {
+  position: relative;
+  background: transparent;
+  width: 100%;
+  max-width: var(--modal-content-max-width);
+  overflow: hidden;
+}
+
+.modal-content .cta.popup-close {
+  float: right;
+}
+
+.modal-content .grid-container {
+  background-color: var(--color-white);
+}
+
+.modal-content :where(.cta.popup-close):focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+/** Only for Mobile */
+@media (--bp-mobile-max) {
+  .modal-content .grid-container {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: var(--corp-spacing-20);
+    padding-right: var(--corp-spacing-20);
+  }
+
+  .modal-content .grid-container:first-child {
+    padding-top: var(--corp-spacing-20);
+  }
+
+  .modal-content .grid-container:last-child {
+    padding-bottom: var(--corp-spacing-32);
+  }
+
+  .modal-content .grid-section .text-container {
+    margin-bottom: 0;
+    padding-bottom: var(--corp-spacing-32);
+  }
+
+  .section.grid-container {
+    row-gap: 0;
+  }
+}
+
+.modal-content .grid-container:last-child {
+  margin-top: calc(-1 * var(--px-to-rem));
+}
+
+@media (--bp-tablet) {
+  dialog {
+    padding-top: var(--corp-spacing-300);
+    padding-bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }

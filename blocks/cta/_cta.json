@@ -161,7 +161,13 @@
           "value": false,
           "valueType": "boolean"
         },
-
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "warnOnDeparturePopupFragmentPath",
+          "label": "Warn on Departure Modal Fragment",
+          "description": "Path to the Fragment used for the departure warning popup."
+        },
         {
           "component": "tab",
           "label": "Styles",

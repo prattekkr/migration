@@ -12,6 +12,8 @@
 
 /* Media Query Breakpoints (min-width, mobile-first)
    Mobile: 0 – 743px | Tablet: 744px+ | Desktop: 1024px+ | Wide: 1440px+ */
+@custom-media --bp-mobile (min-width: 390px);
+@custom-media --bp-mobile-max (max-width: 743px);
 @custom-media --bp-tablet (min-width: 744px);
 @custom-media --bp-desktop (min-width: 1024px);
 @custom-media --bp-wide (min-width: 1440px);
@@ -110,6 +112,7 @@
     /* Granular font sizes */
     --corp-font-size-6: 0.6rem;
     --corp-font-size-7: 0.7rem;
+    --corp-font-size-8: 0.8rem;
     --corp-font-size-10: 1rem;
 
     --corp-font-size-11: 1.1rem;
@@ -165,6 +168,7 @@
 
     /* Font Weight */
     --corp-font-weight-light: 300;
+    --corp-font-weight-lighter: 350;
     --corp-font-weight-regular: 400;
     --corp-font-weight-medium: 500;
     --corp-font-weight-semibold: 600;
@@ -226,6 +230,7 @@
     --corp-spacing-41: 4.1rem;
     --corp-spacing-42: 4.2rem;
     --corp-spacing-44: 4.4rem;
+    --corp-spacing-45: 4.5rem;
     --corp-spacing-46: 4.6rem;
     --corp-spacing-48: 4.8rem;
     /* --corp-spacing-49: 4.9rem; */
@@ -314,6 +319,7 @@
     --border-width-hairline: 0.05rem;
     --border-width-thin: 0.1rem;
     --border-width-thick: 0.2rem;
+    --border-width-medium: 0.3rem;
     --border-width-accent: 0.5rem;
     --border-radius-xl: 3.2rem;
     --border-radius-subtle: 2.4rem;
@@ -362,6 +368,7 @@
     --hero-image-container-height: 21.6rem;
     --hero-landing-container-height: 41.8rem;
     --hero-overlap: -4.8rem;
+    --hero-home-overlap: -9.6rem;
 
     /* Letter spacing keeping different unit as its scalling with font size*/
     --corp-typography-letterspacing-tight-xs: -0.3rem;
@@ -427,6 +434,7 @@
     --corp-form-border-color: #ccc;
     --corp-form-border-hover-color: #000;
     --corp-form-background-hover-color: #f3f3f3;
+    --corp-form-background-hover-alt-color: #f2f2f2;
     --corp-form-primary-color: #7c3098;
     --corp-form-secondary-color: #80379b;
     --corp-form-secondary-hover-color: #6d2f85;
@@ -469,6 +477,7 @@
         --hero-landing-container-height: 57.6rem;
         --hero-overlap: -6.4rem;
         --border-radius-xl: 6.4rem;
+        --hero-home-overlap: -12.8rem;
     }
 }
 
@@ -482,6 +491,7 @@
         --hero-landing-container-height: 81rem;
         --hero-overlap: -11.2rem;
         --border-radius-xl: 8rem;
+        --hero-home-overlap: -27.6rem;
     }
 }
 

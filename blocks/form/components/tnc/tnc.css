@@ -1,0 +1,9 @@
+.tnc-text-decoration {
+  color: #071d49;
+  max-height: 160px;  
+  overflow: auto;
+}
+
+.form .field-wrapper.tnc-text-decoration {
+  margin-bottom: 0;
+}

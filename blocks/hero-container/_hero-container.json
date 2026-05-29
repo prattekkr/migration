@@ -26,13 +26,16 @@
             "template": {
               "name": "Hero Container Item",
               "model": "hero-container-item",
+              "backgroundType": "image",
               "image": "",
               "imageAlt": "",
-              "videoUrl": "",
+              "accountId": "2157889325001",
+              "playerId": "",
+              "videoId": "",
               "text": "",
-              "bgColor": "",
               "ctaLabel": "",
-              "ctaUrl": ""
+              "ctaUrl": "",
+              "ctaAltText": ""
             }
           }
         }
@@ -44,64 +47,21 @@
       "id": "hero-container",
       "fields": [
         {
-          "component": "multiselect",
-          "name": "classes",
-          "value": "",
-          "label": "Style",
-          "description": "Select a height variant and optional style. Height variants are mutually exclusive — select only one.",
-          "valueType": "string",
-          "options": [
-            {
-              "name": "Landing (full-bleed, extra tall + bottom padding)",
-              "value": "landing"
-            },
-            {
-              "name": "Height: Short",
-              "value": "height-short"
-            },
-            {
-              "name": "Height: Default",
-              "value": "height-default"
-            },
-            {
-              "name": "Height: Tall",
-              "value": "height-tall"
-            },
-            {
-              "name": "Height: XX-Tall",
-              "value": "height-xx-tall"
-            }
-          ]
+          "component": "tab",
+          "label": "Styles",
+          "name": "styles"
         },
         {
-          "component": "select",
-          "name": "classes_overlayHeight",
+          "component": "ngaem:dynamic-picklist",
+          "name": "classes_customDynamicClass",
           "value": "",
-          "label": "Overlay Content Height",
-          "description": "Sets the minimum height of the overlay content section independently from the hero image height.",
+          "label": "Select Block Styles",
           "valueType": "string",
-          "options": [
-            {
-              "name": "Default (content height)",
-              "value": ""
-            },
-            {
-              "name": "Short",
-              "value": "overlay-height-short"
-            },
-            {
-              "name": "Default Height",
-              "value": "overlay-height-default"
-            },
-            {
-              "name": "Tall",
-              "value": "overlay-height-tall"
-            },
-            {
-              "name": "XX-Tall",
-              "value": "overlay-height-xx-tall"
-            }
-          ]
+          "sourceAEMNodeName": "hero-container-picklist-config",
+          "valueSeperator": ","
+        },
+        {
+          "...": "../../models/_common-properties.json#/common-prop"
         }
       ]
     },
@@ -109,80 +69,158 @@
       "id": "hero-container-item",
       "fields": [
         {
+          "component": "tab",
+          "label": "Overview",
+          "name": "overview"
+        },
+        {
+          "component": "select",
+          "name": "backgroundType",
+          "label": "Background Type",
+          "description": "Select the type of background for this hero item.",
+          "value": "image",
+          "valueType": "string",
+          "options": [
+            {
+              "name": "Image",
+              "value": "image"
+            },
+            {
+              "name": "Video",
+              "value": "video"
+            },
+            {
+              "name": "Color",
+              "value": "color"
+            }
+          ]
+        },
+        {
           "component": "custom-asset-namespace:custom-asset",
           "valueType": "string",
           "name": "image",
           "label": "Background Image",
-          "description": "Shown when no background video URL is provided.",
+          "description": "Select image from the DAM for this hero item.",
           "configUrl": "/content/dam/config/image/asset-selector.json",
-          "multi": false
+          "multi": false,
+          "condition": {
+            "===": [{ "var": "backgroundType" }, "image"]
+          }
         },
         {
           "component": "custom-asset-namespace:custom-asset-mimetype",
           "valueType": "string",
-          "name": "imageMimeType"
+          "name": "imageMimeType",
+          "condition": {
+            "===": [{ "var": "backgroundType" }, "image"]
+          }
         },
         {
           "component": "text",
           "valueType": "string",
           "name": "imageAlt",
           "label": "Image Alt Text",
-          "value": ""
+          "description": "Provide image alt text for assistive technology.",
+          "value": "",
+          "condition": {
+            "===": [{ "var": "backgroundType" }, "image"]
+          }
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "accountId",
+          "value": "2157889325001",
+          "label": "Brightcove Account ID",
+          "description": "Account of the video. Only one account can be used on a single page.",
+          "condition": {
+            "===": [{ "var": "backgroundType" }, "video"]
+          },
+          "options": [
+            {
+              "name": "Corporate",
+              "value": "2157889325001"
+            },
+            {
+              "name": "Public",
+              "value": "public"
+            },
+            {
+              "name": "Commercial",
+              "value": "commercial"
+            }
+          ]
         },
         {
           "component": "text",
           "valueType": "string",
-          "name": "videoUrl",
-          "label": "Background Video URL (.mp4)",
-          "description": "Optional. When present, video is used instead of the background image.",
-          "value": ""
+          "name": "playerId",
+          "value": "",
+          "label": "Brightcove Player ID",
+          "description": "Player ID for the video. Leave empty to use default player.",
+          "condition": {
+            "===": [{ "var": "backgroundType" }, "video"]
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "videoId",
+          "value": "",
+          "label": "Brightcove Video ID",
+          "description": "Video ID from Brightcove for ambient background playback.",
+          "condition": {
+            "===": [{ "var": "backgroundType" }, "video"]
+          }
         },
         {
           "component": "richtext",
           "name": "text",
           "value": "",
           "label": "Overlay Text (title, description, CTA)",
+          "description": "Author rich text content for this hero item.",
           "valueType": "string"
-        },
-        {
-          "component": "select",
-          "name": "bgColor",
-          "label": "Background Color / Style",
-          "description": "Controls the selected item's visual treatment on the hero container.",
-          "value": "",
-          "valueType": "string",
-          "options": [
-            {
-              "name": "None (image only)",
-              "value": ""
-            },
-            {
-              "name": "Dark (gradient overlay)",
-              "value": "dark"
-            },
-            {
-              "name": "Navy (solid dark blue)",
-              "value": "navy"
-            },
-            {
-              "name": "Purple",
-              "value": "purple"
-            }
-          ]
         },
         {
           "component": "text",
           "name": "ctaLabel",
-          "label": "Anchor Link Label",
+          "label": "CTA Button Label",
+          "description": "Provide button label for CTA button.",
           "value": "",
           "valueType": "string"
         },
         {
           "component": "aem-content",
           "name": "ctaUrl",
-          "label": "Anchor Link URL",
+          "label": "CTA Button URL",
+          "description": "Provide destination page URL for CTA button navigation.",
           "value": "",
           "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "ctaAltText",
+          "label": "CTA Alt Text",
+          "description": "Provide alt text for CTA button for assistive technology.",
+          "value": "",
+          "valueType": "string"
+        },
+        {
+          "component": "tab",
+          "label": "Styles",
+          "name": "styles"
+        },
+        {
+          "component": "ngaem:dynamic-picklist",
+          "name": "classes_customDynamicClass",
+          "value": "",
+          "label": "Select Block Styles",
+          "valueType": "string",
+          "sourceAEMNodeName": "hero-container-item-picklist-config",
+          "valueSeperator": ","
+        },
+        {
+          "...": "../../models/_common-properties.json#/common-prop"
         }
       ]
     }

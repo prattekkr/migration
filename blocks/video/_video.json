@@ -32,7 +32,8 @@
           "component": "aem-content",
           "valueType": "string",
           "name": "uri",
-          "label": "Video"
+          "label": "Video",
+          "required": true
         },
         {
           "component": "custom-asset-namespace:custom-asset",

@@ -759,8 +759,9 @@ function readItemConfig(itemEl) {
       enableConfirmationModal: parseBool(ct(13 + ueShift), false),
       confirmationModalType: ct(14 + ueShift) || 'standard',
       modalId: ct(15 + ueShift),
-      language: ct(16 + ueShift) || 'lang:none',
-      ariaLabel: ct(17 + ueShift),
+      warnOnDeparturePopupFragmentPath: cl(16 + ueShift),
+      language: ct(17 + ueShift) || 'lang:none',
+      ariaLabel: ct(18 + ueShift),
     };
   } else {
     const anchorEl = rows[2]?.querySelector('a');
@@ -788,8 +789,9 @@ function readItemConfig(itemEl) {
       enableConfirmationModal: parseBool(ct(13 + ueShift), false),
       confirmationModalType: ct(14 + ueShift) || 'standard',
       modalId: ct(15 + ueShift),
-      language: ct(16 + ueShift) || 'lang:none',
-      ariaLabel: ct(17 + ueShift),
+      warnOnDeparturePopupFragmentPath: cl(16 + ueShift),
+      language: ct(17 + ueShift) || 'lang:none',
+      ariaLabel: ct(18 + ueShift),
     };
   }
 
@@ -853,6 +855,9 @@ function readItemConfig(itemEl) {
     : docConfig.enableConfirmationModal;
   const confirmationModalType = ueText('confirmationModalType') ?? docConfig.confirmationModalType;
   const modalId = ueText('modalId') ?? docConfig.modalId;
+  // aem-content field — read as href (path picker renders an anchor in UE)
+  const warnOnDeparturePopupFragmentPath = ueHref('warnOnDeparturePopupFragmentPath')
+    ?? docConfig.warnOnDeparturePopupFragmentPath;
 
   return {
     ...docConfig,
@@ -872,6 +877,7 @@ function readItemConfig(itemEl) {
     enableConfirmationModal,
     confirmationModalType,
     modalId,
+    warnOnDeparturePopupFragmentPath,
   };
 }
 
@@ -1172,6 +1178,7 @@ async function buildChildPageItems(cfg, rootPath) {
       enableConfirmationModal: false,
       confirmationModalType: 'standard',
       modalId: '',
+      warnOnDeparturePopupFragmentPath: '',
       language: 'lang:none',
       ariaLabel: '',
       dateText: dateMs ? formatDate(dateMs) : '',
@@ -1275,6 +1282,7 @@ function bindLinkBehavior(anchor, item) {
     return;
   }
 
+  // Standard modal — original guard preserved exactly as-is.
   if (item.enableConfirmationModal && item.modalId) {
     const dest = anchor.getAttribute('href') || '';
     if (!dest || dest === '#') return;
@@ -1282,6 +1290,8 @@ function bindLinkBehavior(anchor, item) {
     if (item.openInNewTab) {
       anchor.target = '_blank';
       anchor.rel = 'noopener noreferrer';
+    } else {
+      anchor.dataset.linklistSameTab = '';
     }
 
     const navigate = () => {
@@ -1340,9 +1350,24 @@ function bindLinkBehavior(anchor, item) {
     return;
   }
 
+  // Exit modal — stamp the departure fragment path onto the anchor so external
+  // warn-departure handlers can intercept navigation via this data attribute.
+  if (
+    item.enableConfirmationModal
+    && item.confirmationModalType === 'exit-modal'
+    && item.warnOnDeparturePopupFragmentPath
+  ) {
+    anchor.setAttribute(
+      'data-warn-departure-modal-path',
+      item.warnOnDeparturePopupFragmentPath,
+    );
+  }
+
   if (item.openInNewTab) {
     anchor.target = '_blank';
     anchor.rel = 'noopener noreferrer';
+  } else {
+    anchor.dataset.linklistSameTab = '';
   }
 }
 
@@ -1470,6 +1495,8 @@ function buildListItem(item, variant, tagLookup) {
     if (item.openInNewTab) {
       a.target = '_blank';
       a.rel = 'noopener noreferrer';
+    } else {
+      a.dataset.linklistSameTab = '';
     }
     a.append(node);
     return a;
@@ -1912,10 +1939,17 @@ export default async function decorate(block) {
   }
 
   decorateExternalLinksUtility(list);
+  list.querySelectorAll('a[data-linklist-same-tab]').forEach((a) => {
+    a.removeAttribute('target');
+    a.removeAttribute('rel');
+    delete a.dataset.linklistSameTab;
+  });
   list.querySelectorAll('a.external-link').forEach((a) => {
     const sr = document.createElement('span');
     sr.className = 'sr-only';
-    sr.textContent = ', external link, opens in a new window';
+    sr.textContent = a.target === '_blank'
+      ? ', external link, opens in a new window'
+      : ', external link';
     a.append(sr);
   });
 

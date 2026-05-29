@@ -3,6 +3,25 @@
 > These rules are **mandatory** for all migration, import, and block development work in this project.
 > They are automatically loaded by Claude Code at the start of every session.
 
+## Migration Skills (Reference Documents)
+
+The following skills are available in `.claude/skills/`, `.agents/skills/`, and `.cursor/skills/`:
+
+| Skill | Purpose | Use When |
+|-------|---------|----------|
+| `migration-skill` | Master reference for all blocks, grid system, class combinations | Building any import script |
+| `migration-patterns` | EDS grid layout system, 2-8-2 pattern, section metadata, block row formats | Structuring page sections and grid |
+| `block-analysis` | Deep analysis of 9 story-page blocks (JS decoration, CSS, fields) | Working on story article imports |
+| `block-analysis-full` | Analysis of all 32 remaining blocks | Working on other page templates |
+| `migration-rules` | Technical rules for fix-forward pipeline, DOM analysis | Debugging import issues |
+| `complex-template-migration` | Multi-grid layouts, side-by-side columns, technology modules, sidebars | Pages with 1-4-1-5-1 grids, 6-6 cards, gray sections, quotes, complex layouts |
+
+**Always consult `migration-skill` before writing import scripts. It contains:**
+- Exact row counts for every block
+- Valid CSS class combinations
+- Grid layout patterns
+- Data preservation checklist
+
 ## Rule 1: Post-Import Fix Tracking (Fix-Forward Pipeline)
 
 **Every manual fix made to content HTML or block code after import MUST be tracked and incorporated back into the import infrastructure (parsers/transformers) before any reimport.**

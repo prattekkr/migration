@@ -27,6 +27,7 @@ import {
   resolveImageReference,
 } from '../../scripts/scripts.js';
 import { shouldRunOutsideAuthorEdit } from '../../scripts/utils.js';
+import { getConfigValue } from '../../scripts/config.js';
 
 function getAuthoringSource(item) {
   return (
@@ -66,33 +67,64 @@ function getFieldContent(field) {
   return field;
 }
 
-function getVideoSrc(cellOrUrl) {
-  const href = typeof cellOrUrl === 'string'
-    ? cellOrUrl.trim()
-    : (cellOrUrl?.querySelector('a')?.href ?? '');
-  if (!href) return null;
-  if (
-    /\.mp4(\?|$)/i.test(href)
-    || href.includes('brightcove.net')
-    || href.includes('youtube.com/embed')
-    || href.includes('vimeo.com')
-  ) return href;
-  return null;
+const BC_PLAYERS_BASE = 'https://players.brightcove.net';
+
+function loadBcScript(accountId, playerId) {
+  const scriptKey = `${accountId}/${playerId}_default`;
+  const scriptSrc = `${BC_PLAYERS_BASE}/${scriptKey}/index.min.js`;
+  const existing = document.querySelector(`script[src="${scriptSrc}"]`);
+  if (existing) return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = scriptSrc;
+    script.async = true;
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.append(script);
+  });
 }
 
-function buildVideoElement(src) {
-  const video = document.createElement('video');
-  video.setAttribute('autoplay', '');
-  video.setAttribute('muted', '');
-  video.setAttribute('loop', '');
-  video.setAttribute('playsinline', '');
-  video.setAttribute('aria-hidden', 'true');
-  video.muted = true;
-  const source = document.createElement('source');
-  source.src = src;
-  source.type = 'video/mp4';
-  video.appendChild(source);
-  return video;
+function buildBrightcoveVideo(videoId, accountId, playerId) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'hero-container-brightcove';
+  const videoEl = document.createElement('video-js');
+  videoEl.id = `hero-bc-${videoId}`;
+  videoEl.setAttribute('data-account', accountId);
+  videoEl.setAttribute('data-player', playerId);
+  videoEl.setAttribute('data-video-id', videoId);
+  videoEl.setAttribute('data-embed', 'default');
+  videoEl.setAttribute('autoplay', 'autoplay');
+  videoEl.setAttribute('muted', 'true');
+  videoEl.setAttribute('loop', 'loop');
+  videoEl.setAttribute('playsinline', 'playsinline');
+  videoEl.className = 'video-js hero-bc-player';
+  wrapper.append(videoEl);
+
+  loadBcScript(accountId, playerId).then(() => {
+    if (typeof window.bc === 'function') {
+      window.bc(videoEl);
+    }
+    const initPlayer = () => {
+      if (typeof window.videojs === 'undefined') {
+        requestAnimationFrame(initPlayer);
+        return;
+      }
+      const player = window.videojs.getPlayer(videoEl.id);
+      if (!player) {
+        requestAnimationFrame(initPlayer);
+        return;
+      }
+      player.ready(() => {
+        player.muted(true);
+        player.loop(true);
+        player.controls(false);
+        player.play();
+      });
+    };
+    initPlayer();
+  });
+
+  return wrapper;
 }
 
 function extractMediaFromCell(cell) {
@@ -124,23 +156,33 @@ function getItemFields(item) {
 
   if (cells.some((cell) => cell.hasAttribute('data-aue-prop'))) {
     return {
+      backgroundType: getFieldText(source, 'backgroundType') || 'image',
       mediaCell: getFieldElement(source, 'image'),
       altText: getFieldText(source, 'imageAlt'),
-      videoUrlText: getFieldText(source, 'videoUrl'),
+      accountId: getFieldText(source, 'accountId'),
+      playerId: getFieldText(source, 'playerId'),
+      videoId: getFieldText(source, 'videoId'),
       textCell: getFieldElement(source, 'text'),
-      colorClass: getFieldText(source, 'bgColor').toLowerCase(),
       ctaLabel: getFieldText(source, 'ctaLabel'),
       ctaUrl: getFieldLink(source, 'ctaUrl'),
+      ctaAltText: getFieldText(source, 'ctaAltText'),
+      styleClasses: getFieldText(source, 'classes_customDynamicClass'),
     };
   }
 
   return {
-    mediaCell: cells[0] ?? null,
-    videoUrlText: cells[1]?.textContent?.trim() || '',
-    textCell: cells[2] ?? null,
-    colorClass: cells[3]?.textContent?.trim().toLowerCase() || '',
-    ctaLabel: cells[4]?.textContent?.trim() || '',
-    ctaUrl: cells[5]?.querySelector('a')?.getAttribute('href') || cells[5]?.textContent?.trim() || '',
+    backgroundType: cells[0]?.textContent?.trim() || 'image',
+    mediaCell: cells[1] ?? null,
+    accountId: cells[2]?.textContent?.trim() || '',
+    playerId: cells[3]?.textContent?.trim() || '',
+    videoId: cells[4]?.textContent?.trim() || '',
+    textCell: cells[5] ?? null,
+    ctaLabel: cells[6]?.textContent?.trim() || '',
+    ctaUrl: cells[7]?.querySelector('a')?.getAttribute('href')
+      || cells[7]?.textContent?.trim() || '',
+    ctaAltText: cells[8]?.textContent?.trim() || '',
+    styleClasses: cells[9]?.textContent?.trim() || '',
+    altText: '',
   };
 }
 
@@ -185,16 +227,19 @@ function decorateHeroItem(item) {
   const bgLayer = document.createElement('div');
   bgLayer.classList.add('hero-container-bg');
 
-  const videoSrc = fields.videoUrlText
-    ? getVideoSrc(fields.videoUrlText)
-    : getVideoSrc(fields.mediaCell);
-
-  if (videoSrc) {
-    bgLayer.appendChild(buildVideoElement(videoSrc));
+  if (fields.backgroundType === 'video') {
+    if (fields.videoId) {
+      bgLayer.dataset.videoId = fields.videoId;
+      bgLayer.dataset.accountId = fields.accountId || '';
+      bgLayer.dataset.playerId = fields.playerId || '';
+    }
+  } else if (fields.backgroundType === 'color') {
+    // Color-only background — styling from picklist
   } else {
     const media = extractMediaFromCell(fields.mediaCell);
     if (media) {
-      const img = media.tagName === 'IMG' ? media : media.querySelector('img');
+      const img = media.tagName === 'IMG'
+        ? media : media.querySelector('img');
       if (img) {
         img.loading = 'eager';
         img.fetchPriority = 'high';
@@ -216,34 +261,48 @@ function decorateHeroItem(item) {
 
   if (fields.ctaLabel) {
     const ctaRow = createOverlayRow('hero-container-cta-row');
-    const buttonContainer = document.createElement('p');
-    buttonContainer.classList.add('button-container');
-
-    const button = document.createElement('a');
-    button.classList.add('button');
-    button.textContent = fields.ctaLabel;
+    const ctaLink = document.createElement('a');
+    ctaLink.className = 'hero-container-cta-link';
+    ctaLink.textContent = fields.ctaLabel;
 
     if (fields.ctaUrl) {
-      button.href = fields.ctaUrl;
+      ctaLink.href = fields.ctaUrl;
+    }
+    if (fields.ctaAltText) {
+      ctaLink.setAttribute('aria-label', fields.ctaAltText);
     }
 
-    buttonContainer.append(button);
-    ctaRow.append(buttonContainer);
+    ctaRow.append(ctaLink);
     bgLayer.append(ctaRow);
+  }
+
+  // Video play/pause control button
+  if (fields.backgroundType === 'video') {
+    const controlBtn = document.createElement('button');
+    controlBtn.type = 'button';
+    controlBtn.className = 'hero-container-video-control playing';
+    controlBtn.setAttribute('aria-label', 'Pause/Play button');
+    bgLayer.append(controlBtn);
   }
 
   item.replaceChildren(authoringData, bgLayer);
 
-  return fields.colorClass;
+  return fields.styleClasses || '';
 }
 
-export default function decorate(block) {
+export default async function decorate(block) {
   const overlayContent = shouldRunOutsideAuthorEdit()
     ? collectSectionOverlayContent(block)
     : null;
 
-  // ── 1. Collect item rows ───────────────────────────────────────────────────
-  const rows = [...block.querySelectorAll(':scope > div')];
+  // ── 1. Collect item rows (filter out block-level config rows) ──────────────
+  const allRows = [...block.querySelectorAll(':scope > div')];
+  const rows = allRows.filter((row) => {
+    const cells = row.querySelectorAll(':scope > div');
+    return cells.length > 1;
+  });
+  // Remove block-level config rows from DOM
+  allRows.filter((row) => !rows.includes(row)).forEach((row) => row.remove());
   if (rows.length === 0) return;
 
   // ── 2. SessionStorage rotation ─────────────────────────────────────────────
@@ -255,9 +314,12 @@ export default function decorate(block) {
   const currentIndex = Number.isFinite(storedIndex)
     ? storedIndex % rows.length
     : 0;
-  sessionStorage.setItem(storageKey, String((currentIndex + 1) % rows.length));
+  sessionStorage.setItem(
+    storageKey,
+    String((currentIndex + 1) % rows.length),
+  );
 
-  let selectedColorClass = '';
+  let selectedStyleClasses = '';
   let selectedItem = null;
 
   // ── 3. Build each item ─────────────────────────────────────────────────────
@@ -268,19 +330,17 @@ export default function decorate(block) {
     while (row.firstChild) container.append(row.firstChild);
     row.replaceWith(container);
 
-    const colorClass = decorateHeroItem(container);
+    const styleClasses = decorateHeroItem(container);
 
     if (index === currentIndex) {
-      selectedColorClass = colorClass;
+      selectedStyleClasses = styleClasses;
       selectedItem = container;
     } else {
       container.classList.add('hidden');
     }
   });
 
-  // ── 4. Wrap overlay in outer container and append to selected item ──────────
-  // hero-container-section-outer owns the max-width + centering + overlap margin
-  // hero-container-section-overlay is the white card inside the 12-col grid
+  // ── 4. Wrap overlay in outer container and append ──────────────────────────
   if (selectedItem && overlayContent) {
     const sectionOuter = document.createElement('div');
     sectionOuter.classList.add('hero-container-section-outer');
@@ -288,9 +348,63 @@ export default function decorate(block) {
     selectedItem.append(sectionOuter);
   }
 
-  // ── 5. Apply selected item's color class to block ──────────────────────────
-  const validColorClasses = ['dark', 'navy', 'purple', 'light'];
-  if (selectedColorClass && validColorClasses.includes(selectedColorClass)) {
-    block.classList.add(selectedColorClass);
+  // ── 5. Apply selected item's style classes to block ───────────────────────
+  const excluded = ['hero-container-item', 'none', ''];
+  if (selectedStyleClasses) {
+    selectedStyleClasses.split(',').forEach((cls) => {
+      const trimmed = cls.trim();
+      if (trimmed && !excluded.includes(trimmed)) {
+        block.classList.add(trimmed);
+      }
+    });
+  }
+
+  // ── 6. Initialize Brightcove video if present ──────────────────────────────
+  const bcBg = selectedItem?.querySelector(
+    '.hero-container-bg[data-video-id]',
+  );
+  if (bcBg) {
+    const { videoId } = bcBg.dataset;
+    const accountId = bcBg.dataset.accountId
+      || await getConfigValue('brightcoveAccountId')
+      || '2157889328001';
+    const playerId = bcBg.dataset.playerId
+      || await getConfigValue('brightcovePlayerId')
+      || 'default';
+    const bcWrapper = buildBrightcoveVideo(videoId, accountId, playerId);
+    if (selectedStyleClasses) {
+      selectedStyleClasses.split(',').forEach((cls) => {
+        const trimmed = cls.trim();
+        if (trimmed && !excluded.includes(trimmed)) {
+          bcWrapper.classList.add(trimmed);
+        }
+      });
+    }
+    bcBg.appendChild(bcWrapper);
+  }
+
+  // ── 7. Video play/pause control ───────────────────────────────────────────
+  const controlBtn = selectedItem?.querySelector(
+    '.hero-container-video-control',
+  );
+  if (controlBtn) {
+    controlBtn.addEventListener('click', () => {
+      const isPlaying = controlBtn.classList.contains('playing');
+      const video = selectedItem.querySelector('video');
+      const bcEl = selectedItem.querySelector('video-js');
+
+      if (video) {
+        if (isPlaying) video.pause();
+        else video.play();
+      } else if (bcEl && typeof window.videojs !== 'undefined') {
+        const bcPlayer = window.videojs.getPlayer(bcEl.id);
+        if (bcPlayer) {
+          if (isPlaying) bcPlayer.pause();
+          else bcPlayer.play();
+        }
+      }
+
+      controlBtn.classList.toggle('playing', !isPlaying);
+    });
   }
 }

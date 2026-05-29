@@ -1,0 +1,161 @@
+.custom-embed {
+  width: 100%;
+  display: block;
+
+  --opacity-half: 0.5;
+}
+
+.custom-embed .jp-widget-container div {
+  grid-column: unset;
+}
+
+.custom-embed .swiper-button-prev,
+.custom-embed .swiper-button-next {
+  text-rendering: auto;
+}
+
+.custom-embed-wrapper .swiper-slide.video {
+ margin: 0 var(--corp-spacing-16) var(--corp-spacing-56) var(--corp-spacing-35);
+}
+
+.custom-embed .otnotice-section-content h1 {
+  color: var(--corp-color-navy);
+  font-family: var(--heading-font-family);
+  font-size: var(--corp-font-size-30);
+  font-weight: var(--corp-font-weight-semibold-alt);
+  line-height: var(--corp-typography-lineheight-relaxed-xl);
+}
+
+.custom-embed .otnotice-section-content h2 {
+  color: var(--corp-color-navy);
+  font-family: var(--heading-font-family);
+  font-size: var(--corp-font-size-28);
+  font-weight: var(--corp-font-weight-semibold-alt);
+  line-height: var(--corp-typography-lineheight-relaxed-lg);
+}
+
+.custom-embed .otnotice-section-content h3 {
+  color: var(--corp-color-navy);
+  font-family: var(--heading-font-family);
+  font-size: var(--corp-font-size-26);
+  font-weight: var(--corp-font-weight-semibold-alt);
+  line-height: var(--corp-typography-lineheight-relaxed-md);
+}
+
+.custom-embed .otnotice-section-content h4 {
+  color: var(--corp-color-navy);
+  font-family: var(--heading-font-family);
+  font-size: var(--corp-font-size-24);
+  font-weight: var(--corp-font-weight-semibold-alt);
+  line-height: var(--corp-typography-lineheight-relaxed-sm);
+}
+
+.custom-embed .otnotice-section-content p {
+  color: var(--corp-color-navy);
+  font-family: var(--body-font-family);
+  font-size: var(--corp-font-size-13);
+  font-weight: var(--corp-font-weight-regular);
+  line-height: var(--corp-typography-lineheight-body-sm);
+  /* stylelint-disable-next-line declaration-no-important */
+  margin-top: var(--corp-spacing-16) !important;
+  /* stylelint-disable-next-line declaration-no-important */
+  margin-bottom: var(--corp-spacing-30) !important;
+}
+
+/* !important needed for above p tag and below li : iframe styles override margin; live site also relies on !important for spacing */
+
+.custom-embed .otnotice-section-content li {
+  color: var(--corp-color-navy);
+  font-family: var(--body-font-family);
+  font-size: var(--corp-font-size-13);
+  font-weight: var(--corp-font-weight-regular);
+  line-height: var(--corp-typography-lineheight-tight-md);
+  /* stylelint-disable-next-line declaration-no-important */
+  margin-bottom: var(--corp-spacing-20) !important;
+}
+
+.custom-embed .otnotice-section-content a {
+  background: linear-gradient(var(--corp-color-text-accent) 50%, var(--corp-color-text-accent) 0) 0 100% / var(--corp-spacing-2) var(--corp-spacing-2) repeat-x;
+  color: inherit;
+  padding: 0 var(--corp-spacing-2) var(--corp-spacing-3);
+  text-decoration: none;
+  transition: background-size 0.1s, color 0.1s;
+}
+
+.custom-embed :where(.otnotice-section-content) a:focus,
+.custom-embed :where(.otnotice-section-content) a:hover {
+  background-size: 100% 100%;
+  color: var(--color-surface-default);
+}
+
+.custom-embed :where(.otnotice-section-content) a:active {
+  background-size: 100% 100%;
+  color: var(--color-surface-default);
+  opacity: var(--opacity-half);
+}
+
+@media (min-width: 744px) {
+  .custom-embed-wrapper .swiper-slide.video {
+    margin: 0 var(--corp-spacing-16) var(--corp-spacing-80) var(--corp-spacing-70);
+    }
+
+  .custom-embed .otnotice-section-content h1 {
+    font-size: var(--corp-font-size-40);
+    line-height: var(--corp-typography-lineheight-heading-md);
+  }
+
+  .custom-embed .otnotice-section-content h2 {
+    font-size: var(--corp-font-size-36);
+    line-height: var(--corp-typography-lineheight-heading-sm);
+  }
+
+  .custom-embed .otnotice-section-content h3 {
+    font-size: var(--corp-font-size-32);
+    line-height: var(--corp-typography-lineheight-relaxed-3xl);
+  }
+
+  .custom-embed .otnotice-section-content h4 {
+    font-size: var(--corp-font-size-30);
+    line-height: var(--corp-typography-lineheight-relaxed-xl);
+  }
+
+  .custom-embed .otnotice-section-content p,
+  .custom-embed .otnotice-section-content li {
+    font-size: var(--corp-font-size-16);
+    line-height: var(--corp-typography-lineheight-body-md);
+  }
+}
+
+@media (min-width: 1024px) {
+  .custom-embed-wrapper .swiper-slide.video {
+    margin: 0 var(--corp-spacing-16) var(--corp-spacing-80) var(--corp-spacing-55);
+    }
+
+  .custom-embed .otnotice-section-content h1 {
+    font-size: var(--corp-font-size-64);
+    letter-spacing: var(--corp-typography-letterspacing-tight-em-sm);
+    line-height: var(--corp-typography-lineheight-display-xl);
+  }
+
+  .custom-embed .otnotice-section-content h2 {
+    font-size: var(--corp-font-size-56);
+    letter-spacing: var(--corp-typography-letterspacing-tight-em-sm);
+    line-height: var(--corp-typography-lineheight-display-xl);
+  }
+
+  .custom-embed .otnotice-section-content h3 {
+    font-size: var(--corp-font-size-48);
+    line-height: var(--corp-typography-lineheight-display-sm);
+  }
+
+  .custom-embed .otnotice-section-content h4 {
+    font-size: var(--corp-font-size-40);
+    line-height: var(--corp-typography-lineheight-heading-md);
+  }
+
+  .custom-embed .otnotice-section-content p,
+  .custom-embed .otnotice-section-content li {
+    font-size: var(--corp-font-size-18);
+    line-height: var(--corp-typography-lineheight-body-lg);
+  }
+}

@@ -172,7 +172,10 @@
 
 /* Overlay content (title, description, play button) */
 .brightcove-video .bcvideo-overlay-content {
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: var(--corp-z-index-base);
   display: flex;
   flex-direction: column;
@@ -180,7 +183,6 @@
   justify-content: center;
   text-align: center;
   padding: var(--corp-spacing-2);
-  width: 100%;
 }
 
 .brightcove-video.video-minimal .bcvideo-overlay-content {
@@ -250,6 +252,12 @@
  .brightcove-video .bcvideo-play-btn:focus-visible {
       background-color: var(--color-surface-default);
       color: var(--corp-color-text-default);
+}
+
+@media (--bp-mobile) {
+  .brightcove-video .bcvideo-overlay-content {
+    width: 100%;
+  }
 }
 
 @media (--bp-tablet) {

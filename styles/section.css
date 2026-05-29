@@ -388,7 +388,7 @@
   position: relative;
 }
 
-.section.linear-gradient::after {
+.section:where(.linear-gradient) .hero-container-item :where(.hero-container-bg)::after {
   content: "";
   background: linear-gradient(0deg, rgb(0 0 0 / 90%) 42.91%, transparent);
   height: 100%;
@@ -397,10 +397,9 @@
   position: absolute;
   top: 0;
   width: 100%;
-  z-index: var(--corp-z-index-negative);
 }
 
-.section.semi-transparent-layer::after {
+.section:where(.semi-transparent-layer) .hero-container-item :where(.hero-container-bg)::after {
   content: "";
   background: var(--corp-semi-transparent-color);
   height: 100%;
@@ -409,7 +408,6 @@
   position: absolute;
   top: 0;
   width: 100%;
-  z-index: var(--corp-z-index-negative);
 }
 
 /* ========================================================================

@@ -176,6 +176,25 @@
           "label": "CTA Alt Text",
           "value": "",
           "description": "Alternative text for the card CTA."
+        },
+        {
+          "component": "tab",
+          "label": "Modal Config",
+          "name": "modalConfig"
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "warndeparturemodalpath",
+          "label": "Warn on Departure Modal Fragment (Page-Level)",
+          "description": "Path to the Fragment used for the departure warning popup in this page."
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "warnarrivalmodalpath",
+          "label": "Warn on Arrival Modal Fragment (Page-Level)",
+          "description": "Path to the Fragment used for the modal to show when user arrive at the page."
         }
       ]
     }

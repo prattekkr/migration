@@ -1,107 +1,175 @@
 /* eslint-disable */
 /* global WebImporter */
 
+import { applyAnalytics } from './utils/analytics.js';
+
 /**
- * Parser: brightcove-video — 40 rows
- * Collapsed fields (ending with Alt, Type, Title, Text, MimeType) get NO rows.
- * They collapse into the parent field's HTML attributes.
+ * Parser: brightcove-video
+ * Base block: brightcove-video
+ * Source: https://www.abbvie.com/who-we-are/our-stories/two-lives-converging-in-the-fight-against-parkinsons.html
+ * Generated: 2026-05-26
+ *
+ * Source DOM patterns for Brightcove on AbbVie AEM:
+ *   <video-js
+ *     data-account="2157889325001"
+ *     data-player="default"
+ *     data-video-id="6386519121112"
+ *     class="vjs-fluid"
+ *     ...>
+ *   </video-js>
+ *
+ * Or the legacy wrapper:
+ *   <div class="cmp-video">
+ *     <div class="cmp-video__player" data-account-id="..." data-video-id="..." ...>
+ *
+ * Overlay title / subtitle / "Watch X:XX" CTA come from sibling cmp-text /
+ * cmp-title elements above the player wrapper, or from data-* attributes
+ * stashed by the cleanup transformer.
+ *
+ * Library structure: 1 column, N rows — field-comment driven.
+ * UE Model fields emitted (matches blocks/brightcove-video/_brightcove-video.json):
+ *   overlayTitle (text)
+ *   overlayDescription (richtext)
+ *   overlayButtonText (text)            default: "Watch Video"
+ *   overlayButtonIconType (select)      icon-font | image
+ *   overlayButtonFontIcon (text)        default: "play"
+ *   iconPosition (select)               left | right
+ *   playerType (select)                 single | playlist | 3d-video
+ *   accountId (select)                  2157889325001 | public | commercial
+ *   playerId (text)
+ *   videoId (text)
+ *   posterType (select)                 brightcove | color | custom
+ *   colorOverlay (select)               #071D49 (navy) | none
+ *   videoContentLayout (select)         none | bottom | left | right
+ *   enableAutoplay (boolean)
+ *   enableLoop (boolean)
+ *   enableCaptions (boolean)
+ *   enableVideoChapters (boolean)
+ *   enableRecommendedVideo (boolean)
+ *   enablePlayerControls (boolean)      default: true
+ *   enableSocialShare (boolean)
+ *   enableTranscript (boolean)
+ *   captionTitle (text)
+ *   captionDescription (text)
+ *   playButtonAriaLabel (text)
+ *   videoCaption (text)
+ *
+ * Analytics: data-cmp-data-layer preserved
+ * Accessibility: aria-label / play button label extracted into playButtonAriaLabel
  */
-export default function parse(element, { document }) {
-  const variantClasses = [];
-  if (element.classList.contains('cmp-video-xx-large')) variantClasses.push('cmp-video-xx-large');
-  const blockName = variantClasses.length > 0 ? `brightcove-video (${variantClasses.join(', ')})` : 'brightcove-video';
 
-  // Extract video data
-  const videoEl = element.querySelector('[data-video-id]') || element.querySelector('video-js');
-  const videoId = videoEl?.getAttribute('data-video-id') || '';
-  const accountId = videoEl?.getAttribute('data-account') || '2157889328001';
-  const playerId = videoEl?.getAttribute('data-player') || 'default';
+function extractBrightcoveIds(player) {
+  if (!player) return { accountId: '', videoId: '', playerId: '' };
+  // <video-js> uses data-account and data-video-id; legacy uses data-account-id
+  return {
+    accountId: player.getAttribute('data-account')
+      || player.getAttribute('data-account-id')
+      || '',
+    videoId: player.getAttribute('data-video-id')
+      || player.getAttribute('data-videoid')
+      || '',
+    playerId: player.getAttribute('data-player')
+      || player.getAttribute('data-player-id')
+      || '',
+  };
+}
 
-  // Extract overlay title (collapses into projectNumber as heading)
-  const overlayHeading = element.querySelector('.cmp-video__text-content [role="heading"]')
-    || element.querySelector('.cmp-video__title');
-  const overlayTitle = overlayHeading?.textContent?.trim() || '';
+function findOverlayText(element) {
+  // Look for an overlay title/desc sibling structure. Several AEM templates put
+  // the title above the player and a description below; some inline both inside
+  // the video wrapper with class .cmp-video__overlay-title / __overlay-description.
+  const overlayTitle = element.querySelector(
+    '.cmp-video__overlay-title, .cmp-video__title, .video-overlay-title, [data-overlay-title]',
+  );
+  const overlayDesc = element.querySelector(
+    '.cmp-video__overlay-description, .cmp-video__subtitle, .video-overlay-description, [data-overlay-desc]',
+  );
 
-  // Extract overlay button text (collapses into colorOverlay as link/text)
-  const overlayBtn = element.querySelector('.cmp-video__text-content button span')
-    || element.querySelector('.cmp-video__text-content button');
-  const overlayButtonText = overlayBtn?.textContent?.trim() || 'Watch Video';
+  let title = '';
+  let desc = '';
 
-  // Extract poster image + alt (posterAlt collapses into posterImage as img alt)
-  const posterImg = element.querySelector('.cmp-video__image img, .video-poster img');
-  const posterCell = document.createElement('div');
-  if (posterImg) {
-    const src = posterImg.getAttribute('data-cmp-src') || posterImg.getAttribute('src') || '';
-    const alt = posterImg.getAttribute('alt') || '';
-    if (src && !src.startsWith('blob:') && !src.startsWith('data:')) {
-      const pic = document.createElement('picture');
-      const img = document.createElement('img');
-      img.setAttribute('src', src);
-      img.setAttribute('alt', alt); // posterAlt collapses here
-      img.setAttribute('loading', 'lazy');
-      pic.appendChild(img);
-      posterCell.appendChild(pic);
-    }
-  }
-
-  // Row 0: projectNumber — overlayTitle collapses here as <h2>
-  const row0 = document.createElement('div');
   if (overlayTitle) {
-    const h = document.createElement('h2');
-    h.textContent = overlayTitle;
-    row0.appendChild(h);
+    title = (overlayTitle.getAttribute('data-overlay-title')
+      || overlayTitle.textContent || '').trim();
+  }
+  if (overlayDesc) {
+    desc = (overlayDesc.getAttribute('data-overlay-desc')
+      || overlayDesc.textContent || '').trim();
   }
 
-  // Row 3: colorOverlay — overlayButtonText collapses here as <p>
-  const row3 = document.createElement('div');
-  const p = document.createElement('p');
-  p.textContent = overlayButtonText;
-  row3.appendChild(p);
+  // Fallback: previous sibling heading / paragraph adjacent to the player
+  if (!title) {
+    const prev = element.previousElementSibling
+      || element.parentElement?.previousElementSibling;
+    title = prev?.querySelector?.('h1, h2, h3, h4, h5, h6')?.textContent?.trim() || title;
+  }
+  return { title, desc };
+}
 
-  // 40 rows (collapsed fields removed, values in parent HTML attributes)
-  const cells = [
-    [row0],                  // Row 0: projectNumber + overlayTitle(collapsed as h2)
-    [''],                    // Row 1: overlayDescription
-    [posterCell],            // Row 2: posterImage + posterAlt(collapsed as img alt)
-    [row3],                  // Row 3: colorOverlay + overlayButtonText(collapsed as p)
-    ['play'],                // Row 4: overlayButtonFontIcon
-    [''],                    // Row 5: overlayButtonImageIcon
-    ['left'],                // Row 6: iconPosition
-    [accountId],             // Row 7: accountId
-    [playerId],              // Row 8: playerId
-    [videoId],               // Row 9: videoId
-    [''],                    // Row 10: playlistId
-    [''],                    // Row 11: defaultPlaylistVideoId
-    ['none'],                // Row 12: videoContentLayout
-    ['false'],               // Row 13: enablePlaylistThumbnailMetadata
-    [''],                    // Row 14: captionDescription
-    [''],                    // Row 15: playButtonAriaLabel
-    [''],                    // Row 16: videoCaption
-    ['false'],               // Row 17: enableAutoplay
-    ['false'],               // Row 18: enableLoop
-    ['false'],               // Row 19: enableCaptions
-    ['false'],               // Row 20: enableVideoChapters
-    ['false'],               // Row 21: enableRecommendedVideo
-    ['true'],                // Row 22: enablePlayerControls
-    ['false'],               // Row 23: enableSocialShare
-    ['false'],               // Row 24: enableTranscript
-    ['transcript'],          // Row 25: showTranscriptLabel
-    ['transcript'],          // Row 26: hideTranscriptLabel
-    ['new-tab'],             // Row 27: transcriptClickBehavior
-    [''],                    // Row 28: modalHiddenPanelId
-    [''],                    // Row 29: transcriptLink
-    ['play'],                // Row 30: transcriptShowFontIcon
-    [''],                    // Row 31: transcriptShowImageIcon
-    ['play'],                // Row 32: transcriptHideFontIcon
-    [''],                    // Row 33: transcriptHideImageIcon
-    ['after'],               // Row 34: transcriptLinkIconPosition
-    [''],                    // Row 35: classes_customDynamicClass
-    [''],                    // Row 36: blockId
-    [''],                    // Row 37: classes_commonCustomClass
-    ['none'],                // Row 38: language
-    [''],                    // Row 39: analytics_id
-  ];
+function findWatchButtonText(element) {
+  // The "Watch 3:49" label commonly appears as a sibling .cmp-video__cta-text
+  // or inside the player as the data-watch-label attribute.
+  const cta = element.querySelector(
+    '.cmp-video__cta-text, .cmp-video__watch-label, [data-watch-label]',
+  );
+  if (!cta) return '';
+  return (cta.getAttribute('data-watch-label') || cta.textContent || '').trim();
+}
 
-  const block = WebImporter.Blocks.createBlock(document, { name: blockName, cells });
+export default function parse(element, { document }) {
+  if (!element?.parentElement) return;
+
+  const player = element.matches?.('video-js, [data-account], [data-account-id]')
+    ? element
+    : element.querySelector('video-js, [data-account], [data-account-id], [data-video-id]');
+
+  const { accountId, videoId, playerId } = extractBrightcoveIds(player);
+  const { title: overlayTitle, desc: overlayDescription } = findOverlayText(element);
+  const overlayButtonText = findWatchButtonText(element) || 'Watch Video';
+
+  // Reasonable defaults aligned with the manually-authored reference page
+  const fields = {
+    overlayTitle,
+    overlayDescription,
+    overlayButtonText,
+    overlayButtonIconType: 'icon-font',
+    overlayButtonFontIcon: 'play',
+    iconPosition: 'left',
+    playerType: 'single',
+    accountId: accountId || '2157889325001',
+    playerId,
+    videoId,
+    posterType: 'brightcove',
+    colorOverlay: 'none',
+    videoContentLayout: 'none',
+    enableAutoplay: false,
+    enableLoop: false,
+    enableCaptions: false,
+    enableVideoChapters: false,
+    enableRecommendedVideo: false,
+    enablePlayerControls: true,
+    enableSocialShare: false,
+    enableTranscript: false,
+    captionTitle: '',
+    captionDescription: '',
+    playButtonAriaLabel: (player?.getAttribute?.('aria-label') || '').trim(),
+    videoCaption: '',
+  };
+
+  const row = (field, value) => {
+    const frag = document.createDocumentFragment();
+    frag.appendChild(document.createComment(` field:${field} `));
+    if (value !== undefined && value !== null && value !== '') {
+      const p = document.createElement('p');
+      p.textContent = typeof value === 'boolean' ? String(value) : String(value);
+      frag.appendChild(p);
+    }
+    return [frag];
+  };
+
+  const cells = Object.entries(fields).map(([field, value]) => row(field, value));
+  const block = WebImporter.Blocks.createBlock(document, { name: 'brightcove-video', cells });
+
+  applyAnalytics(element, block, document);
   element.replaceWith(block);
 }
