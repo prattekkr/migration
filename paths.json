@@ -1,0 +1,12 @@
+{
+  "mappings": [
+    "/content/migration/:/"
+    "/content/migration/configuration:/.helix/config.json",
+    "/content/migration/metadata:/metadata.json"
+  ],
+  "includes": [
+    "/content/migration/",
+    "/content/dam/migration/"
+  ]
+}
+
