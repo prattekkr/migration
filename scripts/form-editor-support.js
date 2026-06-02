@@ -17,7 +17,10 @@
  * Adobe permits you to use and modify this file solely in accordance with
  * the terms of the Adobe license agreement accompanying it.
  ************************************************************************ */
-import decorate, { generateFormRendition, fetchForm } from '../blocks/form/form.js';
+import decorate, {
+  generateFormRendition,
+  fetchForm,
+} from '../blocks/form/form.js';
 import { loadCSS } from './aem.js';
 import { handleAccordionNavigation } from '../blocks/form/components/accordion/accordion.js';
 import { createButton as createRepeatButton } from '../blocks/form/components/repeat/repeat.js';
@@ -25,11 +28,17 @@ import { createButton as createRepeatButton } from '../blocks/form/components/re
 window.currentMode = 'preview';
 let activeWizardStep;
 let activeAccordionPanel;
-const OOTBViewTypeComponentsWithoutModel = ['wizard', 'toggleable-link', 'modal'];
+const OOTBViewTypeComponentsWithoutModel = [
+  'wizard',
+  'toggleable-link',
+  'modal',
+];
 
 export function getItems(container) {
   if (container[':itemsOrder'] && container[':items']) {
-    return container[':itemsOrder'].map((itemKey) => container[':items'][itemKey]);
+    return container[':itemsOrder'].map(
+      (itemKey) => container[':items'][itemKey],
+    );
   }
   return [];
 }
@@ -60,7 +69,9 @@ export function handleWizardNavigation(wizardEl, navigateTo) {
   existingSelectedEl.classList.remove('current-wizard-step');
   navigateTo.classList.add('current-wizard-step');
   activeWizardStep = navigateTo.dataset.id;
-  const navigateToMenuItem = wizardEl.querySelector(`li[data-index="${navigateTo.dataset.index}"]`);
+  const navigateToMenuItem = wizardEl.querySelector(
+    `li[data-index="${navigateTo.dataset.index}"]`,
+  );
   const currentMenuItem = wizardEl.querySelector('.wizard-menu-active-item');
   currentMenuItem.classList.remove('wizard-menu-active-item');
   navigateToMenuItem.classList.add('wizard-menu-active-item');
@@ -72,30 +83,51 @@ function handleAccordionNavigationInEditor(accordionEl, navigateTo) {
 }
 
 function annotateFormFragment(fragmentFieldWrapper, fragmentDefinition) {
-  if (!fragmentFieldWrapper || !fragmentDefinition || !fragmentDefinition.properties) {
+  if (
+    !fragmentFieldWrapper
+    || !fragmentDefinition
+    || !fragmentDefinition.properties
+  ) {
+    // eslint-disable-next-line no-console
     console.warn('Invalid arguments passed to annotateFormFragment');
     return;
   }
   if (!fragmentDefinition.properties['fd:path']) {
+    // eslint-disable-next-line no-console
     console.warn('Missing fd:path in fragmentDefinition properties');
     return;
   }
   fragmentFieldWrapper.classList.add('fragment-wrapper', 'edit-mode');
   fragmentFieldWrapper.setAttribute('data-aue-type', 'component');
-  fragmentFieldWrapper.setAttribute('data-aue-resource', `urn:aemconnection:${fragmentDefinition.properties['fd:path']}`);
+  fragmentFieldWrapper.setAttribute(
+    'data-aue-resource',
+    `urn:aemconnection:${fragmentDefinition.properties['fd:path']}`,
+  );
   fragmentFieldWrapper.setAttribute('data-aue-model', 'form-fragment');
-  fragmentFieldWrapper.setAttribute('data-aue-label', fragmentDefinition.label?.value || fragmentDefinition.name);
+  fragmentFieldWrapper.setAttribute(
+    'data-aue-label',
+    fragmentDefinition.label?.value || fragmentDefinition.name,
+  );
 }
 
 function getPropertyModel(fd) {
-  if (!fd[':type'] || fd[':type'].startsWith('core/fd/components') || OOTBViewTypeComponentsWithoutModel.includes(fd[':type'])) {
-    return fd.fieldType === 'image' || fd.fieldType === 'button' ? `form-${fd.fieldType}` : fd.fieldType;
+  if (
+    !fd[':type']
+    || fd[':type'].startsWith('core/fd/components')
+    || OOTBViewTypeComponentsWithoutModel.includes(fd[':type'])
+  ) {
+    return fd.fieldType === 'image' || fd.fieldType === 'button'
+      ? `form-${fd.fieldType}`
+      : fd.fieldType;
   }
   return fd[':type'];
 }
 
 function annotateContainer(fieldWrapper, fd) {
-  fieldWrapper.setAttribute('data-aue-resource', `urn:aemconnection:${fd.properties['fd:path']}`);
+  fieldWrapper.setAttribute(
+    'data-aue-resource',
+    `urn:aemconnection:${fd.properties['fd:path']}`,
+  );
   fieldWrapper.setAttribute('data-aue-model', getPropertyModel(fd));
   fieldWrapper.setAttribute('data-aue-label', fd.label?.value || fd.name);
   fieldWrapper.setAttribute('data-aue-type', 'container');
@@ -147,7 +179,10 @@ function annotateItems(items, formDefinition, formFieldMap) {
           if (fd.fieldType === 'plain-text') {
             fieldWrapper.setAttribute('data-aue-type', 'richtext');
             fieldWrapper.setAttribute('data-aue-behavior', 'component');
-            fieldWrapper.setAttribute('data-aue-resource', `urn:aemconnection:${fd.properties['fd:path']}`);
+            fieldWrapper.setAttribute(
+              'data-aue-resource',
+              `urn:aemconnection:${fd.properties['fd:path']}`,
+            );
             fieldWrapper.setAttribute('data-aue-model', getPropertyModel(fd));
             fieldWrapper.setAttribute('data-aue-label', 'Text');
             fieldWrapper.setAttribute('data-aue-prop', 'value');
@@ -159,30 +194,52 @@ function annotateItems(items, formDefinition, formFieldMap) {
               if (fd.repeatable === true) {
                 annotateRepeatablePanel(fieldWrapper);
               }
-              annotateItems(getContainerChildNodes(fieldWrapper, fd), formDefinition, formFieldMap);
+              annotateItems(
+                getContainerChildNodes(fieldWrapper, fd),
+                formDefinition,
+                formFieldMap,
+              );
               // retain wizard step selection
               if (activeWizardStep === fieldWrapper.dataset.id) {
-                handleWizardNavigation(fieldWrapper.parentElement, fieldWrapper);
+                handleWizardNavigation(
+                  fieldWrapper.parentElement,
+                  fieldWrapper,
+                );
               }
               /* Check if this panel is in an accordion
                 and should be expanded in authoring after a change */
-              if (activeAccordionPanel === fieldWrapper.dataset.id && fieldWrapper.parentElement.classList.contains('accordion')) {
-                handleAccordionNavigationInEditor(fieldWrapper.parentElement, fieldWrapper);
+              if (
+                activeAccordionPanel === fieldWrapper.dataset.id
+                && fieldWrapper.parentElement.classList.contains('accordion')
+              ) {
+                handleAccordionNavigationInEditor(
+                  fieldWrapper.parentElement,
+                  fieldWrapper,
+                );
               }
             }
           } else {
             fieldWrapper.setAttribute('data-aue-type', 'component');
-            fieldWrapper.setAttribute('data-aue-resource', `urn:aemconnection:${fd.properties['fd:path']}`);
+            fieldWrapper.setAttribute(
+              'data-aue-resource',
+              `urn:aemconnection:${fd.properties['fd:path']}`,
+            );
             fieldWrapper.setAttribute('data-aue-model', getPropertyModel(fd));
-            fieldWrapper.setAttribute('data-aue-label', fd.label?.value || fd.name);
+            fieldWrapper.setAttribute(
+              'data-aue-label',
+              fd.label?.value || fd.name,
+            );
           }
         } else {
+          // eslint-disable-next-line no-console
           console.warn(`field ${id} not found in form definition`);
         }
       }
     }
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error while annotating form elements', error);
+    // eslint-disable-next-line no-alert
     window.alert('Error while annotating form elements');
   }
 }
@@ -205,8 +262,9 @@ function handleNavigation(container, resource, navigationHandler) {
   if (el.parentElement === container) {
     navigationHandler(container, el);
   } else {
-    const directChild = Array.from(container.children)
-      .find((child) => child.contains(el) || child === el);
+    const directChild = Array.from(container.children).find(
+      (child) => child.contains(el) || child === el,
+    );
     if (directChild) {
       navigationHandler(container, directChild);
     }
@@ -221,15 +279,30 @@ export function handleEditorSelect(event) {
   const { selected, resource } = detail;
 
   // Handle fragment expansion when selected
-  if (target.classList.contains('fragment-wrapper') && target.classList.contains('edit-mode')) {
+  if (
+    target.classList.contains('fragment-wrapper')
+    && target.classList.contains('edit-mode')
+  ) {
     target.classList.toggle('fragment-expanded', selected);
   }
 
-  if (selected && target.closest('.wizard') && !target.classList.contains('wizard')) {
-    handleNavigation(target.closest('.wizard'), resource, handleWizardNavigation);
+  if (
+    selected
+    && target.closest('.wizard')
+    && !target.classList.contains('wizard')
+  ) {
+    handleNavigation(
+      target.closest('.wizard'),
+      resource,
+      handleWizardNavigation,
+    );
   }
   if (selected && target.closest('.accordion')) {
-    handleNavigation(target.closest('.accordion'), resource, handleAccordionNavigationInEditor);
+    handleNavigation(
+      target.closest('.accordion'),
+      resource,
+      handleAccordionNavigationInEditor,
+    );
   }
 }
 
@@ -249,7 +322,10 @@ export async function renderFormBlock(form, editMode) {
         formDef = await fetchForm(document.location.pathname);
       } catch (fallbackError) {
         // eslint-disable-next-line no-console
-        console.error('Failed to fetch fallback form definition:', fallbackError);
+        console.error(
+          'Failed to fetch fallback form definition:',
+          fallbackError,
+        );
         return null;
       }
     }
@@ -274,7 +350,10 @@ export async function renderFormBlock(form, editMode) {
 }
 
 async function annotateFormsForEditing(forms) {
-  if (typeof window.currentMode !== 'undefined' && window.currentMode === 'preview') return;
+  if (
+    typeof window.currentMode !== 'undefined'
+    && window.currentMode === 'preview'
+  ) return;
   forms.forEach(async (form) => {
     const { formEl, formDef } = (await renderFormBlock(form, true)) || {};
     if (formEl && formDef) {
@@ -300,7 +379,10 @@ async function instrumentForms(mutationsList) {
 }
 
 function cleanUp(content) {
-  const formDef = content.replaceAll('^(([^<>()\\\\[\\\\]\\\\\\\\.,;:\\\\s@\\"]+(\\\\.[^<>()\\\\[\\\\]\\\\\\\\.,;:\\\\s@\\"]+)*)|(\\".+\\"))@((\\\\[[0-9]{1,3}\\\\.[0-9]{1,3}\\\\.[0-9]{1,3}\\\\.[0-9]{1,3}])|(([a-zA-Z\\\\-0-9]+\\\\.)\\+[a-zA-Z]{2,}))$', '');
+  const formDef = content.replaceAll(
+    '^(([^<>()\\\\[\\\\]\\\\\\\\.,;:\\\\s@\\"]+(\\\\.[^<>()\\\\[\\\\]\\\\\\\\.,;:\\\\s@\\"]+)*)|(\\".+\\"))@((\\\\[[0-9]{1,3}\\\\.[0-9]{1,3}\\\\.[0-9]{1,3}\\\\.[0-9]{1,3}])|(([a-zA-Z\\\\-0-9]+\\\\.)\\+[a-zA-Z]{2,}))$',
+    '',
+  );
   return formDef?.replace(/\x83\n|\n|\s\s+/g, '');
 }
 
@@ -331,10 +413,13 @@ export async function applyChanges(event) {
   let element = document.querySelector(`[data-aue-resource="${resource}"]`);
 
   if (element) {
-    const block = element.parentElement?.closest('.block[data-aue-resource]') || element?.closest('.block[data-aue-resource]');
+    const block = element.parentElement?.closest('.block[data-aue-resource]')
+      || element?.closest('.block[data-aue-resource]');
     if (block) {
       const blockResource = block.getAttribute('data-aue-resource');
-      const newBlock = parsedUpdate.querySelector(`[data-aue-resource="${blockResource}"]`);
+      const newBlock = parsedUpdate.querySelector(
+        `[data-aue-resource="${blockResource}"]`,
+      );
       if (block.dataset.aueModel === 'form') {
         const newContainer = newBlock.querySelector('pre');
         const codeEl = newContainer?.querySelector('code');
@@ -344,7 +429,9 @@ export async function applyChanges(event) {
           if (element.classList.contains('panel-wrapper')) {
             element = element.parentNode;
           }
-          const parent = element.closest('.panel-wrapper') || element.closest('form') || element.querySelector('form');
+          const parent = element.closest('.panel-wrapper')
+            || element.closest('form')
+            || element.querySelector('form');
           const parentDef = getFieldById(formDef, parent.dataset.id, {});
           parent.replaceChildren();
           if (parent.hasAttribute('data-component-status')) {
@@ -397,5 +484,9 @@ export function attachEventListners(main) {
 }
 
 const observer = new MutationObserver(instrumentForms);
-observer.observe(document, { childList: true, subtree: true, attributeFilter: ['form'] });
+observer.observe(document, {
+  childList: true,
+  subtree: true,
+  attributeFilter: ['form'],
+});
 loadCSS(`${window.hlx.codeBasePath}/scripts/form-editor-support.css`);

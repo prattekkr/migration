@@ -289,29 +289,5 @@
   {
     "id": "video",
     "components": []
-  },
-  {
-    "id": "carousel",
-    "components": []
-  },
-  {
-    "id": "cta",
-    "components": []
-  },
-  {
-    "id": "custom-image",
-    "components": []
-  },
-  {
-    "id": "story-card",
-    "components": []
-  },
-  {
-    "id": "quote",
-    "components": []
-  },
-  {
-    "id": "fact-card",
-    "components": []
   }
 ]
