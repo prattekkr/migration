@@ -323,6 +323,7 @@ Use for embedding Brightcove-hosted videos with full player controls, playlists,
 | `iconImage` | reference | string | Button Image Icon | — | — | iconVariation === "image" |
 | `iconPosition` | select | string | Icon Position | `"after"` | `before` (Before), `after` (After) | iconVariation in ["icon-font", "image"] |
 | `ariaHidden` | boolean | boolean | Prevent screen readers from announcing this CTA | `false` | — | — |
+| `warnOnDeparturePopupFragmentPath` | aem-content | string | Warn on Departure Modal Path | — | — | — |
 | `classes_customDynamicClass` | ngaem:dynamic-picklist | string | Select Block Styles | `""` | (dynamic from cta-picklist-config) | — |
 
 ### CSS Classes
@@ -350,10 +351,11 @@ CTA is inline/flex and responsive by nature. No specific breakpoint overrides in
 | 5 | iconImage | Image reference or empty |
 | 6 | iconPosition | `before` or `after` |
 | 7 | ariaHidden | `true` or `false` |
+| 8 | warnOnDeparturePopupFragmentPath | AEM content path to departure modal or empty |
 
 ### Usage Notes
 
-Use for standalone call-to-action buttons/links. Supports same-tab/new-tab navigation, icon fonts or image icons positioned before/after text, and aria-hidden for decorative CTAs. Default template class is `default-cta`.
+Use for standalone call-to-action buttons/links. Supports same-tab/new-tab navigation, icon fonts or image icons positioned before/after text, aria-hidden for decorative CTAs, and warn-on-departure modal for external links. Default template class is `default-cta`.
 
 ---
 

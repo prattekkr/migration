@@ -26,16 +26,16 @@ Section: grid-cols-2                       ← right spacer (2 cols)
 
 This produces centered content at ~880px within a 1330px container.
 
-### In plain.html format:
+### In plain.html format (xwalk — classes in block name):
 
 ```html
-<div><div class="section-metadata"><div><div>style</div><div>grid-container, content-regular</div></div></div></div>
-<div><div class="section-metadata"><div><div>style</div><div>grid-cols-2</div></div></div></div>
+<div><div class="section-metadata grid-container content-regular"><div><div>language</div><div>none</div></div></div></div>
+<div><div class="section-metadata grid-cols-2"><div><div></div></div></div></div>
 <div>
   <!-- ALL BODY CONTENT BLOCKS GO HERE -->
-  <div class="section-metadata"><div><div>style</div><div>grid-section, grid-cols-8</div></div></div>
+  <div class="section-metadata grid-section grid-cols-8"><div><div>language</div><div>none</div></div></div>
 </div>
-<div><div class="section-metadata"><div><div>style</div><div>grid-cols-2</div></div></div></div>
+<div><div class="section-metadata grid-cols-2"><div><div></div></div></div></div>
 ```
 
 ### Available grid-cols values:
@@ -85,12 +85,24 @@ Within a grid column, individual blocks can further constrain their content widt
 
 Section metadata defines the layout behavior of each section.
 
-### Format in plain.html:
+### xwalk Model Properties (from component-models.json):
+- **`style_container`** (hidden) — auto-set base class: `"grid-section"` or `"grid-container"`
+- **`style_customDynamicClass`** — dynamic picklist for additional classes (e.g., `content-regular`, `grid-cols-8`)
+- **`background`** — background image (custom-asset)
+- **`language`** — language attribute (default: `"none"`)
+
+### Format in plain.html (xwalk format — PREFERRED):
 ```html
-<div class="section-metadata"><div><div>style</div><div>CLASSES HERE</div></div></div>
+<div class="section-metadata grid-container content-regular"><div><div>language</div><div>none</div></div></div>
+```
+Classes go in the **block name** (class attribute on the element).
+
+### In import scripts (xwalk format — PREFERRED):
+```javascript
+makeBlock(document, 'Section Metadata (grid-container, content-regular)', [['language', 'none']]);
 ```
 
-### In import scripts (block table format):
+### Legacy format (still works for rendering but NOT for xwalk authoring):
 ```javascript
 makeBlock(document, 'Section Metadata', [['style', 'grid-container, content-regular']]);
 ```
@@ -172,8 +184,8 @@ For story pages: [image, imageAlt, videoUrl, '', '', '', ''] ← ONE row with 7 
 ❌ WRONG:   makeBlock(doc, 'Hero Container (...)', [[picP], [''], [''], [''], [''], [''], ['']])
 
 ### cta (default-cta, back-cta)
-CommonProps: startIndex=8 → rows 8,9,10 are id/lang/analytics
-11 rows total:
+CommonProps: startIndex=9 → rows 9,10,11 are id/lang/analytics
+12 rows total:
   [0] link content (<a> element)
   [1] ariaLabel (empty)
   [2] ctaTarget (_self)
@@ -182,25 +194,29 @@ CommonProps: startIndex=8 → rows 8,9,10 are id/lang/analytics
   [5] iconImage (empty)
   [6] iconPosition (before for back-cta)
   [7] ariaHidden (false)
-  [8] blockId (empty) ← commonProp
-  [9] language (none) ← commonProp
-  [10] analyticsId (empty) ← commonProp
+  [8] warnOnDeparturePopupFragmentPath (empty — AEM path to warn-on-leave modal)
+  [9] blockId (empty) ← commonProp
+  [10] language (none) ← commonProp
+  [11] analyticsId (empty) ← commonProp
 
 ### story-card
 CommonProps: handled internally
-12 rows:
-  [0] storyCardVariant (storyCardInfo)
-  [1] showImage (false)
-  [2] showIcon (false)
-  [3] showCategory (true)
-  [4] showDate (true)
-  [5] showReadTime (true)
-  [6] storyPath (empty — auto-reads from page)
-  [7] showShareIcon (empty)
-  [8] categoryPath (link to category page)
-  [9] showExternalLink (false)
-  [10] blockId (empty)
-  [11] analyticsId (empty)
+13 rows (per component-models.json):
+  [0] storyCardVariant (storyCardInfo/cardInfo/leaderInfo/sidePanel/relatedContent)
+  [1] hidePublicationDate (false — inverse logic: false=show)
+  [2] hideReadTime (false)
+  [3] hideRole (false)
+  [4] hideDescription (false)
+  [5] hideImage (false)
+  [6] id (block ID, empty)
+  [7] customClass (CSS class, empty)
+  [8] page (<a> link to story page)
+  [9] openInNewTab (false)
+  [10] ctaLabel (CTA text, empty)
+  [11] (unused, empty)
+  [12] language (language code, empty)
+⚠️ Existing import scripts use legacy show* format (showImage, showCategory, etc.)
+   These still work for plain.html rendering but differ from the xwalk model fields.
 
 ### custom-title (h1-size | h5-size, width-large)
 CommonProps: startIndex=1 → rows 1,2,3 are id/lang/analytics

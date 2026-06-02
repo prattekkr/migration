@@ -19,7 +19,8 @@
 10. [fact-card](#fact-card)
 11. [footer](#footer)
 12. [fragment](#fragment)
-13. [header](#header)
+13. [Section Models (section, grid-section, grid-container)](#section-models-section-grid-section-grid-container)
+14. [header](#header)
 14. [hero](#hero)
 15. [linklist](#linklist)
 16. [modal](#modal)
@@ -39,6 +40,9 @@
 30. [tag-utility-nav](#tag-utility-nav)
 31. [teaser](#teaser)
 32. [video](#video)
+33. [custom-embed](#custom-embed)
+34. [product-listing](#product-listing)
+35. [search-results](#search-results)
 
 ---
 
@@ -433,9 +437,71 @@
 
 **Purpose:** Includes content from another page path as an inline fragment (standard EDS pattern).
 
+**Model Fields (1 field):**
+
+| Field | Component | Description |
+|-------|-----------|-------------|
+| `reference` | aem-content | Path to the fragment page |
+
 **Row Structure:** Single row with a link or text path to the fragment.
 
 **When to use:** Reusing content across pages (shared sections, CTAs, sidebars).
+
+---
+
+## Section Models (section, grid-section, grid-container)
+
+**Purpose:** Define section-level properties (background, styles, language, analytics). These are NOT blocks — they control the section `<div>` wrapper.
+
+**Key Architecture:**
+- `main` filter allows 3 section types: `section`, `grid-section`, `grid-container`
+- Properties prefixed with `style_` render as CSS classes on the section
+- `style_container` is a **hidden** field that auto-sets the base class
+
+### section (model id: `section`)
+
+| Field | Component | Default | Description |
+|-------|-----------|---------|-------------|
+| `name` | text | — | Section display name |
+| `background` | custom-asset | — | Background image |
+| `style_customDynamicClass` | ngaem:dynamic-picklist | `""` | Additional CSS classes (from section-picklist-config) |
+| `blockId` | text | `""` | Element ID |
+| `classes_commonCustomClass` | text | — | Custom CSS class |
+| `language` | select | `"none"` | Language attribute |
+| `analytics_id` | text | `""` | Analytics tracking ID |
+
+### grid-section (model id: `grid-section`)
+
+| Field | Component | Default | Description |
+|-------|-----------|---------|-------------|
+| `name` | text | `""` | Section display name |
+| `style_container` | text | `"grid-section"` | **HIDDEN** — auto-adds `grid-section` class |
+| `style_customDynamicClass` | ngaem:dynamic-picklist | `""` | Additional classes (e.g., `grid-cols-8`) |
+| `blockId` | text | `""` | Element ID |
+| `classes_commonCustomClass` | text | — | Custom CSS class |
+| `language` | select | `"none"` | Language attribute |
+| `analytics_id` | text | `""` | Analytics tracking ID |
+
+### grid-container (model id: `grid-container`)
+
+| Field | Component | Default | Description |
+|-------|-----------|---------|-------------|
+| `name` | text | `""` | Section display name |
+| `style_container` | text | `"grid-container"` | **HIDDEN** — auto-adds `grid-container` class |
+| `background` | custom-asset | — | Background image |
+| `style_customDynamicClass` | ngaem:dynamic-picklist | `""` | Additional classes (e.g., `content-regular`) |
+| `blockId` | text | `""` | Element ID |
+| `classes_commonCustomClass` | text | — | Custom CSS class |
+| `language` | select | `"none"` | Language attribute |
+| `analytics_id` | text | `""` | Analytics tracking ID |
+
+### Rendering in plain.html
+
+The `style_` properties combine to produce the section-metadata CSS classes:
+- `grid-container` + `style_customDynamicClass="content-regular"` → `class="section-metadata grid-container content-regular"`
+- `grid-section` + `style_customDynamicClass="grid-cols-8"` → `class="section-metadata grid-section grid-cols-8"`
+
+**Filter:** `grid-container` accepts all blocks; `grid-section` accepts all blocks; `section` accepts all blocks.
 
 ---
 
@@ -780,7 +846,19 @@ Data loaded from Content Fragment API.
 
 **applyCommonProps startIndex:** N/A
 
-**Row Structure:** Each row = one tab. First cell = tab title (heading), remaining = tab panel content.
+**Row Structure:** Each row = one tab (tabs-item model). 
+
+**tabs-item Model Fields (5 columns per row):**
+
+| Column | Field | Type | Description |
+|--------|-------|------|-------------|
+| 0 | title | text | Tab button label |
+| 1 | content_heading | text | Heading text inside panel |
+| 2 | content_headingType | select | Heading level: h3/h4/h5/h6 |
+| 3 | content_image | reference | Image inside panel |
+| 4 | content_richtext | richtext | Rich text content inside panel |
+
+**Filter:** `tabs` → allows `tabs-item` children.
 
 **Key CSS classes:**
 - `tabs-list` — Horizontal tab button bar (role=tablist)
@@ -795,6 +873,30 @@ Data loaded from Content Fragment API.
 ## tag-utility-nav
 
 **Purpose:** Tag-based utility navigation bar for filtering content by category tags.
+
+**applyCommonProps startIndex:** N/A
+
+**Row Structure (7 config rows + category item rows):**
+
+| Row | Field | Type | Description |
+|-----|-------|------|-------------|
+| 0 | searchPlaceholder | text | Search input placeholder text |
+| 1 | classes_searchIconType | select | no-icon/icon-font/image |
+| 2 | searchFontIcon | text | Search icon font name |
+| 3 | searchIcon | reference | Search icon image |
+| 4 | searchInID | text | Target block ID for search |
+| 5 | browseCategories | text | Browse categories label |
+| 6 | clearCategories | text | Clear categories label |
+
+**Child items (tag-utility-nav-category — 3 columns each):**
+
+| Column | Field | Type | Description |
+|--------|-------|------|-------------|
+| 0 | categoryTag | text | Tag identifier |
+| 1 | categoryLink | aem-content | Category page path |
+| 2 | categoryTitle | text | Display title for category |
+
+**Filter:** `tag-utility-nav` → allows `tag-utility-nav-category` children.
 
 **When to use:** Category/tag filter bars on listing pages.
 
@@ -851,6 +953,99 @@ Data loaded from Content Fragment API.
 - Icon configuration for play button
 
 **When to use:** Self-hosted video content (non-Brightcove MP4/WebM files).
+
+---
+
+## custom-embed
+
+**Purpose:** Embeds third-party integrations including OneTrust consent, JobPixle widgets, podcast players, and Wallsio social walls.
+
+**applyCommonProps startIndex:** 11
+
+**Row Structure (11 content rows + common props):**
+
+| Row | Field | Type | Description |
+|-----|-------|------|-------------|
+| 0 | embeddable | select | Integration type (onetrust/jobpixle/tool/podcast/wallsio) |
+| 1 | oneTrustId | text | OneTrust script ID |
+| 2 | oneTrustScriptSettings | text | OneTrust settings JSON |
+| 3 | oneTrustLoadNotice | text | Load notice text |
+| 4 | jobPixleWidgetCode | text | JobPixle widget code |
+| 5 | toolSelector | select | Tool selector (default: "ibd-disk") |
+| 6 | podcastDataAttributes | container | Podcast data attributes |
+| 7 | wallsioDataAttributes | container | Wallsio data attributes |
+| 8-10 | common props | - | blockId, language, analyticsId |
+
+**Variant Classes:** Dynamic from CSS picklist configuration.
+
+**When to use:** Third-party widget integrations (consent management, job listings, podcasts, social walls).
+
+---
+
+## product-listing
+
+**Purpose:** Product catalog listing with search, filter, sort, pagination, pronunciation audio, and optional patient assistance program (PAP) integration.
+
+**applyCommonProps startIndex:** 17
+
+**Row Structure (17 content rows + common props):**
+
+| Row | Field | Type | Description |
+|-----|-------|------|-------------|
+| 0 | searchIconType | select | none/icon-font/image |
+| 1 | searchFontIcon | text | Icon name (default: "search") |
+| 2 | searchImageIcon | reference | Search icon image |
+| 3 | shareText | text | Share button tooltip text |
+| 4 | shareConfirmationText | text | Share confirmation message |
+| 5 | pronunciationHeaderText | text | Pronunciation column header |
+| 6 | shareLinkIcon | reference | Share link icon image |
+| 7 | speakerIcon | reference | Speaker/pronunciation icon |
+| 8 | parentPath | aem-content | Parent page path for product listing |
+| 9 | orderBy | select | created/title/last-modified |
+| 10 | sortOrder | select | asc/desc |
+| 11 | maxItems | number | Maximum items to display |
+| 12 | noResultsHeadlineText | text | No results headline |
+| 13 | noResultsSubheadingText | text | No results subheading |
+| 14 | papEnabled | boolean | Enable Patient Assistance Program |
+| 15 | formEmbedUrl | aem-content | PAP form embed URL |
+| 16 | (reserved) | - | - |
+| 17-19 | common props | - | blockId, language, analyticsId |
+
+**Variant Classes:** Dynamic from CSS picklist configuration.
+
+**When to use:** Product catalog pages with search and filter. Used on pharmaceutical product listing pages with pronunciation audio and optional PAP form integration.
+
+---
+
+## search-results
+
+**Purpose:** Full search results page with configurable labels, pagination, and sort options.
+
+**applyCommonProps startIndex:** 9
+
+**Row Structure (9 content rows + common props):**
+
+| Row | Field | Type | Description |
+|-----|-------|------|-------------|
+| 0 | aboutResultsLabel | text | Results count label (default: "About {n} Results") |
+| 1 | nextLabel | text | Next page button text (default: "Next") |
+| 2 | previousLabel | text | Previous page button text (default: "Previous") |
+| 3 | noResultsLabel | text | No results message (default: "No Results") |
+| 4 | sortByLabel | text | Sort label (default: "Sort By") |
+| 5 | relevanceLabel | text | Relevance sort option (default: "Relevance") |
+| 6 | dateLabel | text | Date sort option (default: "Date") |
+| 7 | numberOfResults | number | Results per page (default: 10) |
+| 8 | paginationLimit | number | Max pagination pages (default: 7) |
+| 9-11 | common props | - | blockId, language, analyticsId |
+
+**Variant Classes:** None.
+
+**Key CSS:**
+- Search result cards with thumbnail images
+- Highlighted query terms
+- Pagination with numbered page links
+
+**When to use:** Search results page block (`/search-results` path).
 
 ---
 
