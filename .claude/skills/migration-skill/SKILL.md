@@ -255,7 +255,7 @@ Alignment modifiers: `align-left`, `align-center`, `align-right`
 [5] ctaUrl (button link)
 ```
 
-### cta — 11 rows
+### cta — 12 rows
 ```
 [0] link content (<a> element)
 [1] ariaLabel
@@ -265,24 +265,29 @@ Alignment modifiers: `align-left`, `align-center`, `align-right`
 [5] iconImage
 [6] iconPosition (before/after)
 [7] ariaHidden (false/true)
-[8-10] commonProps (blockId, language, analyticsId)
+[8] warnOnDeparturePopupFragmentPath (AEM path to departure modal, empty)
+[9-11] commonProps (blockId, language, analyticsId)
 ```
 
-### story-card — 12 rows
+### story-card — 13 rows (per component-models.json)
 ```
-[0] variant (storyCardInfo/cardInfo/leaderInfo/sidePanel/relatedContent)
-[1] showImage (true/false)
-[2] showIcon (true/false)
-[3] showCategory (true/false)
-[4] showDate (true/false)
-[5] showReadTime (true/false)
-[6] storyPath (content path or empty)
-[7] showShareIcon
-[8] categoryPath (link)
-[9] showExternalLink (true/false)
-[10] blockId
-[11] analyticsId
+[0] storyCardVariant (storyCardInfo/cardInfo/leaderInfo/sidePanel/relatedContent)
+[1] hidePublicationDate (true/false — inverse: true=hide)
+[2] hideReadTime (true/false)
+[3] hideRole (true/false)
+[4] hideDescription (true/false)
+[5] hideImage (true/false)
+[6] id (block ID, empty)
+[7] customClass (CSS class, empty)
+[8] page (<a> element with page path)
+[9] openInNewTab (true/false)
+[10] ctaLabel (CTA button text, empty)
+[11] (unused, empty)
+[12] language (language code or empty)
 ```
+⚠️ Import scripts use a LEGACY row format (show* fields instead of hide*) for backward
+   compatibility with existing content. The xwalk model fields above are the source of truth.
+   When writing NEW import scripts, use the model field names above.
 
 ### custom-title — 4 rows
 ```
@@ -385,7 +390,7 @@ Child rows (accordion-item model — 5 columns each):
 [0] quoteType (quote-standard/quote-dashboard/quote-large/...)
 [1] quotation (text)
 [2] attributionName (e.g. "Phil Hajduk, Ph.D")
-[3] attributionTitle (e.g. "VP, IT Information Research, AbbVie")
+[3] attributionRole (e.g. "VP, IT Information Research, AbbVie")
 [4] attributionImage (picture element — from .cmp-quote__author-block img)
 [5] quoteFragment (CF path, empty)
 [6] backgroundImage (picture, empty)
@@ -490,6 +495,28 @@ Cell 1 = text content (heading + description + link)
 Section Metadata classes go in the **block name** (class attribute), NOT as a `style` row inside.
 The row inside contains `language`/`none` (for grid-container/grid-section) or empty (for grid-cols-2 spacers).
 
+**Underlying xwalk model property mapping (from component-models.json):**
+
+| Section Type | Model ID | Key Property | Value | Rendering |
+|---|---|---|---|---|
+| Regular section | `section` | `style_customDynamicClass` | Dynamic picklist classes | Section gets picklist classes |
+| Grid Section | `grid-section` | `style_container` (hidden) | `"grid-section"` (auto) | Always has `grid-section` class |
+| Grid Section | `grid-section` | `style_customDynamicClass` | e.g. `"grid-cols-8"` | Additional classes appended |
+| Grid Container | `grid-container` | `style_container` (hidden) | `"grid-container"` (auto) | Always has `grid-container` class |
+| Grid Container | `grid-container` | `style_customDynamicClass` | e.g. `"content-regular"` | Additional classes appended |
+
+⚠️ Properties prefixed with `style_` are rendered as CSS classes on the section `<div>`.
+   The `style_container` field is **hidden** and auto-set — authors cannot change it.
+   The `style_customDynamicClass` is a dynamic picklist for additional layout classes.
+
+**Additional model fields on all section types:**
+- `name` — Section name (text, for UE display)
+- `background` — Background image (custom-asset)
+- `blockId` — Section element ID
+- `classes_commonCustomClass` — Custom CSS class
+- `language` — Language attribute (select, default: "none")
+- `analytics_id` — Analytics tracking ID
+
 ```javascript
 // CORRECT (xwalk format) — classes in block name:
 function makeSectionMetadata(document, style) {
@@ -542,10 +569,17 @@ Each row is 2 columns: `[propertyName, value]`.
 | `jcr:description` | SEO description | `meta[name="description"]` content |
 | `image` | Hero/card image | `meta[property="og:image:url"]` content (as `<img>` element) |
 | `publicationDate` | Publication date | DOM text match `(\w+ \d{1,2}, \d{4})` in intro |
+| `readWatchTime` | Read/Watch toggle | "readTime" or "watchTime" (default: "readTime") |
 | `storyReadTime` | Read time (minutes) | DOM text match `(\d+)\s*Minute\s*Read` |
+| `storyWatchTime` | Watch time (minutes) | For video-based stories (default: 5) |
 | `eyebrowText` | Category label | Category link text (e.g., "Science", "Neuroscience") |
 | `cardTitle` | Card title for listings | Same as `jcr:title` |
 | `cardDescription` | Card description | Same as `jcr:description` |
+| `cardImage` | Card image (override) | Optional card-specific image (custom-asset) |
+| `cardImageAlt` | Card image alt text | Alt text for card image override |
+| `ctaText` | CTA button text | Custom CTA label for card listings |
+| `navTitle` | Navigation title | Override title for breadcrumb/nav (if different from jcr:title) |
+| `hideFromNavigation` | Hide from nav | boolean — exclude page from auto-generated navigation |
 | `template` | Template name | Hardcoded per template (e.g., "story-article") |
 
 **Extraction from source page:**
@@ -744,7 +778,7 @@ Video will not play if values are at wrong row positions.
 ### Rule 4: Quote attribution fields must be separate rows
 ```
 [2] authorName — separate from title
-[3] authorTitle — separate from name  
+[3] attributionRole — separate from name  
 [4] authorImage — <picture><img> element or empty
 ```
 Do NOT combine name+title into one field.
