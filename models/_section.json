@@ -52,6 +52,7 @@
   "models": [
     {
       "id": "section",
+      "blockModelId": "section",
       "fields": [
         {
           "component": "tab",
@@ -85,7 +86,7 @@
         },
         {
           "component": "ngaem:dynamic-picklist",
-          "name": "classes_customDynamicClass",
+          "name": "style_customDynamicClass",
           "value": "",
           "label": "Select Block Styles",
           "valueType": "string",
@@ -99,6 +100,7 @@
     },
     {
       "id": "grid-section",
+      "blockModelId": "grid-section",
       "title": "Grid Section",
       "fields": [
         {
@@ -117,7 +119,7 @@
         },
         {
           "component": "text",
-          "name": "classes_container",
+          "name": "style_container",
           "label": "Generic Class",
           "value": "grid-section",
           "hidden": true
@@ -129,7 +131,7 @@
         },
         {
           "component": "ngaem:dynamic-picklist",
-          "name": "classes_customDynamicClass",
+          "name": "style_customDynamicClass",
           "value": "",
           "label": "Select Block Styles",
           "valueType": "string",
@@ -143,6 +145,7 @@
     },
     {
       "id": "grid-container",
+      "blockModelId": "grid-container",
       "title": "Grid Container",
       "fields": [
         {
@@ -160,7 +163,7 @@
         },
         {
           "component": "text",
-          "name": "classes_container",
+          "name": "style_container",
           "label": "Generic Class",
           "value": "grid-container",
           "hidden": true
@@ -186,7 +189,7 @@
         },
         {
           "component": "ngaem:dynamic-picklist",
-          "name": "classes_customDynamicClass",
+          "name": "style_customDynamicClass",
           "value": "",
           "label": "Select Block Styles",
           "valueType": "string",

@@ -102,6 +102,7 @@
                 "resourceType": "core/franklin/components/section/v1/section",
                 "template": {
                   "model": "grid-container",
+                  "filter": "grid-container",
                   "name": "Grid Container",
                   "identifier": "Grid Container"
                 }
@@ -175,6 +176,7 @@
                 "template": {
                   "name": "Brightcove Podcast Player",
                   "model": "brightcove-podcast-player",
+                  "filter": "brightcove-podcast-player",
                   "videoId": "",
                   "accountId": "corporate",
                   "playerId": "",
@@ -197,6 +199,7 @@
                 "template": {
                   "name": "Brightcove Video",
                   "model": "brightcove-video",
+                  "filter": "brightcove-video",
                   "projectNumber": "",
                   "overlayTitle": "",
                   "overlayDescription": "",
@@ -289,7 +292,8 @@
                 "resourceType": "core/franklin/components/block/v1/block",
                 "template": {
                   "name": "Carousel",
-                  "model": "carousel"
+                  "model": "carousel",
+                  "filter": "carousel"
                 }
               }
             }
@@ -405,6 +409,7 @@
                 "template": {
                   "name": "Custom Title",
                   "model": "custom-title",
+                  "filter": "custom-title",
                   "title": "",
                   "titleType": "h1",
                   "language": "none",
@@ -507,6 +512,7 @@
                 "template": {
                   "name": "Eyebrow Text",
                   "model": "eyebrow-text",
+                  "filter": "eyebrow-text",
                   "text": "Eyebrow label"
                 }
               }
@@ -1286,6 +1292,7 @@
                 "template": {
                   "name": "Search Input",
                   "model": "search-input",
+                  "filter": "search-input",
                   "blockId": "",
                   "language": "en"
                 }
@@ -1317,7 +1324,8 @@
                 "resourceType": "core/franklin/components/block/v1/block",
                 "template": {
                   "name": "Search",
-                  "model": "search"
+                  "model": "search",
+                  "filter": "search"
                 }
               }
             }
@@ -1332,7 +1340,8 @@
                 "resourceType": "core/franklin/components/block/v1/block",
                 "template": {
                   "name": "Separator",
-                  "model": "separator"
+                  "model": "separator",
+                  "filter": "separator"
                 }
               }
             }
@@ -1692,6 +1701,7 @@
                 "template": {
                   "name": "Video",
                   "model": "video",
+                  "filter": "video",
                   "language": "none",
                   "blockId": ""
                 }
