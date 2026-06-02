@@ -52,7 +52,6 @@
   "models": [
     {
       "id": "section",
-      "blockModelId": "section",
       "fields": [
         {
           "component": "tab",
@@ -92,15 +91,11 @@
           "valueType": "string",
           "sourceAEMNodeName": "section-picklist-config",
           "valueSeperator": ","
-        },
-        {
-          "...": "./_common-properties.json#/common-prop"
         }
       ]
     },
     {
       "id": "grid-section",
-      "blockModelId": "grid-section",
       "title": "Grid Section",
       "fields": [
         {
@@ -137,15 +132,11 @@
           "valueType": "string",
           "sourceAEMNodeName": "grid-section-picklist-config",
           "valueSeperator": ","
-        },
-        {
-          "...": "./_common-properties.json#/common-prop"
         }
       ]
     },
     {
       "id": "grid-container",
-      "blockModelId": "grid-container",
       "title": "Grid Container",
       "fields": [
         {
@@ -195,9 +186,6 @@
           "valueType": "string",
           "sourceAEMNodeName": "grid-container-picklist-config",
           "valueSeperator": ","
-        },
-        {
-          "...": "./_common-properties.json#/common-prop"
         }
       ]
     }
