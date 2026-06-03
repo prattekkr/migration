@@ -119,6 +119,10 @@
     ]
   },
   {
+    "id": "carousel",
+    "components": []
+  },
+  {
     "id": "brightcove-podcast-player",
     "components": []
   },
