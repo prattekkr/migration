@@ -236,6 +236,7 @@
     /* --corp-spacing-49: 4.9rem; */
     --corp-spacing-50: 5rem;
     --corp-spacing-52: 5.2rem;
+    --corp-spacing-53: 5.3rem;
     --corp-spacing-55: 5.5rem;
     --corp-spacing-56: 5.6rem;
     --corp-spacing-60: 6rem;
@@ -246,6 +247,7 @@
     --corp-spacing-70: 7rem;
     --corp-spacing-72: 7.2rem;
     --corp-spacing-74: 7.4rem;
+    --corp-spacing-76: 7.6rem;
     --corp-spacing-80: 8rem;
     --corp-spacing-81: 8.1rem;
     --corp-spacing-82: 8.2rem;
@@ -256,15 +258,19 @@
     --corp-spacing-100: 10rem;
     --corp-spacing-108: 10.8rem;
     --corp-spacing-110: 11rem;
+    --corp-spacing-112: 11.2rem;
     --corp-spacing-118: 11.8rem;
     --corp-spacing-120: 12rem;
     --corp-spacing-140: 14rem;
+    --corp-spacing-150: 15rem;
+    --corp-spacing-152: 15.2rem;
     --corp-spacing-124: 12.4rem;
     --corp-spacing-161: 16.1rem;
     --corp-spacing-168: 16.8rem;
     --corp-spacing-180: 18rem;
     --corp-spacing-190: 19rem;
     --corp-spacing-192: 19.2rem;
+    --corp-spacing-200: 20rem;
     --corp-spacing-250: 25rem;
     --corp-spacing-254: 25.4rem;
     --corp-spacing-270: 27rem;
@@ -314,6 +320,7 @@
     --border-radius-s: 0.2rem;
     --border-radius-base: 0.4rem;
     --border-radius-m: 0.8rem;
+    --border-radius-ml: 1.2rem;
     --border-radius-md: 4rem; /**  --border-top-left-radius-40 */
     --border-radius-l: 8rem; /** --border-top-left-radius-desktop */
     --border-width-hairline: 0.05rem;
@@ -344,6 +351,7 @@
     --opacity-low: 0.3;
 
     /* Layout TODO Moved to Abbvie token class*/
+    --corp-layout-container-max-width-xxs: 60rem;
     --corp-layout-container-max-width-xs: 90rem;
     --corp-layout-container-max-width-sm: 110rem;
     --corp-layout-container-max-width-md: 133rem;
@@ -463,7 +471,8 @@
     --corp-focus-visible-outline: var(--border-width-thick) solid
         var(--color-black);
     --corp-focus-visible-outline-width: var(--border-width-thin);
-    --corp-focus-visible-outline-offset: -0.1rem;
+    --corp-focus-visible-outline-offset-sm: -0.1rem;
+    --corp-focus-visible-outline-offset-md: 0.2rem;
 }
 
 /** TODO Move to Hero Block & replace breakpoint value to token in core file */

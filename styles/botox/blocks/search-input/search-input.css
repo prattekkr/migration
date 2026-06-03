@@ -81,7 +81,7 @@
 .search-input:where(.block) .search-input-alert {
   display: none;
   margin: 0;
-  padding: 0.75rem 0;
+  padding: var(--corp-spacing-75) 0;
   color: var(--color-error);
   font-size: var(--corp-font-size-20);
   line-height: var(--corp-typography-lineheight-body-lg);

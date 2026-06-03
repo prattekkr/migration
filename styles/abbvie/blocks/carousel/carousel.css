@@ -1,5 +1,9 @@
 .carousel {
   --carousel-padding-bottom: var(--corp-spacing-53);
+  --carousel-peek: 6%;
+  --carousel-arrow-color: var(--corp-color-text-default);
+  --carousel-arrow-hover-color: var(--corp-color-text-accent);
+  --carousel-indicator-active-bg: var(--corp-color-text-default);
 
   padding-bottom: var(--carousel-padding-bottom);
   margin-bottom: var(--corp-spacing-56);
@@ -47,21 +51,21 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: var(--corp-spacing-10);
-  padding-left: var(--corp-spacing-30);
-  padding-right: var(--corp-spacing-30);
-  background-color: transparent;
-  width: min(var(--corp-spacing-300), 100%);
+  background-color: transparent; 
+  padding: 0 var(--corp-spacing-30);
+  gap: var(--corp-spacing-6);
+  max-width: min(var(--corp-spacing-214), 100%);
+  width: auto;
 }
 
 .carousel .carousel-slide-indicator button {
-  width: var(--corp-spacing-16);
-  height: var(--corp-spacing-16);
+  width: var(--corp-spacing-10);
+  height: var(--corp-spacing-10);
   margin: 0;
   padding: 0;
   border-radius: 50%;
-  background-color: var(--corp-form-border-color);
-  opacity: var(--opacity-muted);
+  background-color: var(--color-blue-light);
+  opacity: var(--opacity-full);
   border: none;
   transition: background-color 0.2s;
 }
@@ -70,12 +74,11 @@
 .carousel-slide-indicator button:hover,
 .carousel-slide-indicator button:focus-visible {
   cursor: pointer;
-  opacity: var(--opacity-high);
 }
 
 .carousel-slide-indicator.is-active button,
 .carousel-slide-indicator button.is-active {
-  background-color: var(--corp-color-text-default);
+   background-color: var(--carousel-indicator-active-bg);
 }
 
 .carousel .carousel-controls {
@@ -86,7 +89,7 @@
 
 .carousel .carousel-controls>button {
   position: relative;
-  width: var(--corp-spacing-40);
+  width: auto;
   height: var(--corp-spacing-40);
   margin: 0;
   border-radius: 0;
@@ -99,13 +102,23 @@
 .carousel-controls>button.slide-prev::after {
   font-family: var(--corp-icon-font-family);
   font-size: var(--corp-font-size-20);
-  color: var(--corp-color-text-default);
+  color: var(--carousel-arrow-color);
   transition: color 0.1s ease;
+}
+
+.carousel:where(.dark) .carousel-controls>button:where(.slide-next)::after,
+.carousel:where(.dark) .carousel-controls>button:where(.slide-prev)::after {
+  color: var(--color-accent-blue-light);
 }
 
 button.slide-next:hover::after,
 button.slide-prev:hover::after {
-  color: var(--corp-color-text-accent);
+  color: var(--carousel-arrow-hover-color);
+}
+
+.carousel:where(.dark) button:where(.slide-next):hover::after,
+.carousel:where(.dark) button:where(.slide-prev):hover::after {
+  color: var(--color-blue-light);
 }
 
 .carousel-controls>button.slide-next::after {
@@ -114,6 +127,19 @@ button.slide-prev:hover::after {
 
 .carousel-controls>button.slide-prev::after {
   content: "\e903";
+}
+
+@media (min-width: 1024px) {
+  .carousel .carousel-slide-indicators {
+    gap: var(--corp-spacing-10);
+    max-width: min(var(--corp-spacing-310), 100%);
+    width: auto;
+  }
+
+  .carousel .carousel-slide-indicator button {
+  width: var(--corp-spacing-16);
+  height: var(--corp-spacing-16);
+  }
 }
 
 .carousel-vertical button.slide-next {
@@ -174,12 +200,12 @@ button.slide-prev:hover::after {
 .carousel.carousel-default .carousel-slides {
   gap: var(--corp-spacing-8);
   align-items: flex-start;
-  padding-inline: 2%;
-  scroll-padding-inline: 2%;
+  padding-inline: var(--carousel-peek);
+  scroll-padding-inline: var(--carousel-peek);
 }
 
 .carousel.carousel-default .carousel-slide {
-  flex: 0 0 96%;
+  flex: 0 0 calc(100% - 2 * var(--carousel-peek));
   min-height: auto;
   border: 0;  
   border-radius: 0;
@@ -195,12 +221,6 @@ button.slide-prev:hover::after {
   opacity: var(--opacity-full);
 }
 
-.carousel-default .carousel-slide-indicators {
-  padding: 0;
-  gap: var(--corp-spacing-8);
-  justify-content: center;
-}
-
 /* Carousel (minimal) variant */
 
 .carousel.carousel-minimal .carousel-slides {
@@ -213,24 +233,28 @@ button.slide-prev:hover::after {
   min-height: auto;
   flex-direction: column;
   align-items: stretch;
-  justify-content: flex-start;  
+  justify-content: flex-start;
   overflow: hidden;
   scroll-snap-align: center;
 }
 
 @media (min-width: 744px) {
+  .carousel {
+    --carousel-peek: 8%;
+  }
+
   .carousel .carousel-controls {
     margin-top: var(--corp-spacing-24);
   }
 
   .carousel.carousel-default .carousel-slide {
-    flex: 0 0 84%;
+     flex: 0 0 calc(100% - 2 * var(--carousel-peek));
   }
 
   .carousel.carousel-default .carousel-slides {
     gap: var(--corp-spacing-20);
-    padding-inline: 8%;
-    scroll-padding-inline: 8%;
+    padding-inline: var(--carousel-peek);
+    scroll-padding-inline: var(--carousel-peek);
   }
 
   .carousel.carousel-minimal .carousel-slides {
@@ -246,44 +270,20 @@ button.slide-prev:hover::after {
 @media (min-width: 1024px) {
   .carousel {
     --carousel-padding-bottom: var(--corp-spacing-60);
+    --carousel-peek: 11%;
   }
 
   .carousel.carousel-default .carousel-slide {
-    flex: 0 0 82%;
+    flex: 0 0 calc(100% - 2 * var(--carousel-peek));
   }
 
   .carousel.carousel-default .carousel-slides {
-    padding-inline: 9%;
-    scroll-padding-inline: 9%;
+    padding-inline: var(--carousel-peek);
+    scroll-padding-inline: var(--carousel-peek);
   }
 
   .carousel.carousel-minimal .carousel-slide {
     flex: 0 0 100%;
-  }
-}
-
-/* numberOfSlidesToShow: center slide stays large; (N-1)/2 peek slots per side */
-
-.carousel-default[data-slides-to-show] {
-  --carousel-peek: 6%;
-}
-
-.carousel-default[data-slides-to-show] .carousel-slides {
-  padding-inline: calc((var(--carousel-slides-to-show) - 1) / 2 * var(--carousel-peek));
-  scroll-padding-inline: calc((var(--carousel-slides-to-show) - 1) / 2 * var(--carousel-peek));
-}
-
-.carousel-default[data-slides-to-show] .carousel-slide {
-  flex: 0 0 calc(100% - (var(--carousel-slides-to-show) - 1) * var(--carousel-peek));
-}
-
-@media (min-width: 744px) {
-  .carousel-default[data-slides-to-show] {
-    --carousel-peek: 8%;
-  }
-
-  .carousel.carousel-show-btn-margin {
-    margin-bottom: var(--corp-spacing-56);
   }
 }
 
@@ -306,10 +306,6 @@ button.slide-prev:hover::after {
 }
 
 @media (min-width: 1024px) {
-  .carousel-default[data-slides-to-show] {
-    --carousel-peek: 11%;
-  }
-
   /* margin styles for desktop */
   .carousel.carousel-show-btn-margin {
     margin-bottom: var(--corp-spacing-80);
@@ -398,6 +394,10 @@ button.slide-prev:hover::after {
   color: var(--corp-color-text-default);
 }
 
+.carousel:where(.dark) .carousel-play-pause::before {
+  color: var(--color-accent-blue-light);
+}
+
 /* Play icon — triangle (when paused) */
 
 .carousel-play-pause.is-paused::before {
@@ -449,6 +449,11 @@ button.slide-prev:hover::after {
   font-size: var(--corp-font-size-14);
   font-weight: var(--corp-font-weight-regular);
   line-height: var(--corp-typography-lineheight-body-sm);
+}
+
+.carousel.dark .rsscarousel-slide-date,
+.carousel.dark .rsscarousel-slide-title {
+  color: var(--color-white);
 }
 
 @media (min-width: 744px) {

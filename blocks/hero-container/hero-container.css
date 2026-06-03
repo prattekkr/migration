@@ -21,7 +21,11 @@
 
 /* ── Block root ────────────────────────────────────────────────────────────── */
 .hero-container {
-  --hero-container-overlay-gradient: linear-gradient(to top, rgb(0 0 0 / 90%) 42.91%, transparent);
+  --hero-container-overlay-gradient: linear-gradient(
+    to top,
+    rgb(0 0 0 / 90%) 42.91%,
+    transparent
+  );
   --hero-container-button-hover-color: var(--color-border-container);
 
   position: relative;
@@ -47,7 +51,7 @@
 }
 
 .homepage-overlap .hero-container-bg {
-   padding-top: var(--corp-spacing-64);
+  padding-top: var(--corp-spacing-64);
 }
 
 .hero-container-bg picture,
@@ -114,7 +118,7 @@
 
 /* Playing state — show pause icon (two bars) */
 .hero-container-video-control.playing::after {
-  content: '';
+  content: "";
   display: block;
   width: var(--corp-spacing-10);
   height: var(--corp-spacing-12);
@@ -127,13 +131,25 @@
   content: "";
   display: block;
   font-family: var(--corp-icon-font-family);
-  transform: scale(.8);
+  transform: scale(0.8);
   font-size: var(--corp-font-size-20);
 }
 
-:where(.hero-container.dark) :where(.hero-container-bg):has(picture, img, video, .hero-container-brightcove)::after,
-:where(.hero-container.navy) :where(.hero-container-bg):has(picture, img, video, .hero-container-brightcove)::after {
-  content: '';
+:where(.hero-container.dark)
+  :where(.hero-container-bg):has(
+    picture,
+    img,
+    video,
+    .hero-container-brightcove
+  )::after,
+:where(.hero-container.navy)
+  :where(.hero-container-bg):has(
+    picture,
+    img,
+    video,
+    .hero-container-brightcove
+  )::after {
+  content: "";
   position: absolute;
   inset: 0;
   background: var(--hero-container-overlay-gradient);
@@ -148,7 +164,6 @@
 .hero-container.purple .hero-container-bg {
   background-color: var(--color-purple-primary);
 }
-
 
 .hero-container-title-row,
 .hero-container-cta-row {
@@ -170,7 +185,6 @@
 
 .hero-container-section-overlay {
   position: relative;
-  z-index: var(--corp-z-index-base);
   background-color: var(--color-surface-default);
   border-top-left-radius: var(--border-radius-subtle);
   display: flex;
@@ -185,7 +199,7 @@
   margin-inline: auto;
 }
 
-.hero-container-section-overlay > div[class$='-wrapper'] {
+.hero-container-section-overlay > div[class$="-wrapper"] {
   max-width: unset;
   padding: 0;
 }
@@ -243,11 +257,15 @@
   background: none;
 }
 
-.hero-container:is(.dark, .navy, .purple) :where(.hero-container-cta-row) :where(a.button) {
+.hero-container:is(.dark, .navy, .purple)
+  :where(.hero-container-cta-row)
+  :where(a.button) {
   color: var(--color-accent-blue-light);
 }
 
-.hero-container:is(.dark, .navy, .purple) :where(.hero-container-cta-row) :where(a.button:hover) {
+.hero-container:is(.dark, .navy, .purple)
+  :where(.hero-container-cta-row)
+  :where(a.button:hover) {
   color: var(--hero-container-button-hover-color);
 }
 
@@ -271,7 +289,7 @@
 
   .hero-container-title-row :where(h1, h2, h3) {
     font-size: var(--corp-font-size-40);
-    line-height: 44px;
+    line-height: var(--corp-typography-lineheight-heading-md);
     margin-bottom: var(--corp-spacing-24);
   }
 
@@ -288,7 +306,6 @@
     font-size: var(--corp-font-size-14);
     letter-spacing: var(--corp-typography-letterspacing-wide-2xl);
   }
-
 }
 
 /* ── Desktop (≥1024px, ≤133rem) ───────────────────────────────────────────── */
@@ -347,7 +364,7 @@
     padding: 0 var(--corp-spacing-55);
     width: calc(100% * 11 / 12);
     margin: 0 auto;
-  }  
+  }
 }
 
 .hero-container.landing .hero-container-bg {
@@ -357,13 +374,19 @@
 
 @media (--bp-tablet) {
   .hero-container.landing .hero-container-bg {
-    height: var(--hero-landing-container-height-tablet, var(--hero-landing-container-height));
+    height: var(
+      --hero-landing-container-height-tablet,
+      var(--hero-landing-container-height)
+    );
   }
 }
 
 @media (--bp-desktop) {
   .hero-container.landing .hero-container-bg {
-    height: var(--hero-landing-container-height-desktop, var(--hero-landing-container-height));
+    height: var(
+      --hero-landing-container-height-desktop,
+      var(--hero-landing-container-height)
+    );
   }
 }
 

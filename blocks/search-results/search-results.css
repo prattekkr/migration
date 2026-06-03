@@ -38,8 +38,8 @@
 
 .search-results__live-region {
     position: absolute;
-    width: 1px;
-    height: 1px;
+    width: var(--corp-spacing-1);
+    height: var(--corp-spacing-1);
     overflow: hidden;
     clip-path: inset(50%);
     white-space: nowrap;
@@ -352,7 +352,7 @@
     cursor: default;
     font-weight: var(--corp-font-weight-semibold);
     pointer-events: none;
-    border-bottom: 2px solid var(--color-accent-blue);
+    border-bottom: var(--corp-spacing-2) solid var(--color-accent-blue);
     border-radius: 0;
 }
 

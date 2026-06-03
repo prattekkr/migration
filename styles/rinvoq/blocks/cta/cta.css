@@ -59,7 +59,7 @@
 
 .cta .button:focus, .cta .button:active, .cta .button:focus-visible {
         outline: var(--corp-spacing-1) solid var(--color-navy-dark);
-        outline-offset: var(--corp-focus-visible-outline-offset);
+        outline-offset: var(--corp-focus-visible-outline-offset-sm);
     }
 
 @media (min-width: 744px) {

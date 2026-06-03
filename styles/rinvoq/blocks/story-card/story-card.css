@@ -900,7 +900,6 @@
   .story-card.is-related-content .story-card-content {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
   }
 
   .story-card.is-related-content .story-card-meta {
@@ -1127,10 +1126,6 @@
   }
 
   .story-card.is-side-panel .story-card-description {
-    font-size: var(--corp-font-size-14);
-  }
-
-  .story-card.is-side-panel .story-card-read-time-inline {
     font-size: var(--corp-font-size-14);
   }
 

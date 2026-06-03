@@ -485,7 +485,8 @@ function transformPipelineData(pharmaData, deviceData, tagsData) {
         .map((type) => tagMap[type] || type.split('/').pop())
         .join(', '),
       pronunciation: item.moleculeAssetNamePronunciationName,
-      pronunciationAudio: item.moleculeAssetNamePronunciationAudio || '',
+      // eslint-disable-next-line no-underscore-dangle
+      pronunciationAudio: item.moleculeAssetNamePronunciationAsset?._path || '',
       description: item.description,
       indications,
     };
@@ -535,7 +536,8 @@ function transformPipelineData(pharmaData, deviceData, tagsData) {
         .map((type) => tagMap[type] || type.split('/').pop())
         .join(', '),
       pronunciation: item.deviceAssetNamePronunciationName,
-      pronunciationAudio: item.deviceAssetNamePronunciationAudio || '',
+      // eslint-disable-next-line no-underscore-dangle
+      pronunciationAudio: item.deviceAssetNamePronunciationAsset?._path || '',
       description: item.description,
       indications,
     };

@@ -374,8 +374,8 @@
 }
 
 .abbvie-accoridian.accordion-container {
-  padding-left: 3rem;
-  padding-right: 3rem;
+  padding-left: var(--corp-spacing-30);
+  padding-right: var(--corp-spacing-30);
 }
 
 .section.abbvie-accordian-no-title {

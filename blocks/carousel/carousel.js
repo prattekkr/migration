@@ -16,54 +16,48 @@ const CAROUSEL_ITEM_FIELDS = new Set([
 ]);
 
 // Row index map — mirrors field order in _carousel.json (tabs are UI-only, not rows)
-// Row  0: totalSlides             (number of sibling blocks to pull in as slides)
-// Row  1: carouselType
-// Row  2: rssFeedUrl              (dynamic — see fetchRssFeed / createSlidesFromRssFeed)
+// Row  0: carouselType
+// Row  1: rssFeedUrl              (dynamic — see fetchRssFeed / createSlidesFromRssFeed)
+// Row  2: totalSlides             (static — number of sibling blocks to pull in as slides)
 // Row  3: numberOfItems           (dynamic — caps RSS slide count; 0 = no limit)
 // Row  4: autoplay
 // Row  5: slideTransitionTime     (autoplay interval in ms)
 // Row  6: pauseOnHover            (autoplay)
-// Row  7: numberOfSlidesToShow
-// Row  8: bypassCarouselOnMobile
-// Row  9: startingSlideIndex
-// Row 10: centerActiveSlide
-// Row 11: enableLooping
-// Row 12: enableNextPreviousControls
-// Row 13: enableDotNavigation
-// Row 14: carouselLabel
-// Row 15: previousButtonLabel
-// Row 16: nextButtonLabel
-// Row 17: playButtonLabel         (autoplay)
-// Row 18: pauseButtonLabel        (autoplay)
-// Row 19: tablistLabel
-// Row 20: itemLabel
-// Row 21: classes_carouselVariant (CSS class — no JS handling)
-// Row 22: blockId                 (handled by applyCommonProps)
-// Row 23: classes_commonCustomClass (handled by applyCommonProps)
-// Row 24: language
+// Row  7: bypassCarouselOnMobile
+// Row  8: startingSlideIndex
+// Row  9: centerActiveSlide
+// Row 10: enableLooping
+// Row 11: enableNextPreviousControls
+// Row 12: enableDotNavigation
+// Row 13: carouselLabel
+// Row 14: previousButtonLabel
+// Row 15: nextButtonLabel
+// Row 16: tablistLabel
+// Row 17: itemLabel
+// Row 18: classes_customDynamicClass (CSS class — no JS handling)
+// Row 19: blockId                 (handled by applyCommonProps)
+// Row 20: classes_commonCustomClass (handled by applyCommonProps)
+// Row 21: language
 const ROW = {
-  TOTAL_SLIDES: 0,
-  CAROUSEL_TYPE: 1,
-  RSS_FEED_URL: 2,
+  CAROUSEL_TYPE: 0,
+  RSS_FEED_URL: 1,
+  TOTAL_SLIDES: 2,
   NUMBER_OF_ITEMS: 3,
   AUTOPLAY: 4,
   SLIDE_TRANSITION_TIME: 5,
   PAUSE_ON_HOVER: 6,
-  NUMBER_OF_SLIDES_TO_SHOW: 7,
-  BYPASS_ON_MOBILE: 8,
-  STARTING_SLIDE_INDEX: 9,
-  CENTER_ACTIVE_SLIDE: 10,
-  ENABLE_LOOPING: 11,
-  ENABLE_NEXT_PREV_CONTROLS: 12,
-  ENABLE_DOT_NAVIGATION: 13,
-  CAROUSEL_LABEL: 14,
-  PREV_BUTTON_LABEL: 15,
-  NEXT_BUTTON_LABEL: 16,
-  PLAY_BUTTON_LABEL: 17,
-  PAUSE_BUTTON_LABEL: 18,
-  TABLIST_LABEL: 19,
-  ITEM_LABEL: 20,
-  LANGUAGE: 24,
+  BYPASS_ON_MOBILE: 7,
+  STARTING_SLIDE_INDEX: 8,
+  CENTER_ACTIVE_SLIDE: 9,
+  ENABLE_LOOPING: 10,
+  ENABLE_NEXT_PREV_CONTROLS: 11,
+  ENABLE_DOT_NAVIGATION: 12,
+  CAROUSEL_LABEL: 13,
+  PREV_BUTTON_LABEL: 14,
+  NEXT_BUTTON_LABEL: 15,
+  TABLIST_LABEL: 16,
+  ITEM_LABEL: 17,
+  LANGUAGE: 21,
 };
 
 function createSlidesFromRssFeed(responseXml, numberOfItems) {
@@ -294,19 +288,8 @@ function bindEvents(block) {
   }
 }
 
-function initAutoplay(block, intervalMs, pauseOnHover, playLabel, pauseLabel, placeholders) {
+function initAutoplay(block, intervalMs, pauseOnHover) {
   let timer = null;
-  let playing = true;
-
-  const controlsNav = block.querySelector('.carousel-controls');
-  if (!controlsNav) return;
-
-  const playPauseBtn = document.createElement('button');
-  playPauseBtn.type = 'button';
-  playPauseBtn.className = 'carousel-play-pause';
-  const dotsEl = controlsNav.querySelector('.carousel-slide-indicators');
-  const nextBtnEl = controlsNav.querySelector('.slide-next');
-  controlsNav.insertBefore(playPauseBtn, dotsEl || nextBtnEl || null);
 
   function tick() {
     showSlide(block, parseInt(block.dataset.activeSlide, 10) + 1);
@@ -322,38 +305,20 @@ function initAutoplay(block, intervalMs, pauseOnHover, playLabel, pauseLabel, pl
     timer = null;
   }
 
-  function updateButton() {
-    playPauseBtn.setAttribute(
-      'aria-label',
-      playing
-        ? (pauseLabel || placeholders.pauseCarousel || 'Pause')
-        : (playLabel || placeholders.playCarousel || 'Play'),
-    );
-    playPauseBtn.classList.toggle('is-paused', !playing);
-  }
-
-  playPauseBtn.addEventListener('click', () => {
-    playing = !playing;
-    if (playing) startTimer();
-    else stopTimer();
-    updateButton();
-  });
-
   // Reset timer on manual navigation so the selected slide gets its full display time
   [
     block.querySelector('.slide-prev'),
     block.querySelector('.slide-next'),
     ...block.querySelectorAll('.carousel-slide-indicator button'),
   ].forEach((btn) => {
-    btn?.addEventListener('click', () => { if (playing) startTimer(); });
+    btn?.addEventListener('click', () => { startTimer(); });
   });
 
   if (pauseOnHover) {
-    block.addEventListener('mouseenter', () => { if (playing) stopTimer(); });
-    block.addEventListener('mouseleave', () => { if (playing) startTimer(); });
+    block.addEventListener('mouseenter', stopTimer);
+    block.addEventListener('mouseleave', startTimer);
   }
 
-  updateButton();
   startTimer();
 }
 
@@ -410,7 +375,6 @@ function isAuthoringFieldRow(row) {
     || !!getFieldElement(row, 'autoplay')
     || !!getFieldElement(row, 'slideTransitionTime')
     || !!getFieldElement(row, 'pauseOnHover')
-    || !!getFieldElement(row, 'numberOfSlidesToShow')
     || !!getFieldElement(row, 'bypassCarouselOnMobile')
     || !!getFieldElement(row, 'startingSlideIndex')
     || !!getFieldElement(row, 'centerActiveSlide')
@@ -420,8 +384,6 @@ function isAuthoringFieldRow(row) {
     || !!getFieldElement(row, 'carouselLabel')
     || !!getFieldElement(row, 'previousButtonLabel')
     || !!getFieldElement(row, 'nextButtonLabel')
-    || !!getFieldElement(row, 'playButtonLabel')
-    || !!getFieldElement(row, 'pauseButtonLabel')
     || !!getFieldElement(row, 'tablistLabel')
     || !!getFieldElement(row, 'itemLabel')
     || !!getFieldElement(row, 'analyticsInteractionId')
@@ -687,26 +649,19 @@ function initVerticalHeight(block, slidesWrapper) {
 
 let carouselId = 0;
 export default async function decorate(block) {
-  applyCommonProps(block, 22);
+  applyCommonProps(block, 19);
   carouselId += 1;
   block.setAttribute('id', `carousel-${carouselId}`);
 
   const allRows = [...block.querySelectorAll(':scope > div')];
 
-  // Row  0: totalSlides — number of next sibling blocks to consume as carousel slides
+  // Row  2: totalSlides — number of next sibling blocks to consume as carousel slides (static type)
   const totalSlides = parseInt(getCellText(allRows[ROW.TOTAL_SLIDES]), 10) || 0;
-  // Row  9: startingSlideIndex — authored as 1-based, convert to 0-based
+  // Row  8: startingSlideIndex — authored as 1-based, convert to 0-based
   const startingSlideRaw = parseInt(getCellText(allRows[ROW.STARTING_SLIDE_INDEX]), 10) || 1;
   const startingSlideIndex = Math.max(0, startingSlideRaw - 1);
   // Row  7: bypassCarouselOnMobile — stack slides as a list on viewports < 744px
   const bypassOnMobile = getCellBoolean(allRows[ROW.BYPASS_ON_MOBILE], false);
-  // Row  6: numberOfSlidesToShow — total visible slots (center + partial peeks on each side)
-  const slidesToShowText = getCellText(allRows[ROW.NUMBER_OF_SLIDES_TO_SHOW]);
-  if (slidesToShowText) {
-    const numberOfSlidesToShow = Math.max(1, parseInt(slidesToShowText, 10) || 1);
-    block.dataset.slidesToShow = numberOfSlidesToShow;
-    block.style.setProperty('--carousel-slides-to-show', numberOfSlidesToShow);
-  }
   // Row  9: centerActiveSlide — store as data attribute for showSlide/shouldCenterActiveSlide
   block.dataset.centerActiveSlide = String(getCellBoolean(
     allRows[ROW.CENTER_ACTIVE_SLIDE],
@@ -722,25 +677,21 @@ export default async function decorate(block) {
   const prevButtonLabel = getCellText(allRows[ROW.PREV_BUTTON_LABEL]);
   // Row 15: nextButtonLabel — aria-label override for the next arrow button
   const nextButtonLabel = getCellText(allRows[ROW.NEXT_BUTTON_LABEL]);
-  // Row 18: tablistLabel — aria-label for the controls nav element
+  // Row 16: tablistLabel — aria-label for the controls nav element
   const tablistLabel = getCellText(allRows[ROW.TABLIST_LABEL]);
-  // Row 19: itemLabel — when true, derive each slide's aria-label from its heading
+  // Row 17: itemLabel — when true, derive each slide's aria-label from its heading
   const useItemLabel = getCellBoolean(allRows[ROW.ITEM_LABEL], false);
   // Row 10: enableLooping — wrap from last slide back to first
   const enableLooping = getCellBoolean(allRows[ROW.ENABLE_LOOPING], false);
-  // Row  3: autoplay — enable auto-advancing slides
+  // Row  4: autoplay — enable auto-advancing slides
   const autoplay = getCellBoolean(allRows[ROW.AUTOPLAY], false);
-  // Row  4: slideTransitionTime — auto-advance interval in milliseconds (default 5000)
+  // Row  5: slideTransitionTime — auto-advance interval in milliseconds (default 5000)
   const slideTransitionTime = parseInt(getCellText(allRows[ROW.SLIDE_TRANSITION_TIME]), 10) || 5000;
-  // Row  5: pauseOnHover — pause autoplay when mouse is over the carousel (default true)
+  // Row  6: pauseOnHover — pause autoplay when mouse is over the carousel (default true)
   const pauseOnHover = getCellBoolean(allRows[ROW.PAUSE_ON_HOVER], true);
-  // Row 16: playButtonLabel — aria-label for the play button
-  const playButtonLabel = getCellText(allRows[ROW.PLAY_BUTTON_LABEL]);
-  // Row 17: pauseButtonLabel — aria-label for the pause button
-  const pauseButtonLabel = getCellText(allRows[ROW.PAUSE_BUTTON_LABEL]);
-  // Row  1: rssFeedUrl — fetch RSS feed when a URL is authored
+  // Row  1: rssFeedUrl — fetch RSS feed when a URL is authored (dynamic type)
   const rssFeedUrl = getCellText(allRows[ROW.RSS_FEED_URL]);
-  // Row  2: numberOfItems — cap the number of RSS slides (0 = no limit)
+  // Row  3: numberOfItems — cap the number of RSS slides (0 = no limit)
   const numberOfItems = parseInt(getCellText(allRows[ROW.NUMBER_OF_ITEMS]), 10) || 0;
   const rssFeedData = rssFeedUrl ? await fetchRssFeed(rssFeedUrl) : null;
   const rssFeedSlides = rssFeedData ? createSlidesFromRssFeed(rssFeedData, numberOfItems) : null;
@@ -849,14 +800,7 @@ export default async function decorate(block) {
       }
       bindEvents(block);
       if (autoplay) {
-        initAutoplay(
-          block,
-          slideTransitionTime,
-          pauseOnHover,
-          playButtonLabel,
-          pauseButtonLabel,
-          placeholders,
-        );
+        initAutoplay(block, slideTransitionTime, pauseOnHover);
       }
       requestAnimationFrame(() => showSlide(block, startingSlideIndex, 'instant'));
     })();

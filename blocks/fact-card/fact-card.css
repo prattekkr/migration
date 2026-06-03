@@ -1,6 +1,7 @@
 :root {
   --fact-card-height: auto;
   --fact-card-min-height: 36.8rem;
+  --fact-card-section-min-height: 21.6rem;
 }
 
 @media (--bp-tablet) {
@@ -12,11 +13,12 @@
 @media (--bp-desktop) {
   :root {
     --fact-card-height: 27rem;
+    --fact-card-section-min-height:44.8rem;
   }
 }
 
 .section.fact-card-container {
-  min-height: 21.6rem;
+  min-height: var(--fact-card-section-min-height);
 }
 
 /* Block wrapper */
@@ -274,7 +276,7 @@
 /* ---- Fact Card Feature Grid Desktop (>= 1024px): 4 cols, 2 rows ---- */
 @media (--bp-desktop) {
     .section.fact-card-container {
-    min-height: 44.8rem;
+    min-height: var(--fact-card-section-min-height);
   }
 
   .fact-card .fact-card-data-point {

@@ -1,7 +1,7 @@
 .section.embed-container {
   margin: auto;
   max-width: var(--corp-layout-container-max-width-lg);
-  margin-bottom: 5.6rem;
+  margin-bottom: var(--corp-spacing-56);
   padding-top: var(--corp-spacing-56);
 }
 
@@ -47,10 +47,10 @@
   position: relative;
   display: block;
   transform: scale(3);
-  width: 22px;
-  height: 22px;
-  border: 2px solid;
-  border-radius: 20px;
+  width: var(--corp-spacing-22);
+  height: var(--corp-spacing-22);
+  border: var(--corp-spacing-2) solid;
+  border-radius: var(--corp-spacing-20);
   padding: 0;
   background: transparent;
   color: var(--color-surface-default);
@@ -62,12 +62,12 @@
   box-sizing: border-box;
   position: absolute;
   width: 0;
-  height: 10px;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-left: 6px solid;
-  top: 4px;
-  left: 7px;
+  height: var(--corp-spacing-10);
+  border-top: var(--corp-spacing-5) solid transparent;
+  border-bottom: var(--corp-spacing-5) solid transparent;
+  border-left: var(--corp-spacing-6) solid;
+  top: var(--corp-spacing-4);
+  left: var(--corp-spacing-7);
 }
 
 .embed .embed-placeholder-play :where(button):hover {
@@ -122,7 +122,7 @@
   font-size: var(--corp-font-size-16);
   line-height: var(--corp-typography-lineheight-body-md);
   margin: 0 0 var(--corp-spacing-24);
-  max-width: 60rem;
+  max-width: var(--corp-layout-container-max-width-xxs);
   display: none;
 }
 
@@ -132,7 +132,7 @@
   display: inline-flex;
   align-items: center;
   padding: var(--corp-spacing-12) var(--corp-spacing-32);
-  border: 1px solid var(--color-surface-default);
+  border: var(--border-width-thin) solid var(--color-surface-default);
   background: transparent;
   color: var(--color-surface-default);
   font-family: var(--roboto-bold-font-family);
@@ -175,10 +175,10 @@
   border-color: transparent transparent transparent var(--color-surface-default);
 }
 
-@media (width >= 744px) {
+@media (min-width: 744px) {
   .section.embed-container {
-  margin-bottom: 7.6rem;
-}
+    margin-bottom: var(--corp-spacing-76);
+  }
 
   .embed .embed-placeholder-title {
     font-size: var(--corp-font-size-30);
@@ -203,7 +203,7 @@
   }
 }
 
-@media (width >= 1024px) {
+@media (min-width: 1024px) {
   .section.embed-container {
     margin-bottom: var(--corp-spacing-56);
   }

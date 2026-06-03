@@ -1,89 +1,106 @@
 .block.custom-image {
-    position: relative;
-    margin-bottom: var(--corp-spacing-16);
+  position: relative;
+  margin-bottom: var(--corp-spacing-16);
 }
 
 @media (--bp-tablet) {
-    .block.custom-image {
-        margin-bottom: var(--corp-spacing-24);
-    }
+  .block.custom-image {
+    margin-bottom: var(--corp-spacing-24);
+  }
 }
 
 .custom-image picture img {
-    width: 100%;
-    height: auto;
-    display: block;
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 /* Caption: overlays on top of image by default */
 .custom-image figure {
-    position: relative;
-    margin: 0;
+  position: relative;
+  margin: 0;
 }
 
 .custom-image figcaption {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 /* Caption: positioned below the image */
 .custom-image figure.caption-below figcaption {
-    position: static;
+  position: static;
 }
 
 /* Variant: circle — crops image into a perfect circle */
-.custom-image.cmp-image--rounded picture img {
-    border-radius: 50%;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
+.custom-image.circle picture img {
+  border-radius: 50%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
 }
 
 /* Variant: logo — constrains image to logo dimensions */
-.custom-image.cmp-image--abbvie-logo picture img {
-    height: 1.6rem;
-    max-width: 8.8rem;
-    object-fit: cover;
+.custom-image.logo picture img {
+  height: var(--corp-spacing-16);
+  max-width: var(--corp-spacing-88);
+  object-fit: cover;
 }
 
 @media (--bp-tablet) {
-    .custom-image.cmp-image--abbvie-logo picture img {
-        height: 1.4rem;
-        max-width: 8rem;
-    }
+  .custom-image.logo picture img {
+    height: var(--corp-spacing-14);
+    max-width: var(--corp-spacing-80);
+  }
 }
 
 @media (--bp-desktop) {
-    .custom-image.cmp-image--abbvie-logo picture img {
-        height: 2rem;
-        max-width: 11.2rem;
-    }
+  .custom-image.logo picture img {
+    height: var(--corp-spacing-20);
+    max-width: var(--corp-spacing-112);
+  }
+}
+
+/* Variant: icon / logo — renders image inline-block; margin-bottom added at tablet+ */
+.custom-image.icon,
+.custom-image.icon picture,
+.custom-image.icon picture img,
+.custom-image.logo,
+.custom-image.logo picture,
+.custom-image.logo picture img {
+  display: inline-block;
+}
+
+@media (--bp-tablet) {
+  .custom-image.icon,
+  .custom-image.logo {
+    margin-bottom: var(--corp-spacing-16);
+  }
 }
 
 /* Variant: add-margins — controlled from authoring */
 .custom-image.add-margins {
-    margin-left: var(--corp-spacing-35);
-    margin-right: var(--corp-spacing-35);
+  margin-left: var(--corp-spacing-35);
+  margin-right: var(--corp-spacing-35);
 }
 
 @media (--bp-tablet) {
-    .custom-image.add-margins {
-        margin-left: var(--corp-spacing-70);
-        margin-right: var(--corp-spacing-70);
-    }
+  .custom-image.add-margins {
+    margin-left: var(--corp-spacing-70);
+    margin-right: var(--corp-spacing-70);
+  }
 }
 
 @media (--bp-desktop) {
-    .custom-image.add-margins {
-        margin-left: var(--corp-spacing-55);
-        margin-right: var(--corp-spacing-55);
-    }
+  .custom-image.add-margins {
+    margin-left: var(--corp-spacing-55);
+    margin-right: var(--corp-spacing-55);
+  }
 }
 
 @media (--bp-wide) {
-    .custom-image.add-margins {
-        margin-left: auto;
-        margin-right: auto;
-    }
+  .custom-image.add-margins {
+    margin-left: auto;
+    margin-right: auto;
+  }
 }

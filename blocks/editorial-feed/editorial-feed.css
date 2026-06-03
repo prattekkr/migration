@@ -442,7 +442,7 @@
 
 .editorial-feed-load-more:focus {
   outline: var(--corp-focus-visible-outline);
-  outline-offset: var(--corp-focus-visible-outline-offset);
+  outline-offset: var(--corp-focus-visible-outline-offset-sm);
 }
 
 /* ================================================================

@@ -27,14 +27,6 @@
           "name": "overview"
         },
         {
-          "component": "number",
-          "name": "totalSlides",
-          "label": "Total Number of Slides/Items",
-          "valueType": "number",
-          "min": 0,
-          "description": "Number of sibling blocks to pull in as carousel slides. Leave empty or 0 to use inline slide rows."
-        },
-        {
           "component": "select",
           "valueType": "string",
           "name": "carouselType",
@@ -57,6 +49,22 @@
                 "var": "carouselType"
               },
               "dynamic"
+            ]
+          }
+        },
+         {
+          "component": "number",
+          "name": "totalSlides",
+          "label": "Total Number of Slides/Items",
+          "valueType": "number",
+          "min": 0,
+          "description": "Number of sibling blocks to pull in as carousel slides. Leave empty or 0 to use inline slide rows.",
+          "condition": {
+            "===": [
+              {
+                "var": "carouselType"
+              },
+              "static"
             ]
           }
         },
@@ -110,17 +118,7 @@
               true
             ]
           }
-        },
-        {
-          "component": "number",
-          "name": "numberOfSlidesToShow",
-          "label": "Number of Slides to show",
-          "value": 1,
-          "valueType": "number",
-          "min": 1,
-          "max": 3,
-          "description": "Sets how many slides are visible simultaneously(1-3)."
-        },
+        },       
         {
           "component": "boolean",
           "name": "bypassCarouselOnMobile",
@@ -192,23 +190,7 @@
           "value": "",
           "label": "Next (aria-label for next button)",
           "description": "Accessible label describing the Next control action."
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "playButtonLabel",
-          "value": "",
-          "label": "Play (aria-label for Play button)",
-          "description": "Accessible label describing the Play action for autoplay controls."
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "pauseButtonLabel",
-          "value": "",
-          "label": "Pause (aria-label for Pause button)",
-          "description": "Accessible label describing the Pause action for autoplay controls."
-        },
+        },        
         {
           "component": "text",
           "valueType": "string",

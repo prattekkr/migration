@@ -85,12 +85,15 @@
         },
         {
           "component": "ngaem:dynamic-picklist",
-          "name": "style_customDynamicClass",
+          "name": "classes_customDynamicClass",
           "value": "",
           "label": "Select Block Styles",
           "valueType": "string",
           "sourceAEMNodeName": "section-picklist-config",
           "valueSeperator": ","
+        },
+        {
+          "...": "./_common-properties.json#/common-prop"
         }
       ]
     },
@@ -114,7 +117,7 @@
         },
         {
           "component": "text",
-          "name": "style_container",
+          "name": "classes_container",
           "label": "Generic Class",
           "value": "grid-section",
           "hidden": true
@@ -126,12 +129,15 @@
         },
         {
           "component": "ngaem:dynamic-picklist",
-          "name": "style_customDynamicClass",
+          "name": "classes_customDynamicClass",
           "value": "",
           "label": "Select Block Styles",
           "valueType": "string",
           "sourceAEMNodeName": "grid-section-picklist-config",
           "valueSeperator": ","
+        },
+        {
+          "...": "./_common-properties.json#/common-prop"
         }
       ]
     },
@@ -154,7 +160,7 @@
         },
         {
           "component": "text",
-          "name": "style_container",
+          "name": "classes_container",
           "label": "Generic Class",
           "value": "grid-container",
           "hidden": true
@@ -180,12 +186,15 @@
         },
         {
           "component": "ngaem:dynamic-picklist",
-          "name": "style_customDynamicClass",
+          "name": "classes_customDynamicClass",
           "value": "",
           "label": "Select Block Styles",
           "valueType": "string",
           "sourceAEMNodeName": "grid-container-picklist-config",
           "valueSeperator": ","
+        },
+        {
+          "...": "./_common-properties.json#/common-prop"
         }
       ]
     }

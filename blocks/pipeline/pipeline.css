@@ -723,7 +723,7 @@
 .pipeline-card-collapse:focus-visible,
 .pipeline-tooltip-btn:focus-visible {
     outline: var(--corp-focus-visible-outline);
-    outline-offset: var(--corp-focus-visible-outline-offset);
+    outline-offset: var(--corp-focus-visible-outline-offset-sm);
 }
 
 @keyframes expand-animation {

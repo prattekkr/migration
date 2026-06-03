@@ -329,7 +329,7 @@
 
   .height-tall .hero p {
     font-size: var(--corp-font-size-32);
-    line-height: 4rem;
+    line-height: var(--corp-typography-lineheight-heading-sm);
   }
 }
 
@@ -420,7 +420,7 @@ margin-bottom: var(--corp-spacing-80);
   }
 
   .hero.profile > :where(div):nth-child(2) {
-    margin: var(--hero-space-neg-7xl) auto -1px;
+    margin: var(--hero-space-neg-7xl) auto calc(-1 * var(--px-to-rem));
     padding: var(--corp-spacing-80) var(--corp-spacing-55) 0;
     width: 85%;
     min-height: var(--hero-spacing-448);

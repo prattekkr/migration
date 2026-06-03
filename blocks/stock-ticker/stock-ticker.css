@@ -9,7 +9,7 @@
 }
 
 .stock-ticker .content-container {
-    min-height: 27rem;
+    min-height: var(--corp-spacing-270);
     padding: var(--corp-spacing-24) var(--corp-spacing-32);
 }
 

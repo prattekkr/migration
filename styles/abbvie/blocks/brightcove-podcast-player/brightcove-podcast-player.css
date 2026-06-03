@@ -358,7 +358,7 @@
   }
 
   .brightcove-podcast-player .vjs-current-time {
-    margin-left: 5px !important;
+    margin-left: var(--corp-spacing-5) !important;
     padding: 0;
   }
 }

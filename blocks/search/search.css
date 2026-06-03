@@ -3,6 +3,7 @@
 .search {
   --search-padding-em: 0.5em;
   --search-result-color-list: var(--color-gray-medium);
+  --search-result-title-margin-top: 0.25em;
 }
 
 .search .search-box {
@@ -58,7 +59,7 @@
 
 .search-results .search-result-title,
 .search-results .search-result-item p {
-  padding: 0 16px;
+  padding: 0 var(--corp-spacing-16);
 }
 
 .search-results .search-result-title {
@@ -88,7 +89,7 @@
 /* no results */
 .search .search-results.no-results {
   display: block;
-  margin-left: 34px;
+  margin-left: var(--corp-spacing-34);
 }
 
 .search-results.no-results .search-result-item {
@@ -98,7 +99,7 @@
 /* minimal variant */
 .search.minimal .search-results {
   display: block;
-  padding-left: 34px;
+  padding-left: var(--corp-spacing-34);
 }
 
 .search.minimal .search-result-item {
@@ -127,16 +128,16 @@
 
 .search.minimal .search-result-image {
   position: absolute;
-  top: 2px;
-  left: -34px;
+  top: var(--corp-spacing-2);
+  left: calc(-34 * var(--px-to-rem));
 }
 
 .minimal .search-result-title+p {
-  margin-top: 0.25em;
+  margin-top: var(--search-result-title-margin-top);
 }
 
 .minimal .search-result-image img {
-  height: 24px;
-  width: 24px;
+  height: var(--corp-spacing-24);
+  width: var(--corp-spacing-24);
   border-radius: 50%;
 }
