@@ -3,6 +3,14 @@
 ## Overview
 This document provides comprehensive guidelines for migrating AbbVie website pages to Adobe Edge Delivery Services (EDS) using the Franklin framework.
 
+## Critical Reference: md2jcr Field Alignment
+**Before writing any import script**, read [09-md2jcr-field-alignment.md](./09-md2jcr-field-alignment.md) which documents:
+- How md2jcr groups fields (FieldGroup rules)
+- Exact row counts for each block type
+- Section Metadata format (`style_customDynamicClass` + `blockModelId`)
+- Field hint usage for classes_* groups
+- Template defaults and collapsed suffix fields
+
 ## Core Principles
 
 ### 1. Block Reuse Strategy
