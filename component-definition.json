@@ -201,7 +201,7 @@
                   "model": "brightcove-video",
                   "filter": "brightcove-video",
                   "projectNumber": "",
-                  "overlayTitle": "",
+                  "overlayHeading": "",
                   "overlayDescription": "",
                   "playerType": "single",
                   "accountId": "2157889325001",
