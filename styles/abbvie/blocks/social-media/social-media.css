@@ -34,10 +34,10 @@
   flex: 0 0 auto;
 }
 .social-media .media-item .media-icon {
-  width: 50px;
+  width: var(--corp-spacing-50);
 }
 .social-media .media-item img {
-  max-width: 24px;
+  max-width: var(--corp-spacing-24);
   height: auto;
 }
 .social-media .media-item .media-link {

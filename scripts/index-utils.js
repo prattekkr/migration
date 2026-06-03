@@ -6,12 +6,23 @@
 import { getConfigValue } from './config.js';
 import { isUniversalEditor } from './utils.js';
 
-function normalizeLookupPath(path) {
+const COUNTRY_SEGMENT_PATTERN = /^[a-z]{2}$/i;
+const LOCALE_SEGMENT_PATTERN = /^[a-z]{2}(?:-[a-z]{2})?$/i;
+
+function normalizeBasicPath(path) {
   let normalized = `${path || ''}`.trim();
   if (!normalized) return '';
 
+  normalized = normalized.replace(/^urn:aemconnection:/i, '');
+
   try {
-    normalized = new URL(normalized, window.location.origin).pathname;
+    const origin = typeof window !== 'undefined'
+      ? window.location.origin
+      : 'http://localhost';
+    normalized = new URL(
+      normalized,
+      origin,
+    ).pathname;
   } catch {
     // Fall back to the raw string when the path is not URL-like.
   }
@@ -29,10 +40,75 @@ function normalizeLookupPath(path) {
   return normalized || '/';
 }
 
+function stripConfiguredRootPath(path, rootPath = '') {
+  const normalizedRoot = normalizeBasicPath(rootPath);
+  if (!normalizedRoot || normalizedRoot === '/') return path;
+
+  if (path === normalizedRoot) return '/';
+  if (path.startsWith(`${normalizedRoot}/`)) {
+    return path.slice(normalizedRoot.length) || '/';
+  }
+
+  return path;
+}
+
+function toPathFromSegments(segments) {
+  return normalizeBasicPath(`/${segments.join('/')}`);
+}
+
+function shortenContentPath(path) {
+  if (!path.startsWith('/content/') || path.startsWith('/content/dam/')) {
+    return path;
+  }
+
+  const segments = path.split('/').filter(Boolean);
+  if (segments[0] !== 'content') return path;
+
+  const languageMastersIndex = segments.findIndex(
+    (segment) => segment === 'language-masters',
+  );
+  if (
+    languageMastersIndex !== -1
+    && LOCALE_SEGMENT_PATTERN.test(segments[languageMastersIndex + 1] || '')
+  ) {
+    return toPathFromSegments(segments.slice(languageMastersIndex + 2));
+  }
+
+  const countryLanguageIndex = segments.findIndex((segment, index) => (
+    index > 1
+    && COUNTRY_SEGMENT_PATTERN.test(segment)
+    && LOCALE_SEGMENT_PATTERN.test(segments[index + 1] || '')
+  ));
+  if (countryLanguageIndex !== -1) {
+    return toPathFromSegments(segments.slice(countryLanguageIndex + 2));
+  }
+
+  const languageIndex = segments.findIndex((segment, index) => (
+    index > 2
+    && LOCALE_SEGMENT_PATTERN.test(segment)
+  ));
+  if (languageIndex !== -1) {
+    return toPathFromSegments(segments.slice(languageIndex + 1));
+  }
+
+  return path;
+}
+
+function normalizeLookupPath(path, rootPath = '') {
+  let normalized = normalizeBasicPath(path);
+  if (!normalized) return '';
+
+  normalized = stripConfiguredRootPath(normalized, rootPath);
+  normalized = shortenContentPath(normalized);
+
+  return normalizeBasicPath(normalized);
+}
+
 class IndexUtils {
   constructor() {
     this.cacheKey = 'abbvie-index-data';
     this.apiUrl = '/query-index-en.json'; // Default URL
+    this.rootPath = '';
     this.initialized = false;
   }
 
@@ -43,11 +119,15 @@ class IndexUtils {
   async init() {
     if (!this.initialized) {
       try {
-        const configIndexPath = await getConfigValue('indexFilePath');
+        const [configIndexPath, rootPath] = await Promise.all([
+          getConfigValue('indexFilePath'),
+          getConfigValue('rootPath'),
+        ]);
         const resolvedIndexPath = configIndexPath || this.apiUrl;
         if (configIndexPath) {
           this.apiUrl = configIndexPath;
         }
+        this.rootPath = rootPath || '';
 
         // Check if we're in Universal Editor and adjust the URL accordingly
         if (isUniversalEditor()) {
@@ -169,11 +249,16 @@ class IndexUtils {
     }
 
     // Filter out hidden pages and pages without titles
-    const visiblePages = flatData.filter((page) => (
-      page.hidefromnavigation !== 'true'
-      && page.navtitle
-      && page.path !== '/' // Exclude home page from index
-    ));
+    const visiblePages = flatData
+      .map((page) => ({
+        ...page,
+        path: normalizeLookupPath(page.path, this.rootPath),
+      }))
+      .filter((page) => (
+        page.hidefromnavigation !== 'true'
+        && page.navtitle
+        && page.path !== '/' // Exclude home page from index
+      ));
 
     // Group pages by index levels
     const indexLevels = {
@@ -268,7 +353,9 @@ class IndexUtils {
     // Using recursive function with array methods instead of for...of loop
     const findInTree = (items) => {
       // First try to find direct match
-      const directMatch = items.find((item) => item.path === lookupPath);
+      const directMatch = items.find(
+        (item) => normalizeLookupPath(item.path, this.rootPath) === lookupPath,
+      );
       if (directMatch) {
         return directMatch;
       }
@@ -307,7 +394,9 @@ class IndexUtils {
       if (rawData) {
         const parsedData = JSON.parse(rawData);
         if (parsedData && Array.isArray(parsedData.data)) {
-          const page = parsedData.data.find((item) => item.path === lookupPath);
+          const page = parsedData.data.find(
+            (item) => normalizeLookupPath(item.path, this.rootPath) === lookupPath,
+          );
           if (page) {
             return page;
           }
@@ -322,7 +411,9 @@ class IndexUtils {
       if (freshRawData) {
         const parsedData = JSON.parse(freshRawData);
         if (parsedData && Array.isArray(parsedData.data)) {
-          const page = parsedData.data.find((item) => item.path === lookupPath);
+          const page = parsedData.data.find(
+            (item) => normalizeLookupPath(item.path, this.rootPath) === lookupPath,
+          );
           return page || null;
         }
       }
@@ -347,4 +438,4 @@ const indexUtils = new IndexUtils();
 })();
 
 export default indexUtils;
-export { IndexUtils };
+export { IndexUtils, normalizeLookupPath };

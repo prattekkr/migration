@@ -82,7 +82,7 @@ export class Modal {
 
   wrapDialog(panel) {
     const wrapper = document.createElement('div');
-    wrapper.classList.add('modal');
+    wrapper.classList.add('form-modal');
     wrapper.appendChild(this.dialog);
     panel.appendChild(wrapper);
     this.modalWrapper = wrapper;

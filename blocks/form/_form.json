@@ -18,11 +18,8 @@
     {
       "...": "./models/form-components/_*.json#/definitions"
     },
-    { 
-      "...": "./components/accordion/_accordion.json#/definitions" 
-    },
-    { 
-      "...": "./components/modal/_modal.json#/definitions" 
+    {
+      "...": "./components/form-modal/_form-modal.json#/definitions"
     },
     { 
       "...": "./components/password/_password.json#/definitions" 
@@ -82,7 +79,6 @@
         "drop-down",
         "email",
         "file-input",
-        "form-accordion",
         "form-button",
         "form-fragment",
         "form-image",

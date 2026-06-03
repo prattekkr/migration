@@ -3,7 +3,10 @@ import { loadFragment } from '../fragment/fragment.js';
 // eslint-disable-next-line import/no-named-as-default
 import IndexUtils from '../../scripts/index-utils.js';
 import { fetchDashboardCardData } from '../../scripts/cfUtil.js';
-import decorateExternalLinksUtility, { isExternalLink, createIcon } from '../../scripts/utils.js';
+import decorateExternalLinksUtility, {
+  isExternalLink,
+  createIcon,
+} from '../../scripts/utils.js';
 import { fetchPlaceholders } from '../../scripts/placeholders.js';
 
 // Constants for maintainability
@@ -39,7 +42,12 @@ function throttleRAF(callback) {
  * @returns {Element} The created element.
  */
 /* eslint-disable-next-line object-curly-newline */
-function createElement(tag, { className, attributes = {}, textContent, innerHTML } = {}) {
+function createElement(
+  tag,
+  {
+    className, attributes = {}, textContent, innerHTML,
+  } = {},
+) {
   const el = document.createElement(tag);
   if (className) el.className = className;
   Object.entries(attributes).forEach(([key, value]) => el.setAttribute(key, value));
@@ -74,16 +82,19 @@ function getSearchConfig(block) {
  */
 function toggleAllNavSections(expanded = false) {
   const nav = document.querySelector('nav');
-  const isSearchOpen = [...nav.querySelectorAll('.nav-sections ul > li')]
-    .some((li) => li.getAttribute('aria-expanded') === 'true');
+  const isSearchOpen = [...nav.querySelectorAll('.nav-sections ul > li')].some(
+    (li) => li.getAttribute('aria-expanded') === 'true',
+  );
   if (nav && !isDesktop.matches && isSearchOpen) {
     nav.classList.remove('second-level-active');
   }
 
-  document.querySelectorAll('.nav-item-level-0 .default-content-wrapper > ul > li').forEach((section) => {
-    section.setAttribute('aria-expanded', expanded);
-    section.querySelector('button')?.setAttribute('aria-expanded', expanded);
-  });
+  document
+    .querySelectorAll('.nav-item-level-0 .default-content-wrapper > ul > li')
+    .forEach((section) => {
+      section.setAttribute('aria-expanded', expanded);
+      section.querySelector('button')?.setAttribute('aria-expanded', expanded);
+    });
 }
 
 /**
@@ -94,13 +105,19 @@ function toggleAllNavSections(expanded = false) {
  */
 function toggleMenu(nav, navSections, forceExpanded = null) {
   if (forceExpanded === null) {
-    const isSearchOpen = nav.querySelector('.menu-search')?.getAttribute('aria-expanded') === 'true';
-    const expanded = forceExpanded !== null ? forceExpanded : (isSearchOpen || nav.getAttribute('aria-expanded') === 'true');
+    const isSearchOpen = nav.querySelector('.menu-search')?.getAttribute('aria-expanded')
+      === 'true';
+    const expanded = forceExpanded !== null
+      ? forceExpanded
+      : isSearchOpen || nav.getAttribute('aria-expanded') === 'true';
     const button = nav.querySelector('.nav-hamburger button');
-    document.body.style.overflowY = (expanded || isDesktop.matches) ? '' : 'hidden';
+    document.body.style.overflowY = expanded || isDesktop.matches ? '' : 'hidden';
     nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
     toggleAllNavSections(false); // Fixed: Pass boolean, not string
-    button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
+    button.setAttribute(
+      'aria-label',
+      expanded ? 'Open navigation' : 'Close navigation',
+    );
     const backdrop = document.getElementById('nav-backdrop');
     backdrop?.setAttribute('aria-hidden', expanded ? 'true' : 'false');
   } else {
@@ -128,7 +145,9 @@ function createSubmenuWrapper(label) {
   });
   closeBtn.addEventListener('click', () => {
     toggleAllNavSections(false);
-    document.getElementById('nav-backdrop')?.setAttribute('aria-hidden', 'true');
+    document
+      .getElementById('nav-backdrop')
+      ?.setAttribute('aria-hidden', 'true');
   });
   closeWrapper.appendChild(closeBtn);
   submenu.appendChild(closeWrapper);
@@ -198,7 +217,9 @@ async function getSecondCardData(url) {
 
   try {
     const response = await fetchDashboardCardData(url, 'cfFactsBaseUrl');
-    return response?.data?.dashboardCardFactFragmentByPath?.item || { children: [] };
+    return (
+      response?.data?.dashboardCardFactFragmentByPath?.item || { children: [] }
+    );
   } catch (error) {
     return { children: [] };
   }
@@ -213,32 +234,34 @@ async function buildMegaMenu(block) {
   const innerDivs = block.querySelectorAll(':scope > div');
   if (innerDivs.length <= 1) return null;
   const allTags = Array.from(innerDivs).slice(1);
-  const tagsValues = allTags.map((div) => {
-    const ul = div.querySelector('ul');
-    if (ul) return ul;
+  const tagsValues = allTags
+    .map((div) => {
+      const ul = div.querySelector('ul');
+      if (ul) return ul;
 
-    const a = div.querySelector('a');
-    if (a) return a;
+      const a = div.querySelector('a');
+      if (a) return a;
 
-    const p = div.querySelector('p');
-    const heading = div.querySelector('h1, h2, h3, h4, h5, h6');
+      const p = div.querySelector('p');
+      const heading = div.querySelector('h1, h2, h3, h4, h5, h6');
 
-    // If both heading AND p exist → return both together
-    if (heading && p) {
-      return {
-        heading: heading.textContent.trim(),
-        paragraph: p.textContent.trim(),
-      };
-    }
-    // If only heading exists
-    if (heading) return heading.textContent.trim();
+      // If both heading AND p exist → return both together
+      if (heading && p) {
+        return {
+          heading: heading.textContent.trim(),
+          paragraph: p.textContent.trim(),
+        };
+      }
+      // If only heading exists
+      if (heading) return heading.textContent.trim();
 
-    // If only p exists
-    if (p) return p.textContent.trim();
+      // If only p exists
+      if (p) return p.textContent.trim();
 
-    // Fallback: text authored as plain div (e.g. UE text/richtext fields without p wrapper)
-    return div.textContent.trim();
-  }).filter(Boolean);
+      // Fallback: text authored as plain div (e.g. UE text/richtext fields without p wrapper)
+      return div.textContent.trim();
+    })
+    .filter(Boolean);
   const [
     megaMenuTitle,
     megaMenuDescription,
@@ -257,7 +280,9 @@ async function buildMegaMenu(block) {
     link: megaMenuCardCta,
   };
   // get card data
-  const secondaryCardData = await getSecondCardData(megaMenuDashboardCard?.textContent);
+  const secondaryCardData = await getSecondCardData(
+    megaMenuDashboardCard?.textContent,
+  );
   const dashboardLinks = megaMenuDashboardLinks?.querySelectorAll('li');
   const wrapperMain = document.createElement('div');
   wrapperMain.className = 'mega-menu-wrapper-main';
@@ -309,37 +334,57 @@ async function buildMegaMenu(block) {
     card.className = 'mega-card';
     const appendIfExists = (parent, tag, classType, content) => {
       if (content) {
-        parent.appendChild(createElement(tag, { className: classType, textContent: content }));
+        parent.appendChild(
+          createElement(tag, { className: classType, textContent: content }),
+        );
       }
     };
 
     if (isPrimary) {
       appendIfExists(card, 'p', 'mega-card-title', data?.title);
       if (data?.cardContent?.heading || data?.cardContent?.paragraph) {
-        const content = createElement('div', { className: 'mega-card-content' });
-        appendIfExists(content, 'h4', 'mega-card-heading', data.cardContent.heading);
-        appendIfExists(content, 'p', 'card-description', data.cardContent.paragraph);
+        const content = createElement('div', {
+          className: 'mega-card-content',
+        });
+        appendIfExists(
+          content,
+          'h4',
+          'mega-card-heading',
+          data.cardContent.heading,
+        );
+        appendIfExists(
+          content,
+          'p',
+          'card-description',
+          data.cardContent.paragraph,
+        );
         card.appendChild(content);
       } else {
-        const contentP = createElement('div', { className: 'mega-card-content' });
+        const contentP = createElement('div', {
+          className: 'mega-card-content',
+        });
         appendIfExists(contentP, 'h4', 'mega-card-heading', data.cardContent);
         card.appendChild(contentP);
       }
       if (data?.link?.textContent) {
         const btnWrap = createElement('p', { className: 'button-container' });
-        btnWrap.appendChild(createElement('span', {
-          className: 'card-cta',
-          textContent: data.link.textContent,
-        }));
+        btnWrap.appendChild(
+          createElement('span', {
+            className: 'card-cta',
+            textContent: data.link.textContent,
+          }),
+        );
         card.appendChild(btnWrap);
       }
 
       // Wrap in anchor if link exists
-      const container = data?.link ? (() => {
-        const anchor = createElement('a', { className: 'card-link' });
-        anchor.href = data.link.href;
-        return anchor;
-      })() : cardWrapper;
+      const container = data?.link
+        ? (() => {
+          const anchor = createElement('a', { className: 'card-link' });
+          anchor.href = data.link.href;
+          return anchor;
+        })()
+        : cardWrapper;
       container.appendChild(card);
       if (data?.link) cardWrapper.appendChild(container);
     } else {
@@ -348,7 +393,9 @@ async function buildMegaMenu(block) {
 
       // Count + Suffix
       if (data?.dataPoint || data?.dataPointSuffix) {
-        const countWrap = createElement('div', { className: 'mega-card-count' });
+        const countWrap = createElement('div', {
+          className: 'mega-card-count',
+        });
         appendIfExists(countWrap, 'div', 'count', data.dataPoint);
         appendIfExists(countWrap, 'div', 'count-unit', data.dataPointSuffix);
         card.appendChild(countWrap);
@@ -374,7 +421,9 @@ async function buildMegaMenu(block) {
   wrapper.appendChild(secondaryCard);
 
   wrapper.addEventListener('click', () => {
-    document.querySelector('.mega-menu-minimize')?.classList.remove('mega-menu-minimize');
+    document
+      .querySelector('.mega-menu-minimize')
+      ?.classList.remove('mega-menu-minimize');
   });
 
   wrapperMain.append(wrapper);
@@ -420,12 +469,18 @@ async function buildLevelTwoNavigations(block, languageLinkData, element) {
 
   const fragment = document.createDocumentFragment(); // Batch DOM changes
   const ul = createElement('ul', { className: 'navigation-group' });
-  const pageRedirectText = megaMenu?.querySelector('.mega-menu-left .button-container a').textContent.trim();
+  const pageRedirectText = megaMenu
+    ?.querySelector('.mega-menu-left .button-container a')
+    .textContent.trim();
   (data?.children || []).forEach((child) => {
-    const li = createElement('li', { className: 'navigation-item navigation-item-level-1' });
+    const li = createElement('li', {
+      className: 'navigation-item navigation-item-level-1',
+    });
     if (child.children?.length) {
       // Submenu with dropdown
-      const levelTwoMenu = createElement('div', { className: 'level-two-menu' });
+      const levelTwoMenu = createElement('div', {
+        className: 'level-two-menu',
+      });
       const button = createElement('button', {
         className: 'root-two-dropdown-btn',
         attributes: {
@@ -433,26 +488,32 @@ async function buildLevelTwoNavigations(block, languageLinkData, element) {
         },
         textContent: child.title,
       });
-      button.appendChild(createElement('span', { className: 'accordion-icon' }));
-      const menuItems = createElement('div', { className: 'level-two-menu-items' });
+      button.appendChild(
+        createElement('span', { className: 'accordion-icon' }),
+      );
+      const menuItems = createElement('div', {
+        className: 'level-two-menu-items',
+      });
       button.addEventListener('click', () => {
         const isExpanded = button.getAttribute('aria-expanded') === 'true';
-        const openBtn = ul.querySelector(
-          '.root-two-dropdown-btn.active',
-        );
+        const openBtn = ul.querySelector('.root-two-dropdown-btn.active');
         if (openBtn && openBtn !== button) {
           openBtn.setAttribute('aria-expanded', 'false');
           openBtn.classList.remove('active');
           const openMenu = openBtn.nextElementSibling;
           openMenu?.classList.remove('show-child');
           if (!isExpanded) {
-            openMenu?.addEventListener('transitionend', () => {
-              setTimeout(() => {
-                button.setAttribute('aria-expanded', 'true');
-                button.classList.add('active');
-                menuItems.classList.add('show-child');
-              }, 300);
-            }, { once: true });
+            openMenu?.addEventListener(
+              'transitionend',
+              () => {
+                setTimeout(() => {
+                  button.setAttribute('aria-expanded', 'true');
+                  button.classList.add('active');
+                  menuItems.classList.add('show-child');
+                }, 300);
+              },
+              { once: true },
+            );
             return;
           }
         }
@@ -471,10 +532,15 @@ async function buildLevelTwoNavigations(block, languageLinkData, element) {
       });
       const subUl = createElement('ul', { className: 'navigation-group' });
       child.children.forEach((subChild) => {
-        const subLi = createElement('li', { className: 'navigation-item navigation-item-level-2' });
+        const subLi = createElement('li', {
+          className: 'navigation-item navigation-item-level-2',
+        });
         const subLink = createElement('a', {
           className: 'navigation-item-link',
-          attributes: { href: subChild.path, 'data-warn-on-departure': 'false' },
+          attributes: {
+            href: subChild.path,
+            'data-warn-on-departure': 'false',
+          },
           textContent: subChild.title,
         });
         subLi.appendChild(subLink);
@@ -521,11 +587,15 @@ function buildLevelTwoLanguageLinks(selector) {
   items.forEach((item) => {
     const childUL = item.querySelector('ul');
     item.classList.add('menu-item');
-    const label = item.querySelector('p')?.textContent.trim() || item.firstChild?.textContent.trim();
+    const label = item.querySelector('p')?.textContent.trim()
+      || item.firstChild?.textContent.trim();
     if (item.querySelector('p')) item.querySelector('p').remove();
     if (item.firstChild?.nodeType === 3) item.firstChild.remove();
 
-    const textSpan = createElement('span', { className: 'menu-label', textContent: label });
+    const textSpan = createElement('span', {
+      className: 'menu-label',
+      textContent: label,
+    });
     item.prepend(textSpan);
 
     if (childUL) {
@@ -555,8 +625,15 @@ function buildLevelTwoLanguageLinks(selector) {
  * @param {Element} block - The block element.
  * @returns {Element} - The search form element.
  */
-function createSearchForm(block, errorMessage = 'Please enter a valid search term') {
-  const { label: text, mobilePlaceholder, resultsPath } = getSearchConfig(block);
+function createSearchForm(
+  block,
+  errorMessage = 'Please enter a valid search term',
+) {
+  const {
+    label: text,
+    mobilePlaceholder,
+    resultsPath,
+  } = getSearchConfig(block);
   const maindiv = createElement('div', { className: 'search-main-wrapper' });
   const wrapperdiv = createElement('div', { className: 'search-wrapper' });
   const form = createElement('form', {
@@ -594,7 +671,10 @@ function createSearchForm(block, errorMessage = 'Please enter a valid search ter
     textContent: text,
   });
   const alertDiv = createElement('div', { className: 'search-input-alert' });
-  const alertP = createElement('p', { attributes: { id: 'search-alert-text' }, textContent: errorMessage });
+  const alertP = createElement('p', {
+    attributes: { id: 'search-alert-text' },
+    textContent: errorMessage,
+  });
 
   alertDiv.appendChild(alertP);
   innerDiv.append(input, label, alertDiv);
@@ -604,7 +684,10 @@ function createSearchForm(block, errorMessage = 'Please enter a valid search ter
 
   // Label update logic
   const updateLabel = () => {
-    label.classList.toggle('focus-out', input.value.trim() === '' && document.activeElement !== input);
+    label.classList.toggle(
+      'focus-out',
+      input.value.trim() === '' && document.activeElement !== input,
+    );
   };
   input.addEventListener('focus', updateLabel);
   input.addEventListener('blur', updateLabel);
@@ -673,7 +756,10 @@ function buildMenuItem(block, isNavigation = false) {
   const li = createElement('li', { className: `menu-${slug}` });
   const button = createElement('button', {
     attributes: {
-      type: 'button', 'aria-haspopup': 'true', 'aria-expanded': 'false', 'aria-label': slug,
+      type: 'button',
+      'aria-haspopup': 'true',
+      'aria-expanded': 'false',
+      'aria-label': slug,
     },
   });
   if (!label) button.setAttribute('aria-label', block.dataset.type);
@@ -708,13 +794,9 @@ function buildMenuItem(block, isNavigation = false) {
     const languageLinkData = mainDiv?.querySelector('.navigation-group');
     const isParsedUl = languageLinkData?.querySelector('.navigation-item');
     const subMenuContainer = mainDiv.querySelector('.submenu-level-1');
-    if (subMenuContainer && (isDesktop.matches && isDesktopHeight.matches)) subMenuContainer.classList.add('mega-menu-minimize');
+    if (subMenuContainer && isDesktop.matches && isDesktopHeight.matches) subMenuContainer.classList.add('mega-menu-minimize');
     if (isNavigation && !isParsedUl) {
-      await buildLevelTwoNavigations(
-        button,
-        languageLinkData,
-        block,
-      );
+      await buildLevelTwoNavigations(button, languageLinkData, block);
     }
     const expanded = li.getAttribute('aria-expanded') === 'true';
     const nav = document.querySelector('nav');
@@ -745,7 +827,9 @@ function buildMenuItem(block, isNavigation = false) {
     toggleAllNavSections(false);
     li.setAttribute('aria-expanded', !expanded);
     button.setAttribute('aria-expanded', !expanded);
-    document.getElementById('nav-backdrop')?.setAttribute('aria-hidden', expanded);
+    document
+      .getElementById('nav-backdrop')
+      ?.setAttribute('aria-hidden', expanded);
   });
 
   return li;
@@ -756,8 +840,10 @@ function handleScroll() {
   throttleRAF(() => {
     const header = document.querySelector('header');
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const heroBlock = document.querySelector('.hero.block');
-    const threshold = heroBlock ? heroBlock.offsetHeight - 100 : SCROLL_THRESHOLD_DEFAULT;
+    const heroBlock = document.querySelector('.hero-container.block');
+    const threshold = heroBlock
+      ? heroBlock.offsetHeight - 100
+      : SCROLL_THRESHOLD_DEFAULT;
     if (scrollTop > lastScrollTop && scrollTop > threshold) {
       header.classList.add('hide-nav');
       header.classList.remove('show-nav');
@@ -840,13 +926,29 @@ function getNavigationMetadataDetails(rootElement) {
 export default async function decorate(block) {
   const navMeta = getMetadata('nav');
   const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
-  const [fragment, placeholders] = await Promise.all([loadFragment(navPath), fetchPlaceholders()]);
+  const [fragment, placeholders] = await Promise.all([
+    loadFragment(navPath),
+    fetchPlaceholders(),
+  ]);
   const header = fragment.querySelector('.navigation-content-container');
   if (!header) return;
-  const nav = createElement('nav', { attributes: { id: 'nav', 'aria-expanded': 'false' } });
+  const nav = createElement('nav', {
+    attributes: { id: 'nav', 'aria-expanded': 'false' },
+  });
+
+  // Skip link — first focusable element for keyboard accessibility
+  const skipLink = createElement('a', {
+    className: 'skip-link',
+    attributes: { href: '#main-content' },
+    textContent: placeholders?.skipContent || 'Skip to main content',
+  });
+  nav.appendChild(skipLink);
+
   const [navigationMetadata] = getNavigationMetadataDetails(header);
   // Brand (Logo)
-  const brandBlock = header.querySelector('.navigation-content[data-type="logo"]');
+  const brandBlock = header.querySelector(
+    '.navigation-content[data-type="logo"]',
+  );
   if (brandBlock) {
     let brandImg = brandBlock.querySelector('picture');
 
@@ -864,10 +966,14 @@ export default async function decorate(block) {
         }
       }
     }
-    const brand = createElement('div', { className: 'section nav-brand nav-item-level-0' });
-    const wrapper = createElement('div', { className: 'default-content-wrapper' });
+    const brand = createElement('div', {
+      className: 'section nav-brand nav-item-level-0',
+    });
+    const wrapper = createElement('div', {
+      className: 'default-content-wrapper',
+    });
     const p = createElement('p');
-    const a = createElement('a', { attributes: { href: '/', title: 'Button' } });
+    const a = createElement('a', { attributes: { href: '/' } });
     if (brandImg) a.appendChild(brandImg);
     p.appendChild(a);
     wrapper.appendChild(p);
@@ -876,11 +982,17 @@ export default async function decorate(block) {
   }
 
   // Navigation Items
-  const section = createElement('div', { className: 'section nav-sections nav-item-level-0' });
-  const sectionWrapper = createElement('div', { className: 'default-content-wrapper' });
+  const section = createElement('div', {
+    className: 'section nav-sections nav-item-level-0',
+  });
+  const sectionWrapper = createElement('div', {
+    className: 'default-content-wrapper',
+  });
   const ul = createElement('ul');
 
-  const menus = header.querySelectorAll('.navigation-content[data-type="navigation-content"], .navigation-content[data-type="language-links"]');
+  const menus = header.querySelectorAll(
+    '.navigation-content[data-type="navigation-content"], .navigation-content[data-type="language-links"]',
+  );
   menus.forEach((menu) => {
     let element = menu;
     const p = menu.querySelector('p');
@@ -914,7 +1026,9 @@ export default async function decorate(block) {
 
   const toolsUl = document.createElement('ul');
 
-  const toolBlocks = header.querySelectorAll('.navigation-content[data-type="language-links"], .navigation-content[data-type="search"]');
+  const toolBlocks = header.querySelectorAll(
+    '.navigation-content[data-type="language-links"], .navigation-content[data-type="search"]',
+  );
   toolBlocks.forEach((tool) => {
     const li = buildMenuItem(tool);
     let expandableMenu;
@@ -943,7 +1057,9 @@ export default async function decorate(block) {
     const searchMenu = nav.querySelector('.menu-search');
     if (searchMenu?.getAttribute('aria-expanded') === 'true') {
       searchMenu.setAttribute('aria-expanded', 'false');
-      searchMenu.querySelector('button')?.setAttribute('aria-expanded', 'false');
+      searchMenu
+        .querySelector('button')
+        ?.setAttribute('aria-expanded', 'false');
     }
     toggleMenu(nav, navSections);
   });
@@ -976,6 +1092,10 @@ export default async function decorate(block) {
   navWrapper.append(nav);
   decorateExternalLinksUtility(navWrapper);
   block.appendChild(navWrapper);
+
+  // Provide skip link target on the main content element
+  const mainEl = document.querySelector('main');
+  if (mainEl && !mainEl.id) mainEl.id = 'main-content';
   // build desktop backdrop
   const backdrop = document.createElement('div');
   backdrop.id = 'nav-backdrop';

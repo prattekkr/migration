@@ -175,7 +175,6 @@
       "drop-down",
       "email",
       "file-input",
-      "form-accordion",
       "form-button",
       "form-fragment",
       "form-image",
@@ -282,36 +281,12 @@
   {
     "id": "text-container",
     "components": [
-      "text-container-text",
-      "text-container-image"
+      "text-container-image",
+      "text-container-text"
     ]
   },
   {
     "id": "video",
-    "components": []
-  },
-  {
-    "id": "carousel",
-    "components": []
-  },
-  {
-    "id": "cta",
-    "components": []
-  },
-  {
-    "id": "custom-image",
-    "components": []
-  },
-  {
-    "id": "quote",
-    "components": []
-  },
-  {
-    "id": "story-card",
-    "components": []
-  },
-  {
-    "id": "fact-card",
     "components": []
   }
 ]

@@ -2,7 +2,7 @@ body.modal-open {
   overflow: hidden;
 }
 
-.modal dialog {
+.form-modal dialog {
   --dialog-border-radius: 16px;
 
   overscroll-behavior: none;
@@ -11,29 +11,29 @@ body.modal-open {
   width: 100vw;
 }
 
-.modal dialog .modal-content {
+.form-modal dialog .modal-content {
   overflow-y: auto;
   overscroll-behavior: none;
   max-height: calc(100dvh - 60px);
 }
 
 @media (width >= 600px) {
-  .modal dialog {
+  .form-modal dialog {
     padding: 30px;
     width: 80vw;
     max-width: 700px;
   }
 
-  .modal dialog .modal-content {
+  .form-modal dialog .modal-content {
     max-height: calc(100vh - 90px);
   }
 }
 
-.modal dialog::backdrop {
+.form-modal dialog::backdrop {
   background-color: rgb(0 0 0 / 50%);
 }
 
-.modal .close-button {
+.form-modal .close-button {
   position: absolute;
   top: 0;
   right: 0;
@@ -48,6 +48,6 @@ body.modal-open {
   padding-right: 30px;
 }
 
-.modal dialog .section {
+.form-modal dialog .section {
   padding: 0;
 }

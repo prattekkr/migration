@@ -26,8 +26,8 @@
 .press-carousel {
   position: relative;
   overflow: hidden;
-  margin-bottom: 5.6rem;
-  padding-bottom: 5.3rem;
+  margin-bottom: var(--corp-spacing-56);
+  padding-bottom: var(--corp-spacing-53);
 }
 
 /* ─────────────────────────────────────────────
@@ -39,7 +39,7 @@
   gap: var(--press-track-gap);
   transition: transform var(--press-slide-speed) var(--press-slide-easing);
   align-items: flex-start;
-  min-height: 152px;
+  min-height: var(--corp-spacing-152);
 }
 
 /* ─────────────────────────────────────────────
@@ -49,7 +49,7 @@
 .press-card {
   flex: 0 0 100%;
   box-sizing: border-box;
-  border-radius: 12px;
+  border-radius: var(--border-radius-ml);
   border: none;
   box-shadow: none;
 }

@@ -1,6 +1,7 @@
 :root {
   --fact-card-height: auto;
   --fact-card-min-height: 36.8rem;
+  --fact-card-section-min-height: 21.6rem;
 }
 
 @media (min-width: 744px) {
@@ -12,11 +13,12 @@
 @media (min-width: 1024px) {
   :root {
     --fact-card-height: 27rem;
+    --fact-card-section-min-height:44.8rem;
   }
 }
 
 .section.fact-card-container {
-  min-height: 21.6rem;
+  min-height: var(--fact-card-section-min-height);
 }
 
 /* Block wrapper */
@@ -286,7 +288,7 @@
 
 @media (min-width: 1024px) {
     .section.fact-card-container {
-    min-height: 44.8rem;
+    min-height: var(--fact-card-section-min-height);
   }
 
   .fact-card .fact-card-data-point {

@@ -533,7 +533,7 @@ p {
   dd,
   dt {
     font-size: var(--body-font-size-m);
-    line-height: 2.4rem;
+    line-height: var(--corp-spacing-24);
   }
 }
 
@@ -543,8 +543,8 @@ pre {
 }
 
 pre {
-  padding: 1.6rem;
-  border-radius: 0.8rem;
+  padding: var(--corp-spacing-16);
+  border-radius: var(--border-radius-m);
   background-color: var(--color-surface-highlight);
   overflow-x: auto;
   white-space: pre;
@@ -573,7 +573,7 @@ a:hover {
 
 a:focus-visible {
   outline: var(--corp-focus-visible-outline);
-  outline-offset: var(--corp-focus-visible-outline-offset);
+  outline-offset: var(--corp-focus-visible-outline-offset-sm);
   outline-style: auto;
   outline-width: var(--corp-focus-visible-outline-width);
 }
@@ -587,8 +587,8 @@ button {
   box-sizing: border-box;
   display: inline-block;
   max-width: 100%;
-  margin: 12px 0;
-  border: 2px solid transparent;
+  margin: var(--corp-spacing-12) 0;
+  border: var(--border-width-thick) solid transparent;
   border-radius: 2.4em;
   padding: 0.5em 1.2em;
   font-family: var(--body-font-family);
@@ -643,8 +643,8 @@ main img {
 
 .icon {
   display: inline-block;
-  height: 24px;
-  width: 24px;
+  height: var(--corp-icon-size-md);
+  width: var(--corp-icon-size-md);
 }
 
 .icon img {
@@ -723,9 +723,12 @@ main > .section > div {
 
 .sr-only {
   position: absolute;
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value */
   width: 1px;
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value */
   height: 1px;
   padding: 0;
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value */
   margin: -1px;
   overflow: hidden;
   clip-path: inset(50%);
@@ -741,24 +744,24 @@ main > .section > div {
 }
 
 .section-padding {
-  padding-left: 3.5rem;
-  padding-right: 3.5rem;
-  padding-top: 3.2rem;
+  padding-left: var(--corp-spacing-35);
+  padding-right: var(--corp-spacing-35);
+  padding-top: var(--corp-spacing-32);
 }
 
 @media (width >= 744px) {
   .section-padding {
-    padding-left: 7rem;
-    padding-right: 7rem;
-    padding-top: 5.6rem;
+    padding-left: var(--corp-spacing-70);
+    padding-right: var(--corp-spacing-70);
+    padding-top: var(--corp-spacing-56);
   }
 }
 
 @media (width >= 1024px) {
   .section-padding {
-    padding-left: 5.5rem;
-    padding-right: 5.5rem;
-    padding-top: 8rem;
+    padding-left: var(--corp-spacing-55);
+    padding-right: var(--corp-spacing-55);
+    padding-top: var(--corp-spacing-80);
   }
 }
 

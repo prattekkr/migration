@@ -668,6 +668,8 @@ function loadFormCustomStyles(formDef) {
 }
 
 export default async function decorate(block) {
+  // decorate block based on the presence of an anchor tag or a preformatted JSON definition
+  
   let container = block.querySelector('a[href]');
   let formDef;
   let pathname;

@@ -8,6 +8,11 @@
   --space-neg-55: -5.5rem;
   --letterspacing-wide-048: 0.48px;
   --hamburger-icon-width: 2.35rem;
+  --nav-mega-card-min-height: 25.4rem;
+  --nav-mega-card-max-height: 100rem;
+  --nav-hamburger-height: 0.15rem;
+  --nav-hamburger-width: 1.35rem;
+  --nav-level-min-height: 12rem;
 }
 
 @media (min-width: 744px) {
@@ -21,6 +26,7 @@
     --nav-logo-size: 11rem;
     --nav-height: var(--corp-spacing-88);
     --nav-icon-width: var(--corp-spacing-20);
+    --nav-mega-card-min-height: 27rem;
   }
 }
 
@@ -41,12 +47,15 @@ header .nav-wrapper {
   width: 100%;
   z-index: var(--corp-z-index-raised);
   position: fixed;
+  backdrop-filter: blur(0.5rem);
 }
 
 header nav {
   box-sizing: border-box;
   display: grid;
-  grid-template: 'brand tools hamburger' var(--nav-height) 'sections sections sections' / 1fr auto auto;
+  grid-template: "brand tools hamburger" var(
+      --nav-height
+    ) "sections sections sections" / 1fr auto auto;
   height: var(--nav-height);
   padding: 0 var(--corp-spacing-35);
   align-items: center;
@@ -66,6 +75,53 @@ header nav .external-link::after {
 
 header nav.second-level-active .nav-brand {
   display: none;
+}
+
+/* Skip link */
+
+header nav .skip-link {
+  height: var(--corp-spacing-1);
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  width: var(--corp-spacing-1);
+  z-index: -999;
+}
+
+header nav .skip-link:focus,
+header nav .skip-link:active {
+  background: var(--color-surface-default);
+  border: var(--border-width-thin) solid blue;
+  color: blue;
+  font-family: var(--body-font-family);
+  font-size: var(--corp-font-size-12);
+  font-weight: var(--corp-font-weight-light);
+  height: auto;
+  left: var(--corp-spacing-20);
+  line-height: var(--corp-typography-lineheight-body-sm);
+  margin: var(--corp-spacing-5);
+  outline: var(--corp-spacing-5) auto -webkit-focus-ring-color;
+  outline-offset: calc(-1 * var(--corp-spacing-2));
+  overflow: auto;
+  padding: var(--corp-spacing-10);
+  text-decoration: none;
+  top: var(--corp-spacing-20);
+  width: auto;
+  z-index: 999;
+}
+
+:where([dir="rtl"]) header nav .skip-link:focus,
+:where([dir="rtl"]) header nav .skip-link:active {
+  left: auto;
+  right: var(--corp-spacing-20);
+}
+
+@media (min-width: 1024px) {
+  header nav .skip-link:focus,
+  header nav .skip-link:active {
+    font-size: var(--corp-font-size-14);
+    line-height: var(--corp-typography-lineheight-body-sm);
+  }
 }
 
 header nav .nav-brand :where(p) {
@@ -90,7 +146,7 @@ header nav .nav-item-level-0 :where(ul) {
   margin: 0;
 }
 
-header nav .nav-sections .default-content-wrapper>:where(ul) {
+header nav .nav-sections .default-content-wrapper > :where(ul) {
   height: calc(100vh - 27.2rem);
   flex-direction: column;
   display: flex;
@@ -124,7 +180,14 @@ header nav .nav-item-level-0 .back-btn::before {
   margin-right: var(--corp-spacing-13);
 }
 
-header nav .nav-tools .default-content-wrapper>:where(ul)>:where(li)>:where(button) :where(span) {
+header
+  nav
+  .nav-tools
+  .default-content-wrapper
+  > :where(ul)
+  > :where(li)
+  > :where(button)
+  :where(span) {
   vertical-align: middle;
 }
 
@@ -133,11 +196,17 @@ header nav .nav-tools {
   margin-right: var(--corp-spacing-16);
 }
 
-header nav .nav-sections .default-content-wrapper>:where(ul)>:where(li) {
+header nav .nav-sections .default-content-wrapper > :where(ul) > :where(li) {
   border-bottom: var(--border-width-thin) solid var(--color-gray-medium);
 }
 
-header nav .nav-item-level-0 .default-content-wrapper>:where(ul)>:where(li)>:where(button) {
+header
+  nav
+  .nav-item-level-0
+  .default-content-wrapper
+  > :where(ul)
+  > :where(li)
+  > :where(button) {
   flex: 0 1 auto;
   position: relative;
   font-size: var(--corp-font-size-32);
@@ -155,7 +224,10 @@ header nav .nav-item-level-0 .default-content-wrapper>:where(ul)>:where(li)>:whe
   text-align: left;
 }
 
-.navigation-item-level-1 .level-two-menu>:where(.root-two-dropdown-btn) :where(.accordion-icon)::before {
+.navigation-item-level-1
+  .level-two-menu
+  > :where(.root-two-dropdown-btn)
+  :where(.accordion-icon)::before {
   color: inherit;
   content: "";
   font-family: var(--corp-icon-font-family);
@@ -165,7 +237,13 @@ header nav .nav-item-level-0 .default-content-wrapper>:where(ul)>:where(li)>:whe
   left: var(--corp-spacing-05);
 }
 
-header nav .nav-item-level-0:where(.nav-sections) .default-content-wrapper>:where(ul)>:where(li)>:where(button)::before {
+header
+  nav
+  .nav-item-level-0:where(.nav-sections)
+  .default-content-wrapper
+  > :where(ul)
+  > :where(li)
+  > :where(button)::before {
   color: var(--corp-color-text-default);
   content: "";
   font-family: var(--corp-icon-font-family);
@@ -174,11 +252,24 @@ header nav .nav-item-level-0:where(.nav-sections) .default-content-wrapper>:wher
   transform: rotate(180deg);
 }
 
-header nav .nav-sections .default-content-wrapper>:where(ul)>:where(li)>:where(button) :where(span) {
+header
+  nav
+  .nav-sections
+  .default-content-wrapper
+  > :where(ul)
+  > :where(li)
+  > :where(button)
+  :where(span) {
   vertical-align: middle;
 }
 
-header nav .nav-item-level-0 :where(.default-content-wrapper)>:where(ul)>:where(li) .submenu-level-1 {
+header
+  nav
+  .nav-item-level-0
+  :where(.default-content-wrapper)
+  > :where(ul)
+  > :where(li)
+  .submenu-level-1 {
   position: absolute;
   top: var(--nav-height);
   left: 0;
@@ -190,14 +281,22 @@ header nav .nav-item-level-0 :where(.default-content-wrapper)>:where(ul)>:where(
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: transform 0.5s ease, opacity 0.5s ease, visibility 0.5s linear 0.5s;
+  transition:
+    transform 0.5s ease,
+    opacity 0.5s ease,
+    visibility 0.5s linear 0.5s;
 }
 
 header nav .nav-item-level-0 .close-btn-wrapper {
   display: none;
 }
 
-header nav .nav-sections :where(.default-content-wrapper)>:where(ul)>:where(li):nth-last-child(2) {
+header
+  nav
+  .nav-sections
+  :where(.default-content-wrapper)
+  > :where(ul)
+  > :where(li):nth-last-child(2) {
   margin-bottom: var(--corp-spacing-64);
 }
 
@@ -213,12 +312,21 @@ header nav .nav-sections :where(.default-content-wrapper)>:where(ul)>:where(li):
   grid-template-columns: repeat(6, 1fr);
 }
 
-header nav .nav-item-level-0 .default-content-wrapper>:where(ul)>:where(li[aria-expanded="true"]) :where(.submenu-level-1) {
+header
+  nav
+  .nav-item-level-0
+  .default-content-wrapper
+  > :where(ul)
+  > :where(li[aria-expanded="true"])
+  :where(.submenu-level-1) {
   transform: scaleY(1);
   opacity: var(--opacity-full);
   visibility: visible;
   pointer-events: auto;
-  transition: transform 0.35s ease, opacity 0.35s ease, visibility 0s linear 0s;
+  transition:
+    transform 0.35s ease,
+    opacity 0.35s ease,
+    visibility 0s linear 0s;
 }
 
 .mega-menu-wrapper .mega-menu-left {
@@ -291,8 +399,10 @@ header nav .nav-item-level-0 .default-content-wrapper>:where(ul)>:where(li[aria-
   padding: 0 var(--corp-spacing-055);
 }
 
-.mega-menu-left .dashboard-links :where(.dashboard-list-link):where(.external-link)::after {
-    content: "";
+.mega-menu-left
+  .dashboard-links
+  :where(.dashboard-list-link):where(.external-link)::after {
+  content: "";
 }
 
 .mega-menu-card.mega-card-primary {
@@ -302,7 +412,7 @@ header nav .nav-item-level-0 .default-content-wrapper>:where(ul)>:where(li[aria-
 .mega-menu-card .mega-card {
   background: var(--color-surface-default);
   align-content: space-between;
-  min-height: 25.4rem;
+  min-height: var(--nav-mega-card-min-height);
   padding: var(--corp-spacing-24) var(--corp-spacing-32);
   background-color: var(--color-surface-highlight);
   border: var(--border-width-thin) solid var(--color-border-container);
@@ -378,14 +488,14 @@ header nav .nav-item-level-0 .default-content-wrapper>:where(ul)>:where(li[aria-
   padding: var(--corp-spacing-24) 0;
 }
 
-.navigation-item-level-1>a {
+.navigation-item-level-1 > a {
   color: var(--corp-color-text-default);
   font-weight: var(--corp-font-weight-regular);
   text-decoration: none;
   margin: 0;
 }
 
-.navigation-item-level-1 .level-two-menu>.root-two-dropdown-btn {
+.navigation-item-level-1 .level-two-menu > .root-two-dropdown-btn {
   background: none;
   border: none;
   color: var(--corp-color-text-default);
@@ -402,33 +512,57 @@ header nav .nav-item-level-0 .default-content-wrapper>:where(ul)>:where(li[aria-
   text-wrap: auto;
 }
 
-header nav .nav-item-level-0 :where(.default-content-wrapper) :where(ul) :where(li) :where(button):hover,
-header nav .nav-item-level-0 :where(.default-content-wrapper) :where(ul) :where(li) :where(a):hover,
-header nav .nav-item-level-0 :where(.default-content-wrapper) :where(ul) :where(li) :where(button.active) {
+header
+  nav
+  .nav-item-level-0
+  :where(.default-content-wrapper)
+  :where(ul)
+  :where(li)
+  :where(button):hover,
+header
+  nav
+  .nav-item-level-0
+  :where(.default-content-wrapper)
+  :where(ul)
+  :where(li)
+  :where(a):hover,
+header
+  nav
+  .nav-item-level-0
+  :where(.default-content-wrapper)
+  :where(ul)
+  :where(li)
+  :where(button.active) {
   font-weight: var(--corp-font-weight-bold);
   font-family: var(--roboto-bold-font-family);
 }
 
-.navigation-item-level-1>a,
-.navigation-item-level-1 .level-two-menu>.root-two-dropdown-btn {
+.navigation-item-level-1 > a,
+.navigation-item-level-1 .level-two-menu > .root-two-dropdown-btn {
   font-size: var(--corp-font-size-24);
   line-height: var(--corp-typography-lineheight-relaxed-lg);
 }
 
-.navigation-item-level-1 .level-two-menu>:where(.root-two-dropdown-btn) .accordion-icon {
+.navigation-item-level-1
+  .level-two-menu
+  > :where(.root-two-dropdown-btn)
+  .accordion-icon {
   position: relative;
   font-size: inherit;
   line-height: inherit;
 }
 
-.navigation-item-level-1 .level-two-menu>:where(.root-two-dropdown-btn) :where(.accordion-icon)::after {
+.navigation-item-level-1
+  .level-two-menu
+  > :where(.root-two-dropdown-btn)
+  :where(.accordion-icon)::after {
   color: inherit;
   content: "";
   font-family: var(--corp-icon-font-family);
   margin-left: var(--corp-spacing-8);
   position: absolute;
   transform: rotate(90deg);
-  transition: transform .5s ease-out;
+  transition: transform 0.5s ease-out;
   left: var(--corp-spacing-4);
   right: auto;
 }
@@ -439,17 +573,26 @@ header nav .nav-item-level-0 :where(.default-content-wrapper) :where(ul) :where(
   overflow: hidden;
   position: relative;
   transform-origin: top center;
-  transition: max-height 0.4s ease-out, opacity 0.3s ease-out;
+  transition:
+    max-height 0.4s ease-out,
+    opacity 0.3s ease-out;
 }
 
-.navigation-item-level-1 .level-two-menu .level-two-menu-items:where(.show-child) {
-  max-height: 1000px;
+.navigation-item-level-1
+  .level-two-menu
+  .level-two-menu-items:where(.show-child) {
+  max-height: var(--nav-mega-card-max-height);
   margin-top: var(--corp-spacing-10);
   opacity: var(--opacity-full);
-  transition: max-height 0.4s ease-in, opacity 0.3s ease-in 0.1s;
+  transition:
+    max-height 0.4s ease-in,
+    opacity 0.3s ease-in 0.1s;
 }
 
-.navigation-item-level-1 .level-two-menu :where(.level-two-menu-items) .go-to-page-btn {
+.navigation-item-level-1
+  .level-two-menu
+  :where(.level-two-menu-items)
+  .go-to-page-btn {
   align-items: center;
   color: var(--color-surface-highlight-inverse);
   cursor: pointer;
@@ -466,12 +609,21 @@ header nav .nav-item-level-0 :where(.default-content-wrapper) :where(ul) :where(
   font-family: var(--roboto-bold-font-family);
 }
 
-.navigation-item-level-1 .level-two-menu :where(.level-two-menu-items) :where(.go-to-page-btn):focus,
-.navigation-item-level-1 .level-two-menu :where(.level-two-menu-items) :where(.go-to-page-btn):hover {
+.navigation-item-level-1
+  .level-two-menu
+  :where(.level-two-menu-items)
+  :where(.go-to-page-btn):focus,
+.navigation-item-level-1
+  .level-two-menu
+  :where(.level-two-menu-items)
+  :where(.go-to-page-btn):hover {
   color: var(--corp-color-text-default);
 }
 
-.navigation-item-level-1 .level-two-menu :where(.level-two-menu-items) :where(.go-to-page-btn)::after {
+.navigation-item-level-1
+  .level-two-menu
+  :where(.level-two-menu-items)
+  :where(.go-to-page-btn)::after {
   color: inherit;
   content: "";
   font-family: var(--corp-icon-font-family);
@@ -485,27 +637,42 @@ header nav .nav-item-level-0 :where(.default-content-wrapper) :where(ul) :where(
   padding-top: 0;
 }
 
-.menu-global>button::before {
+.menu-global > button::before {
   display: none;
 }
 
-.navigation-item-level-1 .level-two-menu :where(.level-two-menu-items) .navigation-group {
+.navigation-item-level-1
+  .level-two-menu
+  :where(.level-two-menu-items)
+  .navigation-group {
   display: flex;
   flex-direction: column;
   gap: 0;
   margin-left: var(--corp-spacing-32);
 }
 
-.navigation-item-level-1 .level-two-menu :where(.level-two-menu-items)>.navigation-group {
+.navigation-item-level-1
+  .level-two-menu
+  :where(.level-two-menu-items)
+  > .navigation-group {
   margin-top: var(--corp-spacing-18);
   padding: 0;
 }
 
-.navigation-item-level-1 .level-two-menu :where(.level-two-menu-items)>:where(.navigation-group) :where(.navigation-item-level-2):not(:last-child) {
+.navigation-item-level-1
+  .level-two-menu
+  :where(.level-two-menu-items)
+  > :where(.navigation-group)
+  :where(.navigation-item-level-2):not(:last-child) {
   margin-bottom: var(--corp-spacing-16);
 }
 
-.navigation-item-level-1 .level-two-menu :where(.level-two-menu-items)>:where(.navigation-group) :where(.navigation-item-level-2) .navigation-item-link {
+.navigation-item-level-1
+  .level-two-menu
+  :where(.level-two-menu-items)
+  > :where(.navigation-group)
+  :where(.navigation-item-level-2)
+  .navigation-item-link {
   color: var(--corp-color-text-default);
   font-size: var(--corp-font-size-16);
   line-height: var(--corp-typography-lineheight-body-sm);
@@ -513,28 +680,56 @@ header nav .nav-item-level-0 :where(.default-content-wrapper) :where(ul) :where(
   font-weight: var(--corp-font-weight-regular);
 }
 
-header nav .nav-sections .default-content-wrapper>:where(ul)>:where(li[aria-expanded="true"]) :where(.submenu-level-1) {
+header
+  nav
+  .nav-sections
+  .default-content-wrapper
+  > :where(ul)
+  > :where(li[aria-expanded="true"])
+  :where(.submenu-level-1) {
   top: 0;
   z-index: var(--corp-z-index-raised);
 }
 
-.navigation-item-level-1 .level-two-menu .level-two-menu-items :where(.navigation-group) {
+.navigation-item-level-1
+  .level-two-menu
+  .level-two-menu-items
+  :where(.navigation-group) {
   margin-left: var(--corp-spacing-32);
 }
 
-.menu-quick-links .navigation-item-level-1 .level-two-menu :where(.level-two-menu-items) :where(.navigation-group),
-.menu-global .navigation-item-level-1 .level-two-menu :where(.level-two-menu-items) :where(.navigation-group) {
+.menu-quick-links
+  .navigation-item-level-1
+  .level-two-menu
+  :where(.level-two-menu-items)
+  :where(.navigation-group),
+.menu-global
+  .navigation-item-level-1
+  .level-two-menu
+  :where(.level-two-menu-items)
+  :where(.navigation-group) {
   margin-left: 0;
 }
 
-header nav .nav-sections :where(.default-content-wrapper)>:where(ul)>:where(li):nth-last-child(1) {
+header
+  nav
+  .nav-sections
+  :where(.default-content-wrapper)
+  > :where(ul)
+  > :where(li):nth-last-child(1) {
   border-bottom: none;
   border-top: var(--border-width-thin) solid var(--color-gray-medium);
   margin-top: var(--corp-spacing-31);
   padding: var(--corp-spacing-10) 0 0;
 }
 
-header nav .nav-item-level-0 :where(.default-content-wrapper)>:where(ul)>:where(li):nth-last-child(1)>:where(button) {
+header
+  nav
+  .nav-item-level-0
+  :where(.default-content-wrapper)
+  > :where(ul)
+  > :where(li):nth-last-child(1)
+  > :where(button) {
   font-size: var(--corp-font-size-12);
   padding: 0;
   letter-spacing: var(--letterspacing-wide-048);
@@ -552,14 +747,24 @@ header nav .nav-sections .icon {
   width: var(--corp-spacing-20);
 }
 
-header nav .nav-tools :where(.default-content-wrapper)>:where(ul)>:where(li):nth-child(1),
-header nav .nav-tools :where(.default-content-wrapper)>:where(ul)>:where(li):nth-child(2) {
+header
+  nav
+  .nav-tools
+  :where(.default-content-wrapper)
+  > :where(ul)
+  > :where(li):nth-child(1),
+header
+  nav
+  .nav-tools
+  :where(.default-content-wrapper)
+  > :where(ul)
+  > :where(li):nth-child(2) {
   display: none;
 }
 
 header nav .nav-hamburger {
   grid-area: hamburger;
-  height: 2.2rem;
+  height: var(--corp-spacing-22);
   display: flex;
   align-items: center;
 }
@@ -575,25 +780,25 @@ header nav .nav-hamburger :where(button) {
   width: var(--hamburger-icon-width);
 }
 
-header nav .nav-hamburger :where(button)>:where(span) {
+header nav .nav-hamburger :where(button) > :where(span) {
   background: var(--corp-color-text-default);
   display: block;
-  height: 1.5px;
-  transform-origin: -1px 1px;
+  height: var(--nav-hamburger-height);
+  transform-origin: -1px var(--corp-spacing-1); /* stylelint-disable-line */
   transition: all 0.5s ease-in-out;
-  width: 13.5px;
+  width: var(--nav-hamburger-width);
   transform: translateX(6px);
 }
 
-header nav .nav-hamburger :where(button)>:where(span):not(:last-child) {
+header nav .nav-hamburger :where(button) > :where(span):not(:last-child) {
   margin-bottom: var(--corp-spacing-4);
 }
 
-header nav .nav-hamburger :where(button)>:where(span):first-child {
+header nav .nav-hamburger :where(button) > :where(span):first-child {
   transform: translateX(0);
 }
 
-header nav .nav-hamburger :where(button)>:where(span):last-child {
+header nav .nav-hamburger :where(button) > :where(span):last-child {
   transform: translateX(2px);
 }
 
@@ -606,28 +811,40 @@ header .nav-backdrop {
   z-index: var(--corp-z-index-base);
 }
 
-header .nav-backdrop[aria-hidden='true'] {
+header .nav-backdrop[aria-hidden="true"] {
   display: none;
 }
 
-header nav[aria-expanded='true'] {
+header nav[aria-expanded="true"] {
   overflow-y: auto;
   min-height: 100dvh;
 }
 
-header nav[aria-expanded='true'] :where(.nav-hamburger) :where(button)>:where(span):first-child {
+header
+  nav[aria-expanded="true"]
+  :where(.nav-hamburger)
+  :where(button)
+  > :where(span):first-child {
   transform: rotate(45deg);
 }
 
-header nav[aria-expanded='true'] :where(.nav-hamburger) :where(button)>:where(span):nth-child(2) {
+header
+  nav[aria-expanded="true"]
+  :where(.nav-hamburger)
+  :where(button)
+  > :where(span):nth-child(2) {
   opacity: 0;
 }
 
-header nav[aria-expanded='true'] :where(.nav-hamburger) :where(button)>:where(span):last-child {
+header
+  nav[aria-expanded="true"]
+  :where(.nav-hamburger)
+  :where(button)
+  > :where(span):last-child {
   transform: rotate(-45deg);
 }
 
-header nav[aria-expanded='true'] .nav-sections {
+header nav[aria-expanded="true"] .nav-sections {
   visibility: visible;
   display: block;
   position: absolute;
@@ -643,7 +860,7 @@ header nav:where(.second-level-active) .nav-item-level-0 .back-btn {
   display: flex;
 }
 
-header nav:has(.menu-[aria-expanded='true']) :where(.nav-brand) {
+header nav:has(.menu-[aria-expanded="true"]) :where(.nav-brand) {
   display: none;
 }
 
@@ -664,7 +881,7 @@ header nav:has(.menu-[aria-expanded='true']) :where(.nav-brand) {
 }
 
 .nav-tools .search-input {
-  font-size: var(--corp-font-size-40);
+  font-size: var(--corp-font-size-20);
   line-height: var(--corp-typography-lineheight-heading-md);
   border: none;
   border-bottom: var(--border-width-thick) solid var(--corp-color-text-default);
@@ -695,7 +912,7 @@ header nav:has(.menu-[aria-expanded='true']) :where(.nav-brand) {
   font-weight: var(--corp-font-weight-semibold-alt);
   order: var(--order-first);
   transition: all 0.3s ease-in;
-  line-height: 46.875px;
+  line-height: var(--corp-typography-lineheight-heading-xl);
 }
 
 .nav-tools .search-input-label.focus-out {
@@ -735,17 +952,34 @@ input[type="search"]::-webkit-search-results-decoration {
   display: none;
 }
 
-.navigation-item-level-1 .level-two-menu>:where(.root-two-dropdown-btn[aria-expanded="true"]) :where(.accordion-icon)::after {
+.navigation-item-level-1
+  .level-two-menu
+  > :where(.root-two-dropdown-btn[aria-expanded="true"])
+  :where(.accordion-icon)::after {
   transform: rotate(0deg);
 }
 
-.menu-quick-links .navigation-item-level-1 .level-two-menu :where(.level-two-menu-items) :where(.go-to-page-btn),
-.menu-global .navigation-item-level-1 .level-two-menu :where(.level-two-menu-items) :where(.go-to-page-btn) {
+.menu-quick-links
+  .navigation-item-level-1
+  .level-two-menu
+  :where(.level-two-menu-items)
+  :where(.go-to-page-btn),
+.menu-global
+  .navigation-item-level-1
+  .level-two-menu
+  :where(.level-two-menu-items)
+  :where(.go-to-page-btn) {
   display: none;
 }
 
-.menu-quick-links .navigation-item-level-1 .level-two-menu>:where(.root-two-dropdown-btn[aria-expanded="true"]),
-.menu-global .navigation-item-level-1 .level-two-menu>:where(.root-two-dropdown-btn[aria-expanded="true"]) {
+.menu-quick-links
+  .navigation-item-level-1
+  .level-two-menu
+  > :where(.root-two-dropdown-btn[aria-expanded="true"]),
+.menu-global
+  .navigation-item-level-1
+  .level-two-menu
+  > :where(.root-two-dropdown-btn[aria-expanded="true"]) {
   padding-bottom: var(--corp-spacing-32);
 }
 
@@ -800,12 +1034,19 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
   margin-right: var(--corp-spacing-16);
 }
 
-.nav-tools .accordion .menu-item :where(.submenu-wrapper.two-columns)>:where(ul) {
+.nav-tools
+  .accordion
+  .menu-item
+  :where(.submenu-wrapper.two-columns)
+  > :where(ul) {
   column-count: 2;
   column-gap: var(--corp-spacing-32);
 }
 
-.navigation-item-level-1 .level-two-menu :where(.level-two-menu-items.two-columns)>.navigation-group {
+.navigation-item-level-1
+  .level-two-menu
+  :where(.level-two-menu-items.two-columns)
+  > .navigation-group {
   display: block;
   column-count: 2;
   column-gap: var(--corp-spacing-32);
@@ -820,10 +1061,15 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     max-width: var(--nav-logo-size);
   }
 
-  header nav .nav-item-level-0 .default-content-wrapper>:where(ul)>:where(li)>:where(button) {
+  header
+    nav
+    .nav-item-level-0
+    .default-content-wrapper
+    > :where(ul)
+    > :where(li)
+    > :where(button) {
     font-size: var(--corp-font-size-14);
     line-height: var(--corp-typography-lineheight-body-sm);
-
   }
 
   .mega-menu-wrapper {
@@ -884,7 +1130,8 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
   }
 
   .navigation-group {
-    padding: var(--corp-spacing-9) var(--corp-spacing-70) var(--corp-spacing-161);
+    padding: var(--corp-spacing-9) var(--corp-spacing-70)
+      var(--corp-spacing-161);
   }
 
   .navigation-item.navigation-item-level-1 {
@@ -895,21 +1142,24 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     left: var(--corp-spacing-70);
     font-size: var(--corp-font-size-14);
     letter-spacing: var(--corp-typography-letterspacing-wide-2xl);
-
   }
 
-  .navigation-item-level-1>a {
+  .navigation-item-level-1 > a {
     font-size: var(--corp-font-size-18);
     line-height: var(--corp-typography-lineheight-body-lg);
   }
 
-  .navigation-item-level-1 .level-two-menu :where(.level-two-menu-items) .go-to-page-btn {
+  .navigation-item-level-1
+    .level-two-menu
+    :where(.level-two-menu-items)
+    .go-to-page-btn {
     font-size: var(--corp-font-size-14);
     margin-left: 0;
   }
 
-  header nav[aria-expanded='true'] .nav-sections {
-    padding: var(--corp-spacing-24) var(--corp-spacing-70) var(--nav-sections-bottom-gap);
+  header nav[aria-expanded="true"] .nav-sections {
+    padding: var(--corp-spacing-24) var(--corp-spacing-70)
+      var(--nav-sections-bottom-gap);
   }
 
   .nav-tools .search-main-wrapper {
@@ -919,35 +1169,50 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     margin: var(--corp-spacing-70) var(--corp-spacing-70) var(--corp-spacing-80);
   }
 
-  .navigation-item-level-1 .level-two-menu>.root-two-dropdown-btn {
+  .nav-tools .search-input {
+    font-size: var(--corp-font-size-30);
+  }
+
+  .navigation-item-level-1 .level-two-menu > .root-two-dropdown-btn {
     font-size: var(--corp-font-size-18);
     line-height: var(--corp-typography-lineheight-body-lg);
   }
 
-  .menu-quick-links .navigation-item-level-1 .level-two-menu>:where(.root-two-dropdown-btn),
-  .menu-global .navigation-item-level-1 .level-two-menu>:where(.root-two-dropdown-btn) {
+  .menu-quick-links
+    .navigation-item-level-1
+    .level-two-menu
+    > :where(.root-two-dropdown-btn),
+  .menu-global
+    .navigation-item-level-1
+    .level-two-menu
+    > :where(.root-two-dropdown-btn) {
     font-size: var(--corp-font-size-24);
     line-height: var(--corp-typography-lineheight-relaxed-lg);
     margin: 0;
     border-radius: 0;
   }
 
-  header nav .nav-sections :where(.default-content-wrapper)>:where(ul)>:where(li):nth-last-child(1) {
+  header
+    nav
+    .nav-sections
+    :where(.default-content-wrapper)
+    > :where(ul)
+    > :where(li):nth-last-child(1) {
     margin-top: auto;
   }
 
-    .mega-menu-left .button-container :where(a).button {
-      font-size: var(--corp-font-size-14);
-      letter-spacing: var(--corp-typography-letterspacing-wide-2xl);
-    }
+  .mega-menu-left .button-container :where(a).button {
+    font-size: var(--corp-font-size-14);
+    letter-spacing: var(--corp-typography-letterspacing-wide-2xl);
+  }
 
-    header nav :where(.nav-tools) .icon.icon-icon-search {
-      margin-right: var(--corp-spacing-25);
-    }
+  header nav :where(.nav-tools) .icon.icon-icon-search {
+    margin-right: var(--corp-spacing-25);
+  }
 
-    header nav .nav-hamburger :where(button) {
-      width: auto;
-    }
+  header nav .nav-hamburger :where(button) {
+    width: auto;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -957,7 +1222,9 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
   }
 
   header nav {
-    grid-template: 'brand tools hamburger' var(--nav-height) 'sections sections sections' / 1fr auto auto;
+    grid-template: "brand tools hamburger" var(
+        --nav-height
+      ) "sections sections sections" / 1fr auto auto;
     height: var(--nav-height);
     padding: 0 var(--corp-spacing-55);
     display: flex;
@@ -978,7 +1245,7 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     display: block;
   }
 
-  header nav:has(.menu-[aria-expanded='true']) :where(.nav-brand) {
+  header nav:has(.menu-[aria-expanded="true"]) :where(.nav-brand) {
     display: block;
   }
 
@@ -990,7 +1257,7 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     grid-template-columns: repeat(12, 1fr);
     padding-right: var(--corp-spacing-55);
     padding-top: var(--corp-spacing-80);
-    padding-left: calc(7.65% + .1667rem);
+    padding-left: calc(7.65% + 0.1667rem);
     border-top-left-radius: var(--border-radius-md);
     margin-left: var(--corp-spacing-55);
   }
@@ -1017,7 +1284,7 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
   }
 
   .mega-menu-card .mega-card {
-    min-height: 27rem;
+    min-height: var(--nav-mega-card-min-height);
   }
 
   .mega-menu-card .mega-card-content {
@@ -1029,15 +1296,26 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     line-height: var(--corp-typography-lineheight-relaxed-3xl);
   }
 
-  .navigation-item-level-1 .level-two-menu :where(.level-two-menu-items) .go-to-page-btn {
+  .navigation-item-level-1
+    .level-two-menu
+    :where(.level-two-menu-items)
+    .go-to-page-btn {
     margin-left: var(--corp-spacing-50);
   }
 
-  .navigation-item-level-1 .level-two-menu .level-two-menu-items :where(.navigation-group) {
+  .navigation-item-level-1
+    .level-two-menu
+    .level-two-menu-items
+    :where(.navigation-group) {
     margin-left: var(--corp-spacing-70);
   }
 
-  .navigation-item-level-1 .level-two-menu :where(.level-two-menu-items)>:where(.navigation-group) :where(.navigation-item-level-2) .navigation-item-link {
+  .navigation-item-level-1
+    .level-two-menu
+    :where(.level-two-menu-items)
+    > :where(.navigation-group)
+    :where(.navigation-item-level-2)
+    .navigation-item-link {
     font-size: var(--corp-font-size-20);
     line-height: var(--corp-typography-lineheight-body-lg);
   }
@@ -1049,12 +1327,16 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     margin: var(--corp-spacing-80) var(--corp-spacing-55);
   }
 
+  .nav-tools .search-input {
+    font-size: var(--corp-font-size-40);
+  }
+
   header nav .nav-hamburger {
     display: none;
     visibility: hidden;
   }
 
-  header nav[aria-expanded='true'] {
+  header nav[aria-expanded="true"] {
     min-height: 0;
     overflow: visible;
   }
@@ -1065,14 +1347,14 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     margin-left: var(--corp-spacing-108);
   }
 
-  .accordion>ul {
+  .accordion > ul {
     grid-column: 2 / span 4;
     z-index: var(--corp-z-index-base);
     display: block;
     padding: 0;
   }
 
-  header nav .nav-sections .default-content-wrapper>:where(ul) {
+  header nav .nav-sections .default-content-wrapper > :where(ul) {
     display: flex;
     gap: var(--corp-gap-2xl);
     margin: 0;
@@ -1089,7 +1371,7 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     margin-right: 0;
   }
 
-  header nav .nav-tools .default-content-wrapper>:where(ul) {
+  header nav .nav-tools .default-content-wrapper > :where(ul) {
     display: flex;
     gap: var(--corp-gap-sm);
     margin: 0;
@@ -1097,7 +1379,13 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     padding-right: var(--corp-spacing-15);
   }
 
-  header nav .nav-item-level-0 .default-content-wrapper>:where(ul)>:where(li)>:where(button) {
+  header
+    nav
+    .nav-item-level-0
+    .default-content-wrapper
+    > :where(ul)
+    > :where(li)
+    > :where(button) {
     flex: 0 1 auto;
     position: relative;
     font-size: var(--corp-font-size-18);
@@ -1113,22 +1401,58 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     font-family: var(--body-font-family);
   }
 
-  header nav .nav-tools .default-content-wrapper>:where(ul)>:where(li)>:where(button) {
+  header
+    nav
+    .nav-tools
+    .default-content-wrapper
+    > :where(ul)
+    > :where(li)
+    > :where(button) {
     font-size: var(--corp-font-size-14);
     padding-left: var(--corp-spacing-10);
     padding-right: var(--corp-spacing-10);
     letter-spacing: var(--corp-typography-letterspacing-wide-lg);
   }
 
-  header nav .nav-item-level-0 .default-content-wrapper :where(ul) :where(li) :where(button):where(.selected) {
+  header
+    nav
+    .nav-item-level-0
+    .default-content-wrapper
+    :where(ul)
+    :where(li)
+    :where(button):where(.selected) {
     font-weight: var(--corp-font-weight-bold);
     font-family: var(--roboto-bold-font-family);
   }
 
-  header nav .nav-item-level-0 :where(.default-content-wrapper)>:where(ul)>:where(li)>:where(button):hover,
-  header nav .nav-item-level-0 :where(.default-content-wrapper)>:where(ul)>:where(li)>:where(button):focus,
-  header nav .nav-item-level-0 :where(.default-content-wrapper)>:where(ul)>:where(li)>:where(button):focus-visible,
-  header nav .nav-item-level-0 :where(.default-content-wrapper)>:where(ul)>:where(li)>:where(button[aria-expanded='true']) {
+  header
+    nav
+    .nav-item-level-0
+    :where(.default-content-wrapper)
+    > :where(ul)
+    > :where(li)
+    > :where(button):hover,
+  header
+    nav
+    .nav-item-level-0
+    :where(.default-content-wrapper)
+    > :where(ul)
+    > :where(li)
+    > :where(button):focus,
+  header
+    nav
+    .nav-item-level-0
+    :where(.default-content-wrapper)
+    > :where(ul)
+    > :where(li)
+    > :where(button):focus-visible,
+  header
+    nav
+    .nav-item-level-0
+    :where(.default-content-wrapper)
+    > :where(ul)
+    > :where(li)
+    > :where(button[aria-expanded="true"]) {
     font-weight: var(--corp-font-weight-bold);
     font-family: var(--roboto-bold-font-family);
   }
@@ -1140,23 +1464,50 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     font-family: var(--corp-icon-font-family);
     font-size: inherit;
     margin-left: var(--corp-spacing-12);
-    transform: scale(.75);
+    transform: scale(0.75);
   }
 
-  .navigation-item-level-1 .level-two-menu>:where(.root-two-dropdown-btn) :where(.accordion-icon)::after {
+  .navigation-item-level-1
+    .level-two-menu
+    > :where(.root-two-dropdown-btn)
+    :where(.accordion-icon)::after {
     left: var(--corp-spacing-4);
     margin-right: var(--corp-spacing-8);
     right: auto;
   }
 
-  header nav .nav-item-level-0 :where(.default-content-wrapper)>:where(ul)>:where(li)>:where(button):hover::after,
-  header nav .nav-item-level-0 :where(.default-content-wrapper)>:where(ul)>:where(li)>:where(button):focus::after,
-  header nav .nav-item-level-0 :where(.default-content-wrapper)>:where(ul)>:where(li)>:where(button):focus-visible::after,
-  header nav .nav-item-level-0 .default-content-wrapper>:where(ul)>:where(li)>:where(button[aria-expanded='true'])::after {
+  header
+    nav
+    .nav-item-level-0
+    :where(.default-content-wrapper)
+    > :where(ul)
+    > :where(li)
+    > :where(button):hover::after,
+  header
+    nav
+    .nav-item-level-0
+    :where(.default-content-wrapper)
+    > :where(ul)
+    > :where(li)
+    > :where(button):focus::after,
+  header
+    nav
+    .nav-item-level-0
+    :where(.default-content-wrapper)
+    > :where(ul)
+    > :where(li)
+    > :where(button):focus-visible::after,
+  header
+    nav
+    .nav-item-level-0
+    .default-content-wrapper
+    > :where(ul)
+    > :where(li)
+    > :where(button[aria-expanded="true"])::after {
     background: var(--corp-color-text-default);
     bottom: 0;
     content: "";
-    height: 4px;
+    height: var(--corp-spacing-4);
     left: 0;
     position: absolute;
     width: 100%;
@@ -1172,14 +1523,18 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     font-size: var(--corp-font-size-14);
     font-weight: var(--corp-font-weight-bold);
     letter-spacing: var(--corp-typography-letterspacing-wide-2xl);
-    width: 10rem;
+    width: var(--corp-spacing-100);
     position: relative;
     top: var(--corp-spacing-20);
     border: none;
     line-height: var(--corp-typography-lineheight-body-sm);
   }
 
-  header nav .nav-item-level-0 :where(.close-btn-wrapper) :where(.close-btn):hover {
+  header
+    nav
+    .nav-item-level-0
+    :where(.close-btn-wrapper)
+    :where(.close-btn):hover {
     color: var(--corp-color-text-default);
   }
 
@@ -1195,7 +1550,10 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     cursor: pointer;
   }
 
-  .navigation-item-level-1 .level-two-menu>:where(.root-two-dropdown-btn) :where(.accordion-icon)::before {
+  .navigation-item-level-1
+    .level-two-menu
+    > :where(.root-two-dropdown-btn)
+    :where(.accordion-icon)::before {
     left: 0;
     margin-right: var(--corp-spacing-12);
     right: auto;
@@ -1203,12 +1561,12 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
 
   header nav .nav-item-level-0 .close-btn-wrapper :where(.close-btn)::before,
   header nav .nav-item-level-0 .close-btn-wrapper :where(.close-btn)::after {
-    content: '';
+    content: "";
     position: absolute;
     right: 0;
     top: 40%;
-    width: 18px;
-    height: 2px;
+    width: var(--corp-spacing-18);
+    height: var(--corp-spacing-2);
     background: var(--corp-color-text-accent);
   }
 
@@ -1220,12 +1578,26 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     transform: translateY(-50%) rotate(-45deg);
   }
 
-  header nav .nav-item-level-0 :where(.close-btn-wrapper) :where(.close-btn):hover::before,
-  header nav .nav-item-level-0 :where(.close-btn-wrapper) :where(.close-btn):hover::after {
+  header
+    nav
+    .nav-item-level-0
+    :where(.close-btn-wrapper)
+    :where(.close-btn):hover::before,
+  header
+    nav
+    .nav-item-level-0
+    :where(.close-btn-wrapper)
+    :where(.close-btn):hover::after {
     background-color: var(--corp-color-text-default);
   }
 
-  header nav .nav-item-level-0 .default-content-wrapper>:where(ul)>:where(li) :where(.submenu-level-1) {
+  header
+    nav
+    .nav-item-level-0
+    .default-content-wrapper
+    > :where(ul)
+    > :where(li)
+    :where(.submenu-level-1) {
     position: absolute;
     top: var(--nav-height);
     left: 0;
@@ -1234,7 +1606,7 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     pointer-events: none;
     border-top: var(--border-width-hairline) solid var(--color-gray-medium);
     max-height: calc(100vh - 8.8rem);
-    min-height: 12rem;
+    min-height: var(--nav-level-min-height);
     height: auto;
     overflow: auto;
     display: flex;
@@ -1243,22 +1615,43 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     transform-origin: top center;
     opacity: 0;
     visibility: hidden;
-    transition: transform 0.4s ease, opacity 0.3s ease, visibility 0.4s;
+    transition:
+      transform 0.4s ease,
+      opacity 0.3s ease,
+      visibility 0.4s;
   }
 
-  header nav .nav-item-level-0 .default-content-wrapper>:where(ul)>:where(li[aria-expanded="true"]) :where(.submenu-level-1) {
+  header
+    nav
+    .nav-item-level-0
+    .default-content-wrapper
+    > :where(ul)
+    > :where(li[aria-expanded="true"])
+    :where(.submenu-level-1) {
     transform: scaleY(1);
     opacity: var(--opacity-full);
     visibility: visible;
     pointer-events: auto;
   }
 
-  header nav .nav-item-level-0 .default-content-wrapper>:where(ul)>:where(li) :where(.submenu-level-1>*) {
+  header
+    nav
+    .nav-item-level-0
+    .default-content-wrapper
+    > :where(ul)
+    > :where(li)
+    :where(.submenu-level-1 > *) {
     opacity: 0;
     transition: opacity 0.3s ease;
   }
 
-  header nav .nav-item-level-0 .default-content-wrapper>:where(ul)>:where(li[aria-expanded="true"]) :where(.submenu-level-1>*) {
+  header
+    nav
+    .nav-item-level-0
+    .default-content-wrapper
+    > :where(ul)
+    > :where(li[aria-expanded="true"])
+    :where(.submenu-level-1 > *) {
     opacity: var(--opacity-full);
     transition-delay: 0.3s;
   }
@@ -1286,7 +1679,7 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     opacity: var(--opacity-full);
   }
 
-  header nav[aria-expanded='true'] .nav-sections {
+  header nav[aria-expanded="true"] .nav-sections {
     display: block;
     visibility: visible;
     align-self: start;
@@ -1334,29 +1727,44 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     gap: var(--corp-gap-lg);
   }
 
-  .nav-tools .accordion .menu-item :where(.submenu-wrapper)>:where(ul) {
+  .nav-tools .accordion .menu-item :where(.submenu-wrapper) > :where(ul) {
     grid-column: 7 / span 5;
   }
 
-  .nav-tools .accordion .menu-item :where(.submenu-wrapper)>:where(ul)>:where(li) {
+  .nav-tools
+    .accordion
+    .menu-item
+    :where(.submenu-wrapper)
+    > :where(ul)
+    > :where(li) {
     margin-bottom: var(--corp-spacing-16);
     font-size: var(--corp-font-size-18);
     line-height: var(--corp-typography-lineheight-body-lg);
     font-weight: var(--corp-font-weight-regular);
   }
 
-  .navigation-item-level-1>a {
+  .navigation-item-level-1 > a {
     font-size: var(--corp-font-size-26);
     line-height: var(--corp-typography-lineheight-relaxed-lg);
   }
 
-  .nav-tools .accordion .menu-item :where(.submenu-wrapper)>:where(ul)>:where(li)>:where(a) {
+  .nav-tools
+    .accordion
+    .menu-item
+    :where(.submenu-wrapper)
+    > :where(ul)
+    > :where(li)
+    > :where(a) {
     color: var(--corp-color-text-default);
   }
 
   .nav-tools .accordion :where(.menu-item):hover,
   .accordion .menu-item.open,
-  .accordion .menu-item :where(.submenu-wrapper)>:where(ul)>:where(li):hover {
+  .accordion
+    .menu-item
+    :where(.submenu-wrapper)
+    > :where(ul)
+    > :where(li):hover {
     font-weight: var(--corp-font-weight-bold);
   }
 
@@ -1366,7 +1774,8 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     grid-template-columns: repeat(12, 1fr);
     grid-template-rows: auto;
     order: 0;
-    padding: var(--corp-spacing-48) var(--corp-spacing-55) var(--corp-spacing-88);
+    padding: var(--corp-spacing-48) var(--corp-spacing-55)
+      var(--corp-spacing-88);
   }
 
   .navigation-item.navigation-item-level-1 {
@@ -1377,11 +1786,11 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
   }
 
   .navigation-item.navigation-item-level-1:first-child,
-  .navigation-item.navigation-item-level-1:nth-child(3n+4) {
+  .navigation-item.navigation-item-level-1:nth-child(3n + 4) {
     grid-column: 2 / span 3;
   }
 
-  .navigation-item-level-1 .level-two-menu>.root-two-dropdown-btn {
+  .navigation-item-level-1 .level-two-menu > .root-two-dropdown-btn {
     flex-direction: row-reverse;
     justify-content: flex-end;
     text-align: left;
@@ -1394,17 +1803,32 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     padding-left: var(--corp-spacing-42);
   }
 
-  header nav .nav-sections .default-content-wrapper>:where(ul)>:where(li) {
+  header nav .nav-sections .default-content-wrapper > :where(ul) > :where(li) {
     border-bottom: none;
   }
 
-  header nav .nav-item-level-0:where(.nav-sections) .default-content-wrapper>:where(ul)>:where(li)>:where(button)::before {
+  header
+    nav
+    .nav-item-level-0:where(.nav-sections)
+    .default-content-wrapper
+    > :where(ul)
+    > :where(li)
+    > :where(button)::before {
     display: none;
-    ;
   }
 
-  header nav .nav-tools :where(.default-content-wrapper)>:where(ul)>:where(li):nth-child(1),
-  header nav .nav-tools :where(.default-content-wrapper)>:where(ul)>:where(li):nth-child(2) {
+  header
+    nav
+    .nav-tools
+    :where(.default-content-wrapper)
+    > :where(ul)
+    > :where(li):nth-child(1),
+  header
+    nav
+    .nav-tools
+    :where(.default-content-wrapper)
+    > :where(ul)
+    > :where(li):nth-child(2) {
     display: block;
   }
 
@@ -1424,19 +1848,39 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     padding-top: var(--corp-spacing-35);
   }
 
-  header nav .mega-menu-minimize .mega-menu-wrapper :where(.mega-menu-left) :where(.mega-menu-title) {
+  header
+    nav
+    .mega-menu-minimize
+    .mega-menu-wrapper
+    :where(.mega-menu-left)
+    :where(.mega-menu-title) {
     margin-right: var(--corp-spacing-70);
   }
 
-  header nav .mega-menu-minimize .mega-menu-wrapper :where(.mega-menu-left) :where(.mega-menu-description) {
+  header
+    nav
+    .mega-menu-minimize
+    .mega-menu-wrapper
+    :where(.mega-menu-left)
+    :where(.mega-menu-description) {
     flex: 1;
   }
 
-  header nav .mega-menu-minimize .mega-menu-wrapper :where(.mega-menu-left) :where(.button-container) {
+  header
+    nav
+    .mega-menu-minimize
+    .mega-menu-wrapper
+    :where(.mega-menu-left)
+    :where(.button-container) {
     margin-left: var(--corp-spacing-90);
   }
 
-  header nav .mega-menu-minimize .mega-menu-wrapper :where(.mega-menu-left) :where(.dashboard-links) {
+  header
+    nav
+    .mega-menu-minimize
+    .mega-menu-wrapper
+    :where(.mega-menu-left)
+    :where(.dashboard-links) {
     display: none;
   }
 
@@ -1464,8 +1908,6 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     font-size: var(--corp-font-size-14);
     letter-spacing: var(--corp-typography-letterspacing-wide-lg);
   }
-
-
 }
 
 @media (min-width: 1440px) {
@@ -1492,11 +1934,11 @@ header nav :where(.nav-tools) .icon.icon-icon-search {
     max-width: var(--corp-layout-container-max-width-md);
   }
 
-  header nav .nav-sections .default-content-wrapper>:where(ul) {
+  header nav .nav-sections .default-content-wrapper > :where(ul) {
     gap: var(--corp-gap-5xl);
   }
 
-  .submenu-level-1>.navigation-group {
+  .submenu-level-1 > .navigation-group {
     margin-left: auto;
     margin-right: auto;
     max-width: var(--corp-layout-container-max-width-md);

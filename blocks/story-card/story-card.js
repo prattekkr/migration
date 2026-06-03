@@ -1,6 +1,6 @@
 import { toClassName } from '../../scripts/aem.js';
 import { getConfigValue } from '../../scripts/config.js';
-import indexUtils from '../../scripts/index-utils.js';
+import indexUtils, { normalizeLookupPath } from '../../scripts/index-utils.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { isUniversalEditor } from '../../scripts/utils.js';
 import {
@@ -194,32 +194,6 @@ function normalizeSitePath(pathname, rootPath = '') {
   return normalized || '/';
 }
 
-function inferSitePathFromAuthorPath(pathname) {
-  const normalizedPath = normalizeSitePath(pathname);
-  if (!normalizedPath.startsWith('/content/')) {
-    return '';
-  }
-
-  const segments = normalizedPath.split('/').filter(Boolean);
-  if (segments[0] !== 'content') {
-    return '';
-  }
-
-  if (segments[3] === 'language-masters' && segments.length >= 5) {
-    return normalizeSitePath(`/${segments.slice(5).join('/')}`);
-  }
-
-  if (segments.length >= 6 && /^[a-z]{2}(?:-[a-z]{2})?$/i.test(segments[4])) {
-    return normalizeSitePath(`/${segments.slice(5).join('/')}`);
-  }
-
-  if (segments.length >= 5 && /^[a-z]{2}(?:-[a-z]{2})?$/i.test(segments[3])) {
-    return normalizeSitePath(`/${segments.slice(4).join('/')}`);
-  }
-
-  return '';
-}
-
 function normalizeRawReference(reference) {
   return `${reference || ''}`.trim().replace(/^urn:aemconnection:/i, '');
 }
@@ -231,17 +205,10 @@ function normalizePageReference(reference, rootPath) {
   try {
     const url = new URL(normalizedReference, window.location.href);
     const authorPath = normalizeSitePath(url.pathname);
-    const inferredPath = !rootPath
-      ? inferSitePathFromAuthorPath(authorPath)
-      : '';
-    const path = normalizeSitePath(
-      rootPath && authorPath.startsWith(rootPath)
-        ? authorPath.slice(rootPath.length) || '/'
-        : inferredPath || authorPath,
-    );
+    const path = normalizeLookupPath(authorPath, rootPath);
     const internal = url.origin === window.location.origin
       || !!(rootPath && authorPath.startsWith(rootPath))
-      || !!inferredPath
+      || path !== authorPath
       || authorPath.startsWith('/content/');
     const href = internal
       ? `${path}${url.search}${url.hash}` || path

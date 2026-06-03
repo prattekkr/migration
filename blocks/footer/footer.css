@@ -24,7 +24,7 @@
   padding: var(--corp-spacing-32) var(--corp-spacing-35) 0;
   border-top-left-radius: var(--corp-spacing-32);
   margin: auto;
-  max-width: 1440px;
+  max-width: var(--corp-layout-container-max-width-lg);
   position: relative;
 }
 
@@ -52,7 +52,7 @@
 
 /* Bottom links */
 .footer .footer-bottom {
-  border-top: 1px solid var(--color-gray-medium);
+  border-top: var(--border-width-thin) solid var(--color-gray-medium);
   padding: var(--corp-spacing-24) 0 var(--corp-spacing-16);
 }
 
@@ -166,11 +166,11 @@
 }
 
 .footer-bottom img {
-  width: 27px;
+  width: var(--corp-spacing-27);
 }
 
 .footer .footer-logo img {
-  max-width: 150px;
+  max-width: var(--corp-spacing-150);
   height: auto;
 }
 

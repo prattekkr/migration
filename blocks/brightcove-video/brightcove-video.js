@@ -143,7 +143,6 @@ function getCellPicture(row) {
 function getCellIconSource(row) {
   if (!row) return '';
   const cell = row.firstElementChild || row;
-  resolveImageReference(cell);
   return extractIconSource(cell);
 }
 
