@@ -282,12 +282,36 @@
   {
     "id": "text-container",
     "components": [
-      "text-container-image",
-      "text-container-text"
+      "text-container-text",
+      "text-container-image"
     ]
   },
   {
     "id": "video",
+    "components": []
+  },
+  {
+    "id": "carousel",
+    "components": []
+  },
+  {
+    "id": "cta",
+    "components": []
+  },
+  {
+    "id": "custom-image",
+    "components": []
+  },
+  {
+    "id": "quote",
+    "components": []
+  },
+  {
+    "id": "story-card",
+    "components": []
+  },
+  {
+    "id": "fact-card",
     "components": []
   }
 ]
