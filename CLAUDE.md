@@ -14,7 +14,7 @@ The following skills are available in `.claude/skills/`, `.agents/skills/`, and 
 | `block-analysis` | Deep analysis of 9 story-page blocks (JS decoration, CSS, fields) | Working on story article imports |
 | `block-analysis-full` | Analysis of all 32 remaining blocks | Working on other page templates |
 | `migration-rules` | Technical rules for fix-forward pipeline, DOM analysis | Debugging import issues |
-| `complex-template-migration` | Multi-grid layouts, side-by-side columns, technology modules, sidebars | Pages with 1-4-1-5-1 grids, 6-6 cards, gray sections, quotes, complex layouts |
+| `complex-template-migration` | Grid Container/Section patterns, multi-column layouts, background colors, real examples | Pages with side-by-side columns, video grids, card rows, 7-1-4 / 4-4-4 / 5-1-6 layouts |
 | `md2jcr-field-alignment` | md2jcr FieldGroup rules, row counts per block, section metadata format, field hints | Writing ANY import script — CRITICAL for correct JCR output |
 | `md2jcr-field-naming` | Suffix field naming rules, _fixFieldOrder bug, safe rename patterns | Adding/renaming fields in component-models.json — CRITICAL to prevent silent field loss |
 
