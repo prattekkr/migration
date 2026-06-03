@@ -1723,7 +1723,7 @@
       {
         "component": "text",
         "valueType": "string",
-        "name": "overlayTitle",
+        "name": "overlayHeading",
         "value": "",
         "label": "Overlay Title",
         "description": "Title shown atop the video before play"
@@ -1833,7 +1833,7 @@
       {
         "component": "select",
         "valueType": "string",
-        "name": "overlayButtonIconType",
+        "name": "overlayBtnIconVariation",
         "value": "icon-font",
         "label": "Overlay Button Icon Type",
         "description": "Icon type for the button",
@@ -15835,7 +15835,7 @@
       {
         "component": "text",
         "valueType": "string",
-        "name": "placeholderAlt",
+        "name": "placeholderAltLabel",
         "value": "",
         "label": "Poster Alt Text",
         "description": "Provide alt text for the poster image for accessibility."
@@ -15843,7 +15843,7 @@
       {
         "component": "text",
         "valueType": "string",
-        "name": "overlayTitle",
+        "name": "overlayHeading",
         "value": "",
         "label": "Overlay Title",
         "description": "Title displayed on top of the video before the user clicks play."
@@ -15857,7 +15857,7 @@
         "description": "Description displayed on top of the video before the user clicks play."
       },
       {
-        "name": "overlayBtnText",
+        "name": "overlayButtonLabel",
         "label": "Overlay Button Text",
         "component": "text",
         "description": "Defines the button text displayed on the video overlay before playback."
@@ -15933,7 +15933,7 @@
       {
         "component": "select",
         "valueType": "string",
-        "name": "overlayButtonIconType",
+        "name": "overlayBtnIconVariation",
         "value": "icon-font",
         "label": "Overlay Button Icon Type",
         "description": "Select the icon type used in the overlay button",

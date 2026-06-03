@@ -120,7 +120,7 @@ function makeCTA(document, text, url) {
   a.href = url;
   a.textContent = text;
   return makeBlock(document, 'Cta', [
-    [a],                      // [0] link
+    [a],                      // [0] link (linkText collapsed)
     [''],                     // [1] aria-label
     ['_self'],                // [2] ctaTarget
     ['none'],                 // [3] iconVariation
@@ -128,10 +128,11 @@ function makeCTA(document, text, url) {
     [''],                     // [5] iconImage
     ['before'],               // [6] iconPosition
     ['false'],                // [7] ariaHidden
-    ['default-cta,back-cta'], // [8] classes group
-    [''],                     // [9] blockId
-    ['none'],                 // [10] language
-    [''],                     // [11] analytics_id
+    [''],                     // [8] warnOnDeparturePopupFragmentPath
+    ['default-cta,back-cta'], // [9] classes group
+    [''],                     // [10] blockId
+    ['none'],                 // [11] language
+    [''],                     // [12] analytics_id
   ]);
 }
 
@@ -755,9 +756,13 @@ export default {
           // Extract author name and title separately
           const authorName = qEl.querySelector('.cmp-quote__author-name, [class*="author-name"]')?.textContent?.trim() || '';
           const authorTitle = qEl.querySelector('.cmp-quote__author-title, [class*="author-title"]')?.textContent?.trim() || '';
-          // Extract author image if present (in .cmp-quote__author-block or .cmp-quote__author-image)
-          const authorImg = qEl.querySelector('.cmp-quote__author-block img, .cmp-quote__author-image img, [class*="author-block"] img, [class*="author"] img.author-img');
-          const authorImgSrc = authorImg ? normalizeImageUrl(authorImg.getAttribute('src') || authorImg.getAttribute('data-cmp-src') || '') : '';
+          // Extract author image if present — check multiple patterns
+          const authorImg = qEl.querySelector('.cmp-quote__author-block img, .cmp-quote__author-image img, [class*="author-block"] img, [class*="author"] img, .cmp-quote img')
+            || child.querySelector('[class*="author"] img, .cmp-quote__author-image img, img[class*="author"]');
+          let authorImgSrc = '';
+          if (authorImg) {
+            authorImgSrc = normalizeImageUrl(authorImg.getAttribute('src') || authorImg.getAttribute('data-cmp-src') || authorImg.getAttribute('data-src') || '');
+          }
           if (qText.length > 10) {
             output.appendChild(makeQuote(document, qText, authorName, authorTitle, authorImgSrc));
           }
@@ -790,25 +795,53 @@ export default {
           const a = document.createElement('a');
           a.href = ytSrc;
           a.textContent = ytSrc;
+          // AbbVie video component structure: .cmp-video > .cmp-video__panel (poster+overlay) + .cmp-video__container (iframe)
+          const cmpVideo = youtubeEl.closest('.cmp-video, .cmp-video-full-width, .video') || child;
+          // Poster image in .cmp-video__image or .cmp-video__panel
+          const posterImg = cmpVideo.querySelector('.cmp-video__image img, .cmp-video__panel img, img.cmp-image__image, img[class*="poster"], img[class*="thumbnail"]');
+          const posterSrc = posterImg ? normalizeImageUrl(posterImg.getAttribute('src') || posterImg.getAttribute('data-cmp-src') || '') : '';
+          const posterAlt = posterImg?.getAttribute('alt') || '';
+          // Overlay title from heading or data-title
+          const overlayHeading = cmpVideo.querySelector('.cmp-video__text-content [role="heading"], .cmp-video__text-content h2, .cmp-video__text-content h3');
+          const overlayTitle = overlayHeading?.textContent?.trim() || cmpVideo.getAttribute('data-title') || youtubeEl.getAttribute('title') || '';
+          // Overlay description from paragraph in text-content
+          const overlayDescEl = cmpVideo.querySelector('.cmp-video__text-content p');
+          const overlayDesc = overlayDescEl?.textContent?.trim() || '';
+          // Play button text
+          const playBtn = cmpVideo.querySelector('.cmp-video__text-content button, button[aria-label*="Watch"]');
+          const overlayBtnText = playBtn?.textContent?.trim() || playBtn?.getAttribute('aria-label') || '';
+          // Build poster cell
+          let posterCell = '-';
+          if (posterSrc) {
+            const pic = document.createElement('picture');
+            const pImg = document.createElement('img');
+            pImg.src = posterSrc;
+            pImg.alt = posterAlt;
+            pic.appendChild(pImg);
+            posterCell = pic;
+          }
+          // Video model field groups (18) — after renaming orphan suffix fields:
+          // Fields renamed: overlayTitle→overlayHeading, overlayBtnText→overlayButtonLabel,
+          //   placeholderAlt→placeholderAltLabel, overlayButtonIconType→overlayBtnIconVariation
           output.appendChild(makeBlock(document, 'Video', [
             [a],             // [0] uri
-            [''],            // [1] placeholderImage (+ collapsed MimeType)
-            [''],            // [2] placeholderAlt
-            [''],            // [3] overlayTitle
-            [''],            // [4] overlayDescription
-            [''],            // [5] overlayBtnText
+            [posterCell],    // [1] placeholderImage (+ collapsed MimeType)
+            [posterAlt || '-'], // [2] placeholderAltLabel
+            [overlayTitle || '-'], // [3] overlayHeading
+            [overlayDesc || '-'],  // [4] overlayDescription
+            [overlayBtnText || '-'], // [5] overlayButtonLabel
             ['none'],        // [6] videoContentLayout
-            ['video-overlay-navy'], // [7] classes group (plain text)
-            ['icon-font'],   // [8] overlayButtonIconType
+            ['video-overlay-navy'], // [7] classes group
+            ['icon-font'],   // [8] overlayBtnIconVariation
             ['play'],        // [9] overlayButtonFontIcon
-            [''],            // [10] projectNumber
+            ['-'],           // [10] projectNumber
             ['false'],       // [11] enableAutoplay
             ['false'],       // [12] enableCaptions
             ['true'],        // [13] enablePlayerControls
             ['true'],        // [14] enableFullscreen
-            [''],            // [15] blockId
+            ['-'],           // [15] blockId
             ['none'],        // [16] language
-            [''],            // [17] analytics_id
+            ['-'],           // [17] analytics_id
           ]));
           continue;
         }
