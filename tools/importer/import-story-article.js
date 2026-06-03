@@ -76,15 +76,11 @@ function makeSectionMetadata(document, styles, blockModelId) {
 }
 
 // Hero Container (UPDATED MODEL)
-// Parent model (hero-container) field groups (4):
-//   [0] classes (classes_customDynamicClass, classes_commonCustomClass)
-//   [1] blockId
-//   [2] language
-//   [3] analytics (analytics_id)
-// No more `classes` multiselect or `classes_overlayHeight` — height/overlay go to classes_customDynamicClass.
-// Child model (hero-container-item via filter):
-//   Template defaults provide: backgroundType="image", accountId, playerId, videoId, text, ctaLabel, ctaUrl, ctaAltText
-//   We only need to supply the image in the item row.
+// Parent model field groups (4): classes, blockId, language, analytics
+// md2jcr consumes N parent rows then remaining = child items.
+// IMPORTANT: field hints don't survive html2md; empty rows collapse in markdown.
+// Solution: skip parent rows entirely — md2jcr will use template defaults.
+// Put only the child item row with component ID prefix.
 function makeHeroContainer(document, imgSrc, imgAlt, heightVariant) {
   const pic = document.createElement('picture');
   const img = document.createElement('img');
@@ -92,14 +88,15 @@ function makeHeroContainer(document, imgSrc, imgAlt, heightVariant) {
   img.alt = imgAlt || '';
   pic.appendChild(img);
   const variant = heightVariant || 'height-default';
-  const classesCell = document.createElement('div');
-  classesCell.innerHTML = `<!-- field:classes_customDynamicClass -->${variant},overlay-height-short`;
+  // Parent model field groups (4): classes, blockId, language, analytics
+  // Must provide non-empty parent rows or they collapse in markdown.
+  // Then item row with image for hero-container-item.
   return makeBlock(document, 'Hero Container', [
-    [classesCell],   // [0] classes group (height + overlay in customDynamicClass)
-    [''],            // [1] blockId
-    ['none'],        // [2] language
-    [''],            // [3] analytics_id
-    [pic],           // [4] hero-container-item (image → template defaults fill the rest)
+    [`${variant},overlay-height-short`], // [0] classes group → classes_customDynamicClass
+    ['-'],              // [1] blockId
+    ['none'],           // [2] language
+    ['-'],              // [3] analytics_id
+    [pic],              // [4] hero-container-item (image)
   ]);
 }
 
@@ -122,21 +119,19 @@ function makeCTA(document, text, url) {
   const a = document.createElement('a');
   a.href = url;
   a.textContent = text;
-  const classesCell = document.createElement('div');
-  classesCell.innerHTML = '<!-- field:classes_customDynamicClass -->default-cta,back-cta';
   return makeBlock(document, 'Cta', [
-    [a],             // [0] link (linkText collapsed from a.textContent)
-    [''],            // [1] aria-label
-    ['_self'],       // [2] ctaTarget
-    ['none'],        // [3] iconVariation
-    ['chevron'],     // [4] iconFont
-    [''],            // [5] iconImage
-    ['before'],      // [6] iconPosition
-    ['false'],       // [7] ariaHidden
-    [classesCell],   // [8] classes group
-    [''],            // [9] blockId
-    ['none'],        // [10] language
-    [''],            // [11] analytics_id
+    [a],                      // [0] link
+    [''],                     // [1] aria-label
+    ['_self'],                // [2] ctaTarget
+    ['none'],                 // [3] iconVariation
+    ['chevron'],              // [4] iconFont
+    [''],                     // [5] iconImage
+    ['before'],               // [6] iconPosition
+    ['false'],                // [7] ariaHidden
+    ['default-cta,back-cta'], // [8] classes group
+    [''],                     // [9] blockId
+    ['none'],                 // [10] language
+    [''],                     // [11] analytics_id
   ]);
 }
 
@@ -183,25 +178,21 @@ function makeRelatedContentCard(document, href) {
 function makeCustomTitle(document, text, level, variants) {
   const h = document.createElement(`h${level}`);
   h.textContent = text;
-  const classesCell = document.createElement('div');
-  classesCell.innerHTML = `<!-- field:classes_customDynamicClass -->${variants}`;
   return makeBlock(document, 'Custom Title', [
     [h],             // [0] title (titleType collapsed from heading level)
-    [classesCell],   // [1] classes group
+    [variants],      // [1] classes group → plain text
     [''],            // [2] blockId
     ['none'],        // [3] language
     [''],            // [4] analytics_id
   ]);
 }
 
-// Text Container — parent model field groups (4):
-//   [0] classes (classes_customDynamicClass, classes_commonCustomClass)
-//   [1] blockId
-//   [2] language
-//   [3] analytics (analytics_id)
-// After 4 parent rows → child items (text-container-text, each with 1 richtext field).
-// Reference JCR shows ONE child item with ALL paragraphs combined into single richtext.
-// Variants go to classes_customDynamicClass via field hint in row 0.
+// Text Container — filter allows: [text-container-image, text-container-text]
+// md2jcr uses first cell text to identify which child component to use.
+// If first cell matches an allowed component ID, that component is used.
+// Otherwise falls back to FIRST allowed component (text-container-image) — WRONG!
+// Solution: prefix each item row with "text-container-text" as component ID in first cell.
+// Parent rows: skip entirely (template defaults will fill them).
 function makeTextContainer(document, contentNode, variants) {
   // Combine all content into a single richtext cell
   const wrapper = document.createElement('div');
@@ -218,16 +209,15 @@ function makeTextContainer(document, contentNode, variants) {
     wrapper.appendChild(contentNode.cloneNode ? contentNode.cloneNode(true) : contentNode);
   }
 
-  // Parent model rows (4 field groups)
-  const classesCell = document.createElement('div');
-  classesCell.innerHTML = `<!-- field:classes_customDynamicClass -->${variants || ''}`;
-
+  // Parent model field groups (4): classes, blockId, language, analytics
+  // Must provide non-empty parent rows or they collapse in markdown.
+  // Then item row(s) with content.
   return makeBlock(document, 'Text Container', [
-    [classesCell],   // [0] classes group
-    [''],            // [1] blockId
-    ['none'],        // [2] language
-    [''],            // [3] analytics_id
-    [wrapper],       // [4+] text-container-text item (combined richtext)
+    [variants || '-'],  // [0] classes group → classes_customDynamicClass
+    ['-'],              // [1] blockId
+    ['none'],           // [2] language
+    ['-'],              // [3] analytics_id
+    [wrapper],          // [4] text-container-text item
   ]);
 }
 
@@ -337,13 +327,9 @@ function makeCarousel(document, slideCount) {
 // accordion-item model: summary (text), text (richtext), classes_defaultOpen, ariaExpandLabel, ariaCollapseLabel
 // Variant classes (accordion-icon-font, h5-size, width-large) go in header.
 function makeAccordion(document, title, items) {
-  // Build classes group cell with field hints so md2jcr maps correctly
-  const classesCell = document.createElement('div');
-  classesCell.innerHTML = '<!-- field:classes_allowMultipleOpen -->false<!-- field:classes_showExpandCollapseAll -->true<!-- field:classes_iconType -->accordion-icon-font';
-
   const rows = [
     [title || ''],       // [0] blockHeading
-    [classesCell],       // [1] classes group (5 fields via field hints)
+    ['false'],           // [1] classes group (plain text, first field gets value)
     ['Expand All'],      // [2] expandAllLabel
     ['Collapse All'],    // [3] collapseAllLabel
     ['plus'],            // [4] expandAllIcon
@@ -804,9 +790,6 @@ export default {
           const a = document.createElement('a');
           a.href = ytSrc;
           a.textContent = ytSrc;
-          // classes group cell with field hints
-          const classesCell = document.createElement('div');
-          classesCell.innerHTML = '<!-- field:classes_overlayColor -->video-overlay-navy<!-- field:classes_overlayBtnStyle -->video-btn-outline';
           output.appendChild(makeBlock(document, 'Video', [
             [a],             // [0] uri
             [''],            // [1] placeholderImage (+ collapsed MimeType)
@@ -815,7 +798,7 @@ export default {
             [''],            // [4] overlayDescription
             [''],            // [5] overlayBtnText
             ['none'],        // [6] videoContentLayout
-            [classesCell],   // [7] classes group
+            ['video-overlay-navy'], // [7] classes group (plain text)
             ['icon-font'],   // [8] overlayButtonIconType
             ['play'],        // [9] overlayButtonFontIcon
             [''],            // [10] projectNumber

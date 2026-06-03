@@ -281,8 +281,8 @@
   {
     "id": "text-container",
     "components": [
-      "text-container-image",
-      "text-container-text"
+      "text-container-text",
+      "text-container-image"
     ]
   },
   {

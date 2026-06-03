@@ -167,12 +167,15 @@ async function main() {
     // Convert to plain.html (section-based format)
     const plainHtml = convertToPlainHtml(result.html);
 
-    // Write output
+    // Write output to both .html (preview) and .plain.html (md2jcr reads this)
     const outputBase = opts.output || join(__dirname, '../../content');
     const outputPath = join(outputBase, result.path + '.html');
+    const plainPath = join(outputBase, result.path + '.plain.html');
     mkdirSync(dirname(outputPath), { recursive: true });
     writeFileSync(outputPath, plainHtml);
+    writeFileSync(plainPath, plainHtml);
     console.log(`\n  ✓ Written to: ${outputPath}`);
+    console.log(`  ✓ Written to: ${plainPath}`);
     console.log(`  Size: ${(plainHtml.length / 1024).toFixed(1)} KB`);
 
   } finally {
@@ -182,15 +185,55 @@ async function main() {
 
 /**
  * Convert raw import output HTML into EDS plain.html format.
- * Splits on <hr> elements to create section <div>s.
+ * 1. Converts <table> block structures to <div class="block-name"> format
+ *    that html2md expects for block detection.
+ * 2. Splits on <hr> elements to create section <div>s.
  */
 function convertToPlainHtml(html) {
+  // Convert block tables to div-based format
+  // <table><thead><tr><th>Block Name</th></tr></thead><tbody><tr><td>...</td></tr>...</tbody></table>
+  // → <div class="block-name"><div><div>...</div></div>...</div>
+  const converted = html.replace(
+    /<table><thead><tr><th(?:\s+colspan="\d+")?>(.*?)<\/th><\/tr><\/thead><tbody>(.*?)<\/tbody><\/table>/gs,
+    (match, blockName, tbody) => {
+      // Convert block name to class: "Hero Container (variant)" → "hero-container variant"
+      // "Section Metadata" → "section-metadata"
+      let className = blockName.trim();
+      let variants = '';
+      const parenMatch = className.match(/^([^(]+)\(([^)]+)\)$/);
+      if (parenMatch) {
+        className = parenMatch[1].trim();
+        variants = parenMatch[2].trim().split(',').map(v => v.trim().replace(/\s+/g, '-')).join(' ');
+      }
+      className = className.toLowerCase().replace(/\s+/g, '-');
+      const fullClass = variants ? `${className} ${variants}` : className;
+
+      // Convert rows: <tr><td>cell1</td><td>cell2</td></tr> → <div><div>cell1</div><div>cell2</div></div>
+      const rows = tbody.replace(/<tr>(.*?)<\/tr>/gs, (_, rowContent) => {
+        const cells = [];
+        rowContent.replace(/<td(?:\s+colspan="\d+")?>(.*?)<\/td>/gs, (__, cellContent) => {
+          cells.push(cellContent);
+        });
+        return '<div>' + cells.map(c => `<div>${c}</div>`).join('') + '</div>';
+      });
+
+      return `<div class="${fullClass}">${rows}</div>`;
+    }
+  );
+
+  // The transform output is wrapped in a <div>...<hr>...<hr>...</div>.
+  // Strip the outer wrapper div first, then split by <hr> to get sections.
+  let inner = converted.trim();
+  if (inner.startsWith('<div>') && inner.endsWith('</div>')) {
+    inner = inner.slice(5, -6);
+  }
+
   // Split by <hr> to get sections
-  const sections = html.split(/<hr\s*\/?>/i);
+  const sections = inner.split(/<hr\s*\/?>/i);
   const parts = sections.map(section => {
     const trimmed = section.trim();
     if (!trimmed) return '';
-    return `<div>\n  ${trimmed}\n</div>`;
+    return `<div>${trimmed}</div>`;
   }).filter(Boolean);
 
   return parts.join('\n');
