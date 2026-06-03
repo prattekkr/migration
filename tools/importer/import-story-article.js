@@ -283,33 +283,39 @@ function makeCustomImage(document, src, alt, caption) {
 }
 
 // Carousel — matching reference: 25 rows, showArrows=true at correct position
+// Carousel — carouselType is DROPPED by md2jcr _fixFieldOrder (ends with "Type", no base "carousel")
+// Remaining field groups (21):
+//   [0] rssFeedUrl  [1] totalSlides  [2] numberOfItems  [3] autoplay
+//   [4] slideTransitionTime  [5] pauseOnHover  [6] bypassCarouselOnMobile
+//   [7] startingSlideIndex  [8] centerActiveSlide  [9] enableLooping
+//   [10] enableNextPreviousControls  [11] enableDotNavigation
+//   [12] carouselLabel  [13] previousButtonLabel  [14] nextButtonLabel
+//   [15] tablistLabel  [16] itemLabel
+//   [17] classes (customDynamicClass, commonCustomClass)
+//   [18] blockId  [19] language  [20] analytics (analytics_id)
 function makeCarousel(document, slideCount) {
   return makeBlock(document, 'Carousel (carousel-show-btn-margin, carousel-minimal)', [
-    [String(slideCount || 2)], // totalSlides
-    ['static'],                // carouselType
-    [''],                      // rssFeedUrl
-    [''],                      // numberOfItems
-    ['false'],                 // autoplay
-    ['3000'],                  // slideTransitionTime
-    ['false'],                 // pauseOnHover
-    [String(slideCount || 2)], // numberOfSlidesToShow
-    ['false'],                 // bypassCarouselOnMobile
-    ['1'],                     // startingSlideIndex
-    ['false'],                 // centerActiveSlide
-    ['false'],                 // enableLooping
-    ['true'],                  // enableNextPreviousControls (arrows)
-    ['true'],                  // enableDotNavigation
-    [''],                      // carouselLabel
-    [''],                      // previousButtonLabel
-    [''],                      // nextButtonLabel
-    [''],                      // playButtonLabel
-    [''],                      // pauseButtonLabel
-    [''],                      // tablistLabel
-    ['false'],                 // itemLabel
-    [''],                      // classes_customDynamicClass
-    [''],                      // blockId
-    [''],                      // classes_commonCustomClass
-    [''],                      // language
+    ['-'],                     // [0] rssFeedUrl
+    [String(slideCount || 2)], // [1] totalSlides
+    ['-'],                     // [2] numberOfItems
+    ['false'],                 // [3] autoplay
+    ['3000'],                  // [4] slideTransitionTime
+    ['false'],                 // [5] pauseOnHover
+    ['false'],                 // [6] bypassCarouselOnMobile
+    ['1'],                     // [7] startingSlideIndex
+    ['false'],                 // [8] centerActiveSlide
+    ['false'],                 // [9] enableLooping
+    ['true'],                  // [10] enableNextPreviousControls (ARROWS)
+    ['true'],                  // [11] enableDotNavigation
+    ['-'],                     // [12] carouselLabel
+    ['-'],                     // [13] previousButtonLabel
+    ['-'],                     // [14] nextButtonLabel
+    ['-'],                     // [15] tablistLabel
+    ['false'],                 // [16] itemLabel
+    ['carousel-show-btn-margin,carousel-minimal'], // [17] classes group
+    ['-'],                     // [18] blockId
+    ['none'],                  // [19] language
+    ['-'],                     // [20] analytics_id
   ]);
 }
 
@@ -724,7 +730,10 @@ export default {
             const summary = (item.querySelector('.cmp-accordion__button, summary') || item).textContent?.trim().substring(0, 200) || '';
             const panel = item.querySelector('.cmp-accordion__panel, [role="region"]') || item.nextElementSibling;
             if (summary && summary.length > 5) {
-              items.push({ summary, content: panel?.innerHTML || '' });
+              // Strip class attributes from inner content to prevent html2md treating them as blocks
+              let panelContent = panel?.innerHTML || '';
+              panelContent = panelContent.replace(/<div[^>]*class="[^"]*"[^>]*>/g, '<div>');
+              items.push({ summary, content: panelContent });
             }
           });
           if (items.length > 0) {
