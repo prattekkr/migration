@@ -121,8 +121,8 @@ async function main() {
         },
       };
 
-      // Execute the bundle
-      eval(code);
+      // Execute the bundle (use indirect eval to ensure global scope)
+      (0, eval)(code);
 
       // Get the transform function
       const importScript = window.CustomImportScript?.default || window.CustomImportScript;
