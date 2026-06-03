@@ -33,10 +33,11 @@ import { appendMetadataBlock } from './parsers/utils/metadata.js';
 
 function makeBlock(document, name, rows) {
   const table = document.createElement('table');
+  const maxCols = Math.max(...rows.map(r => (Array.isArray(r) ? r : [r]).length));
   const thead = document.createElement('thead');
   const tr = document.createElement('tr');
   const th = document.createElement('th');
-  th.colSpan = 2;
+  th.colSpan = maxCols;
   th.textContent = name;
   tr.appendChild(th);
   thead.appendChild(tr);
@@ -44,10 +45,14 @@ function makeBlock(document, name, rows) {
   const tbody = document.createElement('tbody');
   rows.forEach((cells) => {
     const row = document.createElement('tr');
-    (Array.isArray(cells) ? cells : [cells]).forEach((cell) => {
+    const arr = Array.isArray(cells) ? cells : [cells];
+    arr.forEach((cell, i) => {
       const td = document.createElement('td');
       if (cell instanceof Node) td.appendChild(cell.cloneNode ? cell.cloneNode(true) : cell);
       else td.textContent = cell != null ? String(cell) : '';
+      if (arr.length < maxCols && i === arr.length - 1) {
+        td.colSpan = maxCols - arr.length + 1;
+      }
       row.appendChild(td);
     });
     tbody.appendChild(row);
@@ -56,45 +61,86 @@ function makeBlock(document, name, rows) {
   return table;
 }
 
-// Section Metadata — xwalk format: classes go in block name
-// grid-container/grid-section use language/none row; grid-cols-2 spacers use empty row
-function makeSectionMetadata(document, style) {
-  if (style.includes('grid-cols-2') && !style.includes('grid-section')) {
-    return makeBlock(document, `Section Metadata (${style})`, [['']]);
+
+// Section Metadata — uses style_customDynamicClass (matches reference JCR output)
+// For grid-section/grid-container, also emits blockModelId row so md2jcr uses correct model
+function makeSectionMetadata(document, styles, blockModelId) {
+  const rows = [];
+  if (blockModelId) {
+    rows.push(['blockModelId', blockModelId]);
   }
-  return makeBlock(document, `Section Metadata (${style})`, [['language', 'none']]);
+  if (styles) {
+    rows.push(['style_customDynamicClass', styles]);
+  }
+  return makeBlock(document, 'Section Metadata', rows);
 }
 
-// Hero Container — 6 rows per item
+// Hero Container (UPDATED MODEL)
+// Parent model (hero-container) field groups (4):
+//   [0] classes (classes_customDynamicClass, classes_commonCustomClass)
+//   [1] blockId
+//   [2] language
+//   [3] analytics (analytics_id)
+// No more `classes` multiselect or `classes_overlayHeight` — height/overlay go to classes_customDynamicClass.
+// Child model (hero-container-item via filter):
+//   Template defaults provide: backgroundType="image", accountId, playerId, videoId, text, ctaLabel, ctaUrl, ctaAltText
+//   We only need to supply the image in the item row.
 function makeHeroContainer(document, imgSrc, imgAlt, heightVariant) {
-  const picP = document.createElement('p');
   const pic = document.createElement('picture');
   const img = document.createElement('img');
   img.src = imgSrc || '';
   img.alt = imgAlt || '';
   pic.appendChild(img);
-  picP.appendChild(pic);
   const variant = heightVariant || 'height-default';
-  // ONE row with 6 cells = one hero item matching reference xwalk:
-  // [image, empty, empty, empty, empty, empty]
-  // Video is handled by separate brightcove-video block, NOT in hero-container
-  return makeBlock(document, `Hero Container (${variant}, overlay-height-short)`, [
-    [picP, '', '', '', '', ''],
+  const classesCell = document.createElement('div');
+  classesCell.innerHTML = `<!-- field:classes_customDynamicClass -->${variant},overlay-height-short`;
+  return makeBlock(document, 'Hero Container', [
+    [classesCell],   // [0] classes group (height + overlay in customDynamicClass)
+    [''],            // [1] blockId
+    ['none'],        // [2] language
+    [''],            // [3] analytics_id
+    [pic],           // [4] hero-container-item (image → template defaults fill the rest)
   ]);
 }
 
-// CTA — 11 rows
+// CTA — field groups (12 after collapsing):
+//   [0] link (collapsed: linkText — extracted from <a> node href + text)
+//   [1] aria-label
+//   [2] ctaTarget
+//   [3] iconVariation
+//   [4] iconFont
+//   [5] iconImage
+//   [6] iconPosition
+//   [7] ariaHidden
+//   [8] classes (classes_customDynamicClass, classes_commonCustomClass)
+//   [9] blockId
+//   [10] language
+//   [11] analytics (analytics_id)
+// Note: CTA model has NO `classes` multiselect field, so parenthesized variants
+// won't be stored by md2jcr. Use classes_customDynamicClass via field hint.
 function makeCTA(document, text, url) {
   const a = document.createElement('a');
   a.href = url;
   a.textContent = text;
-  return makeBlock(document, 'CTA (default-cta, back-cta)', [
-    [a], [''], ['_self'], ['none'], ['chevron'], [''], ['before'], ['false'], [''], ['none'], [''],
+  const classesCell = document.createElement('div');
+  classesCell.innerHTML = '<!-- field:classes_customDynamicClass -->default-cta,back-cta';
+  return makeBlock(document, 'Cta', [
+    [a],             // [0] link (linkText collapsed from a.textContent)
+    [''],            // [1] aria-label
+    ['_self'],       // [2] ctaTarget
+    ['none'],        // [3] iconVariation
+    ['chevron'],     // [4] iconFont
+    [''],            // [5] iconImage
+    ['before'],      // [6] iconPosition
+    ['false'],       // [7] ariaHidden
+    [classesCell],   // [8] classes group
+    [''],            // [9] blockId
+    ['none'],        // [10] language
+    [''],            // [11] analytics_id
   ]);
 }
 
-// Story Card — 12 rows (storyCardInfo for page metadata)
-// categoryPath uses <a> element with JCR path as text (xwalk format)
+// Story Card — 12 rows per reference .md
 function makeStoryCard(document, categoryHref, categoryJcrPath) {
   let categoryCell = '';
   if (categoryHref) {
@@ -110,140 +156,258 @@ function makeStoryCard(document, categoryHref, categoryJcrPath) {
 }
 
 // Story Card (relatedContent variant) — 12 rows
-// Converts page href to JCR path format
 function makeRelatedContentCard(document, href) {
-  // Transform href to JCR path: remove .html, prepend /content/abbvie-nextgen-eds/abbvie-com/us/en
   let storyPath = href || '';
   storyPath = storyPath.replace(/^https?:\/\/www\.abbvie\.com/, '');
   storyPath = storyPath.replace(/\.html$/, '');
   if (storyPath && !storyPath.startsWith('/content/')) {
     storyPath = `/content/abbvie-nextgen-eds/abbvie-com/us/en${storyPath}`;
   }
+  const a = document.createElement('a');
+  a.href = storyPath;
+  a.textContent = storyPath;
   return makeBlock(document, 'Story Card', [
     ['relatedContent'], ['true'], ['false'], ['true'], ['false'], ['false'],
-    [storyPath], [''], [''], ['false'], [''], [''],
+    [''], [''], [a], ['false'], [''], [''],
   ]);
 }
 
-// Custom Title — 4 rows: [heading, blockId, language, analyticsId]
-// xwalk uses empty string for blockId, "none" for language
+// Custom Title — field groups (5 after collapsing):
+//   [0] title (collapsed: titleType — extracted from heading level h1→"h1")
+//   [1] classes (classes_customDynamicClass, classes_commonCustomClass)
+//   [2] blockId
+//   [3] language
+//   [4] analytics (analytics_id)
+// titleType is auto-collapsed from heading node depth.
+// Variants (h1-size, width-large) go to classes_customDynamicClass via field hint.
 function makeCustomTitle(document, text, level, variants) {
   const h = document.createElement(`h${level}`);
   h.textContent = text;
-  return makeBlock(document, `Custom Title (${variants})`, [[h], [''], ['none'], ['']]);
-}
-
-// Text Container — 4+ rows: [0] blockId, [1] language, [2] analyticsId, [3+] content
-// Each <p> gets its own row for md2jcr compatibility
-function makeTextContainer(document, contentNode, variants) {
-  const contentRows = [];
-  if (contentNode && contentNode.querySelectorAll) {
-    const paragraphs = contentNode.querySelectorAll('p');
-    if (paragraphs.length > 1) {
-      paragraphs.forEach((p) => {
-        const div = document.createElement('div');
-        div.appendChild(p.cloneNode(true));
-        contentRows.push([div]);
-      });
-    }
-  }
-  if (contentRows.length === 0) {
-    contentRows.push([contentNode]);
-  }
-  return makeBlock(document, `Text Container (${variants})`, [[''], ['none'], [''], ...contentRows]);
-}
-
-// Separator — 4 rows
-function makeSeparator(document, height) {
-  return makeBlock(document, `Separator (separator-height-${height || 24})`, [
-    ['false'], [''], ['none'], [''],
+  const classesCell = document.createElement('div');
+  classesCell.innerHTML = `<!-- field:classes_customDynamicClass -->${variants}`;
+  return makeBlock(document, 'Custom Title', [
+    [h],             // [0] title (titleType collapsed from heading level)
+    [classesCell],   // [1] classes group
+    [''],            // [2] blockId
+    ['none'],        // [3] language
+    [''],            // [4] analytics_id
   ]);
 }
 
-// Custom Image — 16 rows
+// Text Container — parent model field groups (4):
+//   [0] classes (classes_customDynamicClass, classes_commonCustomClass)
+//   [1] blockId
+//   [2] language
+//   [3] analytics (analytics_id)
+// After 4 parent rows → child items (text-container-text, each with 1 richtext field).
+// Reference JCR shows ONE child item with ALL paragraphs combined into single richtext.
+// Variants go to classes_customDynamicClass via field hint in row 0.
+function makeTextContainer(document, contentNode, variants) {
+  // Combine all content into a single richtext cell
+  const wrapper = document.createElement('div');
+  if (contentNode && contentNode.querySelectorAll) {
+    const paragraphs = contentNode.querySelectorAll('p, ul, ol, h2, h3, h4, h5, h6, blockquote');
+    if (paragraphs.length > 0) {
+      paragraphs.forEach((el) => {
+        wrapper.appendChild(el.cloneNode(true));
+      });
+    } else {
+      wrapper.innerHTML = contentNode.innerHTML || '';
+    }
+  } else if (contentNode) {
+    wrapper.appendChild(contentNode.cloneNode ? contentNode.cloneNode(true) : contentNode);
+  }
+
+  // Parent model rows (4 field groups)
+  const classesCell = document.createElement('div');
+  classesCell.innerHTML = `<!-- field:classes_customDynamicClass -->${variants || ''}`;
+
+  return makeBlock(document, 'Text Container', [
+    [classesCell],   // [0] classes group
+    [''],            // [1] blockId
+    ['none'],        // [2] language
+    [''],            // [3] analytics_id
+    [wrapper],       // [4+] text-container-text item (combined richtext)
+  ]);
+}
+
+// Separator — 6 fields: showLine, classes_customDynamicClass, blockId, classes_commonCustomClass, language, analytics_id
+function makeSeparator(document, height) {
+  return makeBlock(document, `Separator (separator-height-${height || 24})`, [
+    ['false'], [''], [''], [''], [''], [''],
+  ]);
+}
+
+// Custom Image — field groups (17):
+//   [0] image (collapsed: imageMimeType, imageAlt) — from <img> node
+//   [1] getAltFromDAM
+//   [2] imageIsDecorative
+//   [3] caption
+//   [4] getCaptionFromDAM
+//   [5] displayCaptionBelowImage
+//   [6] enableLink
+//   [7] target
+//   [8] clickBehavior
+//   [9] modalPanelId
+//   [10] enableWarnOnLeave
+//   [11] warnOnLeavePath
+//   [12] linkAriaLabel
+//   [13] classes (classes_customDynamicClass, classes_commonCustomClass)
+//   [14] blockId
+//   [15] language
+//   [16] analytics (analytics_id)
 function makeCustomImage(document, src, alt, caption) {
-  const picP = document.createElement('p');
   const pic = document.createElement('picture');
   const img = document.createElement('img');
   img.src = src;
   img.alt = alt || '';
   pic.appendChild(img);
-  picP.appendChild(pic);
   return makeBlock(document, 'Custom Image', [
-    [picP], ['false'], ['false'], [caption || ''], ['false'], ['false'], ['false'],
-    [''], ['_self'], [''], ['false'], [''], [''], [''], ['none'], [''],
+    [pic],       // [0] image (alt collapsed from img.alt, MimeType auto)
+    ['false'],   // [1] getAltFromDAM
+    ['false'],   // [2] imageIsDecorative
+    [caption || ''], // [3] caption
+    ['false'],   // [4] getCaptionFromDAM
+    ['false'],   // [5] displayCaptionBelowImage
+    ['false'],   // [6] enableLink
+    [''],        // [7] target
+    ['_self'],   // [8] clickBehavior
+    [''],        // [9] modalPanelId
+    ['false'],   // [10] enableWarnOnLeave
+    [''],        // [11] warnOnLeavePath
+    [''],        // [12] linkAriaLabel
+    [''],        // [13] classes group
+    [''],        // [14] blockId
+    ['none'],    // [15] language
+    [''],        // [16] analytics_id
   ]);
 }
 
-// Carousel — 25 rows
+// Carousel — matching reference: 25 rows, showArrows=true at correct position
 function makeCarousel(document, slideCount) {
   return makeBlock(document, 'Carousel (carousel-show-btn-margin, carousel-minimal)', [
-    [String(slideCount || 2)], ['static'], ['false'], ['3000'], ['false'],
-    [String(slideCount || 2)], ['false'], ['1'], ['false'], ['false'],
-    ['true'], ['true'], ['false'], [''], [''], [''], [''], [''], [''],
-    ['false'], [''], ['none'], [''], [''], [''],
+    [String(slideCount || 2)], // totalSlides
+    ['static'],                // carouselType
+    [''],                      // rssFeedUrl
+    [''],                      // numberOfItems
+    ['false'],                 // autoplay
+    ['3000'],                  // slideTransitionTime
+    ['false'],                 // pauseOnHover
+    [String(slideCount || 2)], // numberOfSlidesToShow
+    ['false'],                 // bypassCarouselOnMobile
+    ['1'],                     // startingSlideIndex
+    ['false'],                 // centerActiveSlide
+    ['false'],                 // enableLooping
+    ['true'],                  // enableNextPreviousControls (arrows)
+    ['true'],                  // enableDotNavigation
+    [''],                      // carouselLabel
+    [''],                      // previousButtonLabel
+    [''],                      // nextButtonLabel
+    [''],                      // playButtonLabel
+    [''],                      // pauseButtonLabel
+    [''],                      // tablistLabel
+    ['false'],                 // itemLabel
+    [''],                      // classes_customDynamicClass
+    [''],                      // blockId
+    [''],                      // classes_commonCustomClass
+    [''],                      // language
   ]);
 }
 
-// Accordion — 21 block-level rows (matching accordion model) + 5-col child rows (accordion-item)
-// Block model fields: blockHeading, classes_allowMultipleOpen, classes_showExpandCollapseAll,
-//   expandAllLabel, collapseAllLabel, classes_iconType, expandAllIcon, collapseAllIcon,
-//   expandIcon, collapseIcon, expandAllIconImage, collapseAllIconImage, expandIconImage,
-//   collapseIconImage, ariaExpandAllLabel, ariaCollapseAllLabel, classes_customDynamicClass,
-//   blockId, classes_commonCustomClass, language, analytics_id
-// Child item (accordion-item): summary, text, classes_defaultOpen, ariaExpandLabel, ariaCollapseLabel
+// Accordion — md2jcr groups classes_* fields into a single "classes" group.
+// FieldGroup order (17 groups total for parent):
+//   [0] blockHeading (1 field)
+//   [1] classes (5 fields: allowMultipleOpen, showExpandCollapseAll, iconType, customDynamicClass, commonCustomClass)
+//   [2] expandAllLabel
+//   [3] collapseAllLabel
+//   [4] expandAllIcon
+//   [5] collapseAllIcon
+//   [6] expandIcon
+//   [7] collapseIcon
+//   [8] expandAllIconImage
+//   [9] collapseAllIconImage
+//   [10] expandIconImage
+//   [11] collapseIconImage
+//   [12] ariaExpandAllLabel
+//   [13] ariaCollapseAllLabel
+//   [14] blockId
+//   [15] language
+//   [16] analytics_id
+// After 17 parent rows → accordion-item children (each row = 1 item)
+// accordion-item model: summary (text), text (richtext), classes_defaultOpen, ariaExpandLabel, ariaCollapseLabel
+// Variant classes (accordion-icon-font, h5-size, width-large) go in header.
 function makeAccordion(document, title, items) {
+  // Build classes group cell with field hints so md2jcr maps correctly
+  const classesCell = document.createElement('div');
+  classesCell.innerHTML = '<!-- field:classes_allowMultipleOpen -->false<!-- field:classes_showExpandCollapseAll -->true<!-- field:classes_iconType -->accordion-icon-font';
+
   const rows = [
-    [title || 'References'],  // [0] blockHeading
-    ['false'],                // [1] classes_allowMultipleOpen
-    ['true'],                 // [2] classes_showExpandCollapseAll
-    ['Expand All'],           // [3] expandAllLabel
-    ['Collapse All'],         // [4] collapseAllLabel
-    ['accordion-icon-font'],  // [5] classes_iconType
-    ['plus'],                 // [6] expandAllIcon
-    ['minus'],                // [7] collapseAllIcon
-    ['plus'],                 // [8] expandIcon
-    ['minus'],                // [9] collapseIcon
-    [''],                     // [10] expandAllIconImage
-    [''],                     // [11] collapseAllIconImage
-    [''],                     // [12] expandIconImage
-    [''],                     // [13] collapseIconImage
-    [''],                     // [14] ariaExpandAllLabel
-    [''],                     // [15] ariaCollapseAllLabel
-    [''],                     // [16] classes_customDynamicClass
-    [''],                     // [17] blockId
-    [''],                     // [18] classes_commonCustomClass
-    ['none'],                 // [19] language
-    [''],                     // [20] analytics_id
+    [title || ''],       // [0] blockHeading
+    [classesCell],       // [1] classes group (5 fields via field hints)
+    ['Expand All'],      // [2] expandAllLabel
+    ['Collapse All'],    // [3] collapseAllLabel
+    ['plus'],            // [4] expandAllIcon
+    ['minus'],           // [5] collapseAllIcon
+    ['plus'],            // [6] expandIcon
+    ['minus'],           // [7] collapseIcon
+    [''],                // [8] expandAllIconImage
+    [''],                // [9] collapseAllIconImage
+    [''],                // [10] expandIconImage
+    [''],                // [11] collapseIconImage
+    [''],                // [12] ariaExpandAllLabel
+    [''],                // [13] ariaCollapseAllLabel
+    [''],                // [14] blockId
+    ['none'],            // [15] language
+    [''],                // [16] analytics_id
   ];
-  // Child items: 5 columns each [summary, text, classes_defaultOpen, ariaExpandLabel, ariaCollapseLabel]
+  // Item rows: each row = one accordion-item
+  // accordion-item fields: summary, text (richtext), classes_defaultOpen, ariaExpandLabel, ariaCollapseLabel
   (items || []).forEach((item) => {
     const contentDiv = document.createElement('div');
     contentDiv.innerHTML = item.content || '';
-    rows.push([item.summary || '', contentDiv, 'false', '', '']);
+    rows.push([item.summary || '', contentDiv]);
   });
   return makeBlock(document, 'Accordion (accordion-icon-font, h5-size, width-large)', rows);
 }
 
-// Quote — 11 rows per migration-skill:
-// [0] quoteType, [1] quotation, [2] attributionName, [3] attributionTitle,
-// [4] attributionImage, [5] quoteFragment, [6] bgImage, [7] bgImageAlt, [8-10] commonProps
+// Quote — field GROUPS (after FieldGroup grouping, 13 groups):
+//   [0] quoteVariant
+//   [1] quotation (richtext)
+//   [2] attributionName
+//   [3] attributionRole
+//   [4] attributionImage (collapsed: attributionImageMimeType)
+//   [5] quoteFragment
+//   [6] backgroundImage (collapsed: backgroundImageMimeType, backgroundImageAlt)
+//   [7] backgroundImagePreset
+//   [8] backgroundImageModifiers
+//   [9] classes (classes_customDynamicClass, classes_commonCustomClass)
+//   [10] blockId
+//   [11] language
+//   [12] analytics (analytics_id)
 function makeQuote(document, text, authorName, authorTitle, authorImgSrc) {
-  const imgCell = '';
+  let imgEl = '';
   if (authorImgSrc) {
     const pic = document.createElement('picture');
     const img = document.createElement('img');
     img.src = authorImgSrc;
     img.alt = authorName || '';
     pic.appendChild(img);
-    return makeBlock(document, 'Quote (quote-standard, quote-h4)', [
-      ['quote-standard'], [text || ''], [authorName || ''], [authorTitle || ''], [pic], [''], [''], [''],
-      [''], ['none'], [''],
-    ]);
+    imgEl = pic;
   }
   return makeBlock(document, 'Quote (quote-standard, quote-h4)', [
-    ['quote-standard'], [text || ''], [authorName || ''], [authorTitle || ''], [''], [''], [''], [''],
-    [''], ['none'], [''],
+    ['quote-standard'], // [0] quoteVariant
+    [text || ''],       // [1] quotation (richtext)
+    [authorName || ''], // [2] attributionName
+    [authorTitle || ''], // [3] attributionRole
+    [imgEl],            // [4] attributionImage (MimeType auto-collapsed)
+    [''],               // [5] quoteFragment
+    [''],               // [6] backgroundImage (MimeType + Alt auto-collapsed)
+    [''],               // [7] backgroundImagePreset
+    [''],               // [8] backgroundImageModifiers
+    [''],               // [9] classes group
+    [''],               // [10] blockId
+    ['none'],           // [11] language
+    [''],               // [12] analytics_id
   ]);
 }
 
@@ -469,16 +633,16 @@ export default {
     }
 
     // Close section 1
-    output.appendChild(makeSectionMetadata(document, 'content-wide, medium-radius'));
+    output.appendChild(makeSectionMetadata(document, 'content-wide,medium-radius'));
     output.appendChild(document.createElement('hr'));
 
     // ══════════════════════════════════════════════════════════
     // SECTIONS 2-3: GRID CONTAINER + LEFT SPACER
     // ══════════════════════════════════════════════════════════
 
-    output.appendChild(makeSectionMetadata(document, 'grid-container, content-regular'));
+    output.appendChild(makeSectionMetadata(document, 'content-regular', 'grid-container'));
     output.appendChild(document.createElement('hr'));
-    output.appendChild(makeSectionMetadata(document, 'grid-cols-2'));
+    output.appendChild(makeSectionMetadata(document, 'grid-cols-2', 'grid-section'));
     output.appendChild(document.createElement('hr'));
 
     // ══════════════════════════════════════════════════════════
@@ -588,7 +752,7 @@ export default {
             a.textContent = link.textContent.trim() || link.getAttribute('href').replace('mailto:', '');
             div.appendChild(a);
           }
-          output.appendChild(makeTextContainer(document, div, 'spacing-bottom, width-x-large, body-unica-20-reg'));
+          output.appendChild(makeTextContainer(document, div, 'spacing-bottom,width-x-large,body-unica-20-reg'));
           continue;
         }
 
@@ -614,30 +778,71 @@ export default {
           continue;
         }
 
-        // ── EDGE CASE: VIDEO EMBED (Brightcove) ──
-        const videoEl = child.querySelector('video-js, [data-video-id], [data-account], iframe[src*="youtube"]');
+        // ── EDGE CASE: YOUTUBE VIDEO (iframe) → Video block ──
+        // Video model field GROUPS (after FieldGroup grouping):
+        //   [0] uri
+        //   [1] placeholderImage (collapsed: placeholderImageMimeType)
+        //   [2] placeholderAlt
+        //   [3] overlayTitle
+        //   [4] overlayDescription
+        //   [5] overlayBtnText
+        //   [6] videoContentLayout
+        //   [7] classes (overlayColor, overlayBtnStyle, customDynamicClass, commonCustomClass)
+        //   [8] overlayButtonIconType
+        //   [9] overlayButtonFontIcon
+        //   [10] projectNumber
+        //   [11] enableAutoplay
+        //   [12] enableCaptions
+        //   [13] enablePlayerControls
+        //   [14] enableFullscreen
+        //   [15] blockId
+        //   [16] language
+        //   [17] analytics_id
+        const youtubeEl = child.querySelector('iframe[src*="youtube"], iframe[src*="youtu.be"]');
+        if (youtubeEl) {
+          const ytSrc = youtubeEl.getAttribute('src') || '';
+          const a = document.createElement('a');
+          a.href = ytSrc;
+          a.textContent = ytSrc;
+          // classes group cell with field hints
+          const classesCell = document.createElement('div');
+          classesCell.innerHTML = '<!-- field:classes_overlayColor -->video-overlay-navy<!-- field:classes_overlayBtnStyle -->video-btn-outline';
+          output.appendChild(makeBlock(document, 'Video', [
+            [a],             // [0] uri
+            [''],            // [1] placeholderImage (+ collapsed MimeType)
+            [''],            // [2] placeholderAlt
+            [''],            // [3] overlayTitle
+            [''],            // [4] overlayDescription
+            [''],            // [5] overlayBtnText
+            ['none'],        // [6] videoContentLayout
+            [classesCell],   // [7] classes group
+            ['icon-font'],   // [8] overlayButtonIconType
+            ['play'],        // [9] overlayButtonFontIcon
+            [''],            // [10] projectNumber
+            ['false'],       // [11] enableAutoplay
+            ['false'],       // [12] enableCaptions
+            ['true'],        // [13] enablePlayerControls
+            ['true'],        // [14] enableFullscreen
+            [''],            // [15] blockId
+            ['none'],        // [16] language
+            [''],            // [17] analytics_id
+          ]));
+          continue;
+        }
+
+        // ── EDGE CASE: BRIGHTCOVE VIDEO ──
+        const videoEl = child.querySelector('video-js, [data-video-id], [data-account]');
         if (videoEl) {
           const videoId = videoEl.getAttribute('data-video-id') || '';
           const accountId = videoEl.getAttribute('data-account') || videoEl.getAttribute('data-account-id') || '2157889325001';
           const playerId = videoEl.getAttribute('data-player') || 'default';
-          // Find overlay title/description from sibling elements or data attributes
           const videoParent = videoEl.closest('.cmp-video, .video, [class*="video"]:not(.video-js)') || videoEl.parentElement;
           const overlayTitle = videoParent?.getAttribute('data-overlay-title')
             || videoParent?.previousElementSibling?.querySelector('h2, h3, h4')?.textContent?.trim()
             || child.querySelector('.cmp-title h2, h2, h3')?.textContent?.trim() || '';
           const watchLabel = videoParent?.getAttribute('data-watch-label')
             || child.querySelector('button[class*="watch"], .cmp-video__cta-text')?.textContent?.trim() || 'Watch Video';
-          // Brightcove Video block — ROW indices per blocks/brightcove-video.js:
-          // 0=projectNumber, 1=overlayTitle, 2=overlayDescription, 3=posterType,
-          // 4=posterImage, 5=posterAlt, 6=colorOverlay, 7=overlayButtonText,
-          // 8=overlayButtonIconType, 9=overlayButtonFontIcon, 10=overlayButtonImageIcon,
-          // 11=iconPosition, 12=playerType, 13=accountId, 14=playerId, 15=videoId,
-          // 16=playlistId, 17=defaultPlaylistVideoId, 18=playlistType,
-          // 19=videoContentLayout, 20=enablePlaylistThumbnailMetadata,
-          // 21=captionTitle, 22=captionDescription, 23=playButtonAriaLabel,
-          // 24=videoCaption, 25=enableAutoplay, 26=enableLoop, 27=enableCaptions,
-          // 28=enableVideoChapters, 29=enableRecommendedVideo, 30=enablePlayerControls,
-          // 31=enableSocialShare, 32=enableTranscript
+          // Brightcove Video — 33 rows
           output.appendChild(makeBlock(document, 'Brightcove Video', [
             [''],              // [0] projectNumber
             [overlayTitle],    // [1] overlayTitle
@@ -652,9 +857,9 @@ export default {
             [''],              // [10] overlayButtonImageIcon
             ['left'],          // [11] iconPosition
             ['single'],        // [12] playerType
-            [accountId],       // [13] accountId ← block reads ROW.ACCOUNT_ID=13
-            [playerId],        // [14] playerId ← block reads ROW.PLAYER_ID=14
-            [videoId],         // [15] videoId ← block reads ROW.VIDEO_ID=15
+            [accountId],       // [13] accountId
+            [playerId],        // [14] playerId
+            [videoId],         // [15] videoId
             [''],              // [16] playlistId
             [''],              // [17] defaultPlaylistVideoId
             ['carousel'],      // [18] playlistType
@@ -691,7 +896,7 @@ export default {
               const em = document.createElement('em');
               em.textContent = caption;
               capDiv.appendChild(em);
-              output.appendChild(makeTextContainer(document, capDiv, 'standard, custom-class'));
+              output.appendChild(makeTextContainer(document, capDiv, 'standard,custom-class'));
             }
           }
           continue;
@@ -708,7 +913,7 @@ export default {
         if (cardPageStories.length > 0 && !cls.includes('carousel') && !cls.includes('splide')) {
           const relHeading = child.querySelector('h2, h3, h4, h5');
           if (relHeading) {
-            output.appendChild(makeCustomTitle(document, relHeading.textContent.trim(), 5, 'h5-size, width-large'));
+            output.appendChild(makeCustomTitle(document, relHeading.textContent.trim(), 5, 'h5-size,width-large'));
           }
           cardPageStories.forEach((card) => {
             const cardLink = card.closest('a') || card.querySelector('a[href]');
@@ -722,7 +927,7 @@ export default {
 
         // ── HEADING ELEMENTS (direct h2-h5 nodes from sorted list) ──
         if (['H2', 'H3', 'H4', 'H5'].includes(child.tagName)) {
-          output.appendChild(makeCustomTitle(document, child.textContent.trim(), 5, 'h5-size, width-large'));
+          output.appendChild(makeCustomTitle(document, child.textContent.trim(), 5, 'h5-size,width-large'));
           continue;
         }
 
@@ -732,7 +937,7 @@ export default {
 
         // If this element has a heading, output it first
         if (heading) {
-          output.appendChild(makeCustomTitle(document, heading.textContent.trim(), 5, 'h5-size, width-large'));
+          output.appendChild(makeCustomTitle(document, heading.textContent.trim(), 5, 'h5-size,width-large'));
         }
 
         // Process paragraphs
@@ -759,9 +964,9 @@ export default {
           if (hasContent) {
             if (isCaption) {
               // Caption text — wider, italic style
-              output.appendChild(makeTextContainer(document, div, 'standard, custom-class'));
+              output.appendChild(makeTextContainer(document, div, 'standard,custom-class'));
             } else {
-              output.appendChild(makeTextContainer(document, div, 'spacing-bottom, width-large'));
+              output.appendChild(makeTextContainer(document, div, 'spacing-bottom,width-large'));
             }
           }
         }
@@ -780,7 +985,7 @@ export default {
           if (sectionCards.length > 0) {
             const relHeading = section.querySelector('h2, h3, h4, h5');
             if (relHeading) {
-              output.appendChild(makeCustomTitle(document, relHeading.textContent.trim(), 5, 'h5-size, width-large'));
+              output.appendChild(makeCustomTitle(document, relHeading.textContent.trim(), 5, 'h5-size,width-large'));
             }
             sectionCards.forEach((card) => {
               const cardLink = card.closest('a') || card.querySelector('a[href]');
@@ -795,7 +1000,7 @@ export default {
     }
 
     // Close section 4
-    output.appendChild(makeSectionMetadata(document, 'grid-section, grid-cols-8'));
+    output.appendChild(makeSectionMetadata(document, 'grid-cols-8', 'grid-section'));
     output.appendChild(document.createElement('hr'));
 
     // ══════════════════════════════════════════════════════════
@@ -815,22 +1020,13 @@ export default {
       categoryLink.href = sidebarCard.href;
       categoryLink.textContent = categoryJcrPath;
 
+      // Story Card sidePanel — 12 rows per reference
       output.appendChild(makeBlock(document, 'Story Card', [
-        ['sidePanel'],     // [0] variant
-        ['false'],         // [1] showImage
-        ['false'],         // [2] showIcon
-        ['false'],         // [3] showCategory
-        ['false'],         // [4] showDate
-        ['false'],         // [5] showReadTime
-        [''],              // [6] storyPath
-        [''],              // [7] showShareIcon
-        [categoryLink],    // [8] categoryPath (link with JCR path)
-        ['true'],          // [9] showExternalLink
-        [''],              // [10] blockId
-        [''],              // [11] analyticsId
+        ['sidePanel'], ['false'], ['false'], ['false'], ['false'], ['false'],
+        [''], [''], [categoryLink], ['true'], [''], [''],
       ]));
     }
-    output.appendChild(makeSectionMetadata(document, 'grid-cols-2'));
+    output.appendChild(makeSectionMetadata(document, 'grid-cols-2', 'grid-section'));
 
     // ══════════════════════════════════════════════════════════
     // PAGE METADATA (maps to JCR page properties via md2jcr)
@@ -877,6 +1073,7 @@ export default {
     if (pageTitle) metaRows.push(['cardTitle', pageTitle]);
     if (metaDesc) metaRows.push(['cardDescription', metaDesc]);
     metaRows.push(['template', 'story-article']);
+    metaRows.push(['brand', 'abbvie']);
 
     if (metaRows.length > 0) {
       output.appendChild(document.createElement('hr'));
