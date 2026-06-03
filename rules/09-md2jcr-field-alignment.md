@@ -29,6 +29,8 @@ imageMimeType   ─┤─→ ONE group "image" (MimeType collapsed)
 imageAlt        ─┘   (Alt collapsed)
 ```
 
+> **WARNING:** Fields ending with a suffix but WITHOUT a matching base field are **silently dropped** by md2jcr's `_fixFieldOrder`. See [10-md2jcr-field-naming.md](./10-md2jcr-field-naming.md) for the naming rules to avoid this bug.
+
 ### Rule 3: `classes` field excluded
 If a model has a field literally named `classes` (multiselect), it's handled separately from the block name parentheses. It does NOT consume a row.
 
@@ -241,33 +243,114 @@ link + linkText → 1 group (Text suffix collapses into link)
 </div>
 ```
 - The section model has `style` (multiselect) AND `style_customDynamicClass` (dynamic-picklist)
-- Reference JCR uses `classes_customDynamicClass` for section styles
+- Reference JCR uses `style_customDynamicClass` for section styles
 - Values are comma-separated, NO spaces: `content-wide,medium-radius`
 
 ### Use `blockModelId` for non-default section types
+For `grid-section` and `grid-container`, provide ALL these rows in Section Metadata:
+
 ```html
 <div class="section-metadata">
   <div><div>blockModelId</div><div>grid-section</div></div>
-  <div><div>style_customDynamicClass</div><div>grid-cols-8</div></div>
+  <div><div>style_container</div><div>grid-section</div></div>
+  <div><div>name</div><div>Grid Section</div></div>
+  <div><div>style_customDynamicClass</div><div>grid-section,grid-cols-8</div></div>
+  <div><div>language</div><div>none</div></div>
 </div>
 ```
-- `grid-section` → uses grid-section model (has filter, identifier, name)
-- `grid-container` → uses grid-container model
-- Default sections (no blockModelId) → uses section model
+
+### Grid Container Section
+Model: `grid-container` | Fields: name, style_container, background, backgroundMimeType, style_customDynamicClass, blockId, classes_commonCustomClass, language, analytics_id
+
+```html
+<div class="section-metadata">
+  <div><div>blockModelId</div><div>grid-container</div></div>
+  <div><div>style_container</div><div>grid-container</div></div>
+  <div><div>name</div><div>Grid Container</div></div>
+  <div><div>style_customDynamicClass</div><div>grid-container,content-regular</div></div>
+  <div><div>language</div><div>none</div></div>
+</div>
+```
+
+**Reference JCR output:**
+```xml
+<grid_container
+    sling:resourceType="core/franklin/components/section/v1/section"
+    aueComponentId="grid-container"
+    style_container="grid-container"
+    style_customDynamicClass="content-regular,padding-bottom"
+    filter="grid-container"
+    identifier="Grid Container"
+    language="none"
+    model="grid-container"
+    name="Grid Container"/>
+```
+
+### Grid Section
+Model: `grid-section` | Fields: name, style_container, style_customDynamicClass, blockId, classes_commonCustomClass, language, analytics_id
+
+```html
+<div class="section-metadata">
+  <div><div>blockModelId</div><div>grid-section</div></div>
+  <div><div>style_container</div><div>grid-section</div></div>
+  <div><div>name</div><div>Grid Section</div></div>
+  <div><div>style_customDynamicClass</div><div>grid-section,grid-cols-8</div></div>
+  <div><div>language</div><div>none</div></div>
+</div>
+```
+
+**Reference JCR output:**
+```xml
+<grid_section
+    sling:resourceType="core/franklin/components/section/v1/section"
+    aueComponentId="grid-section"
+    style_container="grid-section"
+    style_customDynamicClass="grid-cols-8"
+    filter="grid-section"
+    identifier="Grid Section"
+    model="grid-section"
+    name="Grid Section"/>
+```
+
+### Section Types Summary
+
+| Type | blockModelId | style_container | name | style_customDynamicClass |
+|------|-------------|-----------------|------|--------------------------|
+| Default section | (none) | (none) | (none) | `content-wide,medium-radius` |
+| Grid Container | `grid-container` | `grid-container` | `Grid Container` | `grid-container,content-regular` |
+| Grid Section (cols-2) | `grid-section` | `grid-section` | `Grid Section` | `grid-section,grid-cols-2` |
+| Grid Section (cols-8) | `grid-section` | `grid-section` | `Grid Section` | `grid-section,grid-cols-8` |
+
+### What md2jcr handles vs md2jcr gaps
+
+**md2jcr handles (from Section Metadata rows):**
+- `model` → from `blockModelId`
+- `style_container` → from row
+- `name` → from row
+- `style_customDynamicClass` → from row
+- `language` → from row
+- `modelFields` → auto-generated from model
+
+**md2jcr gaps (NOT set from Section Metadata — need md2jcr fix):**
+- `filter` → should come from component-definition template
+- `identifier` → should come from component-definition template
+- `aueComponentId` → should come from component id
 
 ---
 
 ## Key Principles
 
 1. **Count field GROUPS, not raw fields** — one row per group
-2. **classes_* fields share one row** — use field hints to map multiple values
+2. **classes_* fields share one row** — first value in the cell goes to first field in group
 3. **Suffix fields don't need rows** — they're auto-collapsed (Alt, MimeType, Type, Text, Title)
 4. **Block name must match component title EXACTLY** — case-sensitive (`Cta` not `CTA`)
-5. **No `classes` multiselect = no parenthesized variants** — use `classes_customDynamicClass` instead
+5. **No `classes` multiselect = no parenthesized variants** — use `classes_customDynamicClass` row instead
 6. **Container blocks**: parent rows first, then child item rows
 7. **Text containers**: combine ALL paragraphs into ONE richtext cell per item
 8. **Template defaults fill empty fields** — from component-definition.json template section
-9. **Field hints** (`<!-- field:name -->`) override sequential resolution — safest approach for classes groups
+9. **Empty rows collapse in html2md** — use `-` as placeholder for empty parent rows
+10. **Field hints (`<!-- field:name -->`) DO NOT work** — they become `html` mdast nodes which md2jcr rejects. Use plain text values only.
+11. **Section types need full metadata** — grid-section/grid-container need `blockModelId` + `style_container` + `name` + `style_customDynamicClass` + `language` rows
 
 ---
 

@@ -63,14 +63,22 @@ function makeBlock(document, name, rows) {
 
 
 // Section Metadata — uses style_customDynamicClass (matches reference JCR output)
-// For grid-section/grid-container, also emits blockModelId row so md2jcr uses correct model
+// For grid-section/grid-container, also emits blockModelId + style_container + language
+// Also emits `style` row for local EDS preview rendering (decorateSections reads this)
 function makeSectionMetadata(document, styles, blockModelId) {
   const rows = [];
   if (blockModelId) {
     rows.push(['blockModelId', blockModelId]);
+    rows.push(['style_container', blockModelId]);
+    rows.push(['name', blockModelId === 'grid-container' ? 'Grid Container' : 'Grid Section']);
   }
-  if (styles) {
-    rows.push(['style_customDynamicClass', styles]);
+  // style_customDynamicClass includes style_container value + styles
+  const dynamicStyles = [blockModelId, styles].filter(Boolean).join(',');
+  if (dynamicStyles) {
+    rows.push(['style_customDynamicClass', dynamicStyles]);
+  }
+  if (blockModelId) {
+    rows.push(['language', 'none']);
   }
   return makeBlock(document, 'Section Metadata', rows);
 }
@@ -727,17 +735,26 @@ export default {
 
         // ── EDGE CASE: MEDIA INQUIRIES (always last before footer) ──
         if (/media\s*inquir|press\s*contact/i.test(text) && text.length < 500) {
-          const link = child.querySelector('a[href*="mailto:"]');
           const div = document.createElement('div');
-          const strong = document.createElement('strong');
-          strong.textContent = 'Media inquiries:';
-          div.appendChild(strong);
-          div.appendChild(document.createTextNode(' '));
-          if (link) {
+          const mailtoLink = child.querySelector('a[href*="mailto:"]');
+          if (mailtoLink) {
+            const emailHref = (mailtoLink.getAttribute('href') || '').replace('mailto:', '').replace('%20', '').trim();
+            const p1 = document.createElement('p');
+            const strong = document.createElement('strong');
+            strong.textContent = 'Media Inquiries:';
+            p1.appendChild(strong);
+            div.appendChild(p1);
+            const p2 = document.createElement('p');
+            p2.textContent = 'Email: ';
             const a = document.createElement('a');
-            a.href = link.getAttribute('href') || '';
-            a.textContent = link.textContent.trim() || link.getAttribute('href').replace('mailto:', '');
-            div.appendChild(a);
+            a.href = `mailto:${emailHref}`;
+            a.textContent = emailHref || 'abbviemediarelations@abbvie.com';
+            p2.appendChild(a);
+            div.appendChild(p2);
+          } else {
+            const p = document.createElement('p');
+            p.innerHTML = (child.querySelector('p') || child).innerHTML || text;
+            div.appendChild(p);
           }
           output.appendChild(makeTextContainer(document, div, 'spacing-bottom,width-x-large,body-unica-20-reg'));
           continue;

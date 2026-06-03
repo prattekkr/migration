@@ -16,6 +16,7 @@ The following skills are available in `.claude/skills/`, `.agents/skills/`, and 
 | `migration-rules` | Technical rules for fix-forward pipeline, DOM analysis | Debugging import issues |
 | `complex-template-migration` | Multi-grid layouts, side-by-side columns, technology modules, sidebars | Pages with 1-4-1-5-1 grids, 6-6 cards, gray sections, quotes, complex layouts |
 | `md2jcr-field-alignment` | md2jcr FieldGroup rules, row counts per block, section metadata format, field hints | Writing ANY import script — CRITICAL for correct JCR output |
+| `md2jcr-field-naming` | Suffix field naming rules, _fixFieldOrder bug, safe rename patterns | Adding/renaming fields in component-models.json — CRITICAL to prevent silent field loss |
 
 **Always consult `md2jcr-field-alignment` (rules/09-md2jcr-field-alignment.md) before writing import scripts. It contains:**
 - How md2jcr groups fields (classes_* → one group, suffix collapsing)
