@@ -15,11 +15,14 @@ The following skills are available in `.claude/skills/`, `.agents/skills/`, and 
 | `block-analysis-full` | Analysis of all 32 remaining blocks | Working on other page templates |
 | `migration-rules` | Technical rules for fix-forward pipeline, DOM analysis | Debugging import issues |
 | `complex-template-migration` | Multi-grid layouts, side-by-side columns, technology modules, sidebars | Pages with 1-4-1-5-1 grids, 6-6 cards, gray sections, quotes, complex layouts |
+| `md2jcr-field-alignment` | md2jcr FieldGroup rules, row counts per block, section metadata format, field hints | Writing ANY import script — CRITICAL for correct JCR output |
 
-**Always consult `migration-skill` before writing import scripts. It contains:**
-- Exact row counts for every block
-- Valid CSS class combinations
-- Grid layout patterns
+**Always consult `md2jcr-field-alignment` (rules/09-md2jcr-field-alignment.md) before writing import scripts. It contains:**
+- How md2jcr groups fields (classes_* → one group, suffix collapsing)
+- Exact field GROUP counts for every block (not raw field counts)
+- Section Metadata format (`style_customDynamicClass` + `blockModelId`)
+- Field hint (`<!-- field:name -->`) usage for classes groups
+- Template defaults behavior
 - Data preservation checklist
 
 ## Rule 1: Post-Import Fix Tracking (Fix-Forward Pipeline)
