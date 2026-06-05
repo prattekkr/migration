@@ -570,6 +570,40 @@
       "status": "incorporated",
       "incorporatedDate": "2026-05-27",
       "incorporatedIn": "transformers/abbvie-cleanup.js"
+    },
+    {
+      "id": 26,
+      "date": "2026-06-05",
+      "template": "story-article",
+      "pages": [
+        "https://www.abbvie.com/who-we-are/our-stories/a-legacy-of-leadership-in-mental-health.html"
+      ],
+      "parser": null,
+      "transformer": "import-story-article.js",
+      "description": "Reference list (<ol>) dropped from article body. The import script's text extraction at line 978 only queried for <p> elements (querySelectorAll('p')), missing <ol> and <ul> list elements. On source pages where references are in an ordered list following a 'References:' heading, the list content was silently discarded.",
+      "selector": ".cmp-text ol, .cmp-text ul",
+      "rootCause": "import script - body text extraction only queried 'p' elements, not 'ol' or 'ul'",
+      "fixDetails": "Changed querySelectorAll('p') to querySelectorAll('p, ul, ol') in the body content extraction loop of import-story-article.js. Also changed the clone logic to use the element's actual tag name instead of always creating <p> elements. The makeTextContainer function already supported lists (its internal querySelectorAll includes ol/ul), so the fix is purely in the upstream extraction.",
+      "status": "incorporated",
+      "incorporatedDate": "2026-06-05",
+      "incorporatedIn": "import-story-article.js"
+    },
+    {
+      "id": 27,
+      "date": "2026-06-05",
+      "template": "story-article",
+      "pages": [
+        "https://www.abbvie.com/who-we-are/our-stories/a-molecular-behavior-chart-speeding-up-research-with-predictive-analytics.html"
+      ],
+      "parser": null,
+      "transformer": "import-story-article.js",
+      "description": "Image captions duplicated: once as figcaption inside custom-image block (correct) and again as a separate italic text-container block below (incorrect). Also, displayCaptionBelowImage was set to 'false' so the 'caption-below' class was not applied to the figure element, preventing proper caption styling.",
+      "selector": ".custom-image + .text-container:has(em)",
+      "rootCause": "import script - makeCustomImage already placed caption in the block's caption field, but lines 935-942 additionally created a duplicate text-container with the same caption. Also displayCaptionBelowImage was hardcoded to 'false' regardless of caption presence.",
+      "fixDetails": "1) Removed the duplicate text-container creation after makeCustomImage (lines 935-942). 2) Changed displayCaptionBelowImage from hardcoded 'false' to conditional: 'true' when caption exists, 'false' otherwise. This ensures the block JS adds the 'caption-below' class to the figure element for proper styling.",
+      "status": "incorporated",
+      "incorporatedDate": "2026-06-05",
+      "incorporatedIn": "import-story-article.js"
     }
   ]
 }
