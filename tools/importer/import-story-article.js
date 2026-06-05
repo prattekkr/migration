@@ -267,7 +267,7 @@ function makeCustomImage(document, src, alt, caption) {
     ['false'],   // [2] imageIsDecorative
     [caption || ''], // [3] caption
     ['false'],   // [4] getCaptionFromDAM
-    ['false'],   // [5] displayCaptionBelowImage
+    [caption ? 'true' : 'false'],   // [5] displayCaptionBelowImage
     ['false'],   // [6] enableLink
     [''],        // [7] target
     ['_self'],   // [8] clickBehavior
@@ -750,7 +750,7 @@ export default {
             const emailHref = (mailtoLink.getAttribute('href') || '').replace('mailto:', '').replace('%20', '').trim();
             const p1 = document.createElement('p');
             const strong = document.createElement('strong');
-            strong.textContent = 'Media Inquiries:';
+            strong.textContent = 'Media inquiries:';
             p1.appendChild(strong);
             div.appendChild(p1);
             const p2 = document.createElement('p');
@@ -765,7 +765,7 @@ export default {
             p.innerHTML = (child.querySelector('p') || child).innerHTML || text;
             div.appendChild(p);
           }
-          output.appendChild(makeTextContainer(document, div, 'spacing-bottom,width-x-large,body-unica-20-reg'));
+          output.appendChild(makeTextContainer(document, div, 'spacing-bottom,width-large'));
           continue;
         }
 
@@ -931,15 +931,6 @@ export default {
             const alt = imgEl.getAttribute('alt') || '';
             const caption = child.querySelector('figcaption, .cmp-image__title, em')?.textContent?.trim() || '';
             output.appendChild(makeCustomImage(document, src, alt, caption));
-
-            // EDGE CASE: Image followed by italic caption text
-            if (caption) {
-              const capDiv = document.createElement('div');
-              const em = document.createElement('em');
-              em.textContent = caption;
-              capDiv.appendChild(em);
-              output.appendChild(makeTextContainer(document, capDiv, 'standard,custom-class'));
-            }
           }
           continue;
         }
@@ -982,23 +973,26 @@ export default {
           output.appendChild(makeCustomTitle(document, heading.textContent.trim(), 5, 'h5-size,width-large'));
         }
 
-        // Process paragraphs
-        if (textEls.length > 0) {
+        // Process paragraphs and lists
+        const textAndListEls = child.querySelectorAll('p, ul, ol');
+        if (textAndListEls.length > 0) {
           const div = document.createElement('div');
           let hasContent = false;
           let isCaption = false;
 
-          textEls.forEach((p) => {
-            const trimmed = p.textContent.trim();
+          textAndListEls.forEach((el) => {
+            const trimmed = el.textContent.trim();
             if (trimmed.length > 0) {
-              const newP = document.createElement('p');
-              newP.innerHTML = p.innerHTML;
-              div.appendChild(newP);
+              const clone = document.createElement(el.tagName.toLowerCase());
+              clone.innerHTML = el.innerHTML;
+              div.appendChild(clone);
               hasContent = true;
               // Detect italic caption: paragraph entirely in <em>/<i>
-              const emEl = p.querySelector('em, i');
-              if (emEl && emEl.textContent.trim().length > trimmed.length * 0.7 && trimmed.length < 300) {
-                isCaption = true;
+              if (el.tagName === 'P') {
+                const emEl = el.querySelector('em, i');
+                if (emEl && emEl.textContent.trim().length > trimmed.length * 0.7 && trimmed.length < 300) {
+                  isCaption = true;
+                }
               }
             }
           });
