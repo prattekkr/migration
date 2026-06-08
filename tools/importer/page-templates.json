@@ -909,7 +909,7 @@
     },
     {
       "name": "homepage",
-      "description": "T01 — AbbVie Homepage: hero + press releases, patient story carousel, featured story card, science intro columns, key stats band (navy), Brightcove video, podcast promo, culture/partnerships columns, careers CTA (highlight), investor + stock ticker, ESG feature (dark), positions PDF linklist",
+      "description": "T01 \u2014 AbbVie Homepage: hero + press releases, patient story carousel, featured story card, science intro columns, key stats band (navy), Brightcove video, podcast promo, culture/partnerships columns, careers CTA (highlight), investor + stock ticker, ESG feature (dark), positions PDF linklist",
       "urls": [
         "https://www.abbvie.com/"
       ],
@@ -1143,7 +1143,7 @@
     },
     {
       "name": "section-landing",
-      "description": "T02 — Section Landing Pages (who-we-are, science, patients, patient-support): hero, mission intro, optional video, featured story cards / tabs (science) / carousel (patients), key stats (navy), content columns, stock ticker + investor links, careers CTA (highlight)",
+      "description": "T02 \u2014 Section Landing Pages (who-we-are, science, patients, patient-support): hero, mission intro, optional video, featured story cards / tabs (science) / carousel (patients), key stats (navy), content columns, stock ticker + investor links, careers CTA (highlight)",
       "urls": [
         "https://www.abbvie.com/who-we-are.html",
         "https://www.abbvie.com/science.html",
@@ -1318,7 +1318,7 @@
     },
     {
       "name": "therapeutic-area",
-      "description": "T03 — Therapeutic Area Pages (6 pages under /science/areas-of-focus/): hero, optional video, intro text, related topics linklist, optional carousel (neuroscience), disease accordion, 3-col commitments, featured story cards, careers CTA (highlight)",
+      "description": "T03 \u2014 Therapeutic Area Pages (6 pages under /science/areas-of-focus/): hero, optional video, intro text, related topics linklist, optional carousel (neuroscience), disease accordion, 3-col commitments, featured story cards, careers CTA (highlight)",
       "urls": [
         "https://www.abbvie.com/science/areas-of-focus/immunology.html",
         "https://www.abbvie.com/science/areas-of-focus/oncology.html",
@@ -1488,7 +1488,7 @@
     },
     {
       "name": "innovation-area",
-      "description": "T04 — Innovation Area Pages (6 pages under /science/areas-of-innovation/): hero, intro text, related topics linklist, 1-2 video embeds, 3-col columns, feature section (2-col asymmetric), application areas accordion, featured story cards, careers CTA (highlight)",
+      "description": "T04 \u2014 Innovation Area Pages (6 pages under /science/areas-of-innovation/): hero, intro text, related topics linklist, 1-2 video embeds, 3-col columns, feature section (2-col asymmetric), application areas accordion, featured story cards, careers CTA (highlight)",
       "urls": [
         "https://www.abbvie.com/science/areas-of-innovation/ai-and-data-convergence.html",
         "https://www.abbvie.com/science/areas-of-innovation/genomics.html",
@@ -1649,7 +1649,7 @@
     },
     {
       "name": "story-article",
-      "description": "T09 — Story Article Pages (116 pages under /who-we-are/our-stories/): full-width hero image (default content), metadata bar, article title H1 (default content), narrow body copy (default content), optional pull quotes, optional inline video embed, related articles story-cards",
+      "description": "T09 \u2014 Story Article Pages (116 pages under /who-we-are/our-stories/): full-width hero image (default content), metadata bar, article title H1 (default content), narrow body copy (default content), optional pull quotes, optional inline video embed, related articles story-cards",
       "urls": [
         "https://www.abbvie.com/who-we-are/our-stories/5-ways-abbvie-work-to-deliver-medicines-in-half-the-time.html",
         "https://www.abbvie.com/who-we-are/our-stories/a-history-discovery-why-we-focus-on-eye-cares-toughest-diseases.html",
@@ -1854,7 +1854,7 @@
     },
     {
       "name": "stories-listing",
-      "description": "T10 — Stories Listing / Category Filter (17 pages under /who-we-are/our-stories/): featured hero story card (dark bg), optional secondary teaser, category filter + search tag-utility-nav, story card grid with show-more",
+      "description": "T10 \u2014 Stories Listing / Category Filter (17 pages under /who-we-are/our-stories/): featured hero story card (dark bg), optional secondary teaser, category filter + search tag-utility-nav, story card grid with show-more",
       "urls": [
         "https://www.abbvie.com/who-we-are/our-stories.html",
         "https://www.abbvie.com/who-we-are/our-stories/eye-care-stories.html",
@@ -1945,7 +1945,7 @@
     },
     {
       "name": "key-facts",
-      "description": "T12 — Stats & Facts Page (key-facts.html only): hero, intro text, report download cards (3-col), key metrics fact-card grid, recognition accordion",
+      "description": "T12 \u2014 Stats & Facts Page (key-facts.html only): hero, intro text, report download cards (3-col), key metrics fact-card grid, recognition accordion",
       "urls": [
         "https://www.abbvie.com/who-we-are/key-facts.html"
       ],
@@ -2062,7 +2062,7 @@
     },
     {
       "name": "rd-sites",
-      "description": "T13 — R&D Sites Page (rd-sites.html only): hero, intro text + key stats, global map visualization (pipeline placeholder), location spotlight card, location details accordion",
+      "description": "T13 \u2014 R&D Sites Page (rd-sites.html only): hero, intro text + key stats, global map visualization (pipeline placeholder), location spotlight card, location details accordion",
       "urls": [
         "https://www.abbvie.com/science/rd-sites.html"
       ],
@@ -2162,7 +2162,7 @@
     },
     {
       "name": "patient-assistance",
-      "description": "T14 — Patient Assistance Pages (7 pages): hero, program intro text, eligibility FAQ accordion, portal CTA linklist/columns, income criteria table (income-criteria.html only), related content cards, optional patient testimonial quote (highlight)",
+      "description": "T14 \u2014 Patient Assistance Pages (7 pages): hero, program intro text, eligibility FAQ accordion, portal CTA linklist/columns, income criteria table (income-criteria.html only), related content cards, optional patient testimonial quote (highlight)",
       "urls": [
         "https://www.abbvie.com/patients.html",
         "https://www.abbvie.com/patients/patient-support.html",
@@ -2318,7 +2318,7 @@
     },
     {
       "name": "brand-partnership",
-      "description": "T16 — Brand Partnership Pages (3 pages): hero, campaign intro + donation stat (default content), player testimonial quote, partnership cross-link teaser, partner features columns (2-col 50:42), related story cards",
+      "description": "T16 \u2014 Brand Partnership Pages (3 pages): hero, campaign intro + donation stat (default content), player testimonial quote, partnership cross-link teaser, partner features columns (2-col 50:42), related story cards",
       "urls": [
         "https://www.abbvie.com/who-we-are/brand-partnerships.html",
         "https://www.abbvie.com/who-we-are/brand-partnerships/cubs.html",
@@ -2449,7 +2449,7 @@
     },
     {
       "name": "rich-content",
-      "description": "T17 + T17b — Rich Content / Policy Pages (15 pages) and Disclosure/Data Table Pages (3 pages): optional hero (T17b has no hero), intro/mission text, optional linklist nav, optional columns, optional cards, optional quote (EEDI), optional 3-col columns, optional accordion, awards/recognitions default content",
+      "description": "T17 + T17b \u2014 Rich Content / Policy Pages (15 pages) and Disclosure/Data Table Pages (3 pages): optional hero (T17b has no hero), intro/mission text, optional linklist nav, optional columns, optional cards, optional quote (EEDI), optional 3-col columns, optional accordion, awards/recognitions default content",
       "urls": [
         "https://www.abbvie.com/who-we-are/our-principles.html",
         "https://www.abbvie.com/who-we-are/our-principles/equity-equality-inclusion-diversity.html",
@@ -2621,7 +2621,7 @@
     },
     {
       "name": "sub-section-hub",
-      "description": "T05 — Sub-Section Hub Pages (5 pages under /science/): hero, intro text (container large), optional linklist nav, optional 2-col or 3-col columns, optional cards, optional accordion, optional video, careers CTA (highlight)",
+      "description": "T05 \u2014 Sub-Section Hub Pages (5 pages under /science/): hero, intro text (container large), optional linklist nav, optional 2-col or 3-col columns, optional cards, optional accordion, optional video, careers CTA (highlight)",
       "urls": [
         "https://www.abbvie.com/science/partner-with-us.html",
         "https://www.abbvie.com/science/independent-educational-grants.html",
@@ -2794,7 +2794,7 @@
     },
     {
       "name": "publications",
-      "description": "T06 — Publications Page (science/publications.html): optional hero, intro text (container large), optional linklist nav, publications search/filter component, optional related 3-col cards",
+      "description": "T06 \u2014 Publications Page (science/publications.html): optional hero, intro text (container large), optional linklist nav, publications search/filter component, optional related 3-col cards",
       "urls": [
         "https://www.abbvie.com/science/publications.html"
       ],
@@ -2897,7 +2897,7 @@
     },
     {
       "name": "science-hub",
-      "description": "T07 — Science Our-People Hub Pages (7 pages under /science/our-people/): hero, intro text (container large), optional linklist nav, optional video/podcast, optional tabs, optional story-card carousel, optional 3-col columns",
+      "description": "T07 \u2014 Science Our-People Hub Pages (7 pages under /science/our-people/): hero, intro text (container large), optional linklist nav, optional video/podcast, optional tabs, optional story-card carousel, optional 3-col columns",
       "urls": [
         "https://www.abbvie.com/science/our-people.html",
         "https://www.abbvie.com/science/our-people/community-of-science.html",
@@ -3045,7 +3045,7 @@
     },
     {
       "name": "pipeline",
-      "description": "T08 — Pipeline Page (science/pipeline.html): hero, intro text (container large), optional phase filter linklist/tabs, pipeline data table (container x-large), optional disclosure accordion",
+      "description": "T08 \u2014 Pipeline Page (science/pipeline.html): hero, intro text (container large), optional phase filter linklist/tabs, pipeline data table (container x-large), optional disclosure accordion",
       "urls": [
         "https://www.abbvie.com/science/pipeline.html"
       ],
@@ -3138,6 +3138,53 @@
             "accordion"
           ],
           "defaultContent": []
+        }
+      ]
+    },
+    {
+      "name": "podcast-listing",
+      "urls": [
+        "https://www.abbvie.com/who-we-are/our-stories/the-persistence-lab-podcasts.html"
+      ],
+      "description": "Podcast listing/hub page with hero, episode players, host bio, and CTA. Uses full-width sections, not 2-8-2 grid.",
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            ".container.cmp-container-full-width.height-default:has(img.cmp-container__bg-image)"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            ".grid-row:has(.col-with-9)",
+            ".grid-row:has(.col-with-5):has(.col-with-6)",
+            ".grid-row:has(.col-with-2):has(.col-with-8)"
+          ]
+        },
+        {
+          "name": "brightcove-podcast-player",
+          "instances": [
+            ".cmp-podcast-audio-player"
+          ]
+        },
+        {
+          "name": "eyebrow-text",
+          "instances": [
+            ".cmp-title.cmp-title-x-small"
+          ]
+        },
+        {
+          "name": "linklist",
+          "instances": [
+            ".cmp-list.dashboard-links"
+          ]
+        },
+        {
+          "name": "cta",
+          "instances": [
+            ".container.cmp-container-full-width.height-short:has(.dark-theme) .cta-component"
+          ]
         }
       ]
     }

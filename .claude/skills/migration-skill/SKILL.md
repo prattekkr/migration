@@ -812,12 +812,22 @@ navigation, story-card resolution, or any content listing.
 Keys MUST match the `page-metadata` model field names in `component-models.json`.
 The `image` value MUST be an `<img>` element, not a text URL string.
 
-### Rule 9: story-card categoryPath uses `<a>` element with JCR path
+### Rule 9: story-card `page` field uses `<a>` with full JCR path (no .html)
+The `page` field (row 8) is `aem-content` type — both `href` and `textContent` MUST use the full JCR content path without `.html` extension.
 ```javascript
+// ✅ CORRECT — both href and textContent use full JCR path
 const a = document.createElement('a');
-a.href = '/who-we-are/our-stories/science-stories';  // site-relative href
-a.textContent = '/content/abbvie-nextgen-eds/abbvie-com/us/en/who-we-are/our-stories/science-stories'; // JCR path
+const jcrPath = '/content/abbvie-nextgen-eds/abbvie-com/us/en/who-we-are/our-stories/science-stories';
+a.href = jcrPath;
+a.textContent = jcrPath;
 // Pass as row[8] in story-card block
+
+// Transform pattern from source URL:
+// '/who-we-are/our-stories/page.html' → strip .html → prepend JCR prefix
+let path = sourceHref.replace(/^https?:\/\/www\.abbvie\.com/, '').replace(/\.html$/, '');
+if (!path.startsWith('/content/')) {
+  path = `/content/abbvie-nextgen-eds/abbvie-com/us/en${path}`;
+}
 ```
 
 ### Blocks requiring filter entries (add to component-filters.json if missing):

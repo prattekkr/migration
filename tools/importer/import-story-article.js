@@ -62,23 +62,21 @@ function makeBlock(document, name, rows) {
 }
 
 
-// Section Metadata — uses style_customDynamicClass (matches reference JCR output)
-// For grid-section/grid-container, also emits blockModelId + style_container + language
-// Also emits `style` row for local EDS preview rendering (decorateSections reads this)
+// Section Metadata — per rules/09-md2jcr-field-alignment.md:
+// Grid Container needs: blockModelId, style_container, name, style_customDynamicClass, language
+// Grid Section needs: blockModelId, style_container, name, style_customDynamicClass, language
+// Default sections use: style_customDynamicClass (comma-separated, no spaces)
 function makeSectionMetadata(document, styles, blockModelId) {
   const rows = [];
   if (blockModelId) {
     rows.push(['blockModelId', blockModelId]);
     rows.push(['style_container', blockModelId]);
     rows.push(['name', blockModelId === 'grid-container' ? 'Grid Container' : 'Grid Section']);
-  }
-  // style_customDynamicClass includes style_container value + styles
-  const dynamicStyles = [blockModelId, styles].filter(Boolean).join(',');
-  if (dynamicStyles) {
+    const dynamicStyles = [blockModelId, styles].filter(Boolean).join(',');
     rows.push(['style_customDynamicClass', dynamicStyles]);
-  }
-  if (blockModelId) {
     rows.push(['language', 'none']);
+  } else if (styles) {
+    rows.push(['style_customDynamicClass', styles]);
   }
   return makeBlock(document, 'Section Metadata', rows);
 }
@@ -148,9 +146,11 @@ function makeCTA(document, text, url) {
 function makeStoryCard(document, categoryHref, categoryJcrPath) {
   let categoryCell = '';
   if (categoryHref) {
+    const jcrPath = categoryJcrPath || categoryHref.replace(/^https?:\/\/www\.abbvie\.com/, '').replace(/\.html$/, '');
+    const fullPath = jcrPath.startsWith('/content/') ? jcrPath : `/content/abbvie-nextgen-eds/abbvie-com/us/en${jcrPath}`;
     const a = document.createElement('a');
-    a.href = categoryHref;
-    a.textContent = categoryJcrPath || categoryHref;
+    a.href = fullPath;
+    a.textContent = fullPath;
     categoryCell = a;
   }
   return makeBlock(document, 'Story Card', [
@@ -184,9 +184,13 @@ function makeRelatedContentCard(document, href) {
 //   [4] analytics (analytics_id)
 // titleType is auto-collapsed from heading node depth.
 // Variants (h1-size, width-large) go to classes_customDynamicClass via field hint.
-function makeCustomTitle(document, text, level, variants) {
+function makeCustomTitle(document, text, level, variants, useHTML) {
   const h = document.createElement(`h${level}`);
-  h.textContent = text;
+  if (useHTML) {
+    h.innerHTML = text;
+  } else {
+    h.textContent = text;
+  }
   return makeBlock(document, 'Custom Title', [
     [h],             // [0] title (titleType collapsed from heading level)
     [variants],      // [1] classes group → plain text
@@ -232,8 +236,13 @@ function makeTextContainer(document, contentNode, variants) {
 
 // Separator — 6 fields: showLine, classes_customDynamicClass, blockId, classes_commonCustomClass, language, analytics_id
 function makeSeparator(document, height) {
-  return makeBlock(document, `Separator (separator-height-${height || 24})`, [
-    ['false'], [''], [''], [''], [''], [''],
+  return makeBlock(document, 'Separator', [
+    ['false'],                            // [0] showLine
+    [`separator-height-${height || 24}`], // [1] classes_customDynamicClass
+    [''],                                 // [2] blockId
+    [''],                                 // [3] classes_commonCustomClass
+    ['none'],                             // [4] language
+    [''],                                 // [5] analytics_id
   ]);
 }
 
@@ -294,7 +303,7 @@ function makeCustomImage(document, src, alt, caption) {
 //   [17] classes (customDynamicClass, commonCustomClass)
 //   [18] blockId  [19] language  [20] analytics (analytics_id)
 function makeCarousel(document, slideCount) {
-  return makeBlock(document, 'Carousel (carousel-show-btn-margin, carousel-minimal)', [
+  return makeBlock(document, 'Carousel', [
     ['-'],                     // [0] rssFeedUrl
     [String(slideCount || 2)], // [1] totalSlides
     ['-'],                     // [2] numberOfItems
@@ -344,7 +353,7 @@ function makeCarousel(document, slideCount) {
 function makeAccordion(document, title, items) {
   const rows = [
     [title || ''],       // [0] blockHeading
-    ['false'],           // [1] classes group (plain text, first field gets value)
+    ['false,false,icon-font,accordion-icon-font,h5-size,width-large'], // [1] classes group (allowMultipleOpen,showExpandCollapseAll,iconType,customDynamicClass,commonCustomClass)
     ['Expand All'],      // [2] expandAllLabel
     ['Collapse All'],    // [3] collapseAllLabel
     ['plus'],            // [4] expandAllIcon
@@ -368,7 +377,7 @@ function makeAccordion(document, title, items) {
     contentDiv.innerHTML = item.content || '';
     rows.push([item.summary || '', contentDiv]);
   });
-  return makeBlock(document, 'Accordion (accordion-icon-font, h5-size, width-large)', rows);
+  return makeBlock(document, 'Accordion', rows);
 }
 
 // Quote — field GROUPS (after FieldGroup grouping, 13 groups):
@@ -395,7 +404,7 @@ function makeQuote(document, text, authorName, authorTitle, authorImgSrc) {
     pic.appendChild(img);
     imgEl = pic;
   }
-  return makeBlock(document, 'Quote (quote-standard, quote-h4)', [
+  return makeBlock(document, 'Quote', [
     ['quote-standard'], // [0] quoteVariant
     [text || ''],       // [1] quotation (richtext)
     [authorName || ''], // [2] attributionName
@@ -405,7 +414,7 @@ function makeQuote(document, text, authorName, authorTitle, authorImgSrc) {
     [''],               // [6] backgroundImage (MimeType + Alt auto-collapsed)
     [''],               // [7] backgroundImagePreset
     [''],               // [8] backgroundImageModifiers
-    [''],               // [9] classes group
+    ['quote-h4'],       // [9] classes group → classes_customDynamicClass
     [''],               // [10] blockId
     ['none'],           // [11] language
     [''],               // [12] analytics_id
@@ -745,27 +754,11 @@ export default {
         // ── EDGE CASE: MEDIA INQUIRIES (always last before footer) ──
         if (/media\s*inquir|press\s*contact/i.test(text) && text.length < 500) {
           const div = document.createElement('div');
-          const mailtoLink = child.querySelector('a[href*="mailto:"]');
-          if (mailtoLink) {
-            const emailHref = (mailtoLink.getAttribute('href') || '').replace('mailto:', '').replace('%20', '').trim();
-            const p1 = document.createElement('p');
-            const strong = document.createElement('strong');
-            strong.textContent = 'Media Inquiries:';
-            p1.appendChild(strong);
-            div.appendChild(p1);
-            const p2 = document.createElement('p');
-            p2.textContent = 'Email: ';
-            const a = document.createElement('a');
-            a.href = `mailto:${emailHref}`;
-            a.textContent = emailHref || 'abbviemediarelations@abbvie.com';
-            p2.appendChild(a);
-            div.appendChild(p2);
-          } else {
-            const p = document.createElement('p');
-            p.innerHTML = (child.querySelector('p') || child).innerHTML || text;
-            div.appendChild(p);
-          }
-          output.appendChild(makeTextContainer(document, div, 'spacing-bottom,width-x-large,body-unica-20-reg'));
+          const sourceP = child.querySelector('p') || child;
+          const p = document.createElement('p');
+          p.innerHTML = sourceP.innerHTML || sourceP.textContent;
+          div.appendChild(p);
+          output.appendChild(makeTextContainer(document, div, 'spacing-bottom,width-large'));
           continue;
         }
 
@@ -1051,7 +1044,7 @@ export default {
 
     if (sidebarCard && sidebarCard.href) {
       // Story Card with sidePanel variant (matches xwalk reference)
-      // Transform href to JCR path for categoryPath
+      // Transform href to JCR path
       let categoryJcrPath = sidebarCard.href;
       categoryJcrPath = categoryJcrPath.replace(/^https?:\/\/www\.abbvie\.com/, '');
       categoryJcrPath = categoryJcrPath.replace(/\.html$/, '');
@@ -1059,7 +1052,7 @@ export default {
         categoryJcrPath = `/content/abbvie-nextgen-eds/abbvie-com/us/en${categoryJcrPath}`;
       }
       const categoryLink = document.createElement('a');
-      categoryLink.href = sidebarCard.href;
+      categoryLink.href = categoryJcrPath;
       categoryLink.textContent = categoryJcrPath;
 
       // Story Card sidePanel — 12 rows per reference
@@ -1101,12 +1094,14 @@ export default {
     }
 
     // Build metadata block with JCR property names from page-metadata model
+    // Use heroImgSrc (Scene7 URL) for the page image — og:image DAM URLs don't resolve in EDS
+    const metaImageSrc = heroImgSrc || normalizeImageUrl(ogImage);
     const metaRows = [];
     if (pageTitle) metaRows.push(['jcr:title', pageTitle]);
     if (metaDesc) metaRows.push(['jcr:description', metaDesc]);
-    if (ogImage) {
+    if (metaImageSrc) {
       const imgEl = document.createElement('img');
-      imgEl.src = ogImage;
+      imgEl.src = metaImageSrc;
       metaRows.push(['image', imgEl]);
     }
     if (pubDate) metaRows.push(['publicationDate', pubDate]);

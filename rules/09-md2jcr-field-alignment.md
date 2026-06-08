@@ -231,6 +231,12 @@ link + linkText → 1 group (Text suffix collapses into link)
 [11] analyticsInteractionId
 ```
 - No classes_* or common props in this model
+- **CRITICAL: `page` field (row 8) is `aem-content` type** — requires a full JCR content path
+  - ✅ Correct: `/content/abbvie-nextgen-eds/abbvie-com/us/en/who-we-are/our-stories/page-name`
+  - ❌ Wrong: `/who-we-are/our-stories/page-name.html` (has .html extension)
+  - ❌ Wrong: `/who-we-are/our-stories/page-name` (missing JCR prefix)
+  - The `<a>` element's `href` AND `textContent` must both use the full JCR path without `.html`
+  - Transform pattern: strip `.html` → prepend `/content/abbvie-nextgen-eds/abbvie-com/us/en`
 
 ---
 
