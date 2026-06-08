@@ -77,9 +77,7 @@ function makeSectionMetadata(document, styles, blockModelId) {
   if (dynamicStyles) {
     rows.push(['style_customDynamicClass', dynamicStyles]);
   }
-  if (blockModelId) {
-    rows.push(['language', 'none']);
-  }
+  rows.push(['language', 'none']);
   return makeBlock(document, 'Section Metadata', rows);
 }
 
@@ -232,8 +230,13 @@ function makeTextContainer(document, contentNode, variants) {
 
 // Separator — 6 fields: showLine, classes_customDynamicClass, blockId, classes_commonCustomClass, language, analytics_id
 function makeSeparator(document, height) {
-  return makeBlock(document, `Separator (separator-height-${height || 24})`, [
-    ['false'], [''], [''], [''], [''], [''],
+  return makeBlock(document, 'Separator', [
+    ['false'],
+    [`separator-height-${height || 24}`],
+    [''],
+    [''],
+    ['none'],
+    [''],
   ]);
 }
 
@@ -294,7 +297,7 @@ function makeCustomImage(document, src, alt, caption) {
 //   [17] classes (customDynamicClass, commonCustomClass)
 //   [18] blockId  [19] language  [20] analytics (analytics_id)
 function makeCarousel(document, slideCount) {
-  return makeBlock(document, 'Carousel (carousel-show-btn-margin, carousel-minimal)', [
+  return makeBlock(document, 'Carousel', [
     ['-'],                     // [0] rssFeedUrl
     [String(slideCount || 2)], // [1] totalSlides
     ['-'],                     // [2] numberOfItems
@@ -344,7 +347,7 @@ function makeCarousel(document, slideCount) {
 function makeAccordion(document, title, items) {
   const rows = [
     [title || ''],       // [0] blockHeading
-    ['false'],           // [1] classes group (plain text, first field gets value)
+    ['false,accordion-icon-font,h5-size,width-large'],           // [1] classes group
     ['Expand All'],      // [2] expandAllLabel
     ['Collapse All'],    // [3] collapseAllLabel
     ['plus'],            // [4] expandAllIcon
@@ -368,7 +371,7 @@ function makeAccordion(document, title, items) {
     contentDiv.innerHTML = item.content || '';
     rows.push([item.summary || '', contentDiv]);
   });
-  return makeBlock(document, 'Accordion (accordion-icon-font, h5-size, width-large)', rows);
+  return makeBlock(document, 'Accordion', rows);
 }
 
 // Quote — field GROUPS (after FieldGroup grouping, 13 groups):
@@ -395,7 +398,7 @@ function makeQuote(document, text, authorName, authorTitle, authorImgSrc) {
     pic.appendChild(img);
     imgEl = pic;
   }
-  return makeBlock(document, 'Quote (quote-standard, quote-h4)', [
+  return makeBlock(document, 'Quote', [
     ['quote-standard'], // [0] quoteVariant
     [text || ''],       // [1] quotation (richtext)
     [authorName || ''], // [2] attributionName
@@ -405,7 +408,7 @@ function makeQuote(document, text, authorName, authorTitle, authorImgSrc) {
     [''],               // [6] backgroundImage (MimeType + Alt auto-collapsed)
     [''],               // [7] backgroundImagePreset
     [''],               // [8] backgroundImageModifiers
-    [''],               // [9] classes group
+    ['quote-standard,quote-h4'], // [9] classes group
     [''],               // [10] blockId
     ['none'],           // [11] language
     [''],               // [12] analytics_id
@@ -424,6 +427,28 @@ function normalizeImageUrl(src) {
     return `https://abbvie.scene7.com/is/image/abbviecorp/${fn}`;
   }
   return src;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// HEADING SIZE CLASS DETECTION
+// ═══════════════════════════════════════════════════════════════
+
+// AEM titles have the size class (h1-size, h2-size, etc.) on the parent .title wrapper,
+// not determined by the child heading tag. E.g. a .title.h5-size can contain an <h2>.
+function getHeadingSizeClass(headingEl) {
+  let el = headingEl.parentElement;
+  while (el) {
+    const cls = el.className || '';
+    const match = cls.match(/\bh([1-6])-size\b/);
+    if (match) return `h${match[1]}-size`;
+    if (cls.includes('title') || cls.includes('cmp-title')) {
+      // Found the title wrapper but no h*-size class — stop looking
+      break;
+    }
+    el = el.parentElement;
+  }
+  // Fallback: use h5-size (most common for story article subheadings)
+  return 'h5-size';
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -650,6 +675,8 @@ export default {
     // SECTION 4: BODY CONTENT (grid-section, grid-cols-8)
     // Edge cases handled per element type
     // ══════════════════════════════════════════════════════════
+
+    let inlineRelatedContent = null;
 
     if (bodyContainer) {
       // Collect ALL content-bearing elements in VISUAL POSITION ORDER
@@ -942,17 +969,19 @@ export default {
         }
 
         // ── EDGE CASE: RELATED CONTENT CARDS (cardpagestory elements) ──
+        // Collect these for output AFTER the grid-cols-8 section closes
         const cardPageStories = child.querySelectorAll('.cardpagestory');
         if (cardPageStories.length > 0 && !cls.includes('carousel') && !cls.includes('splide')) {
+          if (!inlineRelatedContent) inlineRelatedContent = [];
           const relHeading = child.querySelector('h2, h3, h4, h5');
           if (relHeading) {
-            output.appendChild(makeCustomTitle(document, relHeading.textContent.trim(), 5, 'h5-size,width-large'));
+            inlineRelatedContent.push({ type: 'heading', text: relHeading.textContent.trim() });
           }
           cardPageStories.forEach((card) => {
             const cardLink = card.closest('a') || card.querySelector('a[href]');
             const href = cardLink?.getAttribute('href') || '';
             if (href) {
-              output.appendChild(makeRelatedContentCard(document, href));
+              inlineRelatedContent.push({ type: 'card', href });
             }
           });
           continue;
@@ -960,7 +989,9 @@ export default {
 
         // ── HEADING ELEMENTS (direct h2-h5 nodes from sorted list) ──
         if (['H2', 'H3', 'H4', 'H5'].includes(child.tagName)) {
-          output.appendChild(makeCustomTitle(document, child.textContent.trim(), 5, 'h5-size,width-large'));
+          const hTag = parseInt(child.tagName.charAt(1), 10);
+          const hSizeClass = getHeadingSizeClass(child) + ',width-large';
+          output.appendChild(makeCustomTitle(document, child.textContent.trim(), hTag, hSizeClass));
           continue;
         }
 
@@ -970,7 +1001,9 @@ export default {
 
         // If this element has a heading, output it first
         if (heading) {
-          output.appendChild(makeCustomTitle(document, heading.textContent.trim(), 5, 'h5-size,width-large'));
+          const hTag = parseInt(heading.tagName.charAt(1), 10);
+          const hSizeClass = getHeadingSizeClass(heading) + ',width-large';
+          output.appendChild(makeCustomTitle(document, heading.textContent.trim(), hTag, hSizeClass));
         }
 
         // Process paragraphs and lists
@@ -1009,6 +1042,14 @@ export default {
       }
     }
 
+    // Collect all related content card hrefs
+    const relatedCardHrefs = [];
+    if (inlineRelatedContent && inlineRelatedContent.length > 0) {
+      for (const item of inlineRelatedContent) {
+        if (item.type === 'card') relatedCardHrefs.push(item.href);
+      }
+    }
+
     // ── RELATED CONTENT SECTION (after body — separate container with cards) ──
     // Some pages have a final .container.cmp-container-full-width with cardpagestory links
     if (overlapIdx >= 0) {
@@ -1019,16 +1060,10 @@ export default {
         if (sCls.includes('container') && sCls.includes('cmp-container-full-width')) {
           const sectionCards = section.querySelectorAll('.cardpagestory');
           if (sectionCards.length > 0) {
-            const relHeading = section.querySelector('h2, h3, h4, h5');
-            if (relHeading) {
-              output.appendChild(makeCustomTitle(document, relHeading.textContent.trim(), 5, 'h5-size,width-large'));
-            }
             sectionCards.forEach((card) => {
               const cardLink = card.closest('a') || card.querySelector('a[href]');
               const href = cardLink?.getAttribute('href') || '';
-              if (href) {
-                output.appendChild(makeRelatedContentCard(document, href));
-              }
+              if (href) relatedCardHrefs.push(href);
             });
           }
         }
@@ -1063,6 +1098,40 @@ export default {
       ]));
     }
     output.appendChild(makeSectionMetadata(document, 'grid-cols-2', 'grid-section'));
+
+    // ══════════════════════════════════════════════════════════
+    // RELATED CONTENT SECTIONS (grid 6-6 layout)
+    // Structure: Custom Title section → Grid Container → Grid 6-col per card
+    // ══════════════════════════════════════════════════════════
+
+    if (relatedCardHrefs.length > 0) {
+      // Section: Custom Title "Related Content"
+      output.appendChild(makeCustomTitle(document, 'Related Content', 5, 'h5-size,width-large'));
+      output.appendChild(makeSectionMetadata(document, 'content-wide,no-bottom-margin,section-padding,bg-f4f4f4'));
+      output.appendChild(document.createElement('hr'));
+
+      // Section: Grid Container
+      output.appendChild(makeSectionMetadata(document, 'content-wide,no-bottom-margin,padding-bottom,bg-f4f4f4,regular-padding,no-top-padding', 'grid-container'));
+      output.appendChild(document.createElement('hr'));
+
+      // Grid Sections: one per card (grid-cols-6)
+      relatedCardHrefs.forEach((href) => {
+        output.appendChild(makeRelatedContentCard(document, href));
+        output.appendChild(makeSectionMetadata(document, 'grid-cols-6', 'grid-section'));
+        output.appendChild(document.createElement('hr'));
+      });
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // FINAL SECTION: Separator + Metadata
+    // ══════════════════════════════════════════════════════════
+
+    // Separator before metadata (in its own section with bg styling)
+    if (relatedCardHrefs.length > 0) {
+      output.appendChild(makeSeparator(document, 112));
+      output.appendChild(makeSectionMetadata(document, 'content-wide,bg-f4f4f4,no-bottom-margin'));
+      output.appendChild(document.createElement('hr'));
+    }
 
     // ══════════════════════════════════════════════════════════
     // PAGE METADATA (maps to JCR page properties via md2jcr)
