@@ -342,6 +342,8 @@ Model: `grid-section` | Fields: name, style_container, style_customDynamicClass,
 - `identifier` → should come from component-definition template
 - `aueComponentId` → should come from component id
 
+> **For complex multi-column layouts**, see [11-complex-template-grid-layout.md](./11-complex-template-grid-layout.md) for Grid Container/Section patterns, column widths, and real examples.
+
 ---
 
 ## Key Principles
