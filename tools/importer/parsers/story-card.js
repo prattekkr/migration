@@ -44,15 +44,14 @@ const AEM_PAGE_PREFIX = '/content/abbvie-nextgen-eds/corporate/abbvie-com/us/en'
 
 function toAemPagePath(href) {
   if (!href) return '';
-  // Already an AEM path?
-  if (href.startsWith('/content/')) return href;
+  // Already an AEM path? Strip .html if present.
+  if (href.startsWith('/content/')) return href.replace(/\.html$/i, '');
   try {
     const u = new URL(href, 'https://www.abbvie.com');
-    // Strip ".html" + leading "/" to compose AEM page path
     const pathname = u.pathname.replace(/\.html$/i, '').replace(/^\//, '');
     return `${AEM_PAGE_PREFIX}/${pathname}`.replace(/\/+/g, '/');
   } catch (e) {
-    return href;
+    return href.replace(/\.html$/i, '');
   }
 }
 
