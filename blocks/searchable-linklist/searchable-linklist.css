@@ -32,17 +32,17 @@
 .searchable-linklist .sll-search-input {
   flex: 1;
   padding: 10px 40px 10px 12px;
-  border: 1px solid #767676;
+  border: 1px solid var(--corp-color-text-muted);
   border-radius: 4px;
   font-size: 1rem;
   line-height: 1.5;
-  background-color: var(--background-color, #fff);
-  color: var(--text-color, #121212);
+  background-color: var(--background-color, var(--color-surface-default));
+  color: var(--text-color, var(--corp-color-text-strong));
   appearance: none;
 }
 
 .searchable-linklist .sll-search-input:focus {
-  outline: 3px solid var(--link-color, #006fb4);
+  outline: 3px solid var(--link-color, var(--corp-color-link-default));
   outline-offset: 2px;
 }
 
@@ -58,7 +58,7 @@
   cursor: pointer;
   font-size: 1.25rem;
   line-height: 1;
-  color: #767676;
+  color: var(--corp-color-text-muted);
   padding: 4px;
   display: flex;
   align-items: center;
@@ -66,7 +66,7 @@
 }
 
 .searchable-linklist .sll-search-clear:focus-visible {
-  outline: 3px solid var(--link-color, #006fb4);
+  outline: 3px solid var(--link-color, var(--corp-color-link-default));
   outline-offset: 2px;
   border-radius: 2px;
 }
@@ -87,10 +87,10 @@
   align-items: center;
   gap: 8px;
   padding: 10px 14px;
-  border: 1px solid #767676;
+  border: 1px solid var(--corp-color-text-muted);
   border-radius: 4px;
-  background: var(--background-color, #fff);
-  color: var(--text-color, #121212);
+  background: var(--background-color, var(--color-surface-default));
+  color: var(--text-color, var(--corp-color-text-strong));
   font-size: 1rem;
   cursor: pointer;
   width: 100%;
@@ -100,20 +100,24 @@
 .searchable-linklist .sll-category-dropdown-btn::after {
   content: '';
   display: inline-block;
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value */
   border: 5px solid transparent;
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value */
   border-top-color: currentcolor;
   margin-left: auto;
   margin-top: 4px;
 }
 
 .searchable-linklist .sll-category-dropdown-btn[aria-expanded='true']::after {
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value */
   border-top-color: transparent;
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value */
   border-bottom-color: currentcolor;
   margin-top: -4px;
 }
 
 .searchable-linklist .sll-category-dropdown-btn:focus-visible {
-  outline: 3px solid var(--link-color, #006fb4);
+  outline: 3px solid var(--link-color, var(--corp-color-link-default));
   outline-offset: 2px;
 }
 
@@ -126,8 +130,8 @@
   list-style: none;
   margin: 0;
   padding: 4px 0;
-  background: var(--background-color, #fff);
-  border: 1px solid #767676;
+  background: var(--background-color, var(--color-surface-default));
+  border: 1px solid var(--corp-color-text-muted);
   border-radius: 4px;
   max-height: 240px;
   overflow-y: auto;
@@ -142,12 +146,12 @@
 
 .searchable-linklist .sll-category-option:hover,
 .searchable-linklist .sll-category-option:focus {
-  background-color: var(--highlight-background-color, #e8f0f7);
+  background-color: var(--highlight-background-color, var(--color-surface-highlight));
 }
 
 .searchable-linklist .sll-category-option[aria-selected='true'] {
   font-weight: 700;
-  background-color: var(--highlight-background-color, #e8f0f7);
+  background-color: var(--highlight-background-color, var(--color-surface-highlight));
 }
 
 .searchable-linklist .sll-category-option[aria-selected='true']::before {
@@ -167,7 +171,7 @@
   gap: 4px;
   padding: 4px 10px;
   border-radius: 16px;
-  background-color: var(--highlight-background-color, #e8f0f7);
+  background-color: var(--highlight-background-color, var(--color-surface-highlight));
   font-size: 0.875rem;
   font-weight: 600;
 }
@@ -183,14 +187,14 @@
 }
 
 .searchable-linklist .sll-tag-chip-remove:focus-visible {
-  outline: 2px solid var(--link-color, #006fb4);
+  outline: 2px solid var(--link-color, var(--corp-color-link-default));
   border-radius: 2px;
 }
 
 /* Results count */
 .searchable-linklist .sll-results-count {
   font-size: 0.875rem;
-  color: #545454;
+  color: var(--corp-color-text-strong);
   margin: 0;
 }
 
@@ -200,21 +204,21 @@
   background: none;
   border: none;
   padding: 0;
-  color: var(--link-color, #006fb4);
+  color: var(--link-color, var(--corp-color-link-default));
   text-decoration: underline;
   cursor: pointer;
   font-size: 0.9375rem;
 }
 
 .searchable-linklist .sll-reset-btn:focus-visible {
-  outline: 3px solid var(--link-color, #006fb4);
+  outline: 3px solid var(--link-color, var(--corp-color-link-default));
   outline-offset: 2px;
 }
 
 /* Empty state */
 .searchable-linklist .sll-empty-message {
   margin-block: 24px;
-  color: #545454;
+  color: var(--corp-color-text-strong);
   font-style: italic;
 }
 
@@ -243,18 +247,18 @@
 
 .searchable-linklist .sll-item {
   padding: 12px 0;
-  border-bottom: 1px solid #dadada;
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .searchable-linklist .sll-item:first-child {
-  border-top: 1px solid #dadada;
+  border-top: 1px solid var(--color-border-subtle);
 }
 
 .searchable-linklist .sll-item-link {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: var(--link-color, #006fb4);
+  color: var(--link-color, var(--corp-color-link-default));
   text-decoration: none;
   font-weight: 600;
 }
@@ -264,7 +268,7 @@
 }
 
 .searchable-linklist .sll-item-link:focus-visible {
-  outline: 3px solid var(--link-color, #006fb4);
+  outline: 3px solid var(--link-color, var(--corp-color-link-default));
   outline-offset: 3px;
   border-radius: 2px;
 }
@@ -284,20 +288,20 @@
 .searchable-linklist .sll-item-subtitle {
   margin: 4px 0 0;
   font-size: 0.875rem;
-  color: #545454;
+  color: var(--corp-color-text-strong);
 }
 
 .searchable-linklist .sll-item-description {
   margin: 6px 0 0;
   font-size: 0.9375rem;
-  color: var(--text-color, #121212);
+  color: var(--text-color, var(--corp-color-text-strong));
 }
 
 .searchable-linklist .sll-item-date {
   display: block;
   margin-top: 4px;
   font-size: 0.8125rem;
-  color: #767676;
+  color: var(--corp-color-text-muted);
 }
 
 .searchable-linklist .sll-item-tags {
@@ -312,7 +316,7 @@
 .searchable-linklist .sll-item-tag {
   padding: 2px 8px;
   border-radius: 12px;
-  background-color: var(--highlight-background-color, #e8f0f7);
+  background-color: var(--highlight-background-color, var(--color-surface-highlight));
   font-size: 0.8125rem;
 }
 
@@ -352,7 +356,7 @@
 
   .searchable-linklist.layout-two-columns-stack .sll-item,
   .searchable-linklist.layout-two-columns-no-stack .sll-item {
-    border-top: 1px solid #dadada;
+    border-top: 1px solid var(--color-border-subtle);
   }
 }
 
