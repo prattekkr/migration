@@ -1,0 +1,364 @@
+/* ============================================================
+   Searchable Linklist Block – searchable-linklist.css
+   NW-2164 | Mobile-first, scoped, WCAG AA compliant
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   Controls (search + category filter)
+   ------------------------------------------------------------ */
+
+.searchable-linklist .sll-controls {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 12px;
+  margin-block-end: 24px;
+}
+
+/* Search wrapper */
+.searchable-linklist .sll-search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.searchable-linklist .sll-search-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+
+.searchable-linklist .sll-search-input {
+  flex: 1;
+  padding: 10px 40px 10px 12px;
+  border: 1px solid #767676;
+  border-radius: 4px;
+  font-size: 1rem;
+  line-height: 1.5;
+  background-color: var(--background-color, #fff);
+  color: var(--text-color, #121212);
+  appearance: none;
+}
+
+.searchable-linklist .sll-search-input:focus {
+  outline: 3px solid var(--link-color, #006fb4);
+  outline-offset: 2px;
+}
+
+.searchable-linklist .sll-search-input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.searchable-linklist .sll-search-clear {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: #767676;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.searchable-linklist .sll-search-clear:focus-visible {
+  outline: 3px solid var(--link-color, #006fb4);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Category filter */
+.searchable-linklist .sll-category-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.searchable-linklist .sll-category-dropdown-wrapper {
+  position: relative;
+}
+
+.searchable-linklist .sll-category-dropdown-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px solid #767676;
+  border-radius: 4px;
+  background: var(--background-color, #fff);
+  color: var(--text-color, #121212);
+  font-size: 1rem;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+
+.searchable-linklist .sll-category-dropdown-btn::after {
+  content: '';
+  display: inline-block;
+  border: 5px solid transparent;
+  border-top-color: currentcolor;
+  margin-left: auto;
+  margin-top: 4px;
+}
+
+.searchable-linklist .sll-category-dropdown-btn[aria-expanded='true']::after {
+  border-top-color: transparent;
+  border-bottom-color: currentcolor;
+  margin-top: -4px;
+}
+
+.searchable-linklist .sll-category-dropdown-btn:focus-visible {
+  outline: 3px solid var(--link-color, #006fb4);
+  outline-offset: 2px;
+}
+
+.searchable-linklist .sll-category-dropdown-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 100;
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  background: var(--background-color, #fff);
+  border: 1px solid #767676;
+  border-radius: 4px;
+  max-height: 240px;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 12%);
+}
+
+.searchable-linklist .sll-category-option {
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 0.9375rem;
+}
+
+.searchable-linklist .sll-category-option:hover,
+.searchable-linklist .sll-category-option:focus {
+  background-color: var(--highlight-background-color, #e8f0f7);
+}
+
+.searchable-linklist .sll-category-option[aria-selected='true'] {
+  font-weight: 700;
+  background-color: var(--highlight-background-color, #e8f0f7);
+}
+
+.searchable-linklist .sll-category-option[aria-selected='true']::before {
+  content: '✓ ';
+}
+
+/* Selected tag chips */
+.searchable-linklist .sll-selected-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.searchable-linklist .sll-tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 16px;
+  background-color: var(--highlight-background-color, #e8f0f7);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.searchable-linklist .sll-tag-chip-remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  color: inherit;
+  padding: 0 2px;
+}
+
+.searchable-linklist .sll-tag-chip-remove:focus-visible {
+  outline: 2px solid var(--link-color, #006fb4);
+  border-radius: 2px;
+}
+
+/* Results count */
+.searchable-linklist .sll-results-count {
+  font-size: 0.875rem;
+  color: #545454;
+  margin: 0;
+}
+
+/* Reset button */
+.searchable-linklist .sll-reset-btn {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--link-color, #006fb4);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.9375rem;
+}
+
+.searchable-linklist .sll-reset-btn:focus-visible {
+  outline: 3px solid var(--link-color, #006fb4);
+  outline-offset: 2px;
+}
+
+/* Empty state */
+.searchable-linklist .sll-empty-message {
+  margin-block: 24px;
+  color: #545454;
+  font-style: italic;
+}
+
+/* ------------------------------------------------------------
+   List
+   ------------------------------------------------------------ */
+
+.searchable-linklist .sll-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+/* Two-column layouts – stacked on mobile by default */
+.searchable-linklist.layout-two-columns-stack .sll-list,
+.searchable-linklist.layout-two-columns-no-stack .sll-list {
+  grid-template-columns: 1fr;
+}
+
+/* ------------------------------------------------------------
+   List items
+   ------------------------------------------------------------ */
+
+.searchable-linklist .sll-item {
+  padding: 12px 0;
+  border-bottom: 1px solid #dadada;
+}
+
+.searchable-linklist .sll-item:first-child {
+  border-top: 1px solid #dadada;
+}
+
+.searchable-linklist .sll-item-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--link-color, #006fb4);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.searchable-linklist .sll-item-link:hover {
+  text-decoration: underline;
+}
+
+.searchable-linklist .sll-item-link:focus-visible {
+  outline: 3px solid var(--link-color, #006fb4);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.searchable-linklist .sll-item-link-external .sll-external-indicator::after {
+  content: ' ↗';
+  font-size: 0.75em;
+  font-weight: 400;
+}
+
+.searchable-linklist .sll-item-icon-img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.searchable-linklist .sll-item-subtitle {
+  margin: 4px 0 0;
+  font-size: 0.875rem;
+  color: #545454;
+}
+
+.searchable-linklist .sll-item-description {
+  margin: 6px 0 0;
+  font-size: 0.9375rem;
+  color: var(--text-color, #121212);
+}
+
+.searchable-linklist .sll-item-date {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.8125rem;
+  color: #767676;
+}
+
+.searchable-linklist .sll-item-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+}
+
+.searchable-linklist .sll-item-tag {
+  padding: 2px 8px;
+  border-radius: 12px;
+  background-color: var(--highlight-background-color, #e8f0f7);
+  font-size: 0.8125rem;
+}
+
+/* ------------------------------------------------------------
+   Tablet (600px+)
+   ------------------------------------------------------------ */
+
+@media (width >= 600px) {
+  .searchable-linklist .sll-controls {
+    flex-flow: row wrap;
+    align-items: flex-start;
+  }
+
+  .searchable-linklist .sll-search-wrapper {
+    flex: 1 1 260px;
+    min-width: 0;
+  }
+
+  .searchable-linklist .sll-category-filter {
+    flex: 1 1 260px;
+    min-width: 0;
+  }
+}
+
+/* ------------------------------------------------------------
+   Desktop (900px+) – two-column layouts active
+   ------------------------------------------------------------ */
+
+@media (width >= 900px) {
+  .searchable-linklist.layout-two-columns-stack .sll-list {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .searchable-linklist.layout-two-columns-no-stack .sll-list {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .searchable-linklist.layout-two-columns-stack .sll-item,
+  .searchable-linklist.layout-two-columns-no-stack .sll-item {
+    border-top: 1px solid #dadada;
+  }
+}
+
+/* Two-columns-no-stack: maintain two columns even on mobile */
+@media (width < 600px) {
+  .searchable-linklist.layout-two-columns-no-stack .sll-list {
+    grid-template-columns: 1fr 1fr;
+  }
+}

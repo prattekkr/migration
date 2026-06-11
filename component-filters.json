@@ -105,7 +105,8 @@
       "search-results",
       "product-listing",
       "eyebrow-text",
-      "custom-embed"
+      "custom-embed",
+      "searchable-linklist"
     ]
   },
   {
@@ -117,10 +118,6 @@
     "components": [
       "accordion-item"
     ]
-  },
-  {
-    "id": "carousel",
-    "components": []
   },
   {
     "id": "brightcove-podcast-player",
@@ -231,6 +228,12 @@
     "components": []
   },
   {
+    "id": "searchable-linklist",
+    "components": [
+      "link-list-item"
+    ]
+  },
+  {
     "id": "separator",
     "components": []
   },
@@ -285,8 +288,8 @@
   {
     "id": "text-container",
     "components": [
-      "text-container-text",
-      "text-container-image"
+      "text-container-image",
+      "text-container-text"
     ]
   },
   {

@@ -1,0 +1,432 @@
+{
+  "definitions": [
+    {
+      "title": "Searchable Linklist",
+      "id": "searchable-linklist",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Searchable Linklist",
+              "model": "searchable-linklist",
+              "filter": "searchable-linklist"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Link List Item",
+      "id": "link-list-item",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Link List Item",
+              "model": "link-list-item"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "searchable-linklist",
+      "fields": [
+        {
+          "component": "container",
+          "name": "advanced",
+          "label": "Advanced",
+          "multi": true,
+          "fields": [
+            {
+              "component": "text",
+              "name": "id",
+              "label": "Id",
+              "description": "Provide an ID to be used to deep link to this content",
+              "valueType": "string"
+            },
+            {
+              "component": "text",
+              "name": "customClass",
+              "label": "Custom Class",
+              "description": "Provide a CSS class to customize this component",
+              "valueType": "string"
+            },
+            {
+              "component": "text",
+              "name": "analyticsId",
+              "label": "Analytics Interaction ID",
+              "description": "Identifier used for analytics tracking",
+              "valueType": "string"
+            },
+            {
+              "component": "select",
+              "name": "lang",
+              "label": "Language",
+              "description": "Select the language of this block for screen readers",
+              "valueType": "string",
+              "options": [
+                { "name": "English (en)", "value": "en" },
+                { "name": "French (fr)", "value": "fr" },
+                { "name": "German (de)", "value": "de" },
+                { "name": "Spanish (es)", "value": "es" },
+                { "name": "Hebrew (he)", "value": "he" },
+                { "name": "Japanese (ja)", "value": "ja" },
+                { "name": "Chinese Simplified (zh)", "value": "zh" }
+              ]
+            }
+          ]
+        },
+        {
+          "component": "container",
+          "name": "search",
+          "label": "Search & Categories",
+          "multi": true,
+          "fields": [
+            {
+              "component": "text",
+              "name": "searchHint",
+              "label": "Search Placeholder",
+              "description": "Provide placeholder text for the search input field",
+              "valueType": "string"
+            },
+            {
+              "component": "select",
+              "name": "searchIcon",
+              "label": "Search Icon",
+              "description": "Controls whether the search field shows no icon, a font icon, or an image icon",
+              "valueType": "string",
+              "options": [
+                { "name": "None", "value": "none" },
+                { "name": "Icon Font", "value": "icon-font" },
+                { "name": "Image", "value": "image" }
+              ]
+            },
+            {
+              "component": "text",
+              "name": "searchIconText",
+              "label": "Search Font Icon Name",
+              "description": "Font icon name (shown when Search Icon = Icon Font)",
+              "valueType": "string"
+            },
+            {
+              "component": "reference",
+              "name": "searchIconAlt",
+              "label": "Search Image Icon",
+              "description": "Image icon path (shown when Search Icon = Image)",
+              "multi": false
+            },
+            {
+              "component": "text",
+              "name": "browseCategories",
+              "label": "Browse Categories Label",
+              "description": "Enter Browse Category text to override the parent tag title",
+              "valueType": "string"
+            },
+            {
+              "component": "text",
+              "name": "resetCategories",
+              "label": "Reset Categories Label",
+              "description": "Enter clear category tag text to enable the reset control",
+              "valueType": "string"
+            }
+          ]
+        },
+        {
+          "component": "container",
+          "name": "source",
+          "label": "Link Source",
+          "multi": true,
+          "fields": [
+            {
+              "component": "select",
+              "name": "linkSource",
+              "label": "Link Source",
+              "description": "Source of list items",
+              "valueType": "string",
+              "options": [
+                { "name": "Child Pages", "value": "child-pages" },
+                { "name": "Custom", "value": "custom" }
+              ]
+            },
+            {
+              "component": "aem-content",
+              "name": "parentPage",
+              "label": "Parent Page",
+              "description": "Parent page for child pages source"
+            },
+            {
+              "component": "text",
+              "name": "childDepth",
+              "label": "Child Depth",
+              "description": "Number of descendant levels to include",
+              "valueType": "number"
+            },
+            {
+              "component": "checkbox",
+              "name": "excludeCurrentPage",
+              "label": "Exclude Current Page",
+              "valueType": "boolean"
+            },
+            {
+              "component": "checkbox",
+              "name": "enableDescription",
+              "label": "Enable Description",
+              "valueType": "boolean"
+            },
+            {
+              "component": "checkbox",
+              "name": "enableTags",
+              "label": "Enable Tags",
+              "valueType": "boolean"
+            },
+            {
+              "component": "checkbox",
+              "name": "enableSubtitle",
+              "label": "Enable Subtitle",
+              "valueType": "boolean"
+            },
+            {
+              "component": "checkbox",
+              "name": "enableDate",
+              "label": "Enable Date",
+              "valueType": "boolean"
+            },
+            {
+              "component": "select",
+              "name": "orderBy",
+              "label": "Order By",
+              "valueType": "string",
+              "options": [
+                { "name": "Content Tree", "value": "content-tree" },
+                { "name": "Title", "value": "title" },
+                { "name": "Last Modified", "value": "last-modified" },
+                { "name": "Published", "value": "published" }
+              ]
+            },
+            {
+              "component": "select",
+              "name": "sortOrder",
+              "label": "Sort Order",
+              "valueType": "string",
+              "options": [
+                { "name": "Ascending", "value": "asc" },
+                { "name": "Descending", "value": "desc" }
+              ]
+            },
+            {
+              "component": "text",
+              "name": "maxItems",
+              "label": "Max Items",
+              "valueType": "number"
+            }
+          ]
+        },
+        {
+          "component": "select",
+          "name": "layout",
+          "label": "Layout",
+          "description": "Column layout of the link list",
+          "valueType": "string",
+          "options": [
+            { "name": "Single Column", "value": "single-column" },
+            { "name": "Two Columns – stack on mobile", "value": "two-columns-stack" },
+            { "name": "Two Columns – do not stack on mobile", "value": "two-columns-no-stack" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "link-list-item",
+      "fields": [
+        {
+          "component": "container",
+          "name": "advanced",
+          "label": "Advanced",
+          "multi": true,
+          "fields": [
+            {
+              "component": "text",
+              "name": "id",
+              "label": "Id",
+              "description": "Unique anchor ID for the specific list item",
+              "valueType": "string"
+            },
+            {
+              "component": "text",
+              "name": "customClass",
+              "label": "Custom Class",
+              "description": "CSS class name(s) applied to the item container",
+              "valueType": "string"
+            },
+            {
+              "component": "text",
+              "name": "ariaLabel",
+              "label": "Aria Label",
+              "description": "Accessible label for assistive technologies",
+              "valueType": "string"
+            },
+            {
+              "component": "select",
+              "name": "lang",
+              "label": "Language",
+              "description": "Language for screen readers",
+              "valueType": "string",
+              "options": [
+                { "name": "English (en)", "value": "en" },
+                { "name": "French (fr)", "value": "fr" },
+                { "name": "German (de)", "value": "de" },
+                { "name": "Spanish (es)", "value": "es" },
+                { "name": "Hebrew (he)", "value": "he" },
+                { "name": "Japanese (ja)", "value": "ja" },
+                { "name": "Chinese Simplified (zh)", "value": "zh" }
+              ]
+            },
+            {
+              "component": "text",
+              "name": "analyticsId",
+              "label": "Analytics Interaction ID",
+              "description": "Identifier used for analytics tracking",
+              "valueType": "string"
+            }
+          ]
+        },
+        {
+          "component": "container",
+          "name": "link",
+          "label": "Link",
+          "multi": true,
+          "fields": [
+            {
+              "component": "aem-content",
+              "name": "linkHref",
+              "label": "Link",
+              "description": "Destination path or external URL"
+            },
+            {
+              "component": "checkbox",
+              "name": "openInNewTab",
+              "label": "Open in a new tab",
+              "valueType": "boolean"
+            },
+            {
+              "component": "text",
+              "name": "linkLabel",
+              "label": "Link Label",
+              "description": "Visible text label of the link item",
+              "valueType": "string"
+            },
+            {
+              "component": "text",
+              "name": "subtitle",
+              "label": "Subtitle",
+              "description": "Optional subtitle displayed beneath the link text",
+              "valueType": "string"
+            },
+            {
+              "component": "richtext",
+              "name": "description",
+              "label": "Description",
+              "description": "Supporting description for the link item",
+              "valueType": "string"
+            },
+            {
+              "component": "aem-tag",
+              "name": "categoryTags",
+              "label": "Category Tags",
+              "description": "Taxonomy tags to categorize the link item",
+              "multi": true
+            }
+          ]
+        },
+        {
+          "component": "container",
+          "name": "iconConfig",
+          "label": "Icon",
+          "multi": true,
+          "fields": [
+            {
+              "component": "select",
+              "name": "iconSource",
+              "label": "Icon",
+              "description": "Chooses the icon source method",
+              "valueType": "string",
+              "options": [
+                { "name": "None", "value": "none" },
+                { "name": "Icon Font", "value": "icon-font" },
+                { "name": "Image", "value": "image" }
+              ]
+            },
+            {
+              "component": "text",
+              "name": "iconSourceText",
+              "label": "Font Icon Name",
+              "description": "Glyph name; visible only when Icon = Icon Font",
+              "valueType": "string"
+            },
+            {
+              "component": "reference",
+              "name": "iconSourceAlt",
+              "label": "Image Icon",
+              "description": "Image asset; visible only when Icon = Image",
+              "multi": false
+            },
+            {
+              "component": "select",
+              "name": "iconPosition",
+              "label": "Icon Position",
+              "description": "Places the icon before or after the link text",
+              "valueType": "string",
+              "options": [
+                { "name": "Before", "value": "before" },
+                { "name": "After", "value": "after" }
+              ]
+            },
+            {
+              "component": "aem-content",
+              "name": "iconLink",
+              "label": "Icon Link",
+              "description": "Optional separate target when clicking the icon"
+            },
+            {
+              "component": "checkbox",
+              "name": "enableModal",
+              "label": "Enable Confirmation Modal",
+              "valueType": "boolean"
+            },
+            {
+              "component": "select",
+              "name": "modalKind",
+              "label": "Modal Kind",
+              "description": "Style of the confirmation modal",
+              "valueType": "string",
+              "options": [
+                { "name": "Standard", "value": "standard" },
+                { "name": "Exit Modal", "value": "exit-modal" }
+              ]
+            },
+            {
+              "component": "text",
+              "name": "modalId",
+              "label": "Modal ID",
+              "description": "Identifier of the modal to trigger",
+              "valueType": "string"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "searchable-linklist",
+      "components": [
+        "link-list-item"
+      ]
+    }
+  ]
+}
