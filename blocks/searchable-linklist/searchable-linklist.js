@@ -133,6 +133,24 @@ function logSearchInputChange(searchText, summary) {
   /* eslint-enable no-console */
 }
 
+/**
+ * Logs how source records become rendered list items.
+ * @param {Object} summary source processing summary
+ */
+function logItemSourceSummary(summary) {
+  /* eslint-disable no-console */
+  console.log('[searchable-linklist] item source summary', summary);
+  if (summary.queryIndexItems?.length) {
+    console.log('[searchable-linklist] query-index source records');
+    console.table(summary.queryIndexItems);
+  }
+  if (summary.renderedItems?.length) {
+    console.log('[searchable-linklist] rendered list items');
+    console.table(summary.renderedItems);
+  }
+  /* eslint-enable no-console */
+}
+
 // ---------------------------------------------------------------------------
 // Icon rendering
 // ---------------------------------------------------------------------------
@@ -371,6 +389,21 @@ async function fetchChildPageItems(cfg, ph) {
 
   // EDS exposes a query-index.json at each path tree level
   const indexUrl = `${parentPage.replace(/\/$/, '')}/query-index.json`;
+  const debug = {
+    source: 'child-pages',
+    parentPage,
+    childDepth,
+    excludeCurrentPage,
+    orderBy,
+    sortOrder,
+    maxItems,
+    indexUrl,
+    rawCount: 0,
+    afterDepthFilterCount: 0,
+    afterExcludeCurrentCount: 0,
+    finalCount: 0,
+    queryIndexItems: [],
+  };
   let items = [];
   try {
     const resp = await fetch(indexUrl);
@@ -386,6 +419,15 @@ async function fetchChildPageItems(cfg, ph) {
     const json = await resp.json();
     logQueryIndexResponse(indexUrl, json);
     items = json.data || [];
+    debug.rawCount = items.length;
+    debug.queryIndexItems = items.map((item) => ({
+      path: item.path,
+      title: item.title,
+      tags: item.tags,
+      description: item.description,
+      lastModified: item.lastModified,
+      publishDate: item.publishDate,
+    }));
   } catch (error) {
     /* eslint-disable-next-line no-console */
     console.warn('[searchable-linklist] query-index request errored', { indexUrl, error });
@@ -399,12 +441,14 @@ async function fetchChildPageItems(cfg, ph) {
     const d = path.split('/').length;
     return d > parentDepth && d <= maxDepth;
   });
+  debug.afterDepthFilterCount = items.length;
 
   // Exclude current page
   if (excludeCurrentPage === 'true') {
     const currentPath = window.location.pathname.replace(/\/$/, '');
     items = items.filter(({ path }) => path !== currentPath);
   }
+  debug.afterExcludeCurrentCount = items.length;
 
   // Sorting
   const dir = sortOrder === 'desc' ? -1 : 1;
@@ -419,9 +463,10 @@ async function fetchChildPageItems(cfg, ph) {
 
   // Limit
   if (maxItems) items = items.slice(0, parseInt(maxItems, 10));
+  debug.finalCount = items.length;
 
   // Build LI elements
-  return items.map((page) => {
+  const listItems = items.map((page) => {
     const li = document.createElement('li');
     li.className = 'sll-item';
     li.sllQueryIndexItem = page;
@@ -484,6 +529,8 @@ async function fetchChildPageItems(cfg, ph) {
 
     return li;
   });
+  listItems.sllSourceDebug = debug;
+  return listItems;
 }
 
 // ---------------------------------------------------------------------------
@@ -805,17 +852,33 @@ export default async function decorate(block) {
   listEl.className = 'sll-list';
 
   let listItems = [];
+  let itemSourceDebug = null;
   if (cfg.linkSource === 'child-pages') {
     listItems = await fetchChildPageItems(cfg, ph);
+    itemSourceDebug = listItems.sllSourceDebug;
   } else {
     // Custom – authored Link List Item children are already rendered as rows
     [...block.children].forEach((row) => {
       const li = buildListItem(row);
       if (li) listItems.push(li);
     });
+    itemSourceDebug = {
+      source: 'custom',
+      authoredRowCount: block.children.length,
+      finalCount: listItems.length,
+    };
   }
 
   listItems.forEach((li) => listEl.append(li));
+  logItemSourceSummary({
+    ...itemSourceDebug,
+    renderedItemCount: listItems.length,
+    renderedItems: listItems.map((li) => ({
+      text: li.querySelector('.sll-item-text')?.textContent ?? '',
+      href: li.querySelector('.sll-item-link')?.href ?? '',
+      tags: li.dataset.tags ?? '',
+    })),
+  });
 
   // 5. Collect all unique tags from rendered items
   const allTags = [...new Set(
