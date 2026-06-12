@@ -107,6 +107,32 @@ function cellLink(cells, index) {
 }
 
 /**
+ * Logs rendered row candidates used by the row-based config fallback.
+ * @param {Element[]} rows block child rows
+ */
+function logRowConfigCandidates(rows) {
+  /* eslint-disable no-console */
+  console.log('[searchable-linklist] row config candidates');
+  console.table(rows.map((row, rowIndex) => {
+    const cells = getRowCells(row);
+    return {
+      rowIndex,
+      className: row.className,
+      aueProp: row.dataset?.aueProp ?? '',
+      aueModel: row.dataset?.aueModel ?? '',
+      cellCount: cells.length,
+      rowText: row.textContent.trim(),
+      cells: cells.map((cell) => cell.textContent.trim()).join(' | '),
+      links: cells
+        .map((cell) => cell.querySelector('a')?.getAttribute('href') || '')
+        .filter(Boolean)
+        .join(' | '),
+    };
+  }));
+  /* eslint-enable no-console */
+}
+
+/**
  * Reads parent block config from rendered model rows when UE property attrs are absent.
  * Row order follows the searchable-linklist model: advanced, search, source, layout.
  * @param {Element} block block element
@@ -114,6 +140,7 @@ function cellLink(cells, index) {
  */
 function readRowBlockConfig(block) {
   const rows = [...block.children];
+  logRowConfigCandidates(rows);
   const advanced = getRowCells(rows[0] ?? document.createElement('div'));
   const search = getRowCells(rows[1] ?? document.createElement('div'));
   const source = getRowCells(rows[2] ?? document.createElement('div'));
