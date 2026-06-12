@@ -96,6 +96,20 @@ function logQueryIndexSearch(searchText, activeTagSet, visibleCount, matchingRec
   /* eslint-enable no-console */
 }
 
+/**
+ * Logs the block config read from authored data attributes.
+ * @param {Object} cfg block config
+ * @param {DOMStringMap} dataset authored block dataset
+ */
+function logBlockConfig(cfg, dataset) {
+  /* eslint-disable no-console */
+  console.groupCollapsed('[searchable-linklist] block config');
+  console.info('cfg:', cfg);
+  console.info('dataset:', { ...dataset });
+  console.groupEnd();
+  /* eslint-enable no-console */
+}
+
 // ---------------------------------------------------------------------------
 // Icon rendering
 // ---------------------------------------------------------------------------
@@ -326,18 +340,32 @@ async function fetchChildPageItems(cfg, ph) {
     maxItems,
   } = cfg;
 
-  if (!parentPage) return [];
+  if (!parentPage) {
+    /* eslint-disable-next-line no-console */
+    console.warn('[searchable-linklist] Link Source is child-pages, but Parent Page is empty.');
+    return [];
+  }
 
   // EDS exposes a query-index.json at each path tree level
   const indexUrl = `${parentPage.replace(/\/$/, '')}/query-index.json`;
   let items = [];
   try {
     const resp = await fetch(indexUrl);
-    if (!resp.ok) return [];
+    if (!resp.ok) {
+      /* eslint-disable-next-line no-console */
+      console.warn('[searchable-linklist] query-index request failed', {
+        indexUrl,
+        status: resp.status,
+        statusText: resp.statusText,
+      });
+      return [];
+    }
     const json = await resp.json();
     logQueryIndexResponse(indexUrl, json);
     items = json.data || [];
-  } catch {
+  } catch (error) {
+    /* eslint-disable-next-line no-console */
+    console.warn('[searchable-linklist] query-index request errored', { indexUrl, error });
     return [];
   }
 
@@ -719,6 +747,7 @@ export default async function decorate(block) {
     analyticsId: getProp(block, 'analyticsId'),
     lang: getProp(block, 'lang', 'en'),
   };
+  logBlockConfig(cfg, block.dataset);
 
   // 3. Apply block-level attributes
   if (cfg.id) block.id = cfg.id;
