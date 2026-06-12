@@ -23,8 +23,8 @@ indices:
 
   stories:
     include:
-      - /who-we-are/our-stories/**
-    target: /who-we-are/our-stories/query-index.json
+      - /who-we-are/**
+    target: /who-we-are/query-index.json
     properties:
       title:
         select: head > meta[property="og:title"]
