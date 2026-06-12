@@ -127,6 +127,24 @@ function stripSuffix(value, suffix) {
 }
 
 /**
+ * Converts AEM author content paths into EDS site paths for query-index fetches.
+ * @param {string} rawPath authored parent page path
+ * @returns {string}
+ */
+function normalizeParentPage(rawPath) {
+  if (!rawPath) return '';
+  let path = rawPath.trim();
+  try {
+    if (path.startsWith('http')) path = new URL(path, window.location.origin).pathname;
+  } catch {
+    path = rawPath.trim();
+  }
+  path = path.replace(/\.html$/i, '');
+  path = path.replace(/^\/content\/[^/]+/, '');
+  return path || '/';
+}
+
+/**
  * Parses the collapsed source row emitted by UE when all source fields render in one cell.
  * @param {Element[]} source source row cells
  * @returns {Object|null}
@@ -141,7 +159,7 @@ function parseCollapsedSourceConfig(source) {
   }
   if (!linkSource) return null;
 
-  const parentPage = cellLink(source, 0);
+  const parentPage = normalizeParentPage(cellLink(source, 0));
   const parentText = source[0]?.querySelector('a')?.textContent.trim() || parentPage.replace(/\.html$/i, '');
   let remaining = stripPrefix(text, linkSource);
   remaining = stripPrefix(remaining, parentText);
@@ -233,7 +251,7 @@ function readRowBlockConfig(block) {
     browseCategories: cellText(search, 4),
     resetCategories: cellText(search, 5),
     linkSource,
-    parentPage: collapsedSource?.parentPage ?? cellLink(source, 1),
+    parentPage: collapsedSource?.parentPage ?? normalizeParentPage(cellLink(source, 1)),
     childDepth: (collapsedSource?.childDepth ?? cellText(source, 2)) || '1',
     excludeCurrentPage: (collapsedSource?.excludeCurrentPage ?? cellText(source, 3)) || 'false',
     enableDescription: (collapsedSource?.enableDescription ?? cellText(source, 4)) || 'false',
@@ -608,7 +626,7 @@ function buildListItem(row) {
  */
 async function fetchChildPageItems(cfg, ph) {
   const {
-    parentPage,
+    parentPage: rawParentPage,
     childDepth,
     excludeCurrentPage,
     enableDescription,
@@ -620,6 +638,7 @@ async function fetchChildPageItems(cfg, ph) {
     maxItems,
   } = cfg;
 
+  const parentPage = normalizeParentPage(rawParentPage);
   if (!parentPage) {
     /* eslint-disable-next-line no-console */
     console.warn('[searchable-linklist] Link Source is child-pages, but Parent Page is empty.');
