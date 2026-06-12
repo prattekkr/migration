@@ -290,7 +290,8 @@
    ------------------------------------------------------------ */
 
 .searchable-linklist .sll-item {
-  padding: 12px 0;
+  position: relative;
+  padding: 16px 48px 16px 0;
   border-bottom: 1px solid var(--color-border-subtle);
 }
 
@@ -299,12 +300,36 @@
 }
 
 .searchable-linklist .sll-item-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  display: block;
   color: var(--link-color, var(--corp-color-link-default));
   text-decoration: none;
   font-weight: 600;
+  line-height: 1.35;
+}
+
+.searchable-linklist .sll-item-link::before,
+.searchable-linklist .sll-item-link::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+.searchable-linklist .sll-item-link::before {
+  top: 18px;
+  right: 2px;
+  width: 18px;
+  height: 18px;
+  border: 2px solid currentcolor;
+}
+
+.searchable-linklist .sll-item-link::after {
+  top: 14px;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-top: 2px solid currentcolor;
+  border-right: 2px solid currentcolor;
+  transform: translate(-2px, 2px);
 }
 
 .searchable-linklist .sll-item-link:hover {
@@ -318,9 +343,7 @@
 }
 
 .searchable-linklist .sll-item-link-external .sll-external-indicator::after {
-  content: ' ↗';
-  font-size: 0.75em;
-  font-weight: 400;
+  content: '';
 }
 
 .searchable-linklist .sll-item-icon-img {
@@ -336,7 +359,7 @@
 }
 
 .searchable-linklist .sll-item-description {
-  margin: 6px 0 0;
+  margin: 8px 0 0;
   font-size: 0.9375rem;
   color: var(--text-color, var(--corp-color-text-strong));
 }
