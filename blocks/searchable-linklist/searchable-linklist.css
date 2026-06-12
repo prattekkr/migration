@@ -20,6 +20,47 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  width: 100%;
+  min-height: 46px;
+  color: var(--corp-color-text-muted);
+  border-bottom: 1px solid var(--corp-color-text-muted);
+}
+
+.searchable-linklist .sll-search-wrapper:focus-within {
+  border-bottom-color: var(--link-color, var(--corp-color-link-default));
+  box-shadow: 0 2px 0 var(--link-color, var(--corp-color-link-default));
+}
+
+.searchable-linklist .sll-search-wrapper::before,
+.searchable-linklist .sll-search-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  pointer-events: none;
+}
+
+.searchable-linklist .sll-search-wrapper::before {
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentcolor;
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+
+.searchable-linklist .sll-search-wrapper::after {
+  left: 16px;
+  width: 8px;
+  height: 2px;
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value */
+  background-color: currentcolor;
+  transform: translateY(6px) rotate(45deg);
+  transform-origin: left center;
+}
+
+.searchable-linklist .sll-search-wrapper:has(.sll-search-icon)::before,
+.searchable-linklist .sll-search-wrapper:has(.sll-search-icon)::after {
+  display: none;
 }
 
 .searchable-linklist .sll-search-icon {
@@ -31,19 +72,22 @@
 
 .searchable-linklist .sll-search-input {
   flex: 1;
-  padding: 10px 40px 10px 12px;
-  border: 1px solid var(--corp-color-text-muted);
-  border-radius: 4px;
+  min-width: 0;
+  padding: 10px 40px 10px 34px;
+  border: 0;
   font-size: 1rem;
   line-height: 1.5;
-  background-color: var(--background-color, var(--color-surface-default));
+  background-color: transparent;
   color: var(--text-color, var(--corp-color-text-strong));
   appearance: none;
 }
 
 .searchable-linklist .sll-search-input:focus {
-  outline: 3px solid var(--link-color, var(--corp-color-link-default));
-  outline-offset: 2px;
+  outline: none;
+}
+
+.searchable-linklist .sll-search-wrapper:has(.sll-search-icon) .sll-search-input {
+  padding-left: 0;
 }
 
 .searchable-linklist .sll-search-input::-webkit-search-cancel-button {
@@ -52,7 +96,7 @@
 
 .searchable-linklist .sll-search-clear {
   position: absolute;
-  right: 10px;
+  right: 0;
   background: none;
   border: none;
   cursor: pointer;
@@ -251,7 +295,7 @@
 }
 
 .searchable-linklist .sll-item:first-child {
-  border-top: 1px solid var(--color-border-subtle);
+  border-top: 0;
 }
 
 .searchable-linklist .sll-item-link {
@@ -356,7 +400,7 @@
 
   .searchable-linklist.layout-two-columns-stack .sll-item,
   .searchable-linklist.layout-two-columns-no-stack .sll-item {
-    border-top: 1px solid var(--color-border-subtle);
+    border-top: 0;
   }
 }
 

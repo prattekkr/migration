@@ -125,7 +125,12 @@ function buildListItem(row) {
   // — Optional metadata
   const subtitle = get(2);
   const descriptionEl = cells[3];
+  const descriptionText = descriptionEl?.textContent.trim() ?? '';
   const categoryTagsRaw = get(4);
+
+  if (!href && !linkText && !subtitle && !descriptionText && !categoryTagsRaw) {
+    return null;
+  }
 
   // — Icon config
   const iconParts = get(5).split('|');
@@ -683,7 +688,7 @@ export default async function decorate(block) {
     // Custom – authored Link List Item children are already rendered as rows
     [...block.children].forEach((row) => {
       const li = buildListItem(row);
-      listItems.push(li);
+      if (li) listItems.push(li);
     });
   }
 
