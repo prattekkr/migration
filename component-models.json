@@ -14708,10 +14708,14 @@
           },
           {
             "component": "aem-tag",
+            "valueType": "string[]",
             "name": "categoryTags",
             "label": "Category Tags",
+            "value": [],
             "description": "Taxonomy tags to categorize the link item",
-            "multi": true
+            "namespaces": [
+              "corporate"
+            ]
           }
         ]
       },
