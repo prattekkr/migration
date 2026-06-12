@@ -107,6 +107,76 @@ function cellLink(cells, index) {
 }
 
 /**
+ * Removes a known prefix from a string.
+ * @param {string} value source value
+ * @param {string} prefix prefix to remove
+ * @returns {string}
+ */
+function stripPrefix(value, prefix) {
+  return value.startsWith(prefix) ? value.slice(prefix.length) : value;
+}
+
+/**
+ * Removes a known suffix from a string.
+ * @param {string} value source value
+ * @param {string} suffix suffix to remove
+ * @returns {string}
+ */
+function stripSuffix(value, suffix) {
+  return value.endsWith(suffix) ? value.slice(0, -suffix.length) : value;
+}
+
+/**
+ * Parses the collapsed source row emitted by UE when all source fields render in one cell.
+ * @param {Element[]} source source row cells
+ * @returns {Object|null}
+ */
+function parseCollapsedSourceConfig(source) {
+  const text = cellText(source, 0);
+  let linkSource = '';
+  if (text.startsWith('child-pages')) {
+    linkSource = 'child-pages';
+  } else if (text.startsWith('custom')) {
+    linkSource = 'custom';
+  }
+  if (!linkSource) return null;
+
+  const parentPage = cellLink(source, 0);
+  const parentText = source[0]?.querySelector('a')?.textContent.trim() || parentPage.replace(/\.html$/i, '');
+  let remaining = stripPrefix(text, linkSource);
+  remaining = stripPrefix(remaining, parentText);
+
+  const maxItemsMatch = remaining.match(/(\d+)$/);
+  const maxItems = maxItemsMatch?.[1] ?? '';
+  if (maxItems) remaining = stripSuffix(remaining, maxItems);
+
+  const sortOrderMatch = remaining.match(/(asc|desc)$/);
+  const sortOrder = sortOrderMatch?.[1] ?? 'asc';
+  if (sortOrderMatch) remaining = stripSuffix(remaining, sortOrder);
+
+  const orderBy = ['last-modified', 'content-tree', 'published', 'title']
+    .find((value) => remaining.endsWith(value)) ?? 'content-tree';
+  remaining = stripSuffix(remaining, orderBy);
+
+  const childDepthMatch = remaining.match(/^(\d+)/);
+  const childDepth = childDepthMatch?.[1] ?? '1';
+
+  return {
+    linkSource,
+    parentPage,
+    childDepth,
+    excludeCurrentPage: 'false',
+    enableDescription: 'false',
+    enableTags: 'false',
+    enableSubtitle: 'false',
+    enableDate: 'false',
+    orderBy,
+    sortOrder,
+    maxItems,
+  };
+}
+
+/**
  * Logs rendered row candidates used by the row-based config fallback.
  * @param {Element[]} rows block child rows
  */
@@ -145,7 +215,8 @@ function readRowBlockConfig(block) {
   const search = getRowCells(rows[1] ?? document.createElement('div'));
   const source = getRowCells(rows[2] ?? document.createElement('div'));
   const layout = getRowCells(rows[3] ?? document.createElement('div'));
-  const linkSource = cellText(source, 0);
+  const collapsedSource = parseCollapsedSourceConfig(source);
+  const linkSource = collapsedSource?.linkSource ?? cellText(source, 0);
 
   if (!['child-pages', 'custom'].includes(linkSource)) return null;
 
@@ -162,16 +233,16 @@ function readRowBlockConfig(block) {
     browseCategories: cellText(search, 4),
     resetCategories: cellText(search, 5),
     linkSource,
-    parentPage: cellLink(source, 1),
-    childDepth: cellText(source, 2) || '1',
-    excludeCurrentPage: cellText(source, 3) || 'false',
-    enableDescription: cellText(source, 4) || 'false',
-    enableTags: cellText(source, 5) || 'false',
-    enableSubtitle: cellText(source, 6) || 'false',
-    enableDate: cellText(source, 7) || 'false',
-    orderBy: cellText(source, 8) || 'content-tree',
-    sortOrder: cellText(source, 9) || 'asc',
-    maxItems: cellText(source, 10),
+    parentPage: collapsedSource?.parentPage ?? cellLink(source, 1),
+    childDepth: (collapsedSource?.childDepth ?? cellText(source, 2)) || '1',
+    excludeCurrentPage: (collapsedSource?.excludeCurrentPage ?? cellText(source, 3)) || 'false',
+    enableDescription: (collapsedSource?.enableDescription ?? cellText(source, 4)) || 'false',
+    enableTags: (collapsedSource?.enableTags ?? cellText(source, 5)) || 'false',
+    enableSubtitle: (collapsedSource?.enableSubtitle ?? cellText(source, 6)) || 'false',
+    enableDate: (collapsedSource?.enableDate ?? cellText(source, 7)) || 'false',
+    orderBy: (collapsedSource?.orderBy ?? cellText(source, 8)) || 'content-tree',
+    sortOrder: (collapsedSource?.sortOrder ?? cellText(source, 9)) || 'asc',
+    maxItems: collapsedSource?.maxItems ?? cellText(source, 10),
     layout: cellText(layout, 0) || 'single-column',
   };
 }
