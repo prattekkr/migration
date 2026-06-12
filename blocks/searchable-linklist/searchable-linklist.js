@@ -58,6 +58,44 @@ function isExternalUrl(href) {
   }
 }
 
+/**
+ * Logs the raw query-index response used by the child-pages data source.
+ * This is intentionally verbose while validating searchable-linklist content.
+ * @param {string} indexUrl query-index URL fetched by the block
+ * @param {Object} json full query-index JSON response
+ */
+function logQueryIndexResponse(indexUrl, json) {
+  /* eslint-disable no-console */
+  console.groupCollapsed(`[searchable-linklist] query-index response: ${indexUrl}`);
+  console.info('Total records returned:', json.data?.length ?? 0);
+  console.log(json);
+  if (json.data?.length) console.table(json.data);
+  console.groupEnd();
+  /* eslint-enable no-console */
+}
+
+/**
+ * Logs query-index records that remain visible after search/category filtering.
+ * @param {string} searchText current search text
+ * @param {Set<string>} activeTagSet currently selected category tags
+ * @param {number} visibleCount number of visible list items
+ * @param {Object[]} matchingRecords matching query-index records
+ */
+function logQueryIndexSearch(searchText, activeTagSet, visibleCount, matchingRecords) {
+  /* eslint-disable no-console */
+  console.groupCollapsed('[searchable-linklist] query-index search results');
+  console.info('Search text:', searchText);
+  console.info('Active tags:', [...activeTagSet]);
+  console.info('Visible items:', visibleCount);
+  if (matchingRecords.length) {
+    console.table(matchingRecords);
+  } else {
+    console.info('No query-index records matched the current filters.');
+  }
+  console.groupEnd();
+  /* eslint-enable no-console */
+}
+
 // ---------------------------------------------------------------------------
 // Icon rendering
 // ---------------------------------------------------------------------------
@@ -297,6 +335,7 @@ async function fetchChildPageItems(cfg, ph) {
     const resp = await fetch(indexUrl);
     if (!resp.ok) return [];
     const json = await resp.json();
+    logQueryIndexResponse(indexUrl, json);
     items = json.data || [];
   } catch {
     return [];
@@ -334,6 +373,7 @@ async function fetchChildPageItems(cfg, ph) {
   return items.map((page) => {
     const li = document.createElement('li');
     li.className = 'sll-item';
+    li.sllQueryIndexItem = page;
 
     const tags = page.tags
       ? page.tags.split(',').map((t) => t.trim()).filter(Boolean)
@@ -413,6 +453,8 @@ async function fetchChildPageItems(cfg, ph) {
 function applyFilters(listEl, searchText, activeTagSet, emptyMsg, countEl, ph) {
   const query = searchText.toLowerCase().trim();
   let visibleCount = 0;
+  let hasQueryIndexItems = false;
+  const matchingQueryIndexItems = [];
 
   listEl.querySelectorAll(':scope > li.sll-item').forEach((li) => {
     const title = li.querySelector('.sll-item-text')?.textContent.toLowerCase() ?? '';
@@ -426,10 +468,18 @@ function applyFilters(listEl, searchText, activeTagSet, emptyMsg, countEl, ph) {
 
     const visible = matchesSearch && matchesTags;
     li.hidden = !visible;
-    if (visible) visibleCount += 1;
+    if (visible) {
+      visibleCount += 1;
+      if (li.sllQueryIndexItem) matchingQueryIndexItems.push(li.sllQueryIndexItem);
+    }
+    if (li.sllQueryIndexItem) hasQueryIndexItems = true;
   });
 
   const hasActiveFilters = query || activeTagSet.size > 0;
+  if (hasActiveFilters && hasQueryIndexItems) {
+    logQueryIndexSearch(searchText, activeTagSet, visibleCount, matchingQueryIndexItems);
+  }
+
   if (hasActiveFilters && visibleCount === 0) {
     emptyMsg.hidden = false;
     if (countEl) {
