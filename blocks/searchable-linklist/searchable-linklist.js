@@ -110,6 +110,29 @@ function logBlockConfig(cfg, dataset) {
   /* eslint-enable no-console */
 }
 
+/**
+ * Logs what happened immediately after search input changed.
+ * @param {string} searchText current search text
+ * @param {Object} summary filter summary from applyFilters
+ */
+function logSearchInputChange(searchText, summary) {
+  /* eslint-disable no-console */
+  console.log('[searchable-linklist] search input changed', {
+    searchText,
+    normalizedQuery: summary.query,
+    activeTags: summary.activeTags,
+    totalItems: summary.totalItems,
+    visibleCount: summary.visibleCount,
+    hiddenCount: summary.hiddenCount,
+  });
+  console.table(summary.results);
+  if (summary.matchingQueryIndexItems.length) {
+    console.log('[searchable-linklist] matching query-index records');
+    console.table(summary.matchingQueryIndexItems);
+  }
+  /* eslint-enable no-console */
+}
+
 // ---------------------------------------------------------------------------
 // Icon rendering
 // ---------------------------------------------------------------------------
@@ -483,14 +506,16 @@ function applyFilters(listEl, searchText, activeTagSet, emptyMsg, countEl, ph) {
   let visibleCount = 0;
   let hasQueryIndexItems = false;
   const matchingQueryIndexItems = [];
+  const results = [];
 
   listEl.querySelectorAll(':scope > li.sll-item').forEach((li) => {
-    const title = li.querySelector('.sll-item-text')?.textContent.toLowerCase() ?? '';
-    const matchesSearch = !query || title.includes(query);
+    const title = li.querySelector('.sll-item-text')?.textContent ?? '';
+    const normalizedTitle = title.toLowerCase();
+    const matchesSearch = !query || normalizedTitle.includes(query);
+    const itemTags = li.dataset.tags ? JSON.parse(li.dataset.tags) : [];
 
     let matchesTags = true;
     if (activeTagSet.size > 0) {
-      const itemTags = li.dataset.tags ? JSON.parse(li.dataset.tags) : [];
       matchesTags = [...activeTagSet].every((tag) => itemTags.includes(tag));
     }
 
@@ -501,6 +526,14 @@ function applyFilters(listEl, searchText, activeTagSet, emptyMsg, countEl, ph) {
       if (li.sllQueryIndexItem) matchingQueryIndexItems.push(li.sllQueryIndexItem);
     }
     if (li.sllQueryIndexItem) hasQueryIndexItems = true;
+    results.push({
+      title,
+      tags: itemTags.join(', '),
+      matchesSearch,
+      matchesTags,
+      visible,
+      normalizedTitle,
+    });
   });
 
   const hasActiveFilters = query || activeTagSet.size > 0;
@@ -523,6 +556,17 @@ function applyFilters(listEl, searchText, activeTagSet, emptyMsg, countEl, ph) {
       }
     }
   }
+
+  return {
+    searchText,
+    query,
+    activeTags: [...activeTagSet],
+    totalItems: results.length,
+    visibleCount,
+    hiddenCount: results.length - visibleCount,
+    results,
+    matchingQueryIndexItems,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -804,7 +848,8 @@ export default async function decorate(block) {
   const { wrapper: searchWrapper, input: searchInput } = buildSearchBar(cfg, ph);
   searchInput.addEventListener('input', () => {
     currentSearch = searchInput.value;
-    refresh();
+    const filterSummary = refresh();
+    logSearchInputChange(currentSearch, filterSummary);
   });
   controlsEl.append(searchWrapper);
 
