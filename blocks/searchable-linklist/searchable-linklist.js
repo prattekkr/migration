@@ -617,6 +617,23 @@ function buildListItem(row) {
 // ---------------------------------------------------------------------------
 
 /**
+ * Fetches and parses a query-index endpoint.
+ * @param {string} indexUrl query-index URL
+ * @returns {Promise<Object>} parsed JSON
+ */
+async function fetchQueryIndex(indexUrl) {
+  const resp = await fetch(indexUrl);
+  if (!resp.ok) {
+    const error = new Error(`query-index request failed: ${resp.status} ${resp.statusText}`);
+    error.status = resp.status;
+    error.statusText = resp.statusText;
+    error.indexUrl = indexUrl;
+    throw error;
+  }
+  return resp.json();
+}
+
+/**
  * Fetches child page data from the helix query index and converts each
  * entry into a list item element.
  *
@@ -645,8 +662,10 @@ async function fetchChildPageItems(cfg, ph) {
     return [];
   }
 
-  // EDS exposes a query-index.json at each path tree level
-  const indexUrl = `${parentPage.replace(/\/$/, '')}/query-index.json`;
+  const primaryIndexUrl = parentPage === '/'
+    ? '/query-index.json'
+    : `${parentPage.replace(/\/$/, '')}/query-index.json`;
+  const fallbackIndexUrl = '/query-index.json';
   const debug = {
     source: 'child-pages',
     parentPage,
@@ -655,7 +674,9 @@ async function fetchChildPageItems(cfg, ph) {
     orderBy,
     sortOrder,
     maxItems,
-    indexUrl,
+    indexUrl: primaryIndexUrl,
+    attemptedIndexUrls: [primaryIndexUrl],
+    usedFallbackIndex: false,
     rawCount: 0,
     afterDepthFilterCount: 0,
     afterExcludeCurrentCount: 0,
@@ -664,17 +685,25 @@ async function fetchChildPageItems(cfg, ph) {
   };
   let items = [];
   try {
-    const resp = await fetch(indexUrl);
-    if (!resp.ok) {
+    let indexUrl = primaryIndexUrl;
+    let json;
+    try {
+      json = await fetchQueryIndex(primaryIndexUrl);
+    } catch (primaryError) {
       /* eslint-disable-next-line no-console */
-      console.warn('[searchable-linklist] query-index request failed', {
-        indexUrl,
-        status: resp.status,
-        statusText: resp.statusText,
+      console.warn('[searchable-linklist] primary query-index request failed', {
+        indexUrl: primaryIndexUrl,
+        status: primaryError.status,
+        statusText: primaryError.statusText,
       });
-      return [];
+      if (primaryIndexUrl === fallbackIndexUrl) throw primaryError;
+      debug.attemptedIndexUrls.push(fallbackIndexUrl);
+      debug.usedFallbackIndex = true;
+      indexUrl = fallbackIndexUrl;
+      json = await fetchQueryIndex(fallbackIndexUrl);
     }
-    const json = await resp.json();
+
+    debug.indexUrl = indexUrl;
     logQueryIndexResponse(indexUrl, json);
     items = json.data || [];
     debug.rawCount = items.length;
@@ -688,7 +717,10 @@ async function fetchChildPageItems(cfg, ph) {
     }));
   } catch (error) {
     /* eslint-disable-next-line no-console */
-    console.warn('[searchable-linklist] query-index request errored', { indexUrl, error });
+    console.warn('[searchable-linklist] query-index request errored', {
+      attemptedIndexUrls: debug.attemptedIndexUrls,
+      error,
+    });
     return [];
   }
 

@@ -1,0 +1,44 @@
+indices:
+  default:
+    include:
+      - /**
+    target: /query-index.json
+    properties:
+      title:
+        select: head > meta[property="og:title"]
+        value: |
+          attribute(el, 'content')
+      description:
+        select: head > meta[name="description"]
+        value: |
+          attribute(el, 'content')
+      tags:
+        select: head > meta[name="cq:tags"]
+        value: |
+          attribute(el, 'content')
+      lastModified:
+        select: none
+        value: |
+          parseTimestamp(headers["last-modified"])
+
+  stories:
+    include:
+      - /who-we-are/our-stories/**
+    target: /who-we-are/our-stories/query-index.json
+    properties:
+      title:
+        select: head > meta[property="og:title"]
+        value: |
+          attribute(el, 'content')
+      description:
+        select: head > meta[name="description"]
+        value: |
+          attribute(el, 'content')
+      tags:
+        select: head > meta[name="cq:tags"]
+        value: |
+          attribute(el, 'content')
+      lastModified:
+        select: none
+        value: |
+          parseTimestamp(headers["last-modified"])
