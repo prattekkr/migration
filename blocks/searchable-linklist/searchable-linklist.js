@@ -40,11 +40,71 @@ async function fetchPlaceholders() {
 // ---------------------------------------------------------------------------
 
 /**
- * Reads a named data attribute from the block element.
- * The Universal Editor writes authored field values as data-* attributes.
+ * Returns true when an element belongs to a child Link List Item.
+ * @param {Element} el property element to inspect
+ * @returns {boolean}
+ */
+function isLinkListItemProp(el) {
+  return !!el.closest(
+    '[data-aue-component="link-list-item"], [data-aue-model="link-list-item"], [data-aue-resource*="link_list_item"], [data-aue-resource*="link-list-item"]',
+  );
+}
+
+/**
+ * Reads a Universal Editor property element that belongs to the parent block.
+ * @param {Element} block block element
+ * @param {string} name property name
+ * @returns {Element|null}
+ */
+function getAuePropElement(block, name) {
+  return [...block.querySelectorAll(`[data-aue-prop="${name}"]`)]
+    .find((el) => !isLinkListItemProp(el)) ?? null;
+}
+
+/**
+ * Reads a named block property from data attributes or Universal Editor markup.
  */
 function getProp(block, name, fallback = '') {
-  return block.dataset[name] ?? fallback;
+  if (block.dataset[name] != null) return block.dataset[name];
+
+  const propEl = getAuePropElement(block, name);
+  if (!propEl) return fallback;
+
+  return propEl.querySelector('a')?.getAttribute('href')
+    || propEl.textContent?.trim()
+    || fallback;
+}
+
+/**
+ * Builds the block configuration from authored properties.
+ * @param {Element} block block element
+ * @returns {Object}
+ */
+function readBlockConfig(block) {
+  return {
+    id: getProp(block, 'id'),
+    customClass: getProp(block, 'customClass'),
+    browseCategories: getProp(block, 'browseCategories'),
+    resetCategories: getProp(block, 'resetCategories'),
+    searchHint: getProp(block, 'searchHint'),
+    searchIcon: getProp(block, 'searchIcon', 'none'),
+    searchIconText: getProp(block, 'searchIconText'),
+    searchIconAlt: getProp(block, 'searchIconAlt'),
+    linkSource: getProp(block, 'linkSource', 'custom'),
+    parentPage: getProp(block, 'parentPage'),
+    childDepth: getProp(block, 'childDepth', '1'),
+    excludeCurrentPage: getProp(block, 'excludeCurrentPage', 'false'),
+    enableDescription: getProp(block, 'enableDescription', 'false'),
+    enableTags: getProp(block, 'enableTags', 'false'),
+    enableSubtitle: getProp(block, 'enableSubtitle', 'false'),
+    enableDate: getProp(block, 'enableDate', 'false'),
+    orderBy: getProp(block, 'orderBy', 'content-tree'),
+    sortOrder: getProp(block, 'sortOrder', 'asc'),
+    maxItems: getProp(block, 'maxItems'),
+    layout: getProp(block, 'layout', 'single-column'),
+    analyticsId: getProp(block, 'analyticsId'),
+    lang: getProp(block, 'lang', 'en'),
+  };
 }
 
 /**
@@ -813,31 +873,8 @@ export default async function decorate(block) {
   // 1. Placeholders
   const ph = await fetchPlaceholders();
 
-  // 2. Read block config from data attributes (set by Universal Editor / EDS)
-  const cfg = {
-    id: getProp(block, 'id'),
-    customClass: getProp(block, 'customClass'),
-    browseCategories: getProp(block, 'browseCategories'),
-    resetCategories: getProp(block, 'resetCategories'),
-    searchHint: getProp(block, 'searchHint'),
-    searchIcon: getProp(block, 'searchIcon', 'none'),
-    searchIconText: getProp(block, 'searchIconText'),
-    searchIconAlt: getProp(block, 'searchIconAlt'),
-    linkSource: getProp(block, 'linkSource', 'custom'),
-    parentPage: getProp(block, 'parentPage'),
-    childDepth: getProp(block, 'childDepth', '1'),
-    excludeCurrentPage: getProp(block, 'excludeCurrentPage', 'false'),
-    enableDescription: getProp(block, 'enableDescription', 'false'),
-    enableTags: getProp(block, 'enableTags', 'false'),
-    enableSubtitle: getProp(block, 'enableSubtitle', 'false'),
-    enableDate: getProp(block, 'enableDate', 'false'),
-    orderBy: getProp(block, 'orderBy', 'content-tree'),
-    sortOrder: getProp(block, 'sortOrder', 'asc'),
-    maxItems: getProp(block, 'maxItems'),
-    layout: getProp(block, 'layout', 'single-column'),
-    analyticsId: getProp(block, 'analyticsId'),
-    lang: getProp(block, 'lang', 'en'),
-  };
+  // 2. Read block config from data attributes or Universal Editor property markup
+  const cfg = readBlockConfig(block);
   logBlockConfig(cfg, block.dataset);
 
   // 3. Apply block-level attributes
