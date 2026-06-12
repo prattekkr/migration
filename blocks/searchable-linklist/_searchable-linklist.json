@@ -154,10 +154,11 @@
               ]
             },
             {
-              "component": "aem-content",
+              "component": "text",
               "name": "parentPage",
-              "label": "Parent Page",
-              "description": "Parent page for child pages source"
+              "label": "Parent Page Path",
+              "description": "EDS parent path for child pages source, for example /who-we-are/our-stories",
+              "valueType": "string"
             },
             {
               "component": "text",
