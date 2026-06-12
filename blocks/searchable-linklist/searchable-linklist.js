@@ -76,12 +76,86 @@ function getProp(block, name, fallback = '') {
 }
 
 /**
+ * Gets field cells from a rendered row, handling both flat and nested row output.
+ * @param {Element} row rendered config or item row
+ * @returns {Element[]}
+ */
+function getRowCells(row) {
+  const direct = [...row.children];
+  const nested = [...row.querySelectorAll(':scope > div > div')];
+  return nested.length > direct.length ? nested : direct;
+}
+
+/**
+ * Reads plain text from a row cell.
+ * @param {Element[]} cells row cells
+ * @param {number} index cell index
+ * @returns {string}
+ */
+function cellText(cells, index) {
+  return cells[index]?.textContent.trim() ?? '';
+}
+
+/**
+ * Reads a link href from a row cell, falling back to text.
+ * @param {Element[]} cells row cells
+ * @param {number} index cell index
+ * @returns {string}
+ */
+function cellLink(cells, index) {
+  return cells[index]?.querySelector('a')?.getAttribute('href') || cellText(cells, index);
+}
+
+/**
+ * Reads parent block config from rendered model rows when UE property attrs are absent.
+ * Row order follows the searchable-linklist model: advanced, search, source, layout.
+ * @param {Element} block block element
+ * @returns {Object|null}
+ */
+function readRowBlockConfig(block) {
+  const rows = [...block.children];
+  const advanced = getRowCells(rows[0] ?? document.createElement('div'));
+  const search = getRowCells(rows[1] ?? document.createElement('div'));
+  const source = getRowCells(rows[2] ?? document.createElement('div'));
+  const layout = getRowCells(rows[3] ?? document.createElement('div'));
+  const linkSource = cellText(source, 0);
+
+  if (!['child-pages', 'custom'].includes(linkSource)) return null;
+
+  return {
+    usesRowConfig: true,
+    id: cellText(advanced, 0),
+    customClass: cellText(advanced, 1),
+    analyticsId: cellText(advanced, 2),
+    lang: cellText(advanced, 3) || 'en',
+    searchHint: cellText(search, 0),
+    searchIcon: cellText(search, 1) || 'none',
+    searchIconText: cellText(search, 2),
+    searchIconAlt: cellLink(search, 3),
+    browseCategories: cellText(search, 4),
+    resetCategories: cellText(search, 5),
+    linkSource,
+    parentPage: cellLink(source, 1),
+    childDepth: cellText(source, 2) || '1',
+    excludeCurrentPage: cellText(source, 3) || 'false',
+    enableDescription: cellText(source, 4) || 'false',
+    enableTags: cellText(source, 5) || 'false',
+    enableSubtitle: cellText(source, 6) || 'false',
+    enableDate: cellText(source, 7) || 'false',
+    orderBy: cellText(source, 8) || 'content-tree',
+    sortOrder: cellText(source, 9) || 'asc',
+    maxItems: cellText(source, 10),
+    layout: cellText(layout, 0) || 'single-column',
+  };
+}
+
+/**
  * Builds the block configuration from authored properties.
  * @param {Element} block block element
  * @returns {Object}
  */
 function readBlockConfig(block) {
-  return {
+  const cfg = {
     id: getProp(block, 'id'),
     customClass: getProp(block, 'customClass'),
     browseCategories: getProp(block, 'browseCategories'),
@@ -105,6 +179,13 @@ function readBlockConfig(block) {
     analyticsId: getProp(block, 'analyticsId'),
     lang: getProp(block, 'lang', 'en'),
   };
+
+  const rowCfg = readRowBlockConfig(block);
+  if (cfg.linkSource === 'custom' && !cfg.parentPage && rowCfg) {
+    return { ...cfg, ...rowCfg };
+  }
+
+  return cfg;
 }
 
 /**
@@ -895,13 +976,15 @@ export default async function decorate(block) {
     itemSourceDebug = listItems.sllSourceDebug;
   } else {
     // Custom – authored Link List Item children are already rendered as rows
-    [...block.children].forEach((row) => {
+    const itemRows = cfg.usesRowConfig ? [...block.children].slice(4) : [...block.children];
+    itemRows.forEach((row) => {
       const li = buildListItem(row);
       if (li) listItems.push(li);
     });
     itemSourceDebug = {
       source: 'custom',
       authoredRowCount: block.children.length,
+      skippedConfigRowCount: cfg.usesRowConfig ? 4 : 0,
       finalCount: listItems.length,
     };
   }
