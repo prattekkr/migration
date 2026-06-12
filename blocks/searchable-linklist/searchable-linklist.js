@@ -438,6 +438,27 @@ function buildIcon(type, fontIconName, imageSrc, altText = '') {
   return null;
 }
 
+/**
+ * Builds the upper-right open-link control for a result item.
+ * @param {string} href destination URL
+ * @param {string} label accessible link label
+ * @param {boolean} openNewTab whether to open in a new tab
+ * @returns {HTMLAnchorElement|null}
+ */
+function buildOpenLink(href, label, openNewTab = false) {
+  if (!href) return null;
+
+  const anchor = document.createElement('a');
+  anchor.className = 'sll-item-open-link';
+  anchor.href = href;
+  anchor.setAttribute('aria-label', `Open ${label}`);
+  if (openNewTab) {
+    anchor.target = '_blank';
+    anchor.rel = 'noopener noreferrer';
+  }
+  return anchor;
+}
+
 // ---------------------------------------------------------------------------
 // Item rendering
 // ---------------------------------------------------------------------------
@@ -578,6 +599,8 @@ function buildListItem(row) {
   }
 
   li.append(anchor);
+  const openLink = buildOpenLink(href, ariaLabel || linkText, openNewTab);
+  if (openLink) li.append(openLink);
 
   // Subtitle
   if (subtitle) {
@@ -777,6 +800,8 @@ async function fetchChildPageItems(cfg, ph) {
     textSpan.textContent = page.title || href;
     anchor.append(textSpan);
     li.append(anchor);
+    const openLink = buildOpenLink(href, page.title || href);
+    if (openLink) li.append(openLink);
 
     if (enableSubtitle === 'true' && page.subtitle) {
       const subtitleEl = document.createElement('p');
