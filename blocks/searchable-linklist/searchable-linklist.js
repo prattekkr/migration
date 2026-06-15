@@ -559,6 +559,17 @@ async function fetchIndexRows() {
   return [];
 }
 
+/**
+ * Normalizes any path (author /content/<site>/... or clean) to the clean site
+ * path the query index uses. Strips a leading /content/<site> prefix that
+ * normalizeLookupPath leaves in place when rootPath config is unavailable.
+ */
+function toSitePath(raw, rootPath) {
+  let p = normalizeLookupPath(raw, rootPath);
+  if (p.startsWith('/content/')) p = p.replace(/^\/content\/[^/]+/, '') || '/';
+  return p || '/';
+}
+
 /** First non-empty page title, with the "Title | Suffix" tail trimmed. */
 function pageTitle(page, sitePath) {
   const raw = page.title || page.navtitle || page.Title || '';
@@ -580,13 +591,13 @@ async function fetchChildPageItems(cfg, ph, labelOf) {
   const flat = await fetchIndexRows();
   if (!flat.length) return [];
 
-  const parent = normalizeLookupPath(cfg.parentPage, rootPath);
+  const parent = toSitePath(cfg.parentPage, rootPath);
   const parentSegs = parent.split('/').filter(Boolean).length;
   const depth = Math.max(1, cfg.childDepth || 1);
-  const current = normalizeLookupPath(window.location.pathname, rootPath);
+  const current = toSitePath(window.location.pathname, rootPath);
 
   let items = flat
-    .map((page) => ({ page, sitePath: normalizeLookupPath(page.path, rootPath) }))
+    .map((page) => ({ page, sitePath: toSitePath(page.path, rootPath) }))
     .filter(({ page, sitePath }) => {
       if (!sitePath || sitePath === parent) return false;
       const under = parent === '/' ? sitePath !== '/' : sitePath.startsWith(`${parent}/`);
