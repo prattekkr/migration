@@ -169,11 +169,14 @@ function blockTags(block, name) {
 }
 
 /**
- * Builds block configuration. Prefers UE data-aue-prop markup; falls back to
- * published-EDS rows rendered in model order when no UE props are present.
+ * Builds block configuration. Uses name-based data-aue-prop reading only when the
+ * source field itself is instrumented; otherwise reads positional rows. Note that
+ * Universal Editor instruments text fields but NOT selects/booleans, so detecting
+ * UE mode via any [data-aue-prop] would wrongly skip linkSource/layout/etc. Anchor
+ * detection on linkSource specifically (as the linklist block does).
  */
 function readBlockConfig(block) {
-  const ueMode = !!block.querySelector('[data-aue-prop]');
+  const ueMode = !!block.querySelector('[data-aue-prop="linkSource"]');
 
   if (ueMode) {
     return {
