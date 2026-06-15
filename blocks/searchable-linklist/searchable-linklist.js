@@ -280,9 +280,18 @@ function collectItemEls(block, cfg) {
   )];
   if (nested.length) return nested;
 
-  // Published EDS without item classes: rows after the parent config rows.
-  const start = cfg.usesRowConfig ? cfg.configRowCount : 0;
-  return [...block.children].slice(start).filter((el) => el.querySelector('a[href]') || el.textContent.trim());
+  // Universal Editor: items only ever appear as instrumented link-list-item
+  // elements (handled above). Never fall back to raw rows here — the block's own
+  // authored config fields render as instrumented rows and must not be mistaken
+  // for items (doing so steals their instrumentation and spawns phantom blocks).
+  if (block.querySelector('[data-aue-prop], [data-aue-resource]') || !cfg.usesRowConfig) {
+    return [];
+  }
+
+  // Published EDS: items are the rows that follow the parent config rows.
+  return [...block.children]
+    .slice(cfg.configRowCount)
+    .filter((el) => el.querySelector('a[href]') || el.textContent.trim());
 }
 
 /** Reads a single item's config by data-aue-prop (UE) with positional fallback. */
