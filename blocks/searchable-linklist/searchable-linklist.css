@@ -446,3 +446,11 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+/* Empty authoring placeholder (editor only) — muted hint, not a real link */
+.searchable-linklist .sll-item-empty .sll-item-link {
+  color: var(--corp-color-text-muted);
+  font-style: italic;
+  font-weight: 400;
+  pointer-events: none;
+}

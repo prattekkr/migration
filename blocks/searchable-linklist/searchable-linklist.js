@@ -445,10 +445,13 @@ function buildTagList(tags, ph, labelOf = (t) => t) {
 /** Builds a single <li> from a Custom Link List Item element. */
 function buildCustomItem(itemEl, ph, labelOf) {
   const item = readItemConfig(itemEl);
-  if (!item.link && !item.linkText && !item.subtitle && !item.categoryTags.length
-    && !item.descriptionEl) {
-    return null;
-  }
+  const isEmpty = !item.link && !item.linkText && !item.subtitle
+    && !item.categoryTags.length && !item.descriptionEl;
+  // In the editor, keep empty items as selectable placeholders so authors can
+  // open and fill them (decorate() rebuilds the block, so an item not rendered
+  // here loses its instrumentation and disappears from the content tree). On the
+  // published site, skip empty items.
+  if (isEmpty && !isUniversalEditor()) return null;
 
   const li = document.createElement('li');
   li.className = 'sll-item';
@@ -478,7 +481,9 @@ function buildCustomItem(itemEl, ph, labelOf) {
 
   const textSpan = document.createElement('span');
   textSpan.className = 'sll-item-text';
-  textSpan.textContent = item.linkText;
+  textSpan.textContent = item.linkText
+    || (isEmpty ? (ph['empty-item'] || 'Link List Item — add a link') : '');
+  if (isEmpty) li.classList.add('sll-item-empty');
 
   const iconEl = buildIcon(item.iconType, item.fontIcon, item.imageIcon);
   const placeIcon = (target, position) => {
