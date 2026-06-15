@@ -204,7 +204,10 @@ function readBlockConfig(block) {
     };
   }
 
-  // Published EDS: parent config rows precede the authored item rows, in model order.
+  // Published EDS: config values render as rows, but AEM omits rows for unset
+  // optional fields — so absolute indices are unreliable. Anchor on linkSource
+  // (a known enum) and read the source config relative to it; the leading
+  // search/category fields are read from the front, guarded by the anchor.
   const rows = [...block.children];
   const ct = (i) => rows[i]?.textContent?.trim() || '';
   const cl = (i) => rows[i]?.querySelector('a')?.getAttribute('href') || ct(i);
@@ -214,33 +217,37 @@ function readBlockConfig(block) {
     return [...new Set(tokens.flatMap((t) => splitTags(t)))];
   };
 
+  const SOURCES = ['child-pages', 'icons', 'custom'];
+  let ls = rows.findIndex((r) => SOURCES.includes(r.textContent?.trim()));
+  if (ls < 0) ls = 7; // model position fallback
+
   return {
     searchHint: ct(0),
     searchIcon: ct(1) || 'none',
-    searchIconText: ct(2),
-    searchIconAlt: cl(3),
-    categoryTags: tagRow(4),
-    browseCategories: ct(5),
-    resetCategories: ct(6),
-    linkSource: ct(7) || 'custom',
-    parentPage: cl(8),
-    childDepth: parseIntSafe(ct(9), 1),
-    excludeCurrentPage: parseBool(ct(10), false),
-    enableDescription: parseBool(ct(11), false),
-    enableTags: parseBool(ct(12), false),
-    enableSubtitle: parseBool(ct(13), false),
-    enableDate: parseBool(ct(14), false),
-    orderBy: ct(15) || 'content-tree',
-    sortOrder: ct(16) || 'asc',
-    maxItems: parseIntSafe(ct(17), 25),
-    layout: ct(18) || 'single-column',
-    id: ct(19),
-    customClass: ct(20),
-    searchInId: ct(21),
-    analyticsId: ct(22),
-    lang: normalizeLang(ct(23)),
+    searchIconText: ls >= 3 ? ct(2) : '',
+    searchIconAlt: ls >= 4 ? cl(3) : '',
+    categoryTags: ls >= 5 ? tagRow(4) : [],
+    browseCategories: ls >= 6 ? ct(5) : '',
+    resetCategories: ls >= 7 ? ct(6) : '',
+    linkSource: ct(ls) || 'custom',
+    parentPage: cl(ls + 1),
+    childDepth: parseIntSafe(ct(ls + 2), 1),
+    excludeCurrentPage: parseBool(ct(ls + 3), false),
+    enableDescription: parseBool(ct(ls + 4), false),
+    enableTags: parseBool(ct(ls + 5), false),
+    enableSubtitle: parseBool(ct(ls + 6), false),
+    enableDate: parseBool(ct(ls + 7), false),
+    orderBy: ct(ls + 8) || 'content-tree',
+    sortOrder: ct(ls + 9) || 'asc',
+    maxItems: parseIntSafe(ct(ls + 10), 25),
+    layout: ct(ls + 11) || 'single-column',
+    id: ct(ls + 12),
+    customClass: ct(ls + 13),
+    searchInId: ct(ls + 14),
+    analyticsId: ct(ls + 15),
+    lang: normalizeLang(ct(ls + 16)),
     usesRowConfig: true,
-    configRowCount: 24,
+    configRowCount: ls + 17,
   };
 }
 
