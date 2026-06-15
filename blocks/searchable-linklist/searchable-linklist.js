@@ -16,6 +16,7 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { fetchPlaceholders } from '../../scripts/placeholders.js';
 import { createIcon } from '../../scripts/utils.js';
+import indexUtils, { normalizeLookupPath } from '../../scripts/index-utils.js';
 
 // ---------------------------------------------------------------------------
 // Small parsing helpers
@@ -54,20 +55,6 @@ function isExternalUrl(href) {
   } catch {
     return false;
   }
-}
-
-/** Converts AEM author content paths into EDS site paths for query-index fetches. */
-function normalizeParentPage(rawPath) {
-  if (!rawPath) return '';
-  let path = String(rawPath).trim();
-  try {
-    if (path.startsWith('http')) path = new URL(path, window.location.origin).pathname;
-  } catch {
-    path = String(rawPath).trim();
-  }
-  path = path.replace(/\.html$/i, '');
-  path = path.replace(/^\/content\/[^/]+/, '');
-  return path || '/';
 }
 
 // ---------------------------------------------------------------------------
@@ -531,62 +518,95 @@ function buildCustomItem(itemEl, ph, labelOf) {
 // Child Pages data source (FR-004)
 // ---------------------------------------------------------------------------
 
-async function fetchChildPageItems(cfg, ph, labelOf) {
-  const parentPage = normalizeParentPage(cfg.parentPage);
-  if (!parentPage) return [];
+/** Converts an index timestamp (epoch seconds, ms, or ISO string) to ms. */
+function toMs(val) {
+  if (!val) return 0;
+  const n = Number(val);
+  if (Number.isFinite(n) && n > 0) return n < 1e10 ? n * 1000 : n;
+  const parsed = Date.parse(String(val));
+  return Number.isFinite(parsed) ? parsed : 0;
+}
 
-  const primary = parentPage === '/' ? '/query-index.json' : `${parentPage.replace(/\/$/, '')}/query-index.json`;
-  let json;
+/** Reads the flat query-index array cached by indexUtils.getIndexData(). */
+function getFlatIndex() {
   try {
-    let resp = await fetch(primary);
-    if (!resp.ok && primary !== '/query-index.json') resp = await fetch('/query-index.json');
-    if (!resp.ok) return [];
-    json = await resp.json();
+    const raw = sessionStorage.getItem('abbvie-index-data-raw');
+    if (raw) return JSON.parse(raw).data || [];
   } catch {
-    return [];
+    /* sessionStorage unavailable or malformed */
   }
+  return [];
+}
 
-  let items = json.data || [];
-  const parentDepth = parentPage.replace(/\/$/, '').split('/').length;
-  const maxDepth = parentDepth + (cfg.childDepth || 1);
-  items = items.filter(({ path }) => {
-    const d = String(path).split('/').length;
-    return d > parentDepth && d <= maxDepth;
-  });
+/** First non-empty page title, with the "Title | Suffix" tail trimmed. */
+function pageTitle(page, sitePath) {
+  const raw = page.title || page.navtitle || page.Title || '';
+  const clean = String(raw).split('|')[0].trim();
+  if (clean) return clean;
+  const seg = sitePath.split('/').filter(Boolean).pop() || sitePath;
+  return seg.replace(/[-_]+/g, ' ').trim().replace(/\b\w/g, (c) => c.toUpperCase());
+}
 
-  if (cfg.excludeCurrentPage) {
-    const current = window.location.pathname.replace(/\/$/, '');
-    items = items.filter(({ path }) => path !== current);
-  }
+/**
+ * Builds list items from descendant pages (FR-004). Sources the index via the
+ * shared indexUtils so it resolves correctly in Universal Editor (author),
+ * preview, and published environments.
+ */
+async function fetchChildPageItems(cfg, ph, labelOf) {
+  if (!cfg.parentPage) return [];
+
+  // Populate / refresh the shared index cache (handles the UE .resource path).
+  await indexUtils.getIndexData();
+  const rootPath = indexUtils.rootPath || '';
+  const flat = getFlatIndex();
+  if (!flat.length) return [];
+
+  const parent = normalizeLookupPath(cfg.parentPage, rootPath);
+  const parentSegs = parent.split('/').filter(Boolean).length;
+  const depth = Math.max(1, cfg.childDepth || 1);
+  const current = normalizeLookupPath(window.location.pathname, rootPath);
+
+  let items = flat
+    .map((page) => ({ page, sitePath: normalizeLookupPath(page.path, rootPath) }))
+    .filter(({ page, sitePath }) => {
+      if (!sitePath || sitePath === parent) return false;
+      const under = parent === '/' ? sitePath !== '/' : sitePath.startsWith(`${parent}/`);
+      if (!under) return false;
+      const beyond = sitePath.split('/').filter(Boolean).length - parentSegs;
+      if (beyond < 1 || beyond > depth) return false;
+      if (cfg.excludeCurrentPage && sitePath === current) return false;
+      return page.hidefromnavigation !== 'true';
+    });
 
   const dir = cfg.sortOrder === 'desc' ? -1 : 1;
   if (cfg.orderBy === 'title') {
-    items.sort((a, b) => dir * (a.title || '').localeCompare(b.title || ''));
+    items.sort((a, b) => dir
+      * pageTitle(a.page, a.sitePath).localeCompare(pageTitle(b.page, b.sitePath)));
   } else if (cfg.orderBy === 'last-modified') {
-    items.sort((a, b) => dir * ((a.lastModified || 0) - (b.lastModified || 0)));
+    items.sort((a, b) => dir * (toMs(a.page.lastModified) - toMs(b.page.lastModified)));
   } else if (cfg.orderBy === 'published') {
-    items.sort((a, b) => dir * ((a.publishDate || 0) - (b.publishDate || 0)));
+    items.sort((a, b) => dir * (toMs(a.page.publishDate) - toMs(b.page.publishDate)));
   }
 
   if (cfg.maxItems) items = items.slice(0, cfg.maxItems);
 
-  return items.map((page) => {
+  return items.map(({ page, sitePath }) => {
     const li = document.createElement('li');
     li.className = 'sll-item';
     const tags = page.tags ? splitTags(page.tags) : [];
     if (tags.length) li.dataset.tags = JSON.stringify(tags);
 
-    const href = page.path;
+    const title = pageTitle(page, sitePath);
     const anchor = document.createElement('a');
     anchor.className = 'sll-item-link';
-    anchor.href = href;
-    if (isExternalUrl(href)) anchor.classList.add('sll-item-link-external');
+    anchor.href = sitePath;
+    if (isExternalUrl(sitePath)) anchor.classList.add('sll-item-link-external');
     const textSpan = document.createElement('span');
     textSpan.className = 'sll-item-text';
-    textSpan.textContent = page.title || href;
+    textSpan.textContent = title;
     anchor.append(textSpan);
     li.append(anchor);
-    const openLink = buildOpenLink(href, page.title || href, false, ph);
+    const openLink = buildOpenLink(sitePath, title, false, ph);
     if (openLink) li.append(openLink);
 
     if (cfg.enableSubtitle && page.subtitle) {
@@ -602,11 +622,11 @@ async function fetchChildPageItems(cfg, ph, labelOf) {
       li.append(desc);
     }
     if (cfg.enableDate) {
-      const dateVal = page.publishDate || page.lastModified;
-      if (dateVal) {
+      const dateMs = toMs(page.publishDate) || toMs(page.lastModified);
+      if (dateMs) {
         const time = document.createElement('time');
         time.className = 'sll-item-date';
-        const d = new Date(dateVal * 1000);
+        const d = new Date(dateMs);
         time.dateTime = d.toISOString();
         time.textContent = d.toLocaleDateString();
         li.append(time);
