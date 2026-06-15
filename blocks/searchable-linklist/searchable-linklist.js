@@ -280,9 +280,10 @@ function collectItemEls(block, cfg) {
 
   // Universal Editor: items only ever appear as instrumented link-list-item
   // elements (handled above). Never fall back to raw rows here — the block's own
-  // authored config fields render as instrumented rows and must not be mistaken
-  // for items (doing so steals their instrumentation and spawns phantom blocks).
-  if (block.querySelector('[data-aue-prop], [data-aue-resource]') || !cfg.usesRowConfig) {
+  // authored config fields render as rows and must not be mistaken for items
+  // (doing so steals their instrumentation and spawns phantom blocks). Gate on the
+  // environment, not on DOM contents, so a sparsely-filled block can't slip through.
+  if (isUniversalEditor() || !cfg.usesRowConfig) {
     return [];
   }
 
