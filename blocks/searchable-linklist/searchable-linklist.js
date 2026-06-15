@@ -15,8 +15,9 @@
 
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { fetchPlaceholders } from '../../scripts/placeholders.js';
-import { createIcon } from '../../scripts/utils.js';
-import indexUtils, { normalizeLookupPath } from '../../scripts/index-utils.js';
+import { createIcon, isUniversalEditor } from '../../scripts/utils.js';
+import { normalizeLookupPath } from '../../scripts/index-utils.js';
+import { getConfigValue } from '../../scripts/config.js';
 
 // ---------------------------------------------------------------------------
 // Small parsing helpers
@@ -527,13 +528,33 @@ function toMs(val) {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
-/** Reads the flat query-index array cached by indexUtils.getIndexData(). */
-function getFlatIndex() {
-  try {
-    const raw = sessionStorage.getItem('abbvie-index-data-raw');
-    if (raw) return JSON.parse(raw).data || [];
-  } catch {
-    /* sessionStorage unavailable or malformed */
+/**
+ * Fetches the flat query-index rows. In Universal Editor / author the index is
+ * served from {currentPage}.resource/query-index.json; on EDS it is at the site
+ * root. Tries each candidate and returns the first that responds with data.
+ */
+async function fetchIndexRows() {
+  const base = window.hlx?.codeBasePath ?? '';
+  const current = window.location.pathname.replace(/\.html$/i, '');
+  const candidates = [];
+  if (isUniversalEditor()) candidates.push(`${current}.resource/query-index.json`);
+  candidates.push(`${base}/query-index.json`.replace(/\/{2,}/g, '/'));
+  candidates.push('/query-index.json');
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const url of [...new Set(candidates)]) {
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      const resp = await fetch(url);
+      // eslint-disable-next-line no-await-in-loop
+      if (resp.ok) {
+        // eslint-disable-next-line no-await-in-loop
+        const json = await resp.json();
+        if (Array.isArray(json.data) && json.data.length) return json.data;
+      }
+    } catch {
+      /* try the next candidate */
+    }
   }
   return [];
 }
@@ -555,10 +576,8 @@ function pageTitle(page, sitePath) {
 async function fetchChildPageItems(cfg, ph, labelOf) {
   if (!cfg.parentPage) return [];
 
-  // Populate / refresh the shared index cache (handles the UE .resource path).
-  await indexUtils.getIndexData();
-  const rootPath = indexUtils.rootPath || '';
-  const flat = getFlatIndex();
+  const rootPath = (await getConfigValue('rootPath')) || '';
+  const flat = await fetchIndexRows();
   if (!flat.length) return [];
 
   const parent = normalizeLookupPath(cfg.parentPage, rootPath);
