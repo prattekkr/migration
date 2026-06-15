@@ -3,310 +3,51 @@
  * NW-2164 – Corporate Boilerplate | Searchable Linklist Block
  *
  * Renders a filterable list of links supporting:
- *  - Real-time text search
- *  - Category tag filtering
- *  - Child Pages or Custom data sources
- *  - Single / Two-column layouts
- *  - Icon support (font or image), confirmation modals, accessibility
+ *  - FR-001 Real-time, case-insensitive title search
+ *  - FR-002 Category tag filtering (intersection / OR) driven by parent Category Tags
+ *  - FR-003 Reset control + empty / zero-result states
+ *  - FR-004 Child Pages / Icons / Custom link sources
+ *  - FR-005 Single / Two-column layouts
+ *  - FR-006 Per-item link behavior (new tab, icons, confirmation modal, deep-link Id)
+ *  - FR-008 Cross-block filtering of a separate region via Search In ID
+ *  - NFR-001 WCAG AA semantics; NFR-004 i18n via EDS placeholder sheets
  */
 
 import { moveInstrumentation } from '../../scripts/scripts.js';
+import { fetchPlaceholders } from '../../scripts/placeholders.js';
+import { createIcon } from '../../scripts/utils.js';
 
 // ---------------------------------------------------------------------------
-// Placeholder / i18n helpers
+// Small parsing helpers
 // ---------------------------------------------------------------------------
 
-/**
- * Fetches the EDS placeholder sheet for the current locale.
- * Falls back gracefully to an empty map.
- * @returns {Promise<Object>} key→value map of placeholders
- */
-async function fetchPlaceholders() {
-  try {
-    const resp = await fetch('/placeholder.json');
-    if (!resp.ok) return {};
-    const json = await resp.json();
-    return (json.data || []).reduce((acc, { Key, Value }) => {
-      acc[Key] = Value;
-      return acc;
-    }, {});
-  } catch {
-    return {};
-  }
+function parseBool(val, fallback = false) {
+  const v = String(val ?? '').trim().toLowerCase();
+  if (v === 'true') return true;
+  if (v === 'false') return false;
+  return fallback;
 }
 
-// ---------------------------------------------------------------------------
-// DOM helpers
-// ---------------------------------------------------------------------------
-
-/**
- * Returns true when an element belongs to a child Link List Item.
- * @param {Element} el property element to inspect
- * @returns {boolean}
- */
-function isLinkListItemProp(el) {
-  return !!el.closest(
-    '[data-aue-component="link-list-item"], [data-aue-model="link-list-item"], [data-aue-resource*="link_list_item"], [data-aue-resource*="link-list-item"]',
-  );
+function parseIntSafe(val, fallback) {
+  const n = parseInt(String(val ?? '').trim(), 10);
+  return Number.isFinite(n) ? n : fallback;
 }
 
-/**
- * Reads a Universal Editor property element that belongs to the parent block.
- * @param {Element} block block element
- * @param {string} name property name
- * @returns {Element|null}
- */
-function getAuePropElement(block, name) {
-  return [...block.querySelectorAll(`[data-aue-prop="${name}"]`)]
-    .find((el) => !isLinkListItemProp(el)) ?? null;
+/** Strips the "lang:" prefix used by the shared language field and normalizes "none". */
+function normalizeLang(val) {
+  const lang = String(val ?? '').replace(/^lang:/, '').trim();
+  return lang && lang.toLowerCase() !== 'none' ? lang : '';
 }
 
-/**
- * Reads a named block property from data attributes or Universal Editor markup.
- */
-function getProp(block, name, fallback = '') {
-  if (block.dataset[name] != null) return block.dataset[name];
-
-  const propEl = getAuePropElement(block, name);
-  if (!propEl) return fallback;
-
-  return propEl.querySelector('a')?.getAttribute('href')
-    || propEl.textContent?.trim()
-    || fallback;
+/** Splits an authored/UE tag string (CSV, newlines, pipes) into trimmed tokens. */
+function splitTags(raw) {
+  return String(raw ?? '')
+    .split(/\r\n|\n|\r|,|;|\|/g)
+    .map((t) => t.trim())
+    .filter((t) => t && t.toLowerCase() !== 'none');
 }
 
-/**
- * Gets field cells from a rendered row, handling both flat and nested row output.
- * @param {Element} row rendered config or item row
- * @returns {Element[]}
- */
-function getRowCells(row) {
-  const direct = [...row.children];
-  const nested = [...row.querySelectorAll(':scope > div > div')];
-  return nested.length > direct.length ? nested : direct;
-}
-
-/**
- * Reads plain text from a row cell.
- * @param {Element[]} cells row cells
- * @param {number} index cell index
- * @returns {string}
- */
-function cellText(cells, index) {
-  return cells[index]?.textContent.trim() ?? '';
-}
-
-/**
- * Reads a link href from a row cell, falling back to text.
- * @param {Element[]} cells row cells
- * @param {number} index cell index
- * @returns {string}
- */
-function cellLink(cells, index) {
-  return cells[index]?.querySelector('a')?.getAttribute('href') || cellText(cells, index);
-}
-
-/**
- * Removes a known prefix from a string.
- * @param {string} value source value
- * @param {string} prefix prefix to remove
- * @returns {string}
- */
-function stripPrefix(value, prefix) {
-  return value.startsWith(prefix) ? value.slice(prefix.length) : value;
-}
-
-/**
- * Removes a known suffix from a string.
- * @param {string} value source value
- * @param {string} suffix suffix to remove
- * @returns {string}
- */
-function stripSuffix(value, suffix) {
-  return value.endsWith(suffix) ? value.slice(0, -suffix.length) : value;
-}
-
-/**
- * Converts AEM author content paths into EDS site paths for query-index fetches.
- * @param {string} rawPath authored parent page path
- * @returns {string}
- */
-function normalizeParentPage(rawPath) {
-  if (!rawPath) return '';
-  let path = rawPath.trim();
-  try {
-    if (path.startsWith('http')) path = new URL(path, window.location.origin).pathname;
-  } catch {
-    path = rawPath.trim();
-  }
-  path = path.replace(/\.html$/i, '');
-  path = path.replace(/^\/content\/[^/]+/, '');
-  return path || '/';
-}
-
-/**
- * Parses the collapsed source row emitted by UE when all source fields render in one cell.
- * @param {Element[]} source source row cells
- * @returns {Object|null}
- */
-function parseCollapsedSourceConfig(source) {
-  const text = cellText(source, 0);
-  let linkSource = '';
-  if (text.startsWith('child-pages')) {
-    linkSource = 'child-pages';
-  } else if (text.startsWith('custom')) {
-    linkSource = 'custom';
-  }
-  if (!linkSource) return null;
-
-  const parentPage = normalizeParentPage(cellLink(source, 0));
-  const parentText = source[0]?.querySelector('a')?.textContent.trim() || parentPage.replace(/\.html$/i, '');
-  let remaining = stripPrefix(text, linkSource);
-  remaining = stripPrefix(remaining, parentText);
-
-  const maxItemsMatch = remaining.match(/(\d+)$/);
-  const maxItems = maxItemsMatch?.[1] ?? '';
-  if (maxItems) remaining = stripSuffix(remaining, maxItems);
-
-  const sortOrderMatch = remaining.match(/(asc|desc)$/);
-  const sortOrder = sortOrderMatch?.[1] ?? 'asc';
-  if (sortOrderMatch) remaining = stripSuffix(remaining, sortOrder);
-
-  const orderBy = ['last-modified', 'content-tree', 'published', 'title']
-    .find((value) => remaining.endsWith(value)) ?? 'content-tree';
-  remaining = stripSuffix(remaining, orderBy);
-
-  const childDepthMatch = remaining.match(/^(\d+)/);
-  const childDepth = childDepthMatch?.[1] ?? '1';
-
-  return {
-    linkSource,
-    parentPage,
-    childDepth,
-    excludeCurrentPage: 'false',
-    enableDescription: 'false',
-    enableTags: 'false',
-    enableSubtitle: 'false',
-    enableDate: 'false',
-    orderBy,
-    sortOrder,
-    maxItems,
-  };
-}
-
-/**
- * Logs rendered row candidates used by the row-based config fallback.
- * @param {Element[]} rows block child rows
- */
-function logRowConfigCandidates(rows) {
-  /* eslint-disable no-console */
-  console.log('[searchable-linklist] row config candidates');
-  console.table(rows.map((row, rowIndex) => {
-    const cells = getRowCells(row);
-    return {
-      rowIndex,
-      className: row.className,
-      aueProp: row.dataset?.aueProp ?? '',
-      aueModel: row.dataset?.aueModel ?? '',
-      cellCount: cells.length,
-      rowText: row.textContent.trim(),
-      cells: cells.map((cell) => cell.textContent.trim()).join(' | '),
-      links: cells
-        .map((cell) => cell.querySelector('a')?.getAttribute('href') || '')
-        .filter(Boolean)
-        .join(' | '),
-    };
-  }));
-  /* eslint-enable no-console */
-}
-
-/**
- * Reads parent block config from rendered model rows when UE property attrs are absent.
- * Row order follows the searchable-linklist model: advanced, search, source, layout.
- * @param {Element} block block element
- * @returns {Object|null}
- */
-function readRowBlockConfig(block) {
-  const rows = [...block.children];
-  logRowConfigCandidates(rows);
-  const advanced = getRowCells(rows[0] ?? document.createElement('div'));
-  const search = getRowCells(rows[1] ?? document.createElement('div'));
-  const source = getRowCells(rows[2] ?? document.createElement('div'));
-  const layout = getRowCells(rows[3] ?? document.createElement('div'));
-  const collapsedSource = parseCollapsedSourceConfig(source);
-  const linkSource = collapsedSource?.linkSource ?? cellText(source, 0);
-
-  if (!['child-pages', 'custom'].includes(linkSource)) return null;
-
-  return {
-    usesRowConfig: true,
-    id: cellText(advanced, 0),
-    customClass: cellText(advanced, 1),
-    analyticsId: cellText(advanced, 2),
-    lang: cellText(advanced, 3) || 'en',
-    searchHint: cellText(search, 0),
-    searchIcon: cellText(search, 1) || 'none',
-    searchIconText: cellText(search, 2),
-    searchIconAlt: cellLink(search, 3),
-    browseCategories: cellText(search, 4),
-    resetCategories: cellText(search, 5),
-    linkSource,
-    parentPage: collapsedSource?.parentPage ?? normalizeParentPage(cellLink(source, 1)),
-    childDepth: (collapsedSource?.childDepth ?? cellText(source, 2)) || '1',
-    excludeCurrentPage: (collapsedSource?.excludeCurrentPage ?? cellText(source, 3)) || 'false',
-    enableDescription: (collapsedSource?.enableDescription ?? cellText(source, 4)) || 'false',
-    enableTags: (collapsedSource?.enableTags ?? cellText(source, 5)) || 'false',
-    enableSubtitle: (collapsedSource?.enableSubtitle ?? cellText(source, 6)) || 'false',
-    enableDate: (collapsedSource?.enableDate ?? cellText(source, 7)) || 'false',
-    orderBy: (collapsedSource?.orderBy ?? cellText(source, 8)) || 'content-tree',
-    sortOrder: (collapsedSource?.sortOrder ?? cellText(source, 9)) || 'asc',
-    maxItems: collapsedSource?.maxItems ?? cellText(source, 10),
-    layout: cellText(layout, 0) || 'single-column',
-  };
-}
-
-/**
- * Builds the block configuration from authored properties.
- * @param {Element} block block element
- * @returns {Object}
- */
-function readBlockConfig(block) {
-  const cfg = {
-    id: getProp(block, 'id'),
-    customClass: getProp(block, 'customClass'),
-    browseCategories: getProp(block, 'browseCategories'),
-    resetCategories: getProp(block, 'resetCategories'),
-    searchHint: getProp(block, 'searchHint'),
-    searchIcon: getProp(block, 'searchIcon', 'none'),
-    searchIconText: getProp(block, 'searchIconText'),
-    searchIconAlt: getProp(block, 'searchIconAlt'),
-    linkSource: getProp(block, 'linkSource', 'custom'),
-    parentPage: getProp(block, 'parentPage'),
-    childDepth: getProp(block, 'childDepth', '1'),
-    excludeCurrentPage: getProp(block, 'excludeCurrentPage', 'false'),
-    enableDescription: getProp(block, 'enableDescription', 'false'),
-    enableTags: getProp(block, 'enableTags', 'false'),
-    enableSubtitle: getProp(block, 'enableSubtitle', 'false'),
-    enableDate: getProp(block, 'enableDate', 'false'),
-    orderBy: getProp(block, 'orderBy', 'content-tree'),
-    sortOrder: getProp(block, 'sortOrder', 'asc'),
-    maxItems: getProp(block, 'maxItems'),
-    layout: getProp(block, 'layout', 'single-column'),
-    analyticsId: getProp(block, 'analyticsId'),
-    lang: getProp(block, 'lang', 'en'),
-  };
-
-  const rowCfg = readRowBlockConfig(block);
-  if (cfg.linkSource === 'custom' && !cfg.parentPage && rowCfg) {
-    return { ...cfg, ...rowCfg };
-  }
-
-  return cfg;
-}
-
-/**
- * Returns true when a URL points outside the current origin.
- */
+/** Returns true when a URL points outside the current origin. */
 function isExternalUrl(href) {
   try {
     return new URL(href, window.location).origin !== window.location.origin;
@@ -315,143 +56,320 @@ function isExternalUrl(href) {
   }
 }
 
-/**
- * Logs the raw query-index response used by the child-pages data source.
- * This is intentionally verbose while validating searchable-linklist content.
- * @param {string} indexUrl query-index URL fetched by the block
- * @param {Object} json full query-index JSON response
- */
-function logQueryIndexResponse(indexUrl, json) {
-  /* eslint-disable no-console */
-  console.groupCollapsed(`[searchable-linklist] query-index response: ${indexUrl}`);
-  console.info('Total records returned:', json.data?.length ?? 0);
-  console.log(json);
-  if (json.data?.length) console.table(json.data);
-  console.groupEnd();
-  /* eslint-enable no-console */
-}
-
-/**
- * Logs query-index records that remain visible after search/category filtering.
- * @param {string} searchText current search text
- * @param {Set<string>} activeTagSet currently selected category tags
- * @param {number} visibleCount number of visible list items
- * @param {Object[]} matchingRecords matching query-index records
- */
-function logQueryIndexSearch(searchText, activeTagSet, visibleCount, matchingRecords) {
-  /* eslint-disable no-console */
-  console.groupCollapsed('[searchable-linklist] query-index search results');
-  console.info('Search text:', searchText);
-  console.info('Active tags:', [...activeTagSet]);
-  console.info('Visible items:', visibleCount);
-  if (matchingRecords.length) {
-    console.table(matchingRecords);
-  } else {
-    console.info('No query-index records matched the current filters.');
+/** Converts AEM author content paths into EDS site paths for query-index fetches. */
+function normalizeParentPage(rawPath) {
+  if (!rawPath) return '';
+  let path = String(rawPath).trim();
+  try {
+    if (path.startsWith('http')) path = new URL(path, window.location.origin).pathname;
+  } catch {
+    path = String(rawPath).trim();
   }
-  console.groupEnd();
-  /* eslint-enable no-console */
-}
-
-/**
- * Logs the block config read from authored data attributes.
- * @param {Object} cfg block config
- * @param {DOMStringMap} dataset authored block dataset
- */
-function logBlockConfig(cfg, dataset) {
-  /* eslint-disable no-console */
-  console.groupCollapsed('[searchable-linklist] block config');
-  console.info('cfg:', cfg);
-  console.info('dataset:', { ...dataset });
-  console.groupEnd();
-  /* eslint-enable no-console */
-}
-
-/**
- * Logs what happened immediately after search input changed.
- * @param {string} searchText current search text
- * @param {Object} summary filter summary from applyFilters
- */
-function logSearchInputChange(searchText, summary) {
-  /* eslint-disable no-console */
-  console.log('[searchable-linklist] search input changed', {
-    searchText,
-    normalizedQuery: summary.query,
-    activeTags: summary.activeTags,
-    totalItems: summary.totalItems,
-    visibleCount: summary.visibleCount,
-    hiddenCount: summary.hiddenCount,
-  });
-  console.table(summary.results);
-  if (summary.matchingQueryIndexItems.length) {
-    console.log('[searchable-linklist] matching query-index records');
-    console.table(summary.matchingQueryIndexItems);
-  }
-  /* eslint-enable no-console */
-}
-
-/**
- * Logs how source records become rendered list items.
- * @param {Object} summary source processing summary
- */
-function logItemSourceSummary(summary) {
-  /* eslint-disable no-console */
-  console.log('[searchable-linklist] item source summary', summary);
-  if (summary.queryIndexItems?.length) {
-    console.log('[searchable-linklist] query-index source records');
-    console.table(summary.queryIndexItems);
-  }
-  if (summary.renderedItems?.length) {
-    console.log('[searchable-linklist] rendered list items');
-    console.table(summary.renderedItems);
-  }
-  /* eslint-enable no-console */
+  path = path.replace(/\.html$/i, '');
+  path = path.replace(/^\/content\/[^/]+/, '');
+  return path || '/';
 }
 
 // ---------------------------------------------------------------------------
-// Icon rendering
+// Taxonomy (tags.json) resolution — FR-002
 // ---------------------------------------------------------------------------
 
+const TAGS_CACHE_KEY = 'abbvie-tags-json-lookup-v1';
+let tagsLookupPromise = null;
+
+/** Resolves the tags.json URL for both Universal Editor and published EDS. */
+function getTagsJsonUrl() {
+  const isUE = !!document.querySelector('[data-aue-resource]');
+  if (isUE) {
+    const current = window.location.pathname.replace(/\.html$/i, '');
+    return `${current}.resource/tags.json`;
+  }
+  const base = window.hlx?.codeBasePath ?? '';
+  return `${base}/tags.json`.replace(/\/{2,}/g, '/');
+}
+
 /**
- * Builds an icon element (font-icon span or img) from block/item config.
- * @param {'icon-font'|'image'|'none'} type
- * @param {string} fontIconName  - glyph class name when type = 'icon-font'
- * @param {string} imageSrc      - asset path when type = 'image'
- * @param {string} altText
- * @returns {HTMLElement|null}
+ * Loads tags.json once and returns an ordered map of tag id → display title.
+ * Rows are shaped { tag, title } (same as /tags.json on aem.page).
  */
-function buildIcon(type, fontIconName, imageSrc, altText = '') {
-  if (type === 'icon-font' && fontIconName) {
-    const span = document.createElement('span');
-    span.className = `icon icon-${fontIconName}`;
-    span.setAttribute('aria-hidden', 'true');
-    return span;
+async function getTagsLookup() {
+  if (tagsLookupPromise) return tagsLookupPromise;
+  tagsLookupPromise = (async () => {
+    const map = new Map();
+    try {
+      const cached = sessionStorage.getItem(TAGS_CACHE_KEY);
+      if (cached) {
+        Object.entries(JSON.parse(cached)).forEach(([id, title]) => map.set(id, title));
+        if (map.size) return map;
+      }
+    } catch {
+      /* ignore cache errors */
+    }
+    try {
+      const resp = await fetch(getTagsJsonUrl(), { credentials: 'same-origin' });
+      if (resp.ok) {
+        const json = await resp.json();
+        (json.data || []).forEach((row) => {
+          const id = String(row.tag ?? row.id ?? '').trim();
+          const title = String(row.title ?? row.name ?? '').trim();
+          if (id && title) map.set(id, title);
+        });
+        try {
+          sessionStorage.setItem(TAGS_CACHE_KEY, JSON.stringify(Object.fromEntries(map)));
+        } catch {
+          /* sessionStorage may be full */
+        }
+      }
+    } catch {
+      /* taxonomy unavailable — callers fall back to heuristic labels */
+    }
+    return map;
+  })();
+  return tagsLookupPromise;
+}
+
+/** Derives a readable label from a tag id when tags.json has no title. */
+function tagIdToLabel(id) {
+  const seg = String(id || '').split('/').pop() || String(id || '');
+  const afterColon = seg.includes(':') ? seg.slice(seg.indexOf(':') + 1) : seg;
+  return afterColon.replace(/[-_]+/g, ' ').trim().replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+/** True when `id` is a descendant tag of `parentId` (path-prefix relationship). */
+function isChildTag(id, parentId) {
+  if (!id || !parentId || id === parentId) return false;
+  return id.startsWith(`${parentId}/`);
+}
+
+// ---------------------------------------------------------------------------
+// Universal Editor / published EDS property readers
+// ---------------------------------------------------------------------------
+
+/** True when `el` belongs to a nested Link List Item (not the parent block). */
+function isItemProp(el) {
+  return !!el.closest(
+    '[data-aue-model="link-list-item"], [data-aue-resource*="link-list-item"], .link-list-item',
+  );
+}
+
+/** Reads a parent-block property element by name, skipping nested item props. */
+function getBlockPropEl(block, name) {
+  return [...block.querySelectorAll(`[data-aue-prop="${name}"]`)]
+    .find((el) => !isItemProp(el)) ?? null;
+}
+
+/** Reads a block property's text value (UE), with optional fallback. */
+function blockText(block, name, fallback = '') {
+  const el = getBlockPropEl(block, name);
+  return el ? (el.textContent?.trim() || fallback) : fallback;
+}
+
+/** Reads a block property's href (UE), falling back to text then default. */
+function blockHref(block, name, fallback = '') {
+  const el = getBlockPropEl(block, name);
+  if (!el) return fallback;
+  return el.querySelector('a')?.getAttribute('href') || el.textContent?.trim() || fallback;
+}
+
+/** Collects category-tag tokens from a parent-block categoryTags prop. */
+function blockTags(block, name) {
+  const el = getBlockPropEl(block, name);
+  if (!el) return [];
+  const chips = [...el.children].map((c) => c.textContent?.trim()).filter(Boolean);
+  const tokens = chips.length > 1 ? chips : splitTags(el.textContent);
+  return [...new Set(tokens.flatMap((t) => splitTags(t)))];
+}
+
+/**
+ * Builds block configuration. Prefers UE data-aue-prop markup; falls back to
+ * published-EDS rows rendered in model order when no UE props are present.
+ */
+function readBlockConfig(block) {
+  const ueMode = !!block.querySelector('[data-aue-prop]');
+
+  if (ueMode) {
+    return {
+      searchHint: blockText(block, 'searchHint'),
+      searchIcon: blockText(block, 'searchIcon', 'none'),
+      searchIconText: blockText(block, 'searchIconText'),
+      searchIconAlt: blockHref(block, 'searchIconAlt'),
+      categoryTags: blockTags(block, 'categoryTags'),
+      browseCategories: blockText(block, 'browseCategories'),
+      resetCategories: blockText(block, 'resetCategories'),
+      linkSource: blockText(block, 'linkSource', 'custom'),
+      parentPage: blockHref(block, 'parentPage'),
+      childDepth: parseIntSafe(blockText(block, 'childDepth'), 1),
+      excludeCurrentPage: parseBool(blockText(block, 'excludeCurrentPage'), false),
+      enableDescription: parseBool(blockText(block, 'enableDescription'), false),
+      enableTags: parseBool(blockText(block, 'enableTags'), false),
+      enableSubtitle: parseBool(blockText(block, 'enableSubtitle'), false),
+      enableDate: parseBool(blockText(block, 'enableDate'), false),
+      orderBy: blockText(block, 'orderBy', 'content-tree'),
+      sortOrder: blockText(block, 'sortOrder', 'asc'),
+      maxItems: parseIntSafe(blockText(block, 'maxItems'), 25),
+      layout: blockText(block, 'layout', 'single-column'),
+      id: blockText(block, 'id'),
+      customClass: blockText(block, 'customClass'),
+      searchInId: blockText(block, 'searchInId'),
+      analyticsId: blockText(block, 'analyticsId'),
+      lang: normalizeLang(blockText(block, 'language')),
+    };
+  }
+
+  // Published EDS: parent config rows precede the authored item rows, in model order.
+  const rows = [...block.children];
+  const ct = (i) => rows[i]?.textContent?.trim() || '';
+  const cl = (i) => rows[i]?.querySelector('a')?.getAttribute('href') || ct(i);
+  const tagRow = (i) => {
+    const chips = [...(rows[i]?.children || [])].map((c) => c.textContent?.trim()).filter(Boolean);
+    const tokens = chips.length > 1 ? chips : splitTags(ct(i));
+    return [...new Set(tokens.flatMap((t) => splitTags(t)))];
+  };
+
+  return {
+    searchHint: ct(0),
+    searchIcon: ct(1) || 'none',
+    searchIconText: ct(2),
+    searchIconAlt: cl(3),
+    categoryTags: tagRow(4),
+    browseCategories: ct(5),
+    resetCategories: ct(6),
+    linkSource: ct(7) || 'custom',
+    parentPage: cl(8),
+    childDepth: parseIntSafe(ct(9), 1),
+    excludeCurrentPage: parseBool(ct(10), false),
+    enableDescription: parseBool(ct(11), false),
+    enableTags: parseBool(ct(12), false),
+    enableSubtitle: parseBool(ct(13), false),
+    enableDate: parseBool(ct(14), false),
+    orderBy: ct(15) || 'content-tree',
+    sortOrder: ct(16) || 'asc',
+    maxItems: parseIntSafe(ct(17), 25),
+    layout: ct(18) || 'single-column',
+    id: ct(19),
+    customClass: ct(20),
+    searchInId: ct(21),
+    analyticsId: ct(22),
+    lang: normalizeLang(ct(23)),
+    usesRowConfig: true,
+    configRowCount: 24,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Custom item reading
+// ---------------------------------------------------------------------------
+
+/** True when an element is a rendered Link List Item. */
+function isItemEl(el) {
+  if (!el || el.nodeType !== 1) return false;
+  return (
+    el.classList.contains('link-list-item')
+    || el.getAttribute('data-aue-model') === 'link-list-item'
+    || (el.getAttribute('data-aue-resource') || '').includes('link-list-item')
+  );
+}
+
+/** Returns the rendered Link List Item elements for a Custom-source block. */
+function collectItemEls(block, cfg) {
+  const direct = [...block.children].filter(isItemEl);
+  if (direct.length) return direct;
+
+  const nested = [...block.querySelectorAll(
+    '.link-list-item, [data-aue-model="link-list-item"], [data-aue-resource*="link-list-item"]',
+  )];
+  if (nested.length) return nested;
+
+  // Published EDS without item classes: rows after the parent config rows.
+  const start = cfg.usesRowConfig ? cfg.configRowCount : 0;
+  return [...block.children].slice(start).filter((el) => el.querySelector('a[href]') || el.textContent.trim());
+}
+
+/** Reads a single item's config by data-aue-prop (UE) with positional fallback. */
+function readItemConfig(itemEl) {
+  const ueText = (name) => {
+    const el = itemEl.querySelector(`[data-aue-prop="${name}"]`);
+    return el ? el.textContent?.trim() ?? null : null;
+  };
+  const ueHref = (name) => {
+    const el = itemEl.querySelector(`[data-aue-prop="${name}"]`);
+    if (!el) return null;
+    return el.querySelector('a')?.getAttribute('href') || el.textContent?.trim() || null;
+  };
+  const ueImg = (name) => {
+    const el = itemEl.querySelector(`[data-aue-prop="${name}"]`);
+    if (!el) return null;
+    if (el.tagName?.toLowerCase() === 'img') return el.getAttribute('src');
+    return el.querySelector('img')?.getAttribute('src') || ueHref(name);
+  };
+  const ueTags = (name) => {
+    const el = itemEl.querySelector(`[data-aue-prop="${name}"]`);
+    if (!el) return null;
+    const chips = [...el.children].map((c) => c.textContent?.trim()).filter(Boolean);
+    const tokens = chips.length > 1 ? chips : splitTags(el.textContent);
+    return [...new Set(tokens.flatMap((t) => splitTags(t)))];
+  };
+
+  const hasUe = !!itemEl.querySelector('[data-aue-prop]');
+
+  // Positional fallback in item model order (published EDS).
+  const rows = [...itemEl.children];
+  const ct = (i) => rows[i]?.textContent?.trim() || '';
+  const cl = (i) => rows[i]?.querySelector('a')?.getAttribute('href') || ct(i);
+  const cimg = (i) => rows[i]?.querySelector('img')?.getAttribute('src') || '';
+  const descCell = () => {
+    const el = hasUe
+      ? itemEl.querySelector('[data-aue-prop="description"]')
+      : rows[4];
+    return el && el.children.length ? el : null;
+  };
+
+  return {
+    link: hasUe ? (ueHref('link') ?? '') : cl(0),
+    openInNewTab: parseBool(hasUe ? ueText('openInNewTab') : ct(1), false),
+    linkText: (hasUe ? ueText('linkText') : ct(2)) || '',
+    subtitle: (hasUe ? ueText('subtitle') : ct(3)) || '',
+    descriptionEl: descCell(),
+    categoryTags: (hasUe ? ueTags('categoryTags') : null)
+      ?? [...new Set(splitTags(ct(5)).flatMap((t) => splitTags(t)))],
+    iconType: (hasUe ? ueText('iconType') : ct(6)) || 'none',
+    fontIcon: (hasUe ? ueText('fontIcon') : ct(7)) || '',
+    imageIcon: (hasUe ? ueImg('imageIcon') : cimg(8)) || '',
+    iconPosition: (hasUe ? ueText('iconPosition') : ct(9)) || 'before',
+    iconLink: (hasUe ? ueHref('iconLink') : cl(10)) || '',
+    enableModal: parseBool(hasUe ? ueText('enableConfirmationModal') : ct(11), false),
+    modalType: (hasUe ? ueText('confirmationModalType') : ct(12)) || 'standard',
+    modalId: (hasUe ? ueText('modalId') : ct(13)) || '',
+    id: (hasUe ? ueText('id') : ct(14)) || '',
+    customClass: (hasUe ? ueText('customClass') : ct(15)) || '',
+    analyticsId: (hasUe ? ueText('analyticsId') : ct(16)) || '',
+    lang: normalizeLang(hasUe ? ueText('language') : ct(17)),
+    ariaLabel: (hasUe ? ueText('ariaLabel') : ct(18)) || '',
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Icon + link controls
+// ---------------------------------------------------------------------------
+
+/** Builds an icon element from item/block config. Maps model values to createIcon types. */
+function buildIcon(type, fontIconName, imageSrc) {
+  if ((type === 'icon-font' || type === 'font') && fontIconName) {
+    return createIcon(fontIconName, 'icon-font', { additionalClasses: 'sll-item-icon' });
   }
   if (type === 'image' && imageSrc) {
-    const img = document.createElement('img');
-    img.src = imageSrc;
-    img.alt = altText;
-    img.className = 'sll-item-icon-img';
-    img.loading = 'lazy';
-    return img;
+    return createIcon(imageSrc, 'image', { additionalClasses: 'sll-item-icon sll-item-icon-img' });
   }
   return null;
 }
 
-/**
- * Builds the upper-right open-link control for a result item.
- * @param {string} href destination URL
- * @param {string} label accessible link label
- * @param {boolean} openNewTab whether to open in a new tab
- * @returns {HTMLAnchorElement|null}
- */
-function buildOpenLink(href, label, openNewTab = false) {
+/** Builds the upper-right open-link control. */
+function buildOpenLink(href, label, openNewTab, ph) {
   if (!href) return null;
-
   const anchor = document.createElement('a');
   anchor.className = 'sll-item-open-link';
   anchor.href = href;
-  anchor.setAttribute('aria-label', `Open ${label}`);
+  anchor.setAttribute('aria-label', `${ph.open || 'Open'} ${label}`);
   if (openNewTab) {
     anchor.target = '_blank';
     anchor.rel = 'noopener noreferrer';
@@ -459,334 +377,194 @@ function buildOpenLink(href, label, openNewTab = false) {
   return anchor;
 }
 
+/** Wires a confirmation modal so navigation proceeds only on confirm (FR-006). */
+function bindConfirmationModal(anchor, item) {
+  const href = item.link;
+  if (!href) return;
+  const navigate = () => {
+    if (item.openInNewTab) window.open(href, '_blank', 'noopener,noreferrer');
+    else window.location.assign(href);
+  };
+
+  anchor.dataset.modalType = item.modalType || 'standard';
+  anchor.dataset.modalId = item.modalId;
+
+  anchor.addEventListener('click', async (e) => {
+    e.preventDefault();
+    // Path-shaped modalId → load a modal fragment; otherwise signal an in-page modal.
+    if (item.modalId.startsWith('/')) {
+      try {
+        const { openModal } = await import(`${window.hlx.codeBasePath}/blocks/modal/modal.js`);
+        await openModal(item.modalId, href, {
+          onConfirm: navigate,
+          modalType: item.modalType || 'standard',
+        });
+        return;
+      } catch {
+        navigate();
+        return;
+      }
+    }
+    const modal = document.getElementById(item.modalId);
+    if (modal) {
+      modal.dispatchEvent(new CustomEvent('open', {
+        detail: { href, modalType: item.modalType, onConfirm: navigate },
+      }));
+    } else {
+      navigate();
+    }
+  });
+}
+
 // ---------------------------------------------------------------------------
 // Item rendering
 // ---------------------------------------------------------------------------
 
-/**
- * Builds a single <li> list item from an authored row element.
- *
- * In EDS the block renders each Link List Item child as a row of divs.
- * Row layout (by div index):
- *  0: id | customClass
- *  1: link href | openInNewTab | linkText | ariaLabel | lang | analyticsInteractionId
- *  2: subtitle
- *  3: description (rich text)
- *  4: categoryTags (comma-separated tag IDs/titles)
- *  5: iconType | fontIcon | imageIconSrc | iconPosition | iconLink
- *  6: enableConfirmationModal | confirmationModalType | modalId
- */
-function buildListItem(row) {
-  const cells = [...row.children];
-  const get = (i) => cells[i]?.textContent.trim() ?? '';
+/** Builds a display tag chip list, resolving tag ids to titles via labelOf. */
+function buildTagList(tags, ph, labelOf = (t) => t) {
+  const ul = document.createElement('ul');
+  ul.className = 'sll-item-tags';
+  ul.setAttribute('aria-label', ph.categories || 'categories');
+  tags.forEach((tag) => {
+    const li = document.createElement('li');
+    li.className = 'sll-item-tag';
+    li.textContent = labelOf(tag);
+    ul.append(li);
+  });
+  return ul;
+}
 
-  // — Advanced / identity
-  const itemId = get(0).split('|')[0]?.trim();
-  const customClass = get(0).split('|')[1]?.trim();
-
-  // — Link fields
-  const linkParts = get(1).split('|');
-  const href = linkParts[0]?.trim();
-  const openNewTab = linkParts[1]?.trim() === 'true';
-  const linkText = linkParts[2]?.trim() || get(1);
-  const ariaLabel = linkParts[3]?.trim();
-  const itemLang = linkParts[4]?.trim();
-  const analyticsId = linkParts[5]?.trim();
-
-  // — Optional metadata
-  const subtitle = get(2);
-  const descriptionEl = cells[3];
-  const descriptionText = descriptionEl?.textContent.trim() ?? '';
-  const categoryTagsRaw = get(4);
-
-  if (!href && !linkText && !subtitle && !descriptionText && !categoryTagsRaw) {
+/** Builds a single <li> from a Custom Link List Item element. */
+function buildCustomItem(itemEl, ph, labelOf) {
+  const item = readItemConfig(itemEl);
+  if (!item.link && !item.linkText && !item.subtitle && !item.categoryTags.length
+    && !item.descriptionEl) {
     return null;
   }
 
-  // — Icon config
-  const iconParts = get(5).split('|');
-  const iconType = iconParts[0]?.trim() || 'none';
-  const fontIconName = iconParts[1]?.trim();
-  const imageIconSrc = iconParts[2]?.trim();
-  const iconPosition = iconParts[3]?.trim() || 'before';
-  const iconHref = iconParts[4]?.trim();
-
-  // — Modal config
-  const modalParts = get(6).split('|');
-  const enableModal = modalParts[0]?.trim() === 'true';
-  const modalType = modalParts[1]?.trim();
-  const modalId = modalParts[2]?.trim();
-
-  // Build <li>
   const li = document.createElement('li');
   li.className = 'sll-item';
-  if (customClass) li.classList.add(...customClass.split(' ').filter(Boolean));
-  if (itemId) li.id = itemId;
-  if (itemLang) li.lang = itemLang;
+  if (item.id) li.id = item.id;
+  if (item.customClass) li.classList.add(...item.customClass.split(/\s+/).filter(Boolean));
+  if (item.lang) li.lang = item.lang;
+  if (item.categoryTags.length) li.dataset.tags = JSON.stringify(item.categoryTags);
+  moveInstrumentation(itemEl, li);
 
-  // Parse category tags into data attribute for filtering
-  const tags = categoryTagsRaw
-    ? categoryTagsRaw.split(',').map((t) => t.trim()).filter(Boolean)
-    : [];
-  if (tags.length) li.dataset.tags = JSON.stringify(tags);
-
-  moveInstrumentation(row, li);
-
-  // Build icon element
-  const iconEl = buildIcon(iconType, fontIconName, imageIconSrc);
-
-  // Build primary anchor
   const anchor = document.createElement('a');
   anchor.className = 'sll-item-link';
-  if (href) anchor.href = href;
-  if (ariaLabel) anchor.setAttribute('aria-label', ariaLabel);
-  if (analyticsId) anchor.dataset.analyticsInteractionId = analyticsId;
-
-  if (openNewTab) {
+  if (item.link) anchor.href = item.link;
+  if (item.ariaLabel) anchor.setAttribute('aria-label', item.ariaLabel);
+  if (item.analyticsId) anchor.dataset.analyticsInteractionId = item.analyticsId;
+  if (item.openInNewTab) {
     anchor.target = '_blank';
     anchor.rel = 'noopener noreferrer';
   }
-
-  if (isExternalUrl(href)) {
+  if (isExternalUrl(item.link)) {
     anchor.classList.add('sll-item-link-external');
-    const extIndicator = document.createElement('span');
-    extIndicator.className = 'sll-external-indicator';
-    extIndicator.setAttribute('aria-label', '(opens external site)');
-    anchor.append(extIndicator);
+    const ext = document.createElement('span');
+    ext.className = 'sll-external-indicator';
+    ext.setAttribute('aria-label', ph['external-link'] || '(opens external site)');
+    anchor.append(ext);
   }
-
-  if (enableModal) {
-    anchor.dataset.modalType = modalType || 'standard';
-    if (modalId) anchor.dataset.modalId = modalId;
-    anchor.addEventListener('click', (e) => {
-      e.preventDefault();
-      const modal = document.getElementById(modalId);
-      if (modal) modal.dispatchEvent(new CustomEvent('open', { detail: { href, modalType } }));
-    });
-  }
+  if (item.enableModal && item.modalId) bindConfirmationModal(anchor, item);
 
   const textSpan = document.createElement('span');
   textSpan.className = 'sll-item-text';
-  textSpan.textContent = linkText;
+  textSpan.textContent = item.linkText;
 
-  // Icon wrapping the anchor text
-  if (iconEl && iconPosition === 'before') {
-    if (iconHref) {
+  const iconEl = buildIcon(item.iconType, item.fontIcon, item.imageIcon);
+  const placeIcon = (target, position) => {
+    if (!iconEl) return;
+    let node = iconEl;
+    if (item.iconLink) {
       const iconAnchor = document.createElement('a');
-      iconAnchor.href = iconHref;
+      iconAnchor.href = item.iconLink;
       iconAnchor.className = 'sll-item-icon-link';
       iconAnchor.setAttribute('aria-hidden', 'true');
       iconAnchor.tabIndex = -1;
       iconAnchor.append(iconEl);
-      anchor.prepend(iconAnchor);
-    } else {
-      anchor.prepend(iconEl);
+      node = iconAnchor;
     }
-  }
+    if (position === 'before') target.prepend(node);
+    else target.append(node);
+  };
+
+  if (iconEl && item.iconPosition === 'before') placeIcon(anchor, 'before');
   anchor.append(textSpan);
-  if (iconEl && iconPosition === 'after') {
-    if (iconHref) {
-      const iconAnchor = document.createElement('a');
-      iconAnchor.href = iconHref;
-      iconAnchor.className = 'sll-item-icon-link';
-      iconAnchor.setAttribute('aria-hidden', 'true');
-      iconAnchor.tabIndex = -1;
-      iconAnchor.append(iconEl);
-      anchor.append(iconAnchor);
-    } else {
-      anchor.append(iconEl);
-    }
-  }
+  if (iconEl && item.iconPosition !== 'before') placeIcon(anchor, 'after');
 
   li.append(anchor);
-  const openLink = buildOpenLink(href, ariaLabel || linkText, openNewTab);
+  const openLink = buildOpenLink(item.link, item.ariaLabel || item.linkText, item.openInNewTab, ph);
   if (openLink) li.append(openLink);
 
-  // Subtitle
-  if (subtitle) {
-    const subtitleEl = document.createElement('p');
-    subtitleEl.className = 'sll-item-subtitle';
-    subtitleEl.textContent = subtitle;
-    li.append(subtitleEl);
+  if (item.subtitle) {
+    const sub = document.createElement('p');
+    sub.className = 'sll-item-subtitle';
+    sub.textContent = item.subtitle;
+    li.append(sub);
   }
 
-  // Description (rich text – move children from authored cell)
-  if (descriptionEl?.children.length) {
-    const descWrapper = document.createElement('div');
-    descWrapper.className = 'sll-item-description';
-    while (descriptionEl.firstChild) descWrapper.append(descriptionEl.firstChild);
-    li.append(descWrapper);
+  if (item.descriptionEl?.children.length) {
+    const desc = document.createElement('div');
+    desc.className = 'sll-item-description';
+    while (item.descriptionEl.firstChild) desc.append(item.descriptionEl.firstChild);
+    li.append(desc);
   }
 
-  // Category tag chips (display)
-  if (tags.length) {
-    const tagList = document.createElement('ul');
-    tagList.className = 'sll-item-tags';
-    tagList.setAttribute('aria-label', 'categories');
-    tags.forEach((tag) => {
-      const tagLi = document.createElement('li');
-      tagLi.className = 'sll-item-tag';
-      tagLi.textContent = tag;
-      tagList.append(tagLi);
-    });
-    li.append(tagList);
+  if (item.categoryTags.length) {
+    li.append(buildTagList(item.categoryTags, ph, labelOf));
   }
 
   return li;
 }
 
 // ---------------------------------------------------------------------------
-// Child Pages data source
+// Child Pages data source (FR-004)
 // ---------------------------------------------------------------------------
 
-/**
- * Fetches and parses a query-index endpoint.
- * @param {string} indexUrl query-index URL
- * @returns {Promise<Object>} parsed JSON
- */
-async function fetchQueryIndex(indexUrl) {
-  const resp = await fetch(indexUrl);
-  if (!resp.ok) {
-    const error = new Error(`query-index request failed: ${resp.status} ${resp.statusText}`);
-    error.status = resp.status;
-    error.statusText = resp.statusText;
-    error.indexUrl = indexUrl;
-    throw error;
-  }
-  return resp.json();
-}
+async function fetchChildPageItems(cfg, ph, labelOf) {
+  const parentPage = normalizeParentPage(cfg.parentPage);
+  if (!parentPage) return [];
 
-/**
- * Fetches child page data from the helix query index and converts each
- * entry into a list item element.
- *
- * @param {Object} cfg - block configuration
- * @param {Object} ph  - placeholder map for i18n
- * @returns {Promise<HTMLLIElement[]>}
- */
-async function fetchChildPageItems(cfg, ph) {
-  const {
-    parentPage: rawParentPage,
-    childDepth,
-    excludeCurrentPage,
-    enableDescription,
-    enableSubtitle,
-    enableDate,
-    enableTags,
-    orderBy,
-    sortOrder,
-    maxItems,
-  } = cfg;
-
-  const parentPage = normalizeParentPage(rawParentPage);
-  if (!parentPage) {
-    /* eslint-disable-next-line no-console */
-    console.warn('[searchable-linklist] Link Source is child-pages, but Parent Page is empty.');
-    return [];
-  }
-
-  const primaryIndexUrl = parentPage === '/'
-    ? '/query-index.json'
-    : `${parentPage.replace(/\/$/, '')}/query-index.json`;
-  const fallbackIndexUrl = '/query-index.json';
-  const debug = {
-    source: 'child-pages',
-    parentPage,
-    childDepth,
-    excludeCurrentPage,
-    orderBy,
-    sortOrder,
-    maxItems,
-    indexUrl: primaryIndexUrl,
-    attemptedIndexUrls: [primaryIndexUrl],
-    usedFallbackIndex: false,
-    rawCount: 0,
-    afterDepthFilterCount: 0,
-    afterExcludeCurrentCount: 0,
-    finalCount: 0,
-    queryIndexItems: [],
-  };
-  let items = [];
+  const primary = parentPage === '/' ? '/query-index.json' : `${parentPage.replace(/\/$/, '')}/query-index.json`;
+  let json;
   try {
-    let indexUrl = primaryIndexUrl;
-    let json;
-    try {
-      json = await fetchQueryIndex(primaryIndexUrl);
-    } catch (primaryError) {
-      /* eslint-disable-next-line no-console */
-      console.warn('[searchable-linklist] primary query-index request failed', {
-        indexUrl: primaryIndexUrl,
-        status: primaryError.status,
-        statusText: primaryError.statusText,
-      });
-      if (primaryIndexUrl === fallbackIndexUrl) throw primaryError;
-      debug.attemptedIndexUrls.push(fallbackIndexUrl);
-      debug.usedFallbackIndex = true;
-      indexUrl = fallbackIndexUrl;
-      json = await fetchQueryIndex(fallbackIndexUrl);
-    }
-
-    debug.indexUrl = indexUrl;
-    logQueryIndexResponse(indexUrl, json);
-    items = json.data || [];
-    debug.rawCount = items.length;
-    debug.queryIndexItems = items.map((item) => ({
-      path: item.path,
-      title: item.title,
-      tags: item.tags,
-      description: item.description,
-      lastModified: item.lastModified,
-      publishDate: item.publishDate,
-    }));
-  } catch (error) {
-    /* eslint-disable-next-line no-console */
-    console.warn('[searchable-linklist] query-index request errored', {
-      attemptedIndexUrls: debug.attemptedIndexUrls,
-      error,
-    });
+    let resp = await fetch(primary);
+    if (!resp.ok && primary !== '/query-index.json') resp = await fetch('/query-index.json');
+    if (!resp.ok) return [];
+    json = await resp.json();
+  } catch {
     return [];
   }
 
-  // Depth filtering – compare path segment depth relative to parentPage
+  let items = json.data || [];
   const parentDepth = parentPage.replace(/\/$/, '').split('/').length;
-  const maxDepth = childDepth ? parentDepth + parseInt(childDepth, 10) : parentDepth + 1;
+  const maxDepth = parentDepth + (cfg.childDepth || 1);
   items = items.filter(({ path }) => {
-    const d = path.split('/').length;
+    const d = String(path).split('/').length;
     return d > parentDepth && d <= maxDepth;
   });
-  debug.afterDepthFilterCount = items.length;
 
-  // Exclude current page
-  if (excludeCurrentPage === 'true') {
-    const currentPath = window.location.pathname.replace(/\/$/, '');
-    items = items.filter(({ path }) => path !== currentPath);
+  if (cfg.excludeCurrentPage) {
+    const current = window.location.pathname.replace(/\/$/, '');
+    items = items.filter(({ path }) => path !== current);
   }
-  debug.afterExcludeCurrentCount = items.length;
 
-  // Sorting
-  const dir = sortOrder === 'desc' ? -1 : 1;
-  if (orderBy === 'title') {
+  const dir = cfg.sortOrder === 'desc' ? -1 : 1;
+  if (cfg.orderBy === 'title') {
     items.sort((a, b) => dir * (a.title || '').localeCompare(b.title || ''));
-  } else if (orderBy === 'last-modified') {
+  } else if (cfg.orderBy === 'last-modified') {
     items.sort((a, b) => dir * ((a.lastModified || 0) - (b.lastModified || 0)));
-  } else if (orderBy === 'published') {
+  } else if (cfg.orderBy === 'published') {
     items.sort((a, b) => dir * ((a.publishDate || 0) - (b.publishDate || 0)));
   }
-  // 'content-tree' keeps the index order (already tree order)
 
-  // Limit
-  if (maxItems) items = items.slice(0, parseInt(maxItems, 10));
-  debug.finalCount = items.length;
+  if (cfg.maxItems) items = items.slice(0, cfg.maxItems);
 
-  // Build LI elements
-  const listItems = items.map((page) => {
+  return items.map((page) => {
     const li = document.createElement('li');
     li.className = 'sll-item';
-    li.sllQueryIndexItem = page;
-
-    const tags = page.tags
-      ? page.tags.split(',').map((t) => t.trim()).filter(Boolean)
-      : [];
+    const tags = page.tags ? splitTags(page.tags) : [];
     if (tags.length) li.dataset.tags = JSON.stringify(tags);
 
     const href = page.path;
@@ -794,164 +572,117 @@ async function fetchChildPageItems(cfg, ph) {
     anchor.className = 'sll-item-link';
     anchor.href = href;
     if (isExternalUrl(href)) anchor.classList.add('sll-item-link-external');
-
     const textSpan = document.createElement('span');
     textSpan.className = 'sll-item-text';
     textSpan.textContent = page.title || href;
     anchor.append(textSpan);
     li.append(anchor);
-    const openLink = buildOpenLink(href, page.title || href);
+    const openLink = buildOpenLink(href, page.title || href, false, ph);
     if (openLink) li.append(openLink);
 
-    if (enableSubtitle === 'true' && page.subtitle) {
-      const subtitleEl = document.createElement('p');
-      subtitleEl.className = 'sll-item-subtitle';
-      subtitleEl.textContent = page.subtitle;
-      li.append(subtitleEl);
+    if (cfg.enableSubtitle && page.subtitle) {
+      const sub = document.createElement('p');
+      sub.className = 'sll-item-subtitle';
+      sub.textContent = page.subtitle;
+      li.append(sub);
     }
-
-    if (enableDescription === 'true' && page.description) {
-      const descEl = document.createElement('p');
-      descEl.className = 'sll-item-description';
-      descEl.textContent = page.description;
-      li.append(descEl);
+    if (cfg.enableDescription && page.description) {
+      const desc = document.createElement('p');
+      desc.className = 'sll-item-description';
+      desc.textContent = page.description;
+      li.append(desc);
     }
-
-    if (enableDate === 'true') {
+    if (cfg.enableDate) {
       const dateVal = page.publishDate || page.lastModified;
       if (dateVal) {
-        const dateEl = document.createElement('time');
-        dateEl.className = 'sll-item-date';
+        const time = document.createElement('time');
+        time.className = 'sll-item-date';
         const d = new Date(dateVal * 1000);
-        dateEl.dateTime = d.toISOString();
-        dateEl.textContent = d.toLocaleDateString();
-        li.append(dateEl);
+        time.dateTime = d.toISOString();
+        time.textContent = d.toLocaleDateString();
+        li.append(time);
       }
     }
-
-    if (enableTags === 'true' && tags.length) {
-      const tagList = document.createElement('ul');
-      tagList.className = 'sll-item-tags';
-      tagList.setAttribute('aria-label', ph.categories || 'categories');
-      tags.forEach((tag) => {
-        const tagLi = document.createElement('li');
-        tagLi.className = 'sll-item-tag';
-        tagLi.textContent = tag;
-        tagList.append(tagLi);
-      });
-      li.append(tagList);
-    }
-
+    if (cfg.enableTags && tags.length) li.append(buildTagList(tags, ph, labelOf));
     return li;
   });
-  listItems.sllSourceDebug = debug;
-  return listItems;
 }
 
 // ---------------------------------------------------------------------------
-// Search & filter logic
+// Search & filter (FR-001 / FR-002 / FR-003 / FR-008)
 // ---------------------------------------------------------------------------
 
 /**
- * Applies the current search text and active category tags to the item list.
- * Shows/hides items and updates the results count / empty-state message.
- *
- * @param {HTMLUListElement} listEl       - the <ul> containing all items
- * @param {string}           searchText  - current text input value
- * @param {Set<string>}      activeTagSet - currently selected category tags
- * @param {HTMLElement}      emptyMsg    - "no results" element
- * @param {HTMLElement|null} countEl     - "0 Result(s) found" element
- * @param {Object}           ph          - placeholder strings
+ * Resolves the filterable unit elements inside a Search-In-ID target region,
+ * regardless of which block rendered it. Prefers list items, then any direct
+ * child carrying a link or text. Marks each so the filter can hide it.
  */
-function applyFilters(listEl, searchText, activeTagSet, emptyMsg, countEl, ph) {
-  const query = searchText.toLowerCase().trim();
-  let visibleCount = 0;
-  let hasQueryIndexItems = false;
-  const matchingQueryIndexItems = [];
-  const results = [];
-
-  listEl.querySelectorAll(':scope > li.sll-item').forEach((li) => {
-    const title = li.querySelector('.sll-item-text')?.textContent ?? '';
-    const normalizedTitle = title.toLowerCase();
-    const matchesSearch = !query || normalizedTitle.includes(query);
-    const itemTags = li.dataset.tags ? JSON.parse(li.dataset.tags) : [];
-
-    let matchesTags = true;
-    if (activeTagSet.size > 0) {
-      matchesTags = [...activeTagSet].every((tag) => itemTags.includes(tag));
-    }
-
-    const visible = matchesSearch && matchesTags;
-    li.hidden = !visible;
-    if (visible) {
-      visibleCount += 1;
-      if (li.sllQueryIndexItem) matchingQueryIndexItems.push(li.sllQueryIndexItem);
-    }
-    if (li.sllQueryIndexItem) hasQueryIndexItems = true;
-    results.push({
-      title,
-      tags: itemTags.join(', '),
-      matchesSearch,
-      matchesTags,
-      visible,
-      normalizedTitle,
-    });
-  });
-
-  const hasActiveFilters = query || activeTagSet.size > 0;
-  if (hasActiveFilters && hasQueryIndexItems) {
-    logQueryIndexSearch(searchText, activeTagSet, visibleCount, matchingQueryIndexItems);
+function collectExternalUnits(target) {
+  let units = [...target.querySelectorAll(':scope > ul > li, :scope > ol > li')];
+  if (!units.length) units = [...target.querySelectorAll(':scope > li')];
+  if (!units.length) {
+    units = [...target.children].filter(
+      (el) => el.querySelector('a, .sll-item-text') || el.textContent.trim(),
+    );
   }
+  units.forEach((u) => u.classList.add('sll-item'));
+  return units;
+}
 
-  if (hasActiveFilters && visibleCount === 0) {
-    emptyMsg.hidden = false;
-    if (countEl) {
-      countEl.hidden = false;
-      countEl.textContent = ph['0-results'] || '0 Result(s) found';
-    }
-  } else {
-    emptyMsg.hidden = true;
-    if (countEl) {
-      countEl.hidden = !hasActiveFilters;
-      if (hasActiveFilters) {
-        countEl.textContent = `${visibleCount} ${ph['results-found'] || 'Result(s) found'}`;
+/**
+ * Filters a flat list of unit elements by search text (case-insensitive title
+ * contains) AND category tags (item tags intersect the active selection — OR
+ * across selected tags). Units may live in this block's list or in a separate
+ * Search-In-ID target region (FR-008).
+ */
+function makeFilterer(units, emptyMsg, getCountEl, ph) {
+  return (searchText, activeTagSet) => {
+    const query = searchText.toLowerCase().trim();
+    let visibleCount = 0;
+
+    units.forEach((el) => {
+      const title = (el.querySelector('.sll-item-text')?.textContent ?? el.textContent ?? '')
+        .toLowerCase();
+      const matchesSearch = !query || title.includes(query);
+      const itemTags = el.dataset.tags ? JSON.parse(el.dataset.tags) : [];
+      // Intersection: item is kept when it carries ANY of the selected tags.
+      const matchesTags = activeTagSet.size === 0
+        || [...activeTagSet].some((tag) => itemTags.includes(tag));
+      const visible = matchesSearch && matchesTags;
+      el.hidden = !visible;
+      if (visible) visibleCount += 1;
+    });
+
+    const hasActiveFilters = !!query || activeTagSet.size > 0;
+    const countEl = getCountEl();
+    if (hasActiveFilters && visibleCount === 0) {
+      emptyMsg.hidden = false;
+      if (countEl) {
+        countEl.hidden = false;
+        countEl.textContent = ph['0-results'] || '0 Result(s) found';
+      }
+    } else {
+      emptyMsg.hidden = true;
+      if (countEl) {
+        countEl.hidden = !hasActiveFilters;
+        if (hasActiveFilters) {
+          countEl.textContent = `${visibleCount} ${ph['results-found'] || 'Result(s) found'}`;
+        }
       }
     }
-  }
-
-  return {
-    searchText,
-    query,
-    activeTags: [...activeTagSet],
-    totalItems: results.length,
-    visibleCount,
-    hiddenCount: results.length - visibleCount,
-    results,
-    matchingQueryIndexItems,
+    return visibleCount;
   };
 }
 
 // ---------------------------------------------------------------------------
-// Search bar builder
+// Search bar (FR-001)
 // ---------------------------------------------------------------------------
 
-/**
- * Builds the search input wrapper with optional icon.
- *
- * @param {Object} cfg  - block config
- * @param {Object} ph   - placeholders
- * @returns {{ wrapper: HTMLElement, input: HTMLInputElement }}
- */
 function buildSearchBar(cfg, ph) {
-  const {
-    searchHint, searchIcon, searchIconText, searchIconAlt,
-  } = cfg;
-
   const wrapper = document.createElement('div');
   wrapper.className = 'sll-search-wrapper';
 
-  // Icon
-  const iconEl = buildIcon(searchIcon, searchIconText, searchIconAlt, '');
+  const iconEl = buildIcon(cfg.searchIcon, cfg.searchIconText, cfg.searchIconAlt);
   if (iconEl) {
     iconEl.classList.add('sll-search-icon');
     wrapper.append(iconEl);
@@ -960,10 +691,9 @@ function buildSearchBar(cfg, ph) {
   const input = document.createElement('input');
   input.type = 'search';
   input.className = 'sll-search-input';
-  input.placeholder = searchHint || ph.search || 'Search';
-  input.setAttribute('aria-label', searchHint || ph.search || 'Search');
+  input.placeholder = cfg.searchHint || ph.search || 'Search';
+  input.setAttribute('aria-label', cfg.searchHint || ph.search || 'Search');
 
-  // Clear (×) button
   const clearBtn = document.createElement('button');
   clearBtn.type = 'button';
   clearBtn.className = 'sll-search-clear';
@@ -971,9 +701,7 @@ function buildSearchBar(cfg, ph) {
   clearBtn.hidden = true;
   clearBtn.innerHTML = '&times;';
 
-  input.addEventListener('input', () => {
-    clearBtn.hidden = !input.value;
-  });
+  input.addEventListener('input', () => { clearBtn.hidden = !input.value; });
   clearBtn.addEventListener('click', () => {
     input.value = '';
     clearBtn.hidden = true;
@@ -986,28 +714,19 @@ function buildSearchBar(cfg, ph) {
 }
 
 // ---------------------------------------------------------------------------
-// Category filter builder
+// Category filter (FR-002 / FR-003)
 // ---------------------------------------------------------------------------
 
 /**
- * Builds the Browse Categories dropdown and selected-tag chips area.
- *
- * @param {string[]}  allTags            - all unique tags collected from items
- * @param {Object}    cfg                - block config
- * @param {Object}    ph                 - placeholders
- * @param {Set}       activeTagSet       - shared active-tag state
- * @param {Function}  onTagsChanged      - callback when selection changes
- * @returns {HTMLElement|null}           - the category filter container, or null
+ * Builds the browse-categories dropdown and selected-tag chips.
+ * The '0 Result(s) found' count is rendered ABOVE the selected tags (FR-003).
  */
-function buildCategoryFilter(allTags, cfg, ph, activeTagSet, onTagsChanged) {
+function buildCategoryFilter(allTags, cfg, ph, activeTagSet, onTagsChanged, labelOf = (t) => t) {
   if (!allTags.length) return null;
-
-  const { browseCategories, resetCategories } = cfg;
 
   const container = document.createElement('div');
   container.className = 'sll-category-filter';
 
-  // Dropdown
   const dropdownWrapper = document.createElement('div');
   dropdownWrapper.className = 'sll-category-dropdown-wrapper';
 
@@ -1016,7 +735,7 @@ function buildCategoryFilter(allTags, cfg, ph, activeTagSet, onTagsChanged) {
   dropdownBtn.className = 'sll-category-dropdown-btn';
   dropdownBtn.setAttribute('aria-haspopup', 'listbox');
   dropdownBtn.setAttribute('aria-expanded', 'false');
-  dropdownBtn.textContent = browseCategories || ph['browse-categories'] || 'Browse Categories';
+  dropdownBtn.textContent = cfg.browseCategories || ph['browse-categories'] || 'Browse Categories';
 
   const dropdownList = document.createElement('ul');
   dropdownList.className = 'sll-category-dropdown-list';
@@ -1029,7 +748,7 @@ function buildCategoryFilter(allTags, cfg, ph, activeTagSet, onTagsChanged) {
     option.className = 'sll-category-option';
     option.setAttribute('role', 'option');
     option.setAttribute('aria-selected', 'false');
-    option.textContent = tag;
+    option.textContent = labelOf(tag);
     option.dataset.tag = tag;
     dropdownList.append(option);
   });
@@ -1039,8 +758,6 @@ function buildCategoryFilter(allTags, cfg, ph, activeTagSet, onTagsChanged) {
     dropdownList.hidden = isOpen;
     dropdownBtn.setAttribute('aria-expanded', String(!isOpen));
   });
-
-  // Close dropdown when clicking outside
   document.addEventListener('click', (e) => {
     if (!dropdownWrapper.contains(e.target)) {
       dropdownList.hidden = true;
@@ -1050,27 +767,26 @@ function buildCategoryFilter(allTags, cfg, ph, activeTagSet, onTagsChanged) {
 
   dropdownWrapper.append(dropdownBtn, dropdownList);
 
-  // Selected tag chips
+  // Count is placed above the chips per FR-003.
+  const countEl = document.createElement('p');
+  countEl.className = 'sll-results-count';
+  countEl.setAttribute('aria-live', 'polite');
+  countEl.hidden = true;
+
   const chipsArea = document.createElement('div');
   chipsArea.className = 'sll-selected-tags';
   chipsArea.setAttribute('aria-live', 'polite');
-
-  // Count display
-  const countEl = document.createElement('p');
-  countEl.className = 'sll-results-count';
-  countEl.hidden = true;
 
   const updateChips = () => {
     chipsArea.innerHTML = '';
     activeTagSet.forEach((tag) => {
       const chip = document.createElement('span');
       chip.className = 'sll-tag-chip';
-      chip.textContent = tag;
-
+      chip.textContent = labelOf(tag);
       const removeBtn = document.createElement('button');
       removeBtn.type = 'button';
       removeBtn.className = 'sll-tag-chip-remove';
-      removeBtn.setAttribute('aria-label', `${ph['remove-filter'] || 'Remove filter'}: ${tag}`);
+      removeBtn.setAttribute('aria-label', `${ph['remove-filter'] || 'Remove filter'}: ${labelOf(tag)}`);
       removeBtn.innerHTML = '&times;';
       removeBtn.addEventListener('click', () => {
         activeTagSet.delete(tag);
@@ -1079,13 +795,11 @@ function buildCategoryFilter(allTags, cfg, ph, activeTagSet, onTagsChanged) {
         updateChips();
         onTagsChanged();
       });
-
       chip.append(removeBtn);
       chipsArea.append(chip);
     });
   };
 
-  // Option click handling
   dropdownList.addEventListener('click', (e) => {
     const option = e.target.closest('.sll-category-option');
     if (!option) return;
@@ -1101,141 +815,124 @@ function buildCategoryFilter(allTags, cfg, ph, activeTagSet, onTagsChanged) {
     onTagsChanged();
   });
 
-  container.append(dropdownWrapper, chipsArea, countEl);
+  container.append(dropdownWrapper, countEl, chipsArea);
 
-  // Reset control
   let resetBtn = null;
-  if (resetCategories) {
+  if (cfg.resetCategories) {
     resetBtn = document.createElement('button');
     resetBtn.type = 'button';
     resetBtn.className = 'sll-reset-btn';
-    resetBtn.textContent = resetCategories;
+    resetBtn.textContent = cfg.resetCategories;
     container.append(resetBtn);
   }
 
-  return { container, countEl, resetBtn };
+  return {
+    container, countEl, resetBtn, updateChips,
+  };
 }
 
 // ---------------------------------------------------------------------------
-// Main decorate function
+// Main decorate
 // ---------------------------------------------------------------------------
 
-/**
- * Loads and decorates the Searchable Linklist block.
- * @param {Element} block The block element
- */
 export default async function decorate(block) {
-  // 1. Placeholders
-  const ph = await fetchPlaceholders();
-
-  // 2. Read block config from data attributes or Universal Editor property markup
+  const [ph, tagsLookup] = await Promise.all([fetchPlaceholders(), getTagsLookup()]);
+  const labelOf = (id) => tagsLookup.get(id) || tagIdToLabel(id);
   const cfg = readBlockConfig(block);
-  logBlockConfig(cfg, block.dataset);
 
-  // 3. Apply block-level attributes
   if (cfg.id) block.id = cfg.id;
-  if (cfg.customClass) block.classList.add(...cfg.customClass.split(' ').filter(Boolean));
+  if (cfg.customClass) block.classList.add(...cfg.customClass.split(/\s+/).filter(Boolean));
   block.classList.add(`layout-${cfg.layout}`);
   if (cfg.lang) block.lang = cfg.lang;
   if (cfg.analyticsId) block.dataset.analyticsId = cfg.analyticsId;
 
-  // 4. Build item list
+  // Build own list items.
   const listEl = document.createElement('ul');
   listEl.className = 'sll-list';
 
   let listItems = [];
-  let itemSourceDebug = null;
   if (cfg.linkSource === 'child-pages') {
-    listItems = await fetchChildPageItems(cfg, ph);
-    itemSourceDebug = listItems.sllSourceDebug;
+    listItems = await fetchChildPageItems(cfg, ph, labelOf);
   } else {
-    // Custom – authored Link List Item children are already rendered as rows
-    const itemRows = cfg.usesRowConfig ? [...block.children].slice(4) : [...block.children];
-    itemRows.forEach((row) => {
-      const li = buildListItem(row);
+    collectItemEls(block, cfg).forEach((itemEl) => {
+      const li = buildCustomItem(itemEl, ph, labelOf);
       if (li) listItems.push(li);
     });
-    itemSourceDebug = {
-      source: 'custom',
-      authoredRowCount: block.children.length,
-      skippedConfigRowCount: cfg.usesRowConfig ? 4 : 0,
-      finalCount: listItems.length,
-    };
+  }
+  listItems.forEach((li) => listEl.append(li));
+
+  // FR-002: the browse control lists the child tags beneath the configured parent
+  // Category Tags (resolved from tags.json). With no parent tags configured the
+  // entire category UI stays hidden.
+  const itemTags = [...new Set(
+    listItems.flatMap((li) => (li.dataset.tags ? JSON.parse(li.dataset.tags) : [])),
+  )];
+  let allTags = [];
+  if (cfg.categoryTags.length) {
+    const parents = cfg.categoryTags;
+    const childIds = new Set(
+      [...tagsLookup.keys()].filter((id) => parents.some((p) => isChildTag(id, p))),
+    );
+    // Include any item tags under a parent even if tags.json lacked them.
+    itemTags
+      .filter((id) => parents.some((p) => isChildTag(id, p)))
+      .forEach((id) => childIds.add(id));
+    // Fallback when taxonomy is unavailable: surface the item tags we do have.
+    allTags = childIds.size ? [...childIds] : itemTags;
   }
 
-  listItems.forEach((li) => listEl.append(li));
-  logItemSourceSummary({
-    ...itemSourceDebug,
-    renderedItemCount: listItems.length,
-    renderedItems: listItems.map((li) => ({
-      text: li.querySelector('.sll-item-text')?.textContent ?? '',
-      href: li.querySelector('.sll-item-link')?.href ?? '',
-      tags: li.dataset.tags ?? '',
-    })),
-  });
-
-  // 5. Collect all unique tags from rendered items
-  const allTags = [...new Set(
-    listItems
-      .flatMap((li) => (li.dataset.tags ? JSON.parse(li.dataset.tags) : [])),
-  )];
-
-  // 6. Build controls container
   const controlsEl = document.createElement('div');
   controlsEl.className = 'sll-controls';
 
-  // Shared state
   const activeTagSet = new Set();
   let currentSearch = '';
 
-  // Empty state message
   const emptyMsg = document.createElement('p');
   emptyMsg.className = 'sll-empty-message';
   emptyMsg.textContent = ph['no-results'] || 'No results found. Change your search criteria.';
   emptyMsg.hidden = true;
 
-  // countEl assigned after category filter is built; declared here for refresh closure
+  // FR-008: also filter a separate target region resolved by Search-In-ID.
+  const units = [...listEl.children];
+  if (cfg.searchInId) {
+    const target = document.getElementById(cfg.searchInId)
+      || document.querySelector(`[data-search-id="${CSS.escape(cfg.searchInId)}"]`);
+    if (target) units.push(...collectExternalUnits(target));
+  }
+
   let countEl = null;
-  let resetBtn = null;
+  const filter = makeFilterer(units, emptyMsg, () => countEl, ph);
+  const refresh = () => filter(currentSearch, activeTagSet);
 
-  // Trigger filter refresh
-  const refresh = () => applyFilters(listEl, currentSearch, activeTagSet, emptyMsg, countEl, ph);
-
-  // 7. Search bar
+  // Search bar
   const { wrapper: searchWrapper, input: searchInput } = buildSearchBar(cfg, ph);
   searchInput.addEventListener('input', () => {
     currentSearch = searchInput.value;
-    const filterSummary = refresh();
-    logSearchInputChange(currentSearch, filterSummary);
+    refresh();
   });
   controlsEl.append(searchWrapper);
 
-  // 8. Category filter (only if tags exist)
-
-  const categoryResult = buildCategoryFilter(allTags, cfg, ph, activeTagSet, refresh);
+  // Category filter
+  const categoryResult = buildCategoryFilter(allTags, cfg, ph, activeTagSet, refresh, labelOf);
   if (categoryResult) {
     countEl = categoryResult.countEl;
-    resetBtn = categoryResult.resetBtn;
     controlsEl.append(categoryResult.container);
+
+    if (categoryResult.resetBtn) {
+      categoryResult.resetBtn.addEventListener('click', () => {
+        activeTagSet.clear();
+        currentSearch = '';
+        searchInput.value = '';
+        searchInput.dispatchEvent(new Event('input'));
+        categoryResult.container
+          .querySelectorAll('.sll-category-option')
+          .forEach((opt) => opt.setAttribute('aria-selected', 'false'));
+        categoryResult.updateChips();
+        refresh();
+      });
+    }
   }
 
-  // 9. Reset button wiring
-  if (resetBtn) {
-    resetBtn.addEventListener('click', () => {
-      activeTagSet.clear();
-      currentSearch = '';
-      searchInput.value = '';
-      searchInput.dispatchEvent(new Event('input'));
-      // reset dropdown options
-      categoryResult.container
-        .querySelectorAll('.sll-category-option')
-        .forEach((opt) => opt.setAttribute('aria-selected', 'false'));
-      categoryResult.container.querySelector('.sll-selected-tags').innerHTML = '';
-      refresh();
-    });
-  }
-
-  // 10. Replace block content with structured output
   block.innerHTML = '';
   block.append(controlsEl, listEl, emptyMsg);
 }
