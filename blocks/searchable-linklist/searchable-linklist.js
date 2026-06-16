@@ -317,12 +317,19 @@ function readItemConfig(itemEl) {
     if (el.tagName?.toLowerCase() === 'img') return el.getAttribute('src');
     return el.querySelector('img')?.getAttribute('src') || ueHref(name);
   };
-  const ueTags = (name) => {
-    const el = itemEl.querySelector(`[data-aue-prop="${name}"]`);
-    return el ? parseTagCell(el) : null;
-  };
-
   const hasUe = !!itemEl.querySelector('[data-aue-prop]');
+
+  // categoryTags (aem-tag) is usually not instrumented, and its row shifts when
+  // earlier optional fields are omitted — so a fixed index is unreliable. Locate
+  // the cell that renders namespaced tag ids as <li> tokens, skipping instrumented
+  // text/richtext cells (which may also contain authored lists).
+  const readCategoryTags = () => {
+    const direct = itemEl.querySelector('[data-aue-prop="categoryTags"]');
+    if (direct) return parseTagCell(direct);
+    const cell = [...itemEl.children].find((c) => !c.querySelector('[data-aue-prop]')
+      && [...c.querySelectorAll('li')].some((li) => li.textContent.includes(':')));
+    return cell ? parseTagCell(cell) : [];
+  };
 
   // Positional fallback in item model order (published EDS).
   const rows = [...itemEl.children];
@@ -339,10 +346,11 @@ function readItemConfig(itemEl) {
   return {
     link: hasUe ? (ueHref('link') ?? '') : cl(0),
     openInNewTab: parseBool(hasUe ? ueText('openInNewTab') : ct(1), false),
-    linkText: (hasUe ? ueText('linkText') : ct(2)) || '',
+    linkText: ((hasUe ? ueText('linkText') : ct(2)) || '')
+      || itemEl.querySelector('a')?.textContent?.trim() || '',
     subtitle: (hasUe ? ueText('subtitle') : ct(3)) || '',
     descriptionEl: descCell(),
-    categoryTags: (hasUe ? ueTags('categoryTags') : null) ?? parseTagCell(rows[5]),
+    categoryTags: readCategoryTags(),
     iconType: (hasUe ? ueText('iconType') : ct(6)) || 'none',
     fontIcon: (hasUe ? ueText('fontIcon') : ct(7)) || '',
     imageIcon: (hasUe ? ueImg('imageIcon') : cimg(8)) || '',
@@ -932,15 +940,7 @@ export default async function decorate(block) {
   if (cfg.linkSource === 'child-pages') {
     listItems = await fetchChildPageItems(cfg, ph, labelOf);
   } else {
-    const itemEls = collectItemEls(block, cfg);
-    // TEMP DEBUG — raw item structure before processing
-    /* eslint-disable-next-line no-console */
-    console.info('[sll-debug-items]', itemEls.map((el) => ({
-      childTexts: [...el.children].map((c) => c.textContent.trim().slice(0, 30)),
-      hasCatProp: !!el.querySelector('[data-aue-prop="categoryTags"]'),
-      catCellHtml: [...el.children].map((c) => c.innerHTML.replace(/\s+/g, ' ').slice(0, 80)),
-    })));
-    itemEls.forEach((itemEl) => {
+    collectItemEls(block, cfg).forEach((itemEl) => {
       const li = buildCustomItem(itemEl, ph, labelOf);
       if (li) listItems.push(li);
     });
@@ -966,17 +966,6 @@ export default async function decorate(block) {
     // Fallback when taxonomy is unavailable: surface the item tags we do have.
     allTags = childIds.size ? [...childIds] : itemTags;
   }
-
-  // TEMP DEBUG — remove after diagnosing category dropdown
-  /* eslint-disable-next-line no-console */
-  console.info('[sll-debug]', {
-    linkSource: cfg.linkSource,
-    parentTags: cfg.categoryTags,
-    itemTags,
-    allTags,
-    itemDatasetTags: listItems.map((li) => li.dataset.tags || ''),
-    blockChildCount: block.children.length,
-  });
 
   const controlsEl = document.createElement('div');
   controlsEl.className = 'sll-controls';
