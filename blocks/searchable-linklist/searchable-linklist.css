@@ -401,25 +401,9 @@
 }
 
 /* ------------------------------------------------------------
-   Tablet (600px+)
+   Controls stack vertically at all breakpoints: search on top,
+   category filter underneath.
    ------------------------------------------------------------ */
-
-@media (width >= 600px) {
-  .searchable-linklist .sll-controls {
-    flex-flow: row wrap;
-    align-items: flex-start;
-  }
-
-  .searchable-linklist .sll-search-wrapper {
-    flex: 1 1 260px;
-    min-width: 0;
-  }
-
-  .searchable-linklist .sll-category-filter {
-    flex: 1 1 260px;
-    min-width: 0;
-  }
-}
 
 /* ------------------------------------------------------------
    Desktop (900px+) – two-column layouts active
