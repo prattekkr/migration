@@ -49,6 +49,19 @@ function splitTags(raw) {
     .filter((t) => t && t.toLowerCase() !== 'none');
 }
 
+/**
+ * Extracts tag ids from a rendered tag cell. AEM serializes aem-tag values as
+ * <ul><li>id</li></ul>; fall back to per-child chips, then delimited text.
+ */
+function parseTagCell(el) {
+  if (!el) return [];
+  const lis = [...el.querySelectorAll('li')].map((li) => li.textContent.trim()).filter(Boolean);
+  if (lis.length) return [...new Set(lis.flatMap((t) => splitTags(t)))];
+  const chips = [...el.children].map((c) => c.textContent?.trim()).filter(Boolean);
+  const tokens = chips.length > 1 ? chips : splitTags(el.textContent);
+  return [...new Set(tokens.flatMap((t) => splitTags(t)))];
+}
+
 /** Returns true when a URL points outside the current origin. */
 function isExternalUrl(href) {
   try {
@@ -161,11 +174,7 @@ function blockHref(block, name, fallback = '') {
 
 /** Collects category-tag tokens from a parent-block categoryTags prop. */
 function blockTags(block, name) {
-  const el = getBlockPropEl(block, name);
-  if (!el) return [];
-  const chips = [...el.children].map((c) => c.textContent?.trim()).filter(Boolean);
-  const tokens = chips.length > 1 ? chips : splitTags(el.textContent);
-  return [...new Set(tokens.flatMap((t) => splitTags(t)))];
+  return parseTagCell(getBlockPropEl(block, name));
 }
 
 /**
@@ -207,31 +216,29 @@ function readBlockConfig(block) {
     };
   }
 
-  // Published EDS: config values render as rows, but AEM omits rows for unset
-  // optional fields — so absolute indices are unreliable. Anchor on linkSource
-  // (a known enum) and read the source config relative to it; the leading
-  // search/category fields are read from the front, guarded by the anchor.
+  // Published EDS: config values render as rows, but AEM omits rows for fields
+  // whose dialog condition is false (e.g. the search-icon fields when Search Icon
+  // = none), so absolute indices shift. Anchor on linkSource (a known enum):
+  // categoryTags / browseCategories / resetCategories are unconditional and sit
+  // immediately before it, so read them backward (ls-3 / ls-2 / ls-1); read the
+  // source config forward from it.
   const rows = [...block.children];
   const ct = (i) => rows[i]?.textContent?.trim() || '';
   const cl = (i) => rows[i]?.querySelector('a')?.getAttribute('href') || ct(i);
-  const tagRow = (i) => {
-    const chips = [...(rows[i]?.children || [])].map((c) => c.textContent?.trim()).filter(Boolean);
-    const tokens = chips.length > 1 ? chips : splitTags(ct(i));
-    return [...new Set(tokens.flatMap((t) => splitTags(t)))];
-  };
 
   const SOURCES = ['child-pages', 'icons', 'custom'];
   let ls = rows.findIndex((r) => SOURCES.includes(r.textContent?.trim()));
   if (ls < 0) ls = 7; // model position fallback
+  const searchIcon = ct(1) || 'none';
 
   return {
     searchHint: ct(0),
-    searchIcon: ct(1) || 'none',
-    searchIconText: ls >= 3 ? ct(2) : '',
-    searchIconAlt: ls >= 4 ? cl(3) : '',
-    categoryTags: ls >= 5 ? tagRow(4) : [],
-    browseCategories: ls >= 6 ? ct(5) : '',
-    resetCategories: ls >= 7 ? ct(6) : '',
+    searchIcon,
+    searchIconText: searchIcon === 'icon-font' ? ct(2) : '',
+    searchIconAlt: searchIcon === 'image' ? cl(2) : '',
+    categoryTags: ls >= 3 ? parseTagCell(rows[ls - 3]) : [],
+    browseCategories: ls >= 2 ? ct(ls - 2) : '',
+    resetCategories: ls >= 1 ? ct(ls - 1) : '',
     linkSource: ct(ls) || 'custom',
     parentPage: cl(ls + 1),
     childDepth: parseIntSafe(ct(ls + 2), 1),
@@ -312,10 +319,7 @@ function readItemConfig(itemEl) {
   };
   const ueTags = (name) => {
     const el = itemEl.querySelector(`[data-aue-prop="${name}"]`);
-    if (!el) return null;
-    const chips = [...el.children].map((c) => c.textContent?.trim()).filter(Boolean);
-    const tokens = chips.length > 1 ? chips : splitTags(el.textContent);
-    return [...new Set(tokens.flatMap((t) => splitTags(t)))];
+    return el ? parseTagCell(el) : null;
   };
 
   const hasUe = !!itemEl.querySelector('[data-aue-prop]');
@@ -338,8 +342,7 @@ function readItemConfig(itemEl) {
     linkText: (hasUe ? ueText('linkText') : ct(2)) || '',
     subtitle: (hasUe ? ueText('subtitle') : ct(3)) || '',
     descriptionEl: descCell(),
-    categoryTags: (hasUe ? ueTags('categoryTags') : null)
-      ?? [...new Set(splitTags(ct(5)).flatMap((t) => splitTags(t)))],
+    categoryTags: (hasUe ? ueTags('categoryTags') : null) ?? parseTagCell(rows[5]),
     iconType: (hasUe ? ueText('iconType') : ct(6)) || 'none',
     fontIcon: (hasUe ? ueText('fontIcon') : ct(7)) || '',
     imageIcon: (hasUe ? ueImg('imageIcon') : cimg(8)) || '',
