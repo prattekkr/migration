@@ -959,6 +959,17 @@ export default async function decorate(block) {
     allTags = childIds.size ? [...childIds] : itemTags;
   }
 
+  // TEMP DEBUG — remove after diagnosing category dropdown
+  /* eslint-disable-next-line no-console */
+  console.info('[sll-debug]', {
+    linkSource: cfg.linkSource,
+    parentTags: cfg.categoryTags,
+    itemTags,
+    allTags,
+    itemDatasetTags: listItems.map((li) => li.dataset.tags || ''),
+    blockChildCount: block.children.length,
+  });
+
   const controlsEl = document.createElement('div');
   controlsEl.className = 'sll-controls';
 
