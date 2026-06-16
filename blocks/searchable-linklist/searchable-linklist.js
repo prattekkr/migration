@@ -932,7 +932,15 @@ export default async function decorate(block) {
   if (cfg.linkSource === 'child-pages') {
     listItems = await fetchChildPageItems(cfg, ph, labelOf);
   } else {
-    collectItemEls(block, cfg).forEach((itemEl) => {
+    const itemEls = collectItemEls(block, cfg);
+    // TEMP DEBUG — raw item structure before processing
+    /* eslint-disable-next-line no-console */
+    console.info('[sll-debug-items]', itemEls.map((el) => ({
+      childTexts: [...el.children].map((c) => c.textContent.trim().slice(0, 30)),
+      hasCatProp: !!el.querySelector('[data-aue-prop="categoryTags"]'),
+      catCellHtml: [...el.children].map((c) => c.innerHTML.replace(/\s+/g, ' ').slice(0, 80)),
+    })));
+    itemEls.forEach((itemEl) => {
       const li = buildCustomItem(itemEl, ph, labelOf);
       if (li) listItems.push(li);
     });
