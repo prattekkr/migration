@@ -90,8 +90,8 @@ header nav .skip-link {
 header nav .skip-link:focus,
 header nav .skip-link:active {
   background: var(--color-surface-default);
-  border: var(--border-width-thin) solid blue;
-  color: blue;
+  border: var(--border-width-thin) solid var(--color-accent-blue);
+  color: var(--color-accent-blue);
   font-family: var(--body-font-family);
   font-size: var(--corp-font-size-12);
   font-weight: var(--corp-font-weight-light);

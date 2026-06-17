@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Searchable Linklist – Draft Test</title>
+</head>
+<body>
+<header></header>
+<main>
+  <div>
+    <div>
+      <h1>Searchable Linklist – Test Page</h1>
+      <p>Test the Searchable Linklist block in all three layout variants below.</p>
+    </div>
+
+    <!-- =====================================================
+         Example 1: Custom source, Single Column
+         ===================================================== -->
+    <div
+      class="searchable-linklist"
+      data-link-source="custom"
+      data-layout="single-column"
+      data-search-placeholder="Search publications..."
+      data-search-icon-type="none"
+      data-lang="en"
+      data-browse-categories-placeholder="Browse by Therapy Area"
+      data-reset-categories-placeholder="Reset all filters"
+    >
+      <!-- Link List Item 1 -->
+      <div>
+        <div>|</div>
+        <div>/science/publications/pub-001|false|Risankizumab in Moderate-to-Severe Plaque Psoriasis||en|sll-pub-001</div>
+        <div>Journal of Dermatology, 2024</div>
+        <div><p>A Phase 3 randomized controlled trial evaluating the efficacy and safety of risankizumab versus placebo over 52 weeks.</p></div>
+        <div>Immunology,Dermatology</div>
+        <div>none|||before|</div>
+        <div>false||</div>
+      </div>
+      <!-- Link List Item 2 -->
+      <div>
+        <div>|</div>
+        <div>/science/publications/pub-002|false|Upadacitinib for Rheumatoid Arthritis||en|sll-pub-002</div>
+        <div>NEJM, 2024</div>
+        <div><p>Efficacy of upadacitinib versus abatacept in patients with moderately to severely active rheumatoid arthritis.</p></div>
+        <div>Immunology,Rheumatology</div>
+        <div>none|||before|</div>
+        <div>false||</div>
+      </div>
+      <!-- Link List Item 3 -->
+      <div>
+        <div>|</div>
+        <div>https://www.example.com/external-paper|true|External Partner Study (Opens in new tab)||en|sll-pub-003</div>
+        <div>Collaboration Paper, 2025</div>
+        <div><p>A multi-centre collaboration study on novel oncology biomarkers. Opens in a new tab.</p></div>
+        <div>Oncology</div>
+        <div>none|||before|</div>
+        <div>false||</div>
+      </div>
+      <!-- Link List Item 4 (no tags – tests untagged items) -->
+      <div>
+        <div>|</div>
+        <div>/science/publications/pub-004|false|Annual Safety Report 2024||en|sll-pub-004</div>
+        <div></div>
+        <div><p>Comprehensive pharmacovigilance safety report covering all marketed products.</p></div>
+        <div></div>
+        <div>none|||before|</div>
+        <div>false||</div>
+      </div>
+    </div>
+
+    <!-- =====================================================
+         Example 2: Custom source, Two Columns (stack on mobile)
+         ===================================================== -->
+    <div
+      class="searchable-linklist"
+      data-link-source="custom"
+      data-layout="two-columns-stack"
+      data-search-placeholder="Search news..."
+      data-search-icon-type="none"
+      data-lang="en"
+    >
+      <div>
+        <div>|</div>
+        <div>/news/press-releases/pr-001|false|AbbVie Reports Q1 2025 Results||en|</div>
+        <div>Press Release · April 2025</div>
+        <div></div>
+        <div>Financial</div>
+        <div>none|||before|</div>
+        <div>false||</div>
+      </div>
+      <div>
+        <div>|</div>
+        <div>/news/press-releases/pr-002|false|FDA Approves New Indication for Skyrizi||en|</div>
+        <div>Press Release · March 2025</div>
+        <div></div>
+        <div>Regulatory,Immunology</div>
+        <div>none|||before|</div>
+        <div>false||</div>
+      </div>
+      <div>
+        <div>|</div>
+        <div>/news/press-releases/pr-003|false|AbbVie Presents Data at ACR 2024||en|</div>
+        <div>Conference · November 2024</div>
+        <div></div>
+        <div>Rheumatology</div>
+        <div>none|||before|</div>
+        <div>false||</div>
+      </div>
+      <div>
+        <div>|</div>
+        <div>/news/press-releases/pr-004|false|AbbVie and Genmab Collaboration Update||en|</div>
+        <div>Pipeline · January 2025</div>
+        <div></div>
+        <div>Oncology</div>
+        <div>none|||before|</div>
+        <div>false||</div>
+      </div>
+    </div>
+
+  </div>
+</main>
+<footer></footer>
+</body>
+</html>
