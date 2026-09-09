@@ -204,6 +204,7 @@
       "id": "section",
       "components": [
         "accordion",
+        "accordion-v2",
         "breadcrumb",
         "button",
         "story-cards",
@@ -256,6 +257,7 @@
       "id": "grid-section",
       "components": [
         "accordion",
+        "accordion-v2",
         "breadcrumb",
         "button",
         "story-cards",
