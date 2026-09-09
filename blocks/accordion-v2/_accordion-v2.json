@@ -1,0 +1,411 @@
+{
+  "definitions": [
+    {
+      "title": "Accordion V2",
+      "id": "accordion-v2",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Accordion V2",
+              "model": "accordion-v2",
+              "filter": "accordion-v2",
+              "language": "none",
+              "blockId": ""
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Accordion V2 Item",
+      "id": "accordion-v2-item",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Accordion V2 Item",
+              "model": "accordion-v2-item",
+              "summary": "Lorem Ipsum doloer sit",
+              "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur volutpat consequat dui, sit amet ...",
+              "columnOneContent": "",
+              "columnTwoContent": "",
+              "image": "",
+              "imageAlt": "",
+              "imageAlignment": "stacked"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "accordion-v2",
+      "fields": [
+        {
+          "component": "tab",
+          "label": "Overview",
+          "name": "overview"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "blockHeading",
+          "value": "",
+          "label": "Block Heading",
+          "description": "Provide heading text for this set of accordion-v2 items."
+        },
+        {
+          "component": "boolean",
+          "name": "classes_allowMultipleOpen",
+          "value": false,
+          "valueType": "boolean",
+          "label": "Allow multiple accordion-v2 Items open",
+          "description": "By default when a user opens an accordion-v2 Item the previously opened accordion-v2 Item will be closed. Enable this to allow more than one accordion-v2 Item open at a time"
+        },
+        {
+          "component": "boolean",
+          "name": "classes_showExpandCollapseAll",
+          "value": false,
+          "valueType": "boolean",
+          "label": "Show Expand/Collapse all button",
+          "description": "Show a button that allows the user to expand or collapse all accordion-v2 Items with a single click."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "expandAllLabel",
+          "value": "Expand All",
+          "label": "Expand All text",
+          "condition": {
+            "===": [
+              { "var": "classes_showExpandCollapseAll" },
+              true
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "collapseAllLabel",
+          "value": "Collapse All",
+          "label": "Collapse All text",
+          "condition": {
+            "===": [
+              { "var": "classes_showExpandCollapseAll" },
+              true
+            ]
+          }
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "classes_iconType",
+          "value": "accordion-v2-icon-font",
+          "label": "Icon Type",
+          "description": "Choose whether accordion-v2 controls use icon fonts or images.",
+          "options": [
+            {
+              "name": "Icon Font",
+              "value": "accordion-v2-icon-font"
+            },
+            {
+              "name": "Image",
+              "value": "accordion-v2-icon-image"
+            }
+          ]
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "expandAllIcon",
+          "value": "plus",
+          "label": "Expand All Font Icon",
+          "condition": {
+            "and": [
+              {
+                "===": [
+                  { "var": "classes_showExpandCollapseAll" },
+                  true
+                ]
+              },
+              {
+                "===": [
+                  { "var": "classes_iconType" },
+                  "accordion-v2-icon-font"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "collapseAllIcon",
+          "value": "minus",
+          "label": "Collapse All Font Icon",
+          "condition": {
+            "and": [
+              {
+                "===": [
+                  { "var": "classes_showExpandCollapseAll" },
+                  true
+                ]
+              },
+              {
+                "===": [
+                  { "var": "classes_iconType" },
+                  "accordion-v2-icon-font"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "expandIcon",
+          "value": "plus",
+          "label": "Expand Font Icon",
+          "condition": {
+            "===": [
+              { "var": "classes_iconType" },
+              "accordion-v2-icon-font"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "collapseIcon",
+          "value": "minus",
+          "label": "Collapse Font Icon",
+          "condition": {
+            "===": [
+              { "var": "classes_iconType" },
+              "accordion-v2-icon-font"
+            ]
+          }
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "expandAllIconImage",
+          "label": "Expand All Image Icon",
+          "multi": false,
+          "condition": {
+            "and": [
+              {
+                "===": [
+                  { "var": "classes_showExpandCollapseAll" },
+                  true
+                ]
+              },
+              {
+                "===": [
+                  { "var": "classes_iconType" },
+                  "accordion-v2-icon-image"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "collapseAllIconImage",
+          "label": "Collapse All Image Icon",
+          "multi": false,
+          "condition": {
+            "and": [
+              {
+                "===": [
+                  { "var": "classes_showExpandCollapseAll" },
+                  true
+                ]
+              },
+              {
+                "===": [
+                  { "var": "classes_iconType" },
+                  "accordion-v2-icon-image"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "expandIconImage",
+          "label": "Expand Image Icon",
+          "multi": false,
+          "condition": {
+            "===": [
+              { "var": "classes_iconType" },
+              "accordion-v2-icon-image"
+            ]
+          }
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "collapseIconImage",
+          "label": "Collapse Image Icon",
+          "multi": false,
+          "condition": {
+            "===": [
+              { "var": "classes_iconType" },
+              "accordion-v2-icon-image"
+            ]
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "ariaExpandAllLabel",
+          "value": "",
+          "label": "Aria Expand All Label"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "ariaCollapseAllLabel",
+          "value": "",
+          "label": "Aria Collapse All Label"
+        },
+        {
+          "component": "tab",
+          "label": "Styles",
+          "name": "styles"
+        },
+        {
+          "component": "ngaem:dynamic-picklist",
+          "name": "classes_customDynamicClass",
+          "value": "",
+          "label": "Select Block Styles",
+          "valueType": "string",
+          "sourceAEMNodeName": "accordion-picklist-config",
+          "valueSeperator": ","
+        },
+        {
+          "...": "../../models/_common-properties.json#/common-prop"
+        }
+      ]
+    },
+    {
+      "id": "accordion-v2-item",
+      "fields": [
+        {
+          "component": "tab",
+          "label": "Overview",
+          "name": "overview"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "summary",
+          "value": "",
+          "label": "Item Heading Text"
+        },
+        {
+          "component": "richtext",
+          "name": "text",
+          "value": "",
+          "label": "Item Description Text",
+          "valueType": "string"
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "classes_defaultOpen",
+          "value": false,
+          "label": "Default To Open",
+          "description": "If checked this accordion-v2 Item will be open on page load."
+        },
+        {
+          "component": "tab",
+          "label": "Accessibility",
+          "name": "accessibility"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "ariaExpandLabel",
+          "value": "",
+          "label": "Aria Expand Label"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "ariaCollapseLabel",
+          "value": "",
+          "label": "Aria Collapse Label"
+        },
+        {
+          "component": "tab",
+          "label": "Additional Content",
+          "name": "additionalContent"
+        },
+        {
+          "component": "richtext",
+          "valueType": "string",
+          "name": "columnOneContent",
+          "value": "",
+          "label": "Column 1 Text Content",
+          "description": "Optional. Renders below the main Item Description Text, in the first of 2 columns at tablet width and up (e.g. the first half of a country/phone list). Leave empty to omit."
+        },
+        {
+          "component": "richtext",
+          "valueType": "string",
+          "name": "columnTwoContent",
+          "value": "",
+          "label": "Column 2 Text Content",
+          "description": "Optional. Renders alongside Column 1 Text Content as the second of 2 columns at tablet width and up. Leave empty to omit."
+        },
+        {
+          "component": "custom-asset-namespace:custom-asset",
+          "valueType": "string",
+          "name": "image",
+          "label": "Image",
+          "description": "Optional image to display within this panel.",
+          "configUrl": "/content/dam/config/image/asset-selector.json",
+          "multi": false
+        },
+        {
+          "component": "custom-asset-namespace:custom-asset-mimetype",
+          "valueType": "string",
+          "name": "imageMimeType"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "imageAlt",
+          "value": "",
+          "label": "Image Alt Text"
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "imageAlignment",
+          "value": "stacked",
+          "label": "Image Alignment",
+          "description": "How the image sits relative to the panel text (left/right only apply at tablet width and up).",
+          "options": [
+            { "name": "Stacked (full width)", "value": "stacked" },
+            { "name": "Left", "value": "left" },
+            { "name": "Right", "value": "right" }
+          ]
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "accordion-v2",
+      "components": ["accordion-v2-item"]
+    }
+  ]
+}
