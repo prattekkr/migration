@@ -11,6 +11,7 @@
     "id": "section",
     "components": [
       "accordion",
+      "accordion-v2",
       "breadcrumb",
       "button",
       "story-cards",
@@ -64,6 +65,7 @@
     "id": "grid-section",
     "components": [
       "accordion",
+      "accordion-v2",
       "breadcrumb",
       "button",
       "story-cards",
@@ -118,6 +120,12 @@
     "id": "accordion",
     "components": [
       "accordion-item"
+    ]
+  },
+  {
+    "id": "accordion-v2",
+    "components": [
+      "accordion-v2-item"
     ]
   },
   {
