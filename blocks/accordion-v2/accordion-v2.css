@@ -1,8 +1,7 @@
-/* Alignment Classes */
+/* Block-level CSS custom properties for accordion-v2 */
 .accordion-v2 {
-  --accordion-v2-border-1: var(--corp-spacing-1);
+  --accordion-v2-border: var(--corp-spacing-1);
   --accordion-v2-icon-size-xs: var(--corp-spacing-10);
-  --accordion-v2-font-size-inline: var(--corp-spacing-10);
   --accordion-v2-icon-size-sm: var(--corp-spacing-16);
   --accordion-v2-li-width: var(--corp-spacing-4);
   --accordion-v2-li-height: var(--corp-spacing-4);
@@ -21,83 +20,15 @@
 
 .accordion-v2.margin-bottom-0 {
   margin-bottom: 0;
-} 
-
-
-/* Optional image within an accordion-v2 item panel (NW-2683) */
-.accordion-v2-item-image {
-  margin-bottom: var(--corp-spacing-16);
 }
 
-.accordion-v2-item-image img,
-.accordion-v2-item-image picture {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-/*
- * Left/Right position the image within its own row only — matching the live
- * reference (abbvie.com/science/partner-with-us/abbvie-ventures.html), where
- * the image and the body text are always separate, full-width stacked rows
- * (the image is never floated with text wrapping alongside it, despite the
- * source component being named "cmp-image--left").
- *
- * Width is replicated from the live component's own grid math (verified by
- * measuring live computed styles), not a flat percentage — the live image
- * spans 5 columns of a grid whose column count and gap change per
- * breakpoint (6 cols/1.5rem gap on mobile, 8 cols/2rem gap on tablet,
- * 12 cols/2rem gap on desktop), which is a different, larger fraction of the
- * row at each step (~83% / ~61% / ~39%) rather than one constant ratio.
- */
-.accordion-v2-item-image--left,
-.accordion-v2-item-image--right {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 0 var(--corp-spacing-15);
-}
-
-.accordion-v2-item-image--left img,
-.accordion-v2-item-image--left picture {
-  grid-column: 1 / span 5;
-}
-
-.accordion-v2-item-image--right img,
-.accordion-v2-item-image--right picture {
-  grid-column: 2 / span 5;
-}
-
-@media (--bp-tablet) {
-  .accordion-v2-item-image--left,
-  .accordion-v2-item-image--right {
-    grid-template-columns: repeat(8, 1fr);
-    gap: 0 var(--corp-spacing-20);
-  }
-
-  .accordion-v2-item-image--right img,
-  .accordion-v2-item-image--right picture {
-    grid-column: 4 / span 5;
-  }
-}
-
-@media (--bp-desktop) {
-  .accordion-v2-item-image--left,
-  .accordion-v2-item-image--right {
-    grid-template-columns: repeat(12, 1fr);
-  }
-
-  .accordion-v2-item-image--right img,
-  .accordion-v2-item-image--right picture {
-    grid-column: 8 / span 5;
-  }
-}
+/* ---- Block heading ---- */
 
 .accordion-v2-block-heading-wrapper {
   display: flex;
   flex-direction: column;
 }
 
-/* block heading */
 .accordion-v2-block-heading {
   color: var(--color-gray-dark);
   font-family: var(--roboto-bold-font-family);
@@ -109,7 +40,8 @@
   margin-bottom: var(--corp-spacing-10);
 }
 
-/* Expand All / Collapse All button */
+/* ---- Expand All / Collapse All button ---- */
+
 .accordion-v2 .accordion-v2-expand-all {
   display: flex;
   align-items: center;
@@ -126,6 +58,9 @@
   text-transform: var(--text-transform-uppercase);
   letter-spacing: var(--corp-typography-letterspacing-wide-em);
   overflow: visible;
+
+  /* 44px touch target (WCAG 2.5.5) */
+  min-height: var(--corp-spacing-44);
 }
 
 .accordion-v2-expand-all-wrapper picture {
@@ -155,7 +90,7 @@
   cursor: pointer;
 }
 
-/* Expand/Collapse All icon (<i> element) */
+/* Expand/Collapse All icon glyph via Abbvie Icon font */
 .accordion-v2-expand-all-icon {
   font-family: var(--corp-icon-font-family);
   font-style: normal;
@@ -169,6 +104,7 @@
   transform: scale(0.8);
 }
 
+/* Theme color for expand-all — placed before hover/focus to avoid descending specificity */
 .dark-theme .accordion-v2-expand-all {
   color: var(--corp-color-surface-subtle);
 }
@@ -177,6 +113,7 @@
   color: var(--color-surface-highlight-inverse);
 }
 
+/* Interaction states for expand-all (higher specificity, come after theme rules) */
 .accordion-v2-expand-all:hover:not(:focus) {
   text-decoration: none;
   color: var(--corp-color-text-default);
@@ -188,8 +125,10 @@
   color: var(--corp-color-text-default);
 }
 
+/* ---- Accordion items (details/summary) ---- */
+
 .accordion-v2 .accordion-v2-item {
-  border-bottom: var(--accordion-v2-border-1) solid var(--color-gray-medium);
+  border-bottom: var(--accordion-v2-border) solid var(--color-gray-medium);
 }
 
 .accordion-v2-item-body > p {
@@ -198,8 +137,10 @@
   color: var(--corp-color-text-default);
 }
 
-/* When a list item wraps its label in a <p> (e.g. items with a nested sub-list),
-   keep the label inline with its bullet instead of breaking onto the next line. */
+/*
+ * When a list item wraps its label in a <p> (e.g., items with sub-lists),
+ * keep the label inline with its bullet rather than breaking to the next line.
+ */
 .accordion-v2-item-body :where(ul) > li > p {
   display: inline;
   margin: 0;
@@ -220,7 +161,8 @@
   margin-bottom: 0;
 }
 
-/* Lists inside accordion-v2 items */
+/* ---- Lists inside accordion item body ---- */
+
 .accordion-v2-item-body ol {
   margin-bottom: var(--corp-spacing-30);
   padding-left: var(--corp-spacing-30);
@@ -283,6 +225,8 @@
   margin-bottom: var(--corp-spacing-10);
 }
 
+/* ---- Links inside accordion item body ---- */
+
 .accordion-v2-item-body a,
 .accordion-v2-item-body a.button {
   background: linear-gradient(
@@ -303,18 +247,19 @@
     color 0.1s ease;
 }
 
-:where(.accordion-v2-item-body ) li:has(ul) .button-container:has(>a) {
+:where(.accordion-v2-item-body) li:has(ul) .button-container:has(> a) {
   display: inline-flex;
 }
 
-.accordion-v2-item-body a:hover, .accordion-v2-item-body a:focus {
+.accordion-v2-item-body a:hover,
+.accordion-v2-item-body a:focus {
   background-size: 100% 100%;
   color: var(--color-surface-default);
 }
 
 .accordion-v2-item-body .external-link::after {
   color: inherit;
-  content: "";
+  content: "";
   display: inline-block;
   font-family: var(--corp-icon-font-family);
   margin-left: var(--corp-spacing-3);
@@ -330,7 +275,7 @@
 }
 
 :where(.accordion-v2-item-body) li:has(ul) p.button-container .button {
-    padding-left: var(--corp-spacing-12);
+  padding-left: var(--corp-spacing-12);
 }
 
 .accordion-v2-item-body b,
@@ -339,6 +284,11 @@
   font-weight: var(--corp-font-weight-bold);
 }
 
+/*
+ * summary is the interactive header. display:flex positions the icon as
+ * order:1 so text wraps naturally, matching the live reference layout.
+ * min-height enforces the 44px touch target requirement (WCAG 2.5.5).
+ */
 .accordion-v2 summary {
   position: relative;
   padding: var(--corp-spacing-32) 0;
@@ -354,15 +304,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-.dark-theme .accordion-v2-item-label p,
-.dark-theme .accordion-v2-item-label h2,
-.dark-theme .accordion-v2-item-label h3,
-.dark-theme .accordion-v2-item-label h4,
-.dark-theme .accordion-v2-item-label h5,
-.dark-theme .accordion-v2-item-label h6 {
-  color: var(--corp-color-surface-subtle);
+  min-height: var(--corp-spacing-44);
 }
 
 .accordion-v2-item-label.open .accordion-v2-item-label-text,
@@ -372,6 +314,7 @@
   font-weight: var(--corp-font-weight-extrabold);
 }
 
+/* Hide native browser disclosure triangle */
 .accordion-v2 summary::-webkit-details-marker {
   display: none;
 }
@@ -394,9 +337,11 @@
   display: none;
 }
 
-/* Individual item expand/collapse icon (uses icon-abbvie-* ::before from fonts.css).
-   Real flex item (not absolutely positioned) so the label text wraps around it with a
-   consistent gap, matching the reference source's .cmp-accordion-v2__title layout. */
+/*
+ * Individual item expand/collapse icon glyph via icon-font ::before.
+ * Placed as order:1 (flex) so the label text wraps with consistent gap,
+ * matching the reference source's .cmp-accordion__title layout.
+ */
 .accordion-v2-icon-font .accordion-v2-item-label::before {
   order: 1;
   flex-shrink: 0;
@@ -406,6 +351,7 @@
   transform: scale(0.75);
 }
 
+/* Theme color for item-label — placed before hover/focus to avoid descending specificity */
 .dark-theme .accordion-v2-item-label {
   color: var(--corp-color-surface-subtle);
 }
@@ -414,9 +360,16 @@
   color: var(--corp-color-text-default);
 }
 
+/* Interaction states — higher specificity, must come after theme color rules */
 .accordion-v2 .accordion-v2-item-label:focus,
 .accordion-v2 .accordion-v2-item-label:hover {
   background-color: transparent;
+}
+
+/* Visible focus ring — must come after theme color rules */
+.accordion-v2 .accordion-v2-item-label:focus {
+  outline: var(--corp-focus-visible-outline-width) auto -webkit-focus-ring-color;
+  outline-offset: var(--corp-focus-visible-outline-offset-sm);
 }
 
 .accordion-v2 .accordion-v2-item-body {
@@ -432,13 +385,76 @@
   border-top: none;
 }
 
+/* ---- Fragment loading state (NFR-001: reserve space to hold zero CLS) ---- */
+
+/*
+ * On first expand of a rich item, .loading is set before loadFragment()
+ * resolves so the panel has a minimum height, preventing layout shift
+ * when the fragment content flows in.
+ */
+.accordion-v2-item-body.loading {
+  min-height: var(--corp-spacing-80);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.accordion-v2-item-body.loading::after {
+  content: "";
+  display: block;
+  width: var(--corp-spacing-24);
+  height: var(--corp-spacing-24);
+  border: var(--corp-spacing-2) solid var(--color-border-subtle);
+  border-top-color: var(--corp-color-text-default);
+  border-radius: 50%;
+  animation: accordion-v2-spin 0.7s linear infinite;
+}
+
+@keyframes accordion-v2-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---- Heading size classes (applied to summary from block-level class) ---- */
+
+.accordion-v2-item-label.h2-size::before {
+  font-size: var(--corp-font-size-28);
+}
+
+.accordion-v2-item-label.h3-size::before {
+  font-size: var(--corp-font-size-26);
+}
+
+.accordion-v2-item-label.h4-size::before {
+  font-size: var(--corp-font-size-24);
+}
+
+.accordion-v2-item-label.h5-size::before {
+  font-size: var(--corp-font-size-20);
+}
+
+.accordion-v2-item-label.h6-size::before {
+  font-size: var(--corp-font-size-28);
+}
+
 /* ---- Theme: Dark ---- */
+
 .accordion-v2.dark-theme {
   color: var(--corp-color-surface-subtle);
 }
 
 .dark-theme .accordion-v2-item {
   border-bottom-color: rgb(255 255 255 / 30%);
+}
+
+.dark-theme .accordion-v2-item-label p,
+.dark-theme .accordion-v2-item-label h2,
+.dark-theme .accordion-v2-item-label h3,
+.dark-theme .accordion-v2-item-label h4,
+.dark-theme .accordion-v2-item-label h5,
+.dark-theme .accordion-v2-item-label h6 {
+  color: var(--corp-color-surface-subtle);
 }
 
 .dark-theme .accordion-v2-item-body .accordion-v2-item-body-text,
@@ -471,6 +487,7 @@
 }
 
 /* ---- Theme: Light ---- */
+
 .accordion-v2.light-theme {
   color: var(--corp-color-text-default);
 }
@@ -497,39 +514,40 @@
   color: var(--corp-color-text-default);
 }
 
-.abbvie-accoridian.accordion-v2-container {
-  padding-left: var(--corp-spacing-30);
-  padding-right: var(--corp-spacing-30);
+/* ---- Width size variants (grid layout) ---- */
+
+/* Mobile: base grid-column spans (grid grid not activated at mobile) */
+.accordion-v2.accordion-v2-full-width > * {
+  grid-column: 1 / span 12;
 }
 
-.section.abbvie-accordian-no-title {
-  padding: 0;
+.accordion-v2.accordion-v2-xx-large > *,
+.accordion-v2.accordion-v2-x-large > *,
+.accordion-v2.accordion-v2-large > *,
+.accordion-v2.accordion-v2-medium > * {
+  grid-column: 1 / span 6;
 }
 
-.abbvie-container.abbvie-accoridian-col .accordion-v2,
-.abbvie-container.abbvie-accoridian .accordion-v2 {
-  grid-column: 1 / -1;
+.accordion-v2.accordion-v2-small > * {
+  grid-column: 1 / span 5;
 }
 
-.accordion-v2-item-label.h2-size::before {
-  font-size: var(--corp-font-size-28);
+.accordion-v2.accordion-v2-x-small > * {
+  grid-column: 1 / span 4;
 }
 
-.accordion-v2-item-label.h3-size::before {
-  font-size: var(--corp-font-size-26);
+/* Alignment-only rules (desktop only) */
+@media (--bp-desktop) {
+  .accordion-v2.align-center > * {
+    grid-column-start: 3;
+  }
+
+  .accordion-v2.align-right > * {
+    grid-column-start: 5;
+  }
 }
 
-.accordion-v2-item-label.h4-size::before {
-  font-size: var(--corp-font-size-24);
-}
-
-.accordion-v2-item-label.h5-size::before {
-  font-size: var(--corp-font-size-20);
-}
-
-.accordion-v2-item-label.h6-size::before {
-  font-size: var(--corp-font-size-28);
-}
+/* ---- Responsive: Tablet (744px+) ---- */
 
 @media (--bp-tablet) {
   .accordion-v2 {
@@ -539,7 +557,7 @@
     --accordion-v2-li-height: var(--corp-spacing-6);
   }
 
-  /* Width variations — tablet: grid only applies when a size variant is selected */
+  /* Width grid activates at tablet when a size variant class is present */
   .accordion-v2:where(
     .accordion-v2-full-width,
     .accordion-v2-xx-large,
@@ -559,7 +577,6 @@
     justify-content: space-between;
   }
 
-  /* block heading */
   .accordion-v2-block-heading {
     font-size: var(--body-font-size-xs);
     margin-bottom: 0;
@@ -640,7 +657,55 @@
   .accordion-v2-item-label.h5-size::before {
     font-size: var(--corp-font-size-28);
   }
+
+  /* Tablet column spans */
+  .accordion-v2.accordion-v2-xx-large > *,
+  .accordion-v2.accordion-v2-full-width > * {
+    grid-column: 1 / span 8;
+  }
+
+  .accordion-v2.accordion-v2-x-large > * {
+    grid-column: 1 / span 8;
+  }
+
+  .accordion-v2.accordion-v2-large > * {
+    grid-column: 1 / span 7;
+  }
+
+  .accordion-v2.accordion-v2-large.align-center > * {
+    transform: translateX(calc((var(--direction-multiplier, 1) * 100%) / 14));
+  }
+
+  .accordion-v2.accordion-v2-large.align-right > * {
+    grid-column-start: 2;
+  }
+
+  .accordion-v2.accordion-v2-medium.align-center > * {
+    grid-column-start: 2;
+  }
+
+  .accordion-v2.accordion-v2-medium.align-right > * {
+    grid-column-start: 3;
+  }
+
+  .accordion-v2.accordion-v2-small.align-center > * {
+    grid-column-start: 2;
+  }
+
+  .accordion-v2.accordion-v2-small.align-right > * {
+    grid-column-start: 4;
+  }
+
+  .accordion-v2.accordion-v2-x-small.align-center > * {
+    grid-column-start: 3;
+  }
+
+  .accordion-v2.accordion-v2-x-small.align-right > * {
+    grid-column-start: 5;
+  }
 }
+
+/* ---- Responsive: Desktop (1024px+) ---- */
 
 @media (--bp-desktop) {
   .accordion-v2,
@@ -649,7 +714,7 @@
     margin-right: unset;
   }
 
-  /* Width variations — desktop: grid only applies when a size variant is selected */
+  /* Width grid activates at desktop when a size variant class is present */
   .accordion-v2:where(
     .accordion-v2-full-width,
     .accordion-v2-xx-large,
@@ -725,90 +790,8 @@
   .accordion-v2-item-label.h5-size::before {
     font-size: var(--corp-font-size-32);
   }
-}
 
-/* Base layout */
-.accordion-v2.accordion-v2-full-width > * {
-  grid-column: 1 / span 12;
-}
-
-.accordion-v2.accordion-v2-xx-large > *,
-.accordion-v2.accordion-v2-x-large > *,
-.accordion-v2.accordion-v2-large > *,
-.accordion-v2.accordion-v2-medium > * {
-  grid-column: 1 / span 6;
-}
-
-.accordion-v2.accordion-v2-small > * {
-  grid-column: 1 / span 5;
-}
-
-.accordion-v2.accordion-v2-x-small > * {
-  grid-column: 1 / span 4;
-}
-
-/* Alignment-only rules */
-@media (--bp-desktop) {
-  .accordion-v2.align-center > * {
-    grid-column-start: 3;
-  }
-
-  .accordion-v2.align-right > * {
-    grid-column-start: 5;
-  }
-}
-
-/* 744px and up */
-@media (--bp-tablet) {
-  .accordion-v2.accordion-v2-xx-large > *,
-  .accordion-v2.accordion-v2-full-width > * {
-    grid-column: 1 / span 8;
-  }
-
-  .accordion-v2.accordion-v2-x-large > * {
-    grid-column: 1 / span 8;
-  }
-
-  .accordion-v2.accordion-v2-large > * {
-    grid-column: 1 / span 7;
-  }
-
-  .accordion-v2.accordion-v2-large.align-center > * {
-    transform: translateX(calc((var(--direction-multiplier, 1) * 100%) / 14));
-  }
-
-  .accordion-v2.accordion-v2-large.align-right > * {
-    grid-column-start: 2;
-  }
-
-  .accordion-v2.accordion-v2-medium.align-center > * {
-    grid-column-start: 2;
-  }
-
-  .accordion-v2.accordion-v2-medium.align-right > * {
-    grid-column-start: 3;
-  }
-
-  .accordion-v2.accordion-v2-small.align-center > * {
-    transform: translateX(calc((var(--direction-multiplier, 1) * 100%) / 10));
-    grid-column-start: 2;
-  }
-
-  .accordion-v2.accordion-v2-small.align-right > * {
-    grid-column-start: 4;
-  }
-
-  .accordion-v2.accordion-v2-x-small.align-center > * {
-    grid-column-start: 3;
-  }
-
-  .accordion-v2.accordion-v2-x-small.align-right > * {
-    grid-column-start: 5;
-  }
-}
-
-/* 1024px and up */
-@media (--bp-desktop) {
+  /* Desktop column spans */
   .accordion-v2.accordion-v2-full-width > *,
   .accordion-v2.accordion-v2-xx-large > * {
     grid-column: 1 / span 12;
@@ -852,77 +835,5 @@
 
   .accordion-v2.accordion-v2-x-small.align-right > * {
     grid-column-start: 9;
-  }
-}
-
-/*
- * Two explicit column blocks (Column 1 / Column 2 Text Content) within an
- * accordion-v2 item panel (NW-2683). Each is authored as its own field, so they
- * render as two independent grid cells placed side by side at tablet width
- * and up — not an auto-balanced multi-column flow — matching the live
- * reference (abbvie.com/contact-center.html "Ethics Helpline" panel) content
- * shape of one component per column.
- */
-.accordion-v2-item-columns {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--corp-spacing-30);
-  margin-top: var(--corp-spacing-16);
-}
-
-/*
- * Resets the global ".abbvie-container div { grid-column: 1 / span N }"
- * section-layout utility (styles.css), which otherwise matches these nested
- * divs too (it targets any div, not just direct section children) and forces
- * each column to span the full width, stacking them instead of sitting side
- * by side in this grid.
- */
-.accordion-v2-item-columns > .accordion-v2-item-column {
-  grid-column: auto;
-}
-
-/*
- * Real (non-:where) specificity is needed here: the accordion-v2 block can carry
- * a block-level font-size preset class (.h2-size ... .h6-size, e.g. h5-size)
- * whose global "<preset> p { font-size: ... }" rule in styles.css (specificity
- * 0,1,1) would otherwise win over a :where()-based selector (which
- * contributes zero specificity) and silently override this font-size.
- * Sibling combinator (p + p) is used instead of :last-child so the combined
- * selector specificity stays under this file's 0,3,0 lint budget.
- */
-.accordion-v2-item-body .accordion-v2-item-column p {
-  font-family: var(--body-font-family);
-  font-size: var(--corp-font-size-16);
-  font-weight: var(--corp-font-weight-regular);
-  line-height: var(--corp-typography-lineheight-body-sm);
-  color: var(--corp-color-text-default);
-  margin-bottom: 0;
-}
-
-.accordion-v2-item-body .accordion-v2-item-column p + p {
-  margin-top: var(--corp-spacing-30);
-}
-
-.accordion-v2-item-body .accordion-v2-item-column b,
-.accordion-v2-item-body .accordion-v2-item-column strong {
-  font-family: var(--roboto-bold-font-family);
-  font-weight: var(--corp-font-weight-bold);
-}
-
-@media (--bp-tablet) {
-  .accordion-v2-item-columns {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0 var(--corp-spacing-7);
-  }
-
-  .accordion-v2-item-body .accordion-v2-item-column p {
-    line-height: var(--corp-typography-lineheight-body-md);
-  }
-}
-
-@media (--bp-desktop) {
-  .accordion-v2-item-body .accordion-v2-item-column p {
-    font-size: var(--corp-font-size-18);
-    line-height: var(--corp-typography-lineheight-body-lg);
   }
 }
