@@ -26,7 +26,8 @@
  *
  * Block-level common-props (rows 13–15, consumed by applyCommonProps):
  *   13 blockId  → id attribute
- *   14 language → lang attribute (normalizeLang strips "lang:" prefix)
+ *   14 language → lang attribute (the "none" sentinel value is skipped; the
+ *                 field delivers a bare BCP-47 code such as "en"/"de")
  *   15 analytics_id → data-analytics-id attribute
  *
  * Item row columns (per <details> block):
@@ -189,7 +190,10 @@ function addExpandCollapseAllButton(block, cfg) {
 
   function updateButtonState(allOpen) {
     textSpan.textContent = allOpen ? cfg.collapseAllLabel : cfg.expandAllLabel;
-    expandAllBtn.setAttribute('aria-label', allOpen ? cfg.ariaCollapseAllLabel : cfg.ariaExpandAllLabel);
+    const ariaLabel = allOpen ? cfg.ariaCollapseAllLabel : cfg.ariaExpandAllLabel;
+    // Never set an empty aria-label — that would blank the button's accessible name.
+    if (ariaLabel) expandAllBtn.setAttribute('aria-label', ariaLabel);
+    else expandAllBtn.removeAttribute('aria-label');
     expandAllBtn.classList.toggle('expanded', allOpen);
     if (icon) {
       icon.className = `accordion-v2-expand-all-icon ${allOpen ? cfg.collapseAllIcon : cfg.expandAllIcon}`;
@@ -199,9 +203,15 @@ function addExpandCollapseAllButton(block, cfg) {
   let showingCollapse = false;
 
   expandAllBtn.addEventListener('click', () => {
+    const expanding = !showingCollapse;
+    // Suspend single-open exclusivity BEFORE the bulk expand so every item can
+    // stay open; exclusivity is restored once all items are collapsed again
+    // (see the allClosed branch below and closeAllExceptCurrent).
+    if (expanding) block.dataset.suspendExclusive = 'true';
     const allDetails = block.querySelectorAll('details.accordion-v2-item');
-    allDetails.forEach((d) => { d.open = !showingCollapse; });
-    showingCollapse = !showingCollapse;
+    allDetails.forEach((d) => { d.open = expanding; });
+    if (!expanding) block.dataset.suspendExclusive = 'false';
+    showingCollapse = expanding;
     updateButtonState(showingCollapse);
   });
 
@@ -220,24 +230,31 @@ function addExpandCollapseAllButton(block, cfg) {
     const allOpen = allDetails.every((d) => d.open);
     const allClosed = allDetails.every((d) => !d.open);
     if (allOpen) showingCollapse = true;
-    else if (allClosed) showingCollapse = false;
+    else if (allClosed) {
+      showingCollapse = false;
+      // Everything is closed → safe to re-enable single-open exclusivity.
+      block.dataset.suspendExclusive = 'false';
+    }
     updateButtonState(showingCollapse);
   }, true);
 }
 
 function closeAllExceptCurrent(block) {
-  if (!block.classList.contains('allowmultipleopen')) {
-    const details = block.querySelectorAll('details.accordion-v2-item');
-    details.forEach((detail) => {
-      detail.addEventListener('toggle', () => {
-        if (detail.open) {
-          details.forEach((d) => {
-            if (d !== detail) d.open = false;
-          });
-        }
-      });
+  const details = block.querySelectorAll('details.accordion-v2-item');
+  details.forEach((detail) => {
+    detail.addEventListener('toggle', () => {
+      // Exclusivity is off when the author allows multiple open, and is
+      // temporarily suspended during an Expand-All bulk action so "Expand All"
+      // can actually open every item (see addExpandCollapseAllButton).
+      if (block.classList.contains('allowmultipleopen')) return;
+      if (block.dataset.suspendExclusive === 'true') return;
+      if (detail.open) {
+        details.forEach((d) => {
+          if (d !== detail) d.open = false;
+        });
+      }
     });
-  }
+  });
 }
 
 /**
