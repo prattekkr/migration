@@ -11,7 +11,7 @@
               "name": "Accordion V2",
               "model": "accordion-v2",
               "filter": "accordion-v2",
-              "language": "none",
+              "language": "lang:none",
               "blockId": ""
             }
           }
@@ -28,13 +28,13 @@
             "template": {
               "name": "Accordion V2 Item",
               "model": "accordion-v2-item",
-              "summary": "Lorem Ipsum doloer sit",
-              "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur volutpat consequat dui, sit amet ...",
-              "columnOneContent": "",
-              "columnTwoContent": "",
-              "image": "",
-              "imageAlt": "",
-              "imageAlignment": "stacked"
+              "summary": "Lorem Ipsum dolor sit",
+              "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+              "fragmentPath": "",
+              "classes_defaultOpen": false,
+              "ariaExpandLabel": "",
+              "ariaCollapseLabel": "",
+              "analytics_id": ""
             }
           }
         }
@@ -56,30 +56,30 @@
           "name": "blockHeading",
           "value": "",
           "label": "Block Heading",
-          "description": "Provide heading text for this set of accordion-v2 items."
+          "description": "Optional heading displayed above the accordion items."
         },
         {
           "component": "boolean",
           "name": "classes_allowMultipleOpen",
           "value": false,
           "valueType": "boolean",
-          "label": "Allow multiple accordion-v2 Items open",
-          "description": "By default when a user opens an accordion-v2 Item the previously opened accordion-v2 Item will be closed. Enable this to allow more than one accordion-v2 Item open at a time"
+          "label": "Allow Multiple Items Open",
+          "description": "When enabled, multiple accordion items can be open at the same time."
         },
         {
           "component": "boolean",
           "name": "classes_showExpandCollapseAll",
           "value": false,
           "valueType": "boolean",
-          "label": "Show Expand/Collapse all button",
-          "description": "Show a button that allows the user to expand or collapse all accordion-v2 Items with a single click."
+          "label": "Show Expand / Collapse All Button",
+          "description": "Show a button to expand or collapse all accordion items at once."
         },
         {
           "component": "text",
           "valueType": "string",
           "name": "expandAllLabel",
           "value": "Expand All",
-          "label": "Expand All text",
+          "label": "Expand All Text",
           "condition": {
             "===": [
               { "var": "classes_showExpandCollapseAll" },
@@ -92,7 +92,7 @@
           "valueType": "string",
           "name": "collapseAllLabel",
           "value": "Collapse All",
-          "label": "Collapse All text",
+          "label": "Collapse All Text",
           "condition": {
             "===": [
               { "var": "classes_showExpandCollapseAll" },
@@ -101,12 +101,26 @@
           }
         },
         {
+          "component": "text",
+          "valueType": "string",
+          "name": "ariaExpandAllLabel",
+          "value": "",
+          "label": "Aria Expand All Label"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "ariaCollapseAllLabel",
+          "value": "",
+          "label": "Aria Collapse All Label"
+        },
+        {
           "component": "select",
           "valueType": "string",
           "name": "classes_iconType",
           "value": "accordion-v2-icon-font",
           "label": "Icon Type",
-          "description": "Choose whether accordion-v2 controls use icon fonts or images.",
+          "description": "Choose whether accordion controls use icon fonts or images.",
           "options": [
             {
               "name": "Icon Font",
@@ -263,20 +277,6 @@
           }
         },
         {
-          "component": "text",
-          "valueType": "string",
-          "name": "ariaExpandAllLabel",
-          "value": "",
-          "label": "Aria Expand All Label"
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "ariaCollapseAllLabel",
-          "value": "",
-          "label": "Aria Collapse All Label"
-        },
-        {
           "component": "tab",
           "label": "Styles",
           "name": "styles"
@@ -287,7 +287,7 @@
           "value": "",
           "label": "Select Block Styles",
           "valueType": "string",
-          "sourceAEMNodeName": "accordion-picklist-config",
+          "sourceAEMNodeName": "accordion-v2-picklist-config",
           "valueSeperator": ","
         },
         {
@@ -318,12 +318,19 @@
           "valueType": "string"
         },
         {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "fragmentPath",
+          "label": "Fragment Path",
+          "description": "Optional. Path to an EDS fragment document. When provided, the fragment is lazy-loaded on first expand and rendered inside the item body below the main text."
+        },
+        {
           "component": "boolean",
           "valueType": "boolean",
           "name": "classes_defaultOpen",
           "value": false,
           "label": "Default To Open",
-          "description": "If checked this accordion-v2 Item will be open on page load."
+          "description": "When checked this item will be open on page load."
         },
         {
           "component": "tab",
@@ -346,58 +353,17 @@
         },
         {
           "component": "tab",
-          "label": "Additional Content",
-          "name": "additionalContent"
-        },
-        {
-          "component": "richtext",
-          "valueType": "string",
-          "name": "columnOneContent",
-          "value": "",
-          "label": "Column 1 Text Content",
-          "description": "Optional. Renders below the main Item Description Text, in the first of 2 columns at tablet width and up (e.g. the first half of a country/phone list). Leave empty to omit."
-        },
-        {
-          "component": "richtext",
-          "valueType": "string",
-          "name": "columnTwoContent",
-          "value": "",
-          "label": "Column 2 Text Content",
-          "description": "Optional. Renders alongside Column 1 Text Content as the second of 2 columns at tablet width and up. Leave empty to omit."
-        },
-        {
-          "component": "custom-asset-namespace:custom-asset",
-          "valueType": "string",
-          "name": "image",
-          "label": "Image",
-          "description": "Optional image to display within this panel.",
-          "configUrl": "/content/dam/config/image/asset-selector.json",
-          "multi": false
-        },
-        {
-          "component": "custom-asset-namespace:custom-asset-mimetype",
-          "valueType": "string",
-          "name": "imageMimeType"
+          "label": "Analytics",
+          "name": "analytics_tab"
         },
         {
           "component": "text",
           "valueType": "string",
-          "name": "imageAlt",
+          "name": "analytics_id",
+          "readOnly": true,
           "value": "",
-          "label": "Image Alt Text"
-        },
-        {
-          "component": "select",
-          "valueType": "string",
-          "name": "imageAlignment",
-          "value": "stacked",
-          "label": "Image Alignment",
-          "description": "How the image sits relative to the panel text (left/right only apply at tablet width and up).",
-          "options": [
-            { "name": "Stacked (full width)", "value": "stacked" },
-            { "name": "Left", "value": "left" },
-            { "name": "Right", "value": "right" }
-          ]
+          "label": "Analytics Interaction ID",
+          "description": "Analytics Interaction ID used for tracking interactions with this item."
         }
       ]
     }
