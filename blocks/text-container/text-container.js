@@ -6,23 +6,7 @@
  * Future enhancements may include support for other properties, such as "id:myid".
  */
 import { resolveImageReference } from '../../scripts/scripts.js';
-import { applyCommonProps } from '../../scripts/utils.js';
-
-function sanitizeLiteralBrTags(block) {
-  block.querySelectorAll('p, li, td, th').forEach((el) => {
-    el.childNodes.forEach((node) => {
-      if (node.nodeType === Node.TEXT_NODE && node.textContent.includes('<br>')) {
-        const parts = node.textContent.split('<br>');
-        const fragment = document.createDocumentFragment();
-        parts.forEach((part, i) => {
-          fragment.appendChild(document.createTextNode(part));
-          if (i < parts.length - 1) fragment.appendChild(document.createElement('br'));
-        });
-        node.replaceWith(fragment);
-      }
-    });
-  });
-}
+import { applyCommonProps, sanitizeLiteralBrTags } from '../../scripts/utils.js';
 
 export default function decorate(block) {
   sanitizeLiteralBrTags(block);

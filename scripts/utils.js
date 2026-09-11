@@ -327,6 +327,44 @@ export function extractIconSource(cell) {
 }
 
 /**
+ * Converts literal "<br>" strings left in authored/imported text into real <br> elements.
+ * Only text nodes within p, li, td, th are processed to avoid touching markup.
+ * @param {Element} block - The block (or subtree) to sanitize
+ */
+export function sanitizeLiteralBrTags(block) {
+  block.querySelectorAll('p, li, td, th').forEach((el) => {
+    el.childNodes.forEach((node) => {
+      if (node.nodeType === Node.TEXT_NODE && node.textContent.includes('<br>')) {
+        const parts = node.textContent.split('<br>');
+        const fragment = document.createDocumentFragment();
+        parts.forEach((part, i) => {
+          fragment.appendChild(document.createTextNode(part));
+          if (i < parts.length - 1) fragment.appendChild(document.createElement('br'));
+        });
+        node.replaceWith(fragment);
+      }
+    });
+  });
+}
+
+/**
+ * Converts literal non-breaking-space entities ("&nbsp;", "&#160;", "&#xa0;")
+ * left in authored/imported text into real non-breaking space characters (U+00A0).
+ * Only text nodes within p, li, td, th are processed to avoid touching markup.
+ * @param {Element} block - The block (or subtree) to sanitize
+ */
+export function sanitizeLiteralSpaces(block) {
+  block.querySelectorAll('p, li, td, th').forEach((el) => {
+    el.childNodes.forEach((node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const replaced = node.textContent.replace(/&nbsp;|&#0*160;|&#x0*a0;/gi, '\u00a0');
+        if (replaced !== node.textContent) node.textContent = replaced;
+      }
+    });
+  });
+}
+
+/**
  * Parses raw RSS XML and returns structured item objects.
  * @param {string} responseXml - Raw XML string from an RSS feed
  * @param {number} [numberOfItems=0] - Max items to return; 0 means no limit
